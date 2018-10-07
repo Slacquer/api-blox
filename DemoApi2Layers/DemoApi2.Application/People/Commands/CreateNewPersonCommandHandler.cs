@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.CommandQueryResponses;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.Extensions;
 using APIBlox.NetCore.Attributes;
 using DemoApi2.Domain.Contracts;
 using DemoApi2.Domain.People;
@@ -34,20 +35,48 @@ namespace DemoApi2.Application.People.Commands
 
         public async Task<HandlerResponse> HandleAsync(PersonCommand requestCommand, CancellationToken cancellationToken)
         {
+            var ret = new HandlerResponse();
+            
             // At this point Request validation has been done.
             // And if decorated with a Domain validation decorator it is done too.
             // Should be able to simply insert.
             var model = JsonConvert.DeserializeObject<PersonDomainModel>(JsonConvert.SerializeObject(requestCommand));
+
+            return ret;
+
+            if (model.EmailAddress == "0")
+            {
+                ret.NewError().SetErrorToForbidden();
+                return ret;
+            }
+            if (model.EmailAddress == "1")
+            {
+                ret.NewError().SetErrorToDataConflict();
+                return ret;
+            }
+            if (model.EmailAddress == "2")
+            {
+                ret.NewError().SetErrorToDataConflictUpserts();
+                return ret;
+            }
+            if (model.EmailAddress == "4")
+            {
+                ret.NewError().SetErrorToNotFound();
+                return ret;
+            }
+            if (model.EmailAddress == "5")
+            {
+                ret.NewError().SetErrorToUnAuthorized();
+                return ret;
+            }
+
             var retModel = _dataService.Create(model);
             await _dataService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            var ret = new HandlerResponse
-            {
-                Result = JsonConvert.DeserializeObject<PersonResponse>(
-                    JsonConvert.SerializeObject(retModel)
-                )
-            };
-            
+            ret.Result = JsonConvert.DeserializeObject<PersonResponse>(
+                JsonConvert.SerializeObject(retModel)
+            );
+
             return ret;
         }
     }

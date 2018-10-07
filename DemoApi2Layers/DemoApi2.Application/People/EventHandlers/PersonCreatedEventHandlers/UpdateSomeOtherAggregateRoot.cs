@@ -37,7 +37,7 @@ namespace DemoApi2.Application.People.EventHandlers.PersonCreatedEventHandlers
                       $"created person event with id: {domainEvent.AggregateId}"
             );
 
-            await Task.Delay(new Random().Next(5000, 20000)).ConfigureAwait(false);
+            await Task.Delay(new Random().Next(1000, 3000)).ConfigureAwait(false);
 
             _log.LogInformation(
                 () => "Updated some other aggregate root using the " +

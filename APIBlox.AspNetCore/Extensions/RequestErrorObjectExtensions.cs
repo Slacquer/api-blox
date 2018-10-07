@@ -38,7 +38,7 @@ namespace APIBlox.AspNetCore.Extensions
             var attr = statusCode.GetAttributeOfType<MetadataAttribute>();
 
             error.Title = attr.V1.ToString();
-            error.Status = (int) statusCode;
+            error.Status = (int) attr.V3;
 
             if (description.IsEmptyNullOrWhiteSpace())
             {
@@ -116,28 +116,7 @@ namespace APIBlox.AspNetCore.Extensions
         {
             SetError(error, CommonStatusCodes.NotFound, description);
         }
-
-        /// <summary>
-        ///     Sets the error to not found (204).
-        ///     <para>
-        ///         Use case:  When a query results in being empty because of
-        ///         user defined filter, and a message needs to be displayed.
-        ///     </para>
-        /// </summary>
-        /// <param name="error">
-        ///     The <see cref="RequestErrorObject" />.  When null, one will be created.  Either way, properties
-        ///     will be reset.
-        /// </param>
-        /// <param name="description">The description.</param>
-        /// <returns>CommonResponse.</returns>
-        public static void SetErrorToNoResults(
-            this RequestErrorObject error,
-            string description = null
-        )
-        {
-            SetError(error, CommonStatusCodes.NoResults, description);
-        }
-
+        
         /// <summary>
         ///     Sets the error to un authorized.
         /// </summary>

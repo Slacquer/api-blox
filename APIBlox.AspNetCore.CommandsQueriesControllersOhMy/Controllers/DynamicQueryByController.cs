@@ -1,5 +1,6 @@
 ﻿#region -    Using Statements    -
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
@@ -61,12 +62,16 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            var req = (TRequest) RouteData.Values[_rn];
+            var req = (TRequest)RouteData.Values[_rn];
             var ret = await _getByHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
 
-            return ret.HasErrors
-                ? new ProblemResult(ret.Error)
-                : Ok(ret.Result);
+            if (ret.HasErrors)
+                return new ProblemResult(ret.Error);
+
+            if (ret.Result is null)
+                throw new NullReferenceException("When responding to a GET you must either set an error or pass a result!");
+
+            return Ok(ret.Result);
         }
     }
 }

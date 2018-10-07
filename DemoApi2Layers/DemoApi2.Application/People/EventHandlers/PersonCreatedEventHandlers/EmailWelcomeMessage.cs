@@ -40,7 +40,7 @@ namespace DemoApi2.Application.People.EventHandlers.PersonCreatedEventHandlers
         {
             _log.LogInformation(() => $"Sending welcome message to new person: {domainEvent.Person}");
 
-            await Task.Delay(new Random().Next(5000, 20000)).ConfigureAwait(false);
+            await Task.Delay(new Random().Next(250, 5000)).ConfigureAwait(false);
 
             await _emailService.SendAsync(
                 domainEvent.Person.EmailAddress,

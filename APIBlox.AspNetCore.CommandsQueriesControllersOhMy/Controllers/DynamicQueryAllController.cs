@@ -66,9 +66,10 @@ namespace APIBlox.AspNetCore.Controllers
             var req = (TRequest) RouteData.Values[_rn];
             var ret = await _getAllHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
 
-            return ret.HasErrors
-                ? new ProblemResult(ret.Error)
-                : Ok(ret.Result);
+            if (ret.HasErrors)
+                return new ProblemResult(ret.Error);
+
+            return ret.Result is null ? NoContent() : (IActionResult) Ok(ret.Result);
         }
     }
 }

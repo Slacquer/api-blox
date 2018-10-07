@@ -20,11 +20,11 @@ namespace APIBlox.AspNetCore.CommandQueryResponses
         /// </summary>
         /// <param name="response">The response.</param>
         /// <returns>HandlerResponse.</returns>
-        public static HandlerResponse NewError(this HandlerResponse response)
+        public static RequestErrorObject NewError(this HandlerResponse response)
         {
             response.Error = new RequestErrorObject();
 
-            return response;
+            return response.Error;
         }
     }
 }
