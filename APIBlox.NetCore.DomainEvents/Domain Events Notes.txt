@@ -1,0 +1,10 @@
+﻿From: https://docs.microsoft.com/en-us/dotnet/standard/microservices-architecture/microservice-ddd-cqrs-patterns/domain-events-design-implementation
+
+It is important to understand that this event-based communication is not implemented directly within the aggregates; you need to implement 
+domain event handlers. Handling the domain events is an application concern. The domain model layer should only focus on the domain logic—things 
+that a domain expert would understand, not application infrastructure like handlers and side-effect persistence actions using repositories. 
+Therefore, the application layer level is where you should have domain event handlers triggering actions when a domain event is raised.
+
+
+I don't get it, accepted practice is to put events (creating) in entities.  What if your application isnt using 
+events for whatever reason?  now theres functionality that is unnecessary.

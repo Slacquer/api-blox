@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> 
+    <RootNamespace>DemoApi2.Application</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ApiBlox.AspNetCore.CommandsAndQueries\APIBlox.AspNetCore.CommandsAndQueries.csproj" />
+    <ProjectReference Include="..\..\APIBlox.NetCore.DomainEvents\APIBlox.NetCore.DomainEvents.csproj" />
+    <ProjectReference Include="..\DemoApi2.Domain\DemoApi2.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
