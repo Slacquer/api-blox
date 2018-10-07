@@ -22,14 +22,14 @@ namespace DemoApi2.Persistance
             #region -    Fields    -
 
             private static readonly List<TDomainModel> Repository = new List<TDomainModel>();
-            private readonly IDomainEventsDispatcher _eventsDispatcher;
+            private readonly IQueuedDomainEventsDispatcher _eventsDispatcher;
 
             #endregion
 
             #region -    Constructors    -
 
             // Not sure i like having the dispatcher in this thing, feels like it breaks the S in solid.
-            public DomainDataService(IDomainEventsDispatcher eventsDispatcher)
+            public DomainDataService(IQueuedDomainEventsDispatcher eventsDispatcher)
             {
                 _eventsDispatcher = eventsDispatcher;
             }
@@ -75,7 +75,13 @@ namespace DemoApi2.Persistance
                 cancellationToken.ThrowIfCancellationRequested();
                 var events = Repository.SelectMany(m => m.Events).ToArray();
 
-                return _eventsDispatcher.PublishEventsAsync(events);
+                // this would be done by the entity.
+                foreach (var domainEvent in events)
+                {
+                    _eventsDispatcher.AddEvent(domainEvent);
+                }
+
+                return _eventsDispatcher.PublishEventsAsync();
 
                 // actually save...
             }

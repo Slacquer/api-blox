@@ -1,5 +1,6 @@
 ﻿#region -    Using Statements    -
 
+using System;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Contracts;
@@ -35,16 +36,18 @@ namespace DemoApi2.Application.People.EventHandlers.PersonCreatedEventHandlers
         #endregion
 
         /// <inheritdoc />
-        public Task HandleEventAsync(PersonCreatedEvent @event)
+        public async Task HandleEventAsync(PersonCreatedEvent domainEvent)
         {
-            _log.LogInformation(() => $"Sending welcome message to new person: {@event.Person}");
+            _log.LogInformation(() => $"Sending welcome message to new person: {domainEvent.Person}");
 
-            return _emailService.SendAsync(
-                @event.Person.EmailAddress,
+            await Task.Delay(new Random().Next(5000, 20000)).ConfigureAwait(false);
+
+            await _emailService.SendAsync(
+                domainEvent.Person.EmailAddress,
                 "someEmailService@foo.com",
                 "Welcome to the neighborhood",
                 "Drop dead fatty!"
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

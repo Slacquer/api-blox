@@ -61,7 +61,7 @@ namespace APIBlox.AspNetCore.Controllers
         public virtual async Task<IActionResult> Delete(CancellationToken cancellationToken)
         {
             var req = (TRequest) RouteData.Values[_rn];
-            var ret = await _deleteByHandler.HandleAsync(req, cancellationToken);
+            var ret = await _deleteByHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
 
             return ret.HasErrors
                 ? (IActionResult) new ProblemResult(ret.Error)

@@ -38,7 +38,7 @@ namespace APIBlox.AspNetCore
                 {
                     try
                     {
-                        return HandleOnStartingAsync(context);
+                        HandleOnStarting(context);
                     }
                     catch (Exception ex)
                     {
@@ -67,7 +67,7 @@ namespace APIBlox.AspNetCore
             return id.Value.ToString();
         }
 
-        private Task HandleOnStartingAsync(ResultExecutingContext context)
+        private void HandleOnStarting(ResultExecutingContext context)
         {
             var req = context.HttpContext.Request;
             var res = context.HttpContext.Response;
@@ -82,16 +82,16 @@ namespace APIBlox.AspNetCore
                     $"Controller: {context.Controller.GetType()}, StatusCode: {res.StatusCode}."
                 );
 
-                return Task.CompletedTask;
+                return;
             }
 
             var cti = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo;
 
             if (!cti.IsGenericType || !(context.Result is ObjectResult result))
-                return Task.CompletedTask;
+                return;
 
             var partialUrl = $"{controller.Url.Action()}/{FindId(result)}";
-            var uri = new UriBuilder(req.Scheme, req.Host.Host, req.Host.Port ?? 80) {Path = partialUrl};
+            var uri = new UriBuilder(req.Scheme, req.Host.Host, req.Host.Port ?? 80) { Path = partialUrl };
             var url = uri.Uri.AbsoluteUri;
 
             context.HttpContext.Response.Headers["Location"] = url;
@@ -109,8 +109,6 @@ namespace APIBlox.AspNetCore
                 _log.LogInformation(() =>
                     $"Set location header to: {url},"
                 );
-
-            return Task.CompletedTask;
         }
     }
 }

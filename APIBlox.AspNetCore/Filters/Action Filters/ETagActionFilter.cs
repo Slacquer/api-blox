@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 
 #endregion
 
+// ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore.Filters
 {
     // TODO: Doing it this way is lame, we need to be able to simply get a timestamp from data store.

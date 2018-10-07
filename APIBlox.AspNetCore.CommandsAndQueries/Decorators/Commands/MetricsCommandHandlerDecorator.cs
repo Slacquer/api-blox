@@ -56,6 +56,7 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         public async Task HandleAsync(TRequestCommand requestCommand, CancellationToken cancellationToken)
         {
             var sw = Stopwatch.StartNew();
+
             await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
 
             sw.Stop();
@@ -116,6 +117,7 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         public async Task<TResult> HandleAsync(TRequestCommand requestCommand, CancellationToken cancellationToken)
         {
             var sw = Stopwatch.StartNew();
+
             var ret = await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
 
             sw.Stop();

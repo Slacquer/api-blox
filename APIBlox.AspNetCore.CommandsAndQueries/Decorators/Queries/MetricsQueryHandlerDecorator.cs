@@ -53,6 +53,7 @@ namespace APIBlox.AspNetCore.Decorators.Queries
         public async Task<TResult> HandleAsync(CancellationToken cancellationToken)
         {
             var sw = Stopwatch.StartNew();
+
             var ret = await _decorated.HandleAsync(cancellationToken).ConfigureAwait(false);
 
             sw.Stop();
@@ -113,6 +114,7 @@ namespace APIBlox.AspNetCore.Decorators.Queries
         )
         {
             var sw = Stopwatch.StartNew();
+
             var ret = await _decorated.HandleAsync(query, cancellationToken).ConfigureAwait(false);
 
             sw.Stop();

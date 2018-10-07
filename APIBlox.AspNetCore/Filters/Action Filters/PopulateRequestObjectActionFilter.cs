@@ -43,16 +43,19 @@ namespace APIBlox.AspNetCore
         #endregion
 
         /// <inheritdoc />
-        public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var bits = new Bits(context);
 
             if (bits.RequestModelObject is null)
-                return Task.FromResult(next());
+            {
+                await next().ConfigureAwait(false);
+                return;
+            }
 
             Handle(context, bits);
 
-            return Task.FromResult(next());
+            await next().ConfigureAwait(false);
         }
 
         private void Handle(ActionExecutingContext context, Bits bits)

@@ -5,6 +5,7 @@ using APIBlox.AspNetCore.Contracts;
 
 #endregion
 
+// ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore.Filters
 {
     internal class EnsureResponseCompliesWith : IEnsureResponseCompliesWith

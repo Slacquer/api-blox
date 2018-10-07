@@ -49,8 +49,9 @@ namespace DemoApi2.Presentation
                     }
                 )
                 .AddDefaultDomainEventsDispatcher()
+                .AddQueuedDomainEventsDispatcher()
                 .AddMvc()
-                .AddEnsureResponseResultActionFilter(o => new {Resources = o})
+                .AddEnsureResponseResultActionFilter(o => new { Resources = o })
                 .AddValidateResourceActionFilter()
                 .AddPopulateRequestObjectActionFilter()
                 .AddPopulateGenericRequestObjectActionFilter()

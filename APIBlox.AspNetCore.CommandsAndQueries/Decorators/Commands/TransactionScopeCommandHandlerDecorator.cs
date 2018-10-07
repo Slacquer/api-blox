@@ -44,6 +44,7 @@ namespace APIBlox.AspNetCore.Decorators.Commands
             using (var scope = new TransactionScope())
             {
                 await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
+
                 scope.Complete();
             }
         }
@@ -90,6 +91,7 @@ namespace APIBlox.AspNetCore.Decorators.Commands
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 ret = await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
+
                 scope.Complete();
             }
 

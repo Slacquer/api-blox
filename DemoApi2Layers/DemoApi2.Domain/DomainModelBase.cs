@@ -28,6 +28,7 @@ namespace DemoApi2.Domain
             get
             {
                 var ret = new List<IDomainEvent>(EventsList);
+
                 EventsList.Clear();
 
                 return ret;

@@ -15,9 +15,9 @@ namespace APIBlox.NetCore.Contracts
         ///     Adds an event to the queue.
         /// </summary>
         /// <typeparam name="TDomainEvent">The type of the t domain event.</typeparam>
-        /// <param name="event">The event.</param>
+        /// <param name="domainEvent">The domain event.</param>
         /// <returns>Task.</returns>
-        void AddEvent<TDomainEvent>(TDomainEvent @event)
+        void AddEvent<TDomainEvent>(TDomainEvent domainEvent)
             where TDomainEvent : class, IDomainEvent;
 
         /// <summary>

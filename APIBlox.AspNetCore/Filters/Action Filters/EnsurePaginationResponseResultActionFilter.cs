@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 #endregion
 
+// ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore.Filters
 {
     internal class EnsurePaginationResponseResultActionFilter : EnsureResponseResultActionFilter

@@ -48,7 +48,7 @@ namespace APIBlox.AspNetCore
 
         #endregion
 
-        public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var controller = context.Controller.GetType();
 
@@ -57,12 +57,12 @@ namespace APIBlox.AspNetCore
                 var cn = controller.Name;
                 _log.LogInformation(() => $"Skipping execute for {cn} it isn't generic.");
 
-                return Task.FromResult(next());
+                await next().ConfigureAwait(false);
             }
 
             HandleExecute(context);
-            
-            return Task.FromResult(next());
+
+            await next().ConfigureAwait(false);
         }
 
         private void HandleExecute(ActionExecutingContext context)

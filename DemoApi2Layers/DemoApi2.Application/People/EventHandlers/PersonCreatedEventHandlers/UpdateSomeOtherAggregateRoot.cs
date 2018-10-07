@@ -30,17 +30,18 @@ namespace DemoApi2.Application.People.EventHandlers.PersonCreatedEventHandlers
         #endregion
 
         /// <inheritdoc />
-        public async Task HandleEventAsync(PersonCreatedEvent @event)
+        public async Task HandleEventAsync(PersonCreatedEvent domainEvent)
         {
             _log.LogInformation(
                 () => "Starting update for some other aggregate root using the " +
-                      $"created person event with id: {@event.AggregateId}"
+                      $"created person event with id: {domainEvent.AggregateId}"
             );
-            await Task.Delay(new Random().Next(500, 2000)).ConfigureAwait(false);
+
+            await Task.Delay(new Random().Next(5000, 20000)).ConfigureAwait(false);
 
             _log.LogInformation(
                 () => "Updated some other aggregate root using the " +
-                      $"created person event with id: {@event.AggregateId}"
+                      $"created person event with id: {domainEvent.AggregateId}"
             );
         }
     }

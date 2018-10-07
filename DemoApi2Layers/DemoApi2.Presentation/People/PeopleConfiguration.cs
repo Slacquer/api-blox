@@ -1,6 +1,7 @@
 ﻿#region -    Using Statements    -
 
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.Controllers;
 using DemoApi2.Application.Locations;
 using DemoApi2.Application.Locations.Queries;
 using DemoApi2.Application.People;
@@ -42,19 +43,19 @@ namespace DemoApi2.Presentation.People
             //    ;//.AddSubController<LocationQuery>(typeof(int), locationRoutes, "locations", typeof(QueryByIdController<>));
 
 
-            var byIdRoute = new[] { "api/users/{userId:int}/userSettings/{id:int}" };
+            //var byIdRoute = new[] { "api/users/{userId:int}/userSettings/{id:int}" };
 
-            config.AddController<DeletePersonByIdCommand>(byIdRoute,
-                "userSettings",
-                typeof(DefaultDeleteByController<>)
-            );
+            //config.AddController<DeletePersonByIdCommand>(byIdRoute,
+            //    "userSettings",
+            //    typeof(DefaultDeleteByController<>)
+            //);
 
-            var byKeyRoute = new[] { "api/users/{userId:int}/userSettings/{key:string}" };
-            config.AddController<DeletePersonByKeyCommand>(byKeyRoute,
-                "userSettings",
-                typeof(DefaultDeleteByController<>)
-            );
-            config.AddController<PersonCommand, PersonResponse, int>(peopleRoutes, typeof(PostController<,,>));
+            //var byKeyRoute = new[] { "api/users/{userId:int}/userSettings/{key}" };
+            //config.AddController<DeletePersonByKeyCommand>(byKeyRoute,
+            //    "userSettings",
+            //    typeof(DefaultDeleteByController<>)
+            //);
+            config.AddController<PersonCommand, PersonResponse, int>(peopleRoutes, typeof(DynamicPostController<,,>));
 
             ////Resource validation
             //services.TryAddTransient<IValidator<PersonResource>, PersonRequestResourceValidator>();

@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddDefaultDomainEventsDispatcher(this IServiceCollection services)
         {
-            return services.AddScoped<IDomainEventsDispatcher, DefaultDomainEventsDispatcher>();
+            return services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
         }
 
         /// <summary>
