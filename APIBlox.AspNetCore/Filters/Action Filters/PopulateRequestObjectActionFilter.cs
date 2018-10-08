@@ -1,6 +1,5 @@
 ﻿#region -    Using Statements    -
 
-using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -103,7 +102,7 @@ namespace APIBlox.AspNetCore
             public Bits(ActionExecutingContext context)
             {
                 var first = context.ActionDescriptor.Parameters.FirstOrDefault(p =>
-                    !(((ControllerParameterDescriptor)p).ParameterInfo.GetCustomAttribute<PopulateAttribute>() is null)
+                    !(((ControllerParameterDescriptor) p).ParameterInfo.GetCustomAttribute<PopulateAttribute>() is null)
                 );
 
                 if (first is null)

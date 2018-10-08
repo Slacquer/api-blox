@@ -199,6 +199,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var ret = new List<KeyValuePair<bool, Type>>();
 
             foreach (var ass in asses)
+            {
                 using (var assResolver = new AssemblyResolver(ass))
                 {
                     ret.AddRange(assResolver.Assembly.GetTypes()
@@ -211,6 +212,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         )
                     );
                 }
+            }
 
             return ret;
         }
@@ -249,7 +251,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     "must implement at least 1 interface.",
                     nameof(type)
                 );
-            
+
             foreach (var face in interfaces.Where(i => !i.IsNested))
             {
                 var args = face.GetGenericArguments();

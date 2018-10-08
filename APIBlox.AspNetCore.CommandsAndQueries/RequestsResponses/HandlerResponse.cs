@@ -7,7 +7,7 @@ using APIBlox.AspNetCore.Extensions;
 
 #endregion
 
-namespace APIBlox.AspNetCore.CommandQueryResponses
+namespace APIBlox.AspNetCore.RequestsResponses
 {
     /// <summary>
     ///     Class HandlerResponse.

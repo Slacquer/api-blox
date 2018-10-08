@@ -2,7 +2,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.JsonPatch;
+using APIBlox.AspNetCore.RequestsResponses;
 
 #endregion
 
@@ -10,39 +10,37 @@ namespace APIBlox.AspNetCore.Contracts
 {
     /// <summary>
     ///     Interface IPatchCommandHandler, for patching that is designed to RETURN a result.  Returning anything from a
-    ///     command is a violation of CQRS?  Don't like it, then use <see cref="IPatchCommandHandler{TRequest}" />.
+    ///     command is a violation of CQRS?  Don't like it, then use <see cref="IPatchCommandHandler{TRequestCommand}" />.
     /// </summary>
-    /// <typeparam name="TRequest">The type of the command.</typeparam>
+    /// <typeparam name="TPatchRequestCommand">The type of the command.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    public interface IPatchCommandHandler<TRequest, TResult>
-        where TRequest : class
+    public interface IPatchCommandHandler<in TPatchRequestCommand, TResult>
+        where TPatchRequestCommand : PatchRequest
     {
         /// <summary>
         ///     Handles the specified command.
         /// </summary>
         /// <param name="requestCommand">The incoming request command.</param>
-        /// <param name="patch">The patch operations document</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{TResult}.</returns>
-        Task<TResult> HandleAsync(TRequest requestCommand, JsonPatchDocument<TRequest> patch, CancellationToken cancellationToken);
+        Task<TResult> HandleAsync(TPatchRequestCommand requestCommand, CancellationToken cancellationToken);
     }
 
     /// <summary>
     ///     Interface IPatchCommandHandler, for patching that is designed to NOT RETURN a result.  Returning anything from a
     ///     command is a violation of CQRS, but if you need to, then use
-    ///     <see cref="IPatchCommandHandler{TRequest, TResult}" />.
+    ///     <see cref="IPatchCommandHandler{TRequestCommand, TResult}" />.
     /// </summary>
-    /// <typeparam name="TRequest">The type of the command.</typeparam>
-    public interface IPatchCommandHandler<TRequest>
-        where TRequest : class
+    /// <typeparam name="TPatchRequestCommand">The type of the command.</typeparam>
+    public interface IPatchCommandHandler<in TPatchRequestCommand>
+        where TPatchRequestCommand : PatchRequest
     {
         /// <summary>
         ///     Handles the specified command.
         /// </summary>
         /// <param name="requestCommand">The incoming request command.</param>
-        /// <param name="patch">The patch operations document</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task HandleAsync(TRequest requestCommand, JsonPatchDocument<TRequest> patch, CancellationToken cancellationToken);
+        Task HandleAsync(TPatchRequestCommand requestCommand, CancellationToken cancellationToken);
     }
 }

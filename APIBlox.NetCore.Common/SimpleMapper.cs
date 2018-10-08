@@ -22,8 +22,8 @@ namespace APIBlox.NetCore
         ///     <para>
         ///         settings = settings ?? new JsonSerializerSettings
         ///         {
-        ///             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-        ///             PreserveReferencesHandling = PreserveReferencesHandling.All
+        ///         ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+        ///         PreserveReferencesHandling = PreserveReferencesHandling.All
         ///         };
         ///     </para>
         /// </param>
@@ -38,7 +38,7 @@ namespace APIBlox.NetCore
             };
 
             var ret = dest == null ? new TDest() : dest;
-            
+
             JsonConvert.PopulateObject(JsonConvert.SerializeObject(src, settings), ret, settings);
 
             return ret;

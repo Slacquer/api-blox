@@ -91,7 +91,7 @@ namespace APIBlox.AspNetCore
                 return;
 
             var partialUrl = $"{controller.Url.Action()}/{FindId(result)}";
-            var uri = new UriBuilder(req.Scheme, req.Host.Host, req.Host.Port ?? 80) { Path = partialUrl };
+            var uri = new UriBuilder(req.Scheme, req.Host.Host, req.Host.Port ?? 80) {Path = partialUrl};
             var url = uri.Uri.AbsoluteUri;
 
             context.HttpContext.Response.Headers["Location"] = url;

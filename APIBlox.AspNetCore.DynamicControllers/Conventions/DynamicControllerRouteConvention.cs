@@ -57,6 +57,7 @@ namespace APIBlox.AspNetCore
             controller.ControllerName = controllerConfiguration.ControllerName.ToPascalCase();
 
             foreach (var r in controllerConfiguration.Routes)
+            {
                 controller.Selectors.Add(
                     new SelectorModel
                     {
@@ -66,6 +67,7 @@ namespace APIBlox.AspNetCore
                         }
                     }
                 );
+            }
         }
 
         private void Apply(ControllerModel controller)

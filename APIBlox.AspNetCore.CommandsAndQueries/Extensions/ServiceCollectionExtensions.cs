@@ -43,6 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 );
 
             foreach (var decorator in decorators.Reverse())
+            {
                 if (decorator.IsGenericType)
                 {
                     var p = qi.GetGenericArguments();
@@ -53,6 +54,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     services.AddServiceDecoration(qi, decorator);
                 }
+            }
 
             return services;
         }
@@ -85,6 +87,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 );
 
             foreach (var decorator in decorators.Reverse())
+            {
                 if (decorator.IsGenericType)
                 {
                     var p = qi.GetGenericArguments();
@@ -95,6 +98,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     services.AddServiceDecoration(qi, decorator);
                 }
+            }
 
             return services;
         }

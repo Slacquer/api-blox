@@ -3,8 +3,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
-using APIBlox.AspNetCore.CommandQueryResponses;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.RequestsResponses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -16,20 +16,20 @@ namespace APIBlox.AspNetCore.Controllers
     /// <summary>
     ///     Class DynamicPatchController.
     /// </summary>
-    /// <typeparam name="TRequest">The type of the t request.</typeparam>
+    /// <typeparam name="TPatchRequest">The type of the t request.</typeparam>
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IDynamicController{TRequest}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class DynamicPatchController<TRequest> : ControllerBase,
-        IDynamicController<TRequest>
-        where TRequest : class
+    public class DynamicPatchController<TPatchRequest> : ControllerBase,
+        IDynamicController<TPatchRequest>
+        where TPatchRequest : PatchRequest
     {
         #region -    Fields    -
 
-        private readonly IPatchCommandHandler<TRequest, HandlerResponse> _patchHandler;
+        private readonly IPatchCommandHandler<TPatchRequest, HandlerResponse> _patchHandler;
 
-        private readonly string _rn = typeof(TRequest).Name;
+        private readonly string _rn = typeof(TPatchRequest).Name;
 
         #endregion
 
@@ -39,7 +39,7 @@ namespace APIBlox.AspNetCore.Controllers
         ///     Initializes a new instance of the <see cref="DynamicPatchController{TRequest}" /> class.
         /// </summary>
         /// <param name="patchHandler">The patch handler.</param>
-        public DynamicPatchController(IPatchCommandHandler<TRequest, HandlerResponse> patchHandler)
+        public DynamicPatchController(IPatchCommandHandler<TPatchRequest, HandlerResponse> patchHandler)
         {
             _patchHandler = patchHandler;
         }
@@ -62,15 +62,17 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public virtual async Task<IActionResult> Patch(
-            JsonPatchDocument<TRequest> patch,
+            JsonPatchDocument patch,
             CancellationToken cancellationToken
         )
         {
             //  If a service does not support UPSERT, then a PATCH/PUT call against a resource that
             //  does not exist MUST result in an HTTP "409 Conflict" error.
-            var req = (TRequest) RouteData.Values[_rn];
+            var req = (TPatchRequest) RouteData.Values[_rn];
 
-            var ret = await _patchHandler.HandleAsync(req, patch, cancellationToken).ConfigureAwait(false);
+            req.Patch = patch;
+
+            var ret = await _patchHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
 
             return ret.HasErrors
                 ? (IActionResult) new ProblemResult(ret.Error)

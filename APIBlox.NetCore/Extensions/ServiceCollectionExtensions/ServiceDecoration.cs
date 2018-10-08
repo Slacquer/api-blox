@@ -65,8 +65,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .ToList();
 
             var valid = arguments.Count != 0 && arguments
-                            .Aggregate(true, (result, args) => result
-                                                               && TryDecorate(services, args, serviceType, decoratorType)
+                            .Aggregate(true,
+                                (result, args) => result
+                                                  && TryDecorate(services, args, serviceType, decoratorType)
                             );
 
             if (!valid)

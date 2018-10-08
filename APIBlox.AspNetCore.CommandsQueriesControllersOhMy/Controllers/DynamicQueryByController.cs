@@ -4,8 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
-using APIBlox.AspNetCore.CommandQueryResponses;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.RequestsResponses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,7 +62,7 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public virtual async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            var req = (TRequest)RouteData.Values[_rn];
+            var req = (TRequest) RouteData.Values[_rn];
             var ret = await _getByHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
 
             if (ret.HasErrors)

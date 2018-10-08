@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using APIBlox.AspNetCore.CommandQueryResponses;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Extensions;
+using APIBlox.AspNetCore.RequestsResponses;
 using APIBlox.NetCore.Attributes;
 using DemoApi2.Application.Locations;
 using DemoApi2.Application.Locations.Queries;

@@ -22,7 +22,7 @@ namespace APIBlox.NetCore
         #endregion
 
         #region -    Constructors    -
-        
+
         public QueuedDomainEventsDispatcher(
             ILoggerFactory loggerFactory,
             IServiceProvider serviceProvider
@@ -34,13 +34,12 @@ namespace APIBlox.NetCore
 
         #endregion
 
-
         public void AddEvent<TDomainEvent>(TDomainEvent domainEvent)
             where TDomainEvent : class, IDomainEvent
         {
             _eventsQueue.Enqueue(domainEvent);
         }
-        
+
         public async Task PublishEventsAsync(bool whenAll = true)
         {
             var tasks = new List<Task>();

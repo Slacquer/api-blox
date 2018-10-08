@@ -19,10 +19,10 @@ namespace APIBlox.AspNetCore
 {
     internal class DynamicControllerActionParametersConvention : IApplicationModelConvention
     {
-        private readonly ILogger<DynamicControllerActionParametersConvention> _log;
         #region -    Fields    -
 
         private readonly IInternalDynamicControllerConfigurationsService _controllerConfigService;
+        private readonly ILogger<DynamicControllerActionParametersConvention> _log;
 
         #endregion
 
@@ -30,7 +30,8 @@ namespace APIBlox.AspNetCore
 
         public DynamicControllerActionParametersConvention(
             ILoggerFactory loggerFactory,
-            IInternalDynamicControllerConfigurationsService controllerConfigService)
+            IInternalDynamicControllerConfigurationsService controllerConfigService
+        )
         {
             _log = loggerFactory.CreateLogger<DynamicControllerActionParametersConvention>();
             _controllerConfigService = controllerConfigService;
@@ -60,13 +61,11 @@ namespace APIBlox.AspNetCore
                         lst.AddRange(AddRouteTemplateParameters(sm.AttributeRouteModel.Template));
 
                     if (IsGetOrDelete(action))
-                    {
                         foreach (var pm in AddRequestObjectParameters(action.Controller.ControllerType.GetGenericArguments()[0]))
                         {
                             if (!lst.Any(p => p.Name.EqualsEx(pm.Name)))
                                 lst.Add(pm);
                         }
-                    }
 
                     if (!lst.Any())
                         continue;
@@ -114,12 +113,10 @@ namespace APIBlox.AspNetCore
             ).ToList();
 
             if (templateParams.Count != templateParts.Count)
-            {
                 _log.LogWarning(() =>
                     "Route template has inline parameters that do NOT have " +
                     $"constraints, unexpected results may occur.  Route Template: {template}"
                 );
-            }
 
             return templateParts.Where(p => p != null);
         }

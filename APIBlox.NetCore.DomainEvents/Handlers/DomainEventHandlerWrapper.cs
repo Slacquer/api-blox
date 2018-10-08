@@ -26,7 +26,6 @@ namespace APIBlox.NetCore
 
         #endregion
 
-
         public override Task HandleEventAsync(IDomainEvent domainEvent)
         {
             return _handler.HandleEventAsync((TDomainEvent) domainEvent);

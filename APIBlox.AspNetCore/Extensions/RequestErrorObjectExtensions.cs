@@ -38,7 +38,7 @@ namespace APIBlox.AspNetCore.Extensions
             var attr = statusCode.GetAttributeOfType<MetadataAttribute>();
 
             error.Title = attr.V1.ToString();
-            error.Status = statusCode == CommonStatusCodes.DataConflictUpserts ? 409 : (int?)statusCode;
+            error.Status = statusCode == CommonStatusCodes.DataConflictUpserts ? 409 : (int?) statusCode;
 
             if (description.IsEmptyNullOrWhiteSpace())
             {

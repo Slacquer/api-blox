@@ -50,13 +50,20 @@ namespace APIBlox.AspNetCore.Extensions
                     // Yet more lameness, really should be able to do a simple test here...
                     switch (t)
                     {
-                        case TypeFilterAttribute tf: return tf.ImplementationType != vt;
-                        case ServiceFilterAttribute sf: return sf.ServiceType != vt;
-                        case FormatFilterAttribute ff: return ff.GetType() != vt;
-                        case ResultFilterAttribute rs: return rs.GetType() != vt;
-                        case ExceptionFilterAttribute ef: return ef.GetType() != vt;
-                        case ActionFilterAttribute af: return af.GetType() != vt;
-                        default: return t.GetType() != vt;
+                        case TypeFilterAttribute tf:
+                            return tf.ImplementationType != vt;
+                        case ServiceFilterAttribute sf:
+                            return sf.ServiceType != vt;
+                        case FormatFilterAttribute ff:
+                            return ff.GetType() != vt;
+                        case ResultFilterAttribute rs:
+                            return rs.GetType() != vt;
+                        case ExceptionFilterAttribute ef:
+                            return ef.GetType() != vt;
+                        case ActionFilterAttribute af:
+                            return af.GetType() != vt;
+                        default:
+                            return t.GetType() != vt;
                     }
                 }
             ))
