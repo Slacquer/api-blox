@@ -58,8 +58,10 @@ namespace APIBlox.AspNetCore.Filters
                 var sc = result != null
                     ? result.StatusCode
                     : action.HttpContext.Response.StatusCode;
-                _log.LogInformation(() => $"Skipping execute as StatusCode is not 200, StatusCode is: {sc}");
 
+                if (sc != 200)
+                    _log.LogInformation(() => $"Skipping execute as StatusCode is not 200, StatusCode is: {sc}");
+                
                 return;
             }
 

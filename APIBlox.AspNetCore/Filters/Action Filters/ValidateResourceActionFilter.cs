@@ -31,9 +31,10 @@ namespace APIBlox.AspNetCore.Filters
         {
             if (context.ModelState.IsValid)
             {
-                var result = await next().ConfigureAwait(false);
-                _log.LogInformation(() => $"Validation succeeded for {result.Result}");
+                _log.LogInformation(() => $"Validation succeeded for {context.Result}");
 
+                await next().ConfigureAwait(false);
+                
                 return;
             }
 
