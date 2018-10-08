@@ -50,10 +50,9 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             if (!TryDecorateDescriptors(services, serviceType, decorator))
-                throw new ArgumentException(
-                    $"Could not find any registered services for type {serviceType}. " +
-                    " You need to add the service manually or decorate it " +
-                    $"with the {nameof(InjectableServiceAttribute)}"
+                throw new ArgumentException($"Could not find any registered services for type {serviceType}. " +
+                                            " You need to add the service manually or decorate it " +
+                                            $"with the {nameof(InjectableServiceAttribute)}"
                 );
         }
 
@@ -76,10 +75,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static ServiceDescriptor DecorateService(this ServiceDescriptor descriptor, Type decoratorType)
         {
-            return ServiceDescriptor.Describe(
-                descriptor.ServiceType,
-                provider => ActivatorUtilities.CreateInstance(
-                    provider,
+            return ServiceDescriptor.Describe(descriptor.ServiceType,
+                provider => ActivatorUtilities.CreateInstance(provider,
                     decoratorType,
                     provider.GetInstance(descriptor)
                 ),
@@ -93,8 +90,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return descriptor.ImplementationInstance;
 
             return !(descriptor.ImplementationType is null)
-                ? ActivatorUtilities.GetServiceOrCreateInstance(
-                    provider,
+                ? ActivatorUtilities.GetServiceOrCreateInstance(provider,
                     descriptor.ImplementationType
                 )
                 : descriptor.ImplementationFactory(provider);

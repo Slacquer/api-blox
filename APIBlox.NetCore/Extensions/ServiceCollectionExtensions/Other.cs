@@ -25,6 +25,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         #region -    Fields    -
 
+        private static ILogger _log;
+
         private static readonly List<KeyValuePair<bool, Type>> AssemblyTypes = new List<KeyValuePair<bool, Type>>();
 
         #endregion
@@ -68,23 +70,26 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     </para>
         /// </summary>
         /// <param name="services">IServiceCollection</param>
+        /// <param name="loggerFactory">ILoggerFactory</param>
         /// <param name="assemblyNamesLike">The assembly names like.</param>
         /// <param name="assemblyPaths">The assembly paths.</param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddInjectableServices(
             this IServiceCollection services,
+            ILoggerFactory loggerFactory,
             string[] assemblyNamesLike, string[] assemblyPaths = null
         )
         {
+            CreateLog(loggerFactory);
+
             InitializeAssemblyTypes(true, false, assemblyNamesLike, assemblyPaths);
             var injectable = AssemblyTypes.Where(kvp => !kvp.Key).ToList();
 
             if (!injectable.Any())
-                throw new ArgumentException(
-                    $"No types decorated with {nameof(InjectableServiceAttribute)} could be found using" +
-                    $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
-                    "If this is intentional, please remove the " +
-                    $"{nameof(AddInjectableServices)} entry."
+                throw new ArgumentException($"No types decorated with {nameof(InjectableServiceAttribute)} could be found using" +
+                                            $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
+                                            "If this is intentional, please remove the " +
+                                            $"{nameof(AddInjectableServices)} entry."
                 );
 
             foreach (var kvp in injectable)
@@ -123,16 +128,17 @@ namespace Microsoft.Extensions.DependencyInjection
             string[] assemblyNamesLike, string[] assemblyPaths = null
         )
         {
+            CreateLog(loggerFactory);
+
             InitializeAssemblyTypes(false, true, assemblyNamesLike, assemblyPaths);
             var inverted = AssemblyTypes.Where(kvp => kvp.Key).ToList();
 
             if (!inverted.Any())
-                throw new ArgumentException(
-                    "No types that implement " +
-                    $"{nameof(IDependencyInvertedConfiguration)} could be found using" +
-                    $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
-                    "If this is intentional, please remove the " +
-                    $"{nameof(AddInvertedDependentsAndConfigureServices)} entry."
+                throw new ArgumentException("No types that implement " +
+                                            $"{nameof(IDependencyInvertedConfiguration)} could be found using" +
+                                            $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
+                                            "If this is intentional, please remove the " +
+                                            $"{nameof(AddInvertedDependentsAndConfigureServices)} entry."
                 );
 
             foreach (var kvp in inverted)
@@ -155,9 +161,8 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             if (type.GetConstructors().All(c => c.GetParameters().Length != 0))
-                throw new ArgumentException(
-                    $"Implementations of {nameof(IDependencyInvertedConfiguration)} " +
-                    "must have a parameter-less constructor."
+                throw new ArgumentException($"Implementations of {nameof(IDependencyInvertedConfiguration)} " +
+                                            "must have a parameter-less constructor."
                 );
 
             ((IDependencyInvertedConfiguration) Activator.CreateInstance(type))
@@ -179,12 +184,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (!di.Exists)
                     throw new DirectoryNotFoundException($"Path {fullPath} not found, please make sure your configuration is correct.");
 
-                asses.AddRange(
-                    Directory.GetFiles(fullPath, "*.dll", SearchOption.AllDirectories)
-                        .Where(
-                            s => assemblyNamesLike.Any(name => s.ContainsEx(name))
-                                 && asses.Select(Path.GetFileName).All(fn => !fn.EqualsEx(Path.GetFileName(s)))
-                        )
+                asses.AddRange(Directory.GetFiles(fullPath, "*.dll", SearchOption.AllDirectories)
+                    .Where(s => assemblyNamesLike.Any(name => s.ContainsEx(name))
+                                && asses.Select(Path.GetFileName).All(fn =>
+                                    !fn.EqualsEx(Path.GetFileName(s))
+                                )
+                    )
                 );
             }
 
@@ -200,17 +205,23 @@ namespace Microsoft.Extensions.DependencyInjection
 
             foreach (var ass in asses)
             {
-                using (var assResolver = new AssemblyResolver(ass))
+                try
                 {
-                    ret.AddRange(assResolver.Assembly.GetTypes()
-                        .Where(x =>
-                            !x.GetTypeInfo().IsAbstract && injectable &&
-                            x.GetCustomAttributes<InjectableServiceAttribute>().Any()
-                            || inverted && x.GetInterfaces().Any(t => typeof(IDependencyInvertedConfiguration).IsAssignableTo(t))
-                        )
-                        .Select(t => new KeyValuePair<bool, Type>(typeof(IDependencyInvertedConfiguration).IsAssignableTo(t), t)
-                        )
-                    );
+                    using (var assResolver = new AssemblyResolver(ass))
+                    {
+                        ret.AddRange(assResolver.Assembly.GetTypes()
+                            .Where(x =>
+                                !x.GetTypeInfo().IsAbstract && injectable &&
+                                x.GetCustomAttributes<InjectableServiceAttribute>().Any()
+                                || inverted && x.GetInterfaces().Any(t => typeof(IDependencyInvertedConfiguration).IsAssignableTo(t))
+                            )
+                            .Select(t => new KeyValuePair<bool, Type>(typeof(IDependencyInvertedConfiguration).IsAssignableTo(t), t))
+                        );
+                    }
+                }
+                catch (Exception ex) when (ex is InvalidOperationException || ex is BadImageFormatException)
+                {
+                    _log.LogWarning(() => ex.Message);
                 }
             }
 
@@ -233,8 +244,20 @@ namespace Microsoft.Extensions.DependencyInjection
             var def = new[] {callingLocation, entryLocation, executingLocation};
             var aps = assemblyPaths?.Union(def) ?? def;
 
-            var found = GetResolvedTypes(injectable, inverted, GetAssemblyFilePaths(assemblyNamesLike, aps))
-                .Except(AssemblyTypes);
+            var found = GetResolvedTypes(injectable,
+                inverted,
+                GetAssemblyFilePaths(assemblyNamesLike, aps)
+            ).Except(AssemblyTypes).ToList();
+
+            _log.LogInformation(() =>
+                string.Format(injectable
+                        ? "\n{1} list:\n{0}"
+                        : "\n{2} list:\n{0}",
+                    string.Join(",\n", found.Select(k => k.Value).ToList()),
+                    nameof(InjectableServiceAttribute),
+                    nameof(IDependencyInvertedConfiguration)
+                )
+            );
 
             AssemblyTypes.AddRange(found);
         }
@@ -246,9 +269,8 @@ namespace Microsoft.Extensions.DependencyInjection
             var lifetime = attr.ServiceLifetime;
 
             if (!interfaces.Any())
-                throw new ArgumentException(
-                    $"Services decorated with the {nameof(InjectableServiceAttribute)} " +
-                    "must implement at least 1 interface.",
+                throw new ArgumentException($"Services decorated with the {nameof(InjectableServiceAttribute)} " +
+                                            "must implement at least 1 interface.",
                     nameof(type)
                 );
 
@@ -291,6 +313,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 services.Add(descriptor);
             }
+        }
+
+        private static void CreateLog(ILoggerFactory loggerFactory)
+        {
+            if (!(_log is null))
+                return;
+
+            _log = loggerFactory.CreateLogger("APIBlox.NetCore.ServiceCollectionExtensions.Other");
         }
     }
 }

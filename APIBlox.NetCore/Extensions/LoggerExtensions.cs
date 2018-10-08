@@ -1,7 +1,6 @@
 ﻿#region -    Using Statements    -
 
 using System;
-using System.Diagnostics;
 
 #endregion
 
@@ -11,7 +10,8 @@ namespace Microsoft.Extensions.Logging
     /// <summary>
     ///     Class LoggerExtensions.
     /// </summary>
-    [DebuggerStepThrough]
+
+    //[DebuggerStepThrough]
     public static class LoggerExtensions
     {
         /// <summary>

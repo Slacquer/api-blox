@@ -41,6 +41,7 @@ namespace DemoApi2.Presentation
         {
             services
                 .AddInjectableServices(
+                    _loggerFactory,
                     new[] {"DemoApi"}, //, "APIBlox" },
                     new[]
                     {

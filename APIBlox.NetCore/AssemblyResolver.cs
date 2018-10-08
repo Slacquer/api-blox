@@ -42,8 +42,7 @@ namespace APIBlox.NetCore
             Assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(p);
             _dependencyContext = DependencyContext.Load(Assembly);
 
-            _assemblyResolver = new CompositeCompilationAssemblyResolver(
-                new ICompilationAssemblyResolver[]
+            _assemblyResolver = new CompositeCompilationAssemblyResolver(new ICompilationAssemblyResolver[]
                 {
                     new AppBaseCompilationAssemblyResolver(Path.GetDirectoryName(p)),
                     new ReferenceAssemblyPathResolver(),
@@ -74,16 +73,14 @@ namespace APIBlox.NetCore
         private Assembly OnResolving(AssemblyLoadContext context, AssemblyName name)
         {
             var library = _dependencyContext.RuntimeLibraries
-                .FirstOrDefault(r => r.Name.EqualsEx(name.Name)
-                );
+                .FirstOrDefault(r => r.Name.EqualsEx(name.Name));
 
             if (library is null)
                 return null;
 
             var assemblies = new List<string>();
 
-            var wrapper = new CompilationLibrary(
-                library.Type,
+            var wrapper = new CompilationLibrary(library.Type,
                 library.Name,
                 library.Version,
                 library.Hash,

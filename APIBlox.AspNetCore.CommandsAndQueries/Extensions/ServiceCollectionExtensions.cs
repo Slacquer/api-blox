@@ -30,16 +30,14 @@ namespace Microsoft.Extensions.DependencyInjection
             var type = typeof(THandler);
 
             var qi = type.GetInterfaces()
-                .FirstOrDefault(
-                    t =>
-                        t.IsAssignableTo(typeof(ICommandHandler<>))
-                        || t.IsAssignableTo(typeof(ICommandHandler<,>))
+                .FirstOrDefault(t =>
+                    t.IsAssignableTo(typeof(ICommandHandler<>))
+                    || t.IsAssignableTo(typeof(ICommandHandler<,>))
                 );
 
             if (qi is null)
-                throw new ArgumentException(
-                    $"The {type} must be an generic type of IQueryHandler<>, " +
-                    "IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
+                throw new ArgumentException($"The {type} must be an generic type of IQueryHandler<>, " +
+                                            "IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
                 );
 
             foreach (var decorator in decorators.Reverse())
@@ -74,16 +72,14 @@ namespace Microsoft.Extensions.DependencyInjection
             var ths = typeof(THandler);
 
             var qi = ths.GetInterfaces()
-                .FirstOrDefault(
-                    t =>
-                        t.IsAssignableTo(typeof(IQueryHandler<,>))
-                        || t.IsAssignableTo(typeof(IQueryHandler<>))
+                .FirstOrDefault(t =>
+                    t.IsAssignableTo(typeof(IQueryHandler<,>))
+                    || t.IsAssignableTo(typeof(IQueryHandler<>))
                 );
 
             if (qi is null)
-                throw new ArgumentException(
-                    $"The {ths} must be an generic type of " +
-                    "IQueryHandler<>, IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
+                throw new ArgumentException($"The {ths} must be an generic type of " +
+                                            "IQueryHandler<>, IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
                 );
 
             foreach (var decorator in decorators.Reverse())
