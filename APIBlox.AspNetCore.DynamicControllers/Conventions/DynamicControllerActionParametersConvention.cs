@@ -115,7 +115,9 @@ namespace APIBlox.AspNetCore
             if (templateParams.Count != templateParts.Count)
                 _log.LogWarning(() =>
                     "Route template has inline parameters that do NOT have " +
-                    $"constraints, unexpected results may occur.  Route Template: {template}"
+                    "constraints, if the non constrained parameter(s) are of type STRING " +
+                    "than this message can be ignored, otherwise " +
+                    $"unexpected results may occur.  Route Template: {template}"
                 );
 
             return templateParts.Where(p => p != null);
