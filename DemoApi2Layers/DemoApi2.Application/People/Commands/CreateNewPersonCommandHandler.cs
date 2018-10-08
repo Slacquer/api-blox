@@ -41,9 +41,7 @@ namespace DemoApi2.Application.People.Commands
             // And if decorated with a Domain validation decorator it is done too.
             // Should be able to simply insert.
             var model = JsonConvert.DeserializeObject<PersonDomainModel>(JsonConvert.SerializeObject(requestCommand));
-
-            return ret;
-
+            
             if (model.EmailAddress == "0")
             {
                 ret.NewError().SetErrorToForbidden();
