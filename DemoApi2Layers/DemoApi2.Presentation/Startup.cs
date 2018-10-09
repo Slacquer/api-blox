@@ -1,6 +1,6 @@
 ﻿#region -    Using Statements    -
 
-using APIBlox.AspNetCore.Filters.Authorization_Filters;
+using APIBlox.AspNetCore.Filters.Authorization;
 using DemoApi2.Presentation.People;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
