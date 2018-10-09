@@ -196,8 +196,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var pc = (DynamicControllerConfiguration) parentConfiguration;
             var req = typeof(TRequest);
 
-            var config = new DynamicControllerConfiguration(
-                controllerName,
+            var config = new DynamicControllerConfiguration(controllerName,
                 req,
                 parentIdType,
                 BuildFromParentRoute(parentConfiguration, routes)
@@ -239,8 +238,7 @@ namespace Microsoft.Extensions.DependencyInjection
         )
             where TResponse : IResource<TId>
         {
-            return AddSubController<TRequest, TResponse, TId>(
-                parentConfiguration,
+            return AddSubController<TRequest, TResponse, TId>(parentConfiguration,
                 parentIdType,
                 routes,
                 null,
@@ -286,8 +284,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var res = typeof(TResponse);
             var id = typeof(TId);
 
-            var config = new DynamicControllerConfiguration(
-                controllerName,
+            var config = new DynamicControllerConfiguration(controllerName,
                 req,
                 parentIdType,
                 BuildFromParentRoute(parentConfiguration, routes)
@@ -348,9 +345,8 @@ namespace Microsoft.Extensions.DependencyInjection
             if (count == maxParams)
                 return;
 
-            throw new ArgumentException(
-                $"The controller {controller.Name} takes {count} params, you specified " +
-                $"{maxParams}, your using the wrong method, try the other one."
+            throw new ArgumentException($"The controller {controller.Name} takes {count} params, you specified " +
+                                        $"{maxParams}, your using the wrong method, try the other one."
             );
         }
     }

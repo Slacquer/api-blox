@@ -20,7 +20,8 @@ namespace APIBlox.AspNetCore.Filters.Authorization_Filters
     /// <summary>
     ///     Class ProblemResultAuthorizationFilter.
     ///     <para>
-    ///         Will allow anonymous access when the  <see cref="T:Microsoft.AspNetCore.Mvc.Authorization.IAllowAnonymousFilter" /> is used.  Otherwise sends
+    ///         Will allow anonymous access when the
+    ///         <see cref="T:Microsoft.AspNetCore.Mvc.Authorization.IAllowAnonymousFilter" /> is used.  Otherwise sends
     ///         <see cref="T:APIBlox.AspNetCore.ActionResults.ProblemResult" />
     ///     </para>
     /// </summary>

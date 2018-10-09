@@ -1,7 +1,6 @@
 ﻿#region -    Using Statements    -
 
 using System.Linq;
-using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,10 +17,9 @@ namespace APIBlox.AspNetCore.Filters
         // TODO: If and when the time comes, make me real...
 
         public EnsurePaginationResponseResultActionFilter(
-            ILoggerFactory loggerFactory,
-            IEnsureResponseCompliesWith compliance
+            ILoggerFactory loggerFactory
         )
-            : base(loggerFactory, compliance)
+            : base(loggerFactory)
         {
         }
 

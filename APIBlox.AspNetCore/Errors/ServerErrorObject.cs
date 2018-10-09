@@ -9,16 +9,10 @@ using APIBlox.NetCore.Extensions;
 
 namespace APIBlox.AspNetCore.Errors
 {
-    /// <inheritdoc />
-    /// <summary>
-    ///     Class ServerError.
-    /// </summary>
-    /// <seealso cref="RequestErrorObject" />
-    public class ServerErrorObject : RequestErrorObject
+    internal class ServerErrorObject : RequestErrorObject
     {
         #region -    Constructors    -
 
-        /// <inheritdoc />
         public ServerErrorObject(string title, string detail, int status, string instance, string referenceId)
             : base(title, detail, status, instance)
         {
@@ -48,8 +42,7 @@ namespace APIBlox.AspNetCore.Errors
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             if (ReferenceId.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException(
-                    $"Although {GetType().Name}.{nameof(ReferenceId)} is not required by RFC7807, we still want it!",
+                throw new ArgumentException($"Although {GetType().Name}.{nameof(ReferenceId)} is not required by RFC7807, we still want it!",
                     nameof(ReferenceId)
                 );
 

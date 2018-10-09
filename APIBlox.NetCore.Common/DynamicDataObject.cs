@@ -110,9 +110,8 @@ namespace APIBlox.NetCore
             var expression = (MemberExpression) func.Body;
             var pn = expression.Member.Name;
 
-            var kvp = Properties.FirstOrDefault(
-                p =>
-                    p.Key.EqualsEx(pn)
+            var kvp = Properties.FirstOrDefault(p =>
+                p.Key.EqualsEx(pn)
             );
 
             if (kvp.Key is null)
@@ -133,9 +132,8 @@ namespace APIBlox.NetCore
         /// <returns>TType when found, otherwise default(TType)</returns>
         public TType GetPropertyValue<TType>(string propertyName)
         {
-            var kvp = Properties.FirstOrDefault(
-                p =>
-                    p.Key.EqualsEx(propertyName)
+            var kvp = Properties.FirstOrDefault(p =>
+                p.Key.EqualsEx(propertyName)
             );
 
             if (kvp.Key is null)

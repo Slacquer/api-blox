@@ -54,8 +54,7 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             return app.UseExceptionHandler(c =>
-                c.UseMiddleware<ServerFaultsMiddleware>(
-                    typeUrl,
+                c.UseMiddleware<ServerFaultsMiddleware>(typeUrl,
                     referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString())
                 )
             );

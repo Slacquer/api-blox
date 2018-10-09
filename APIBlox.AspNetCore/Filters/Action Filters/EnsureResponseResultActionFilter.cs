@@ -1,9 +1,7 @@
 ﻿#region -    Using Statements    -
 
-using System;
 using System.Collections;
 using System.Threading.Tasks;
-using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +17,6 @@ namespace APIBlox.AspNetCore.Filters
     {
         #region -    Fields    -
 
-        private readonly Func<object, object> _defineResponseFunc;
         private readonly ILogger<EnsureResponseResultActionFilter> _log;
 
         #endregion
@@ -32,16 +29,13 @@ namespace APIBlox.AspNetCore.Filters
         ///     class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
-        /// <param name="compliance">Compliance Response</param>
 
         // ReSharper disable once MemberCanBeProtected.Global
         public EnsureResponseResultActionFilter(
-            ILoggerFactory loggerFactory,
-            IEnsureResponseCompliesWith compliance
+            ILoggerFactory loggerFactory
         )
         {
             _log = loggerFactory.CreateLogger<EnsureResponseResultActionFilter>();
-            _defineResponseFunc = compliance.Func;
         }
 
         #endregion
@@ -61,13 +55,13 @@ namespace APIBlox.AspNetCore.Filters
 
                 if (sc != 200)
                     _log.LogInformation(() => $"Skipping execute as StatusCode is not 200, StatusCode is: {sc}");
-                
+
                 return;
             }
 
             var t = result.Value.GetType();
             ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable));
-            var retValue = _defineResponseFunc(result.Value);
+            var retValue = InternalHelpers.EnsureResponseCompliesWithAction(result.Value);
 
             if (!(retValue is null))
                 result.Value = retValue;

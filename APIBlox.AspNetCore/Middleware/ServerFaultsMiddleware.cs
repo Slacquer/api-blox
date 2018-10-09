@@ -8,7 +8,6 @@ using APIBlox.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 #endregion
@@ -30,20 +29,12 @@ namespace APIBlox.AspNetCore
 
         #region -    Constructors    -
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ServerFaultsMiddleware" /> class.
-        /// </summary>
-        /// <param name="next">The next.</param>
-        /// <param name="logger">The logger.</param>
-        /// <param name="env">The env.</param>
-        /// <param name="typeUrl">The url to specify in the <see cref="ProblemDetails.Type" /></param>
-        /// <param name="referenceIdFunc">
-        ///     A callback function to set the reference number of the fault, by default this is
-        ///     <see cref="DateTimeOffset.Now" />.Ticks
-        /// </param>
         public ServerFaultsMiddleware(
-            RequestDelegate next, ILogger<ServerFaultsMiddleware> logger,
-            IHostingEnvironment env, string typeUrl, Func<string> referenceIdFunc
+            RequestDelegate next,
+            ILogger<ServerFaultsMiddleware> logger,
+            IHostingEnvironment env,
+            string typeUrl,
+            Func<string> referenceIdFunc
         )
         {
             _next = next;
@@ -73,8 +64,7 @@ namespace APIBlox.AspNetCore
                 context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                 context.Response.Headers["Content-Type"] = "application/problem+json";
 
-                await context.Response.WriteAsync(
-                    BuildResponse(error.Error, context.Request.Path),
+                await context.Response.WriteAsync(BuildResponse(error.Error, context.Request.Path),
                     context.RequestAborted
                 ).ConfigureAwait(false);
             }
@@ -88,8 +78,7 @@ namespace APIBlox.AspNetCore
 
         private string BuildResponse(Exception err, string instance)
         {
-            var dto = new ServerErrorObject(
-                "An internal server error has occured.",
+            var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
                 (int) HttpStatusCode.InternalServerError,
                 instance,

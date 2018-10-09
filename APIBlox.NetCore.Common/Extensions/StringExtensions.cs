@@ -162,10 +162,9 @@ namespace APIBlox.NetCore.Extensions
             var ci = new CultureInfo(cultureName ?? CultureInfo.CurrentCulture.DisplayName, false).TextInfo;
 
             for (var i = 0; i < bits.Length; i++)
-                sb.Append(
-                    i == 0
-                        ? char.ToLowerInvariant(bits[i][0]) + bits[i].Substring(1)
-                        : ci.ToTitleCase(bits[i])
+                sb.Append(i == 0
+                    ? char.ToLowerInvariant(bits[i][0]) + bits[i].Substring(1)
+                    : ci.ToTitleCase(bits[i])
                 );
 
             return sb.ToString();

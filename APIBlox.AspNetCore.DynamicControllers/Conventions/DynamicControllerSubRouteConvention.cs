@@ -61,9 +61,8 @@ namespace APIBlox.AspNetCore
 
             while (!(current is null))
             {
-                var match = _controllerConfigService.Parameters.FirstOrDefault(
-                    pm =>
-                        pm.ParameterType == current.ParentIdType
+                var match = _controllerConfigService.Parameters.FirstOrDefault(pm =>
+                    pm.ParameterType == current.ParentIdType
                 );
 
                 if (match is null)

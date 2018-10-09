@@ -30,8 +30,7 @@ namespace APIBlox.AspNetCore.ActionResults
             int statusCode = StatusCodes.Status400BadRequest,
             string errorDocumentLocation = "about:blank"
         )
-            : base(
-                new RequestErrorObject
+            : base(new RequestErrorObject
                 {
                     Title = "One or more validation errors has occured.",
                     Detail = "Please refer to the errors property for additional details",
@@ -58,9 +57,8 @@ namespace APIBlox.AspNetCore.ActionResults
             var ms = context.ModelState;
 
             if (ms.IsValid)
-                throw new ArgumentException(
-                    "The validation state is VALID, the action result " +
-                    $"{nameof(ValidationFailureResult)} is being inappropriately used."
+                throw new ArgumentException("The validation state is VALID, the action result " +
+                                            $"{nameof(ValidationFailureResult)} is being inappropriately used."
                 );
 
             var errors = context.ModelState.Keys

@@ -58,8 +58,7 @@ namespace APIBlox.AspNetCore
 
             foreach (var r in controllerConfiguration.Routes)
             {
-                controller.Selectors.Add(
-                    new SelectorModel
+                controller.Selectors.Add(new SelectorModel
                     {
                         AttributeRouteModel = new AttributeRouteModel
                         {

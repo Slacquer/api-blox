@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Attributes;
-using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Conventions;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Filters;
@@ -124,14 +123,12 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            var compliance = new EnsureResponseCompliesWith();
-            compliance.Func = defineResponseFunc ?? compliance.Func;
-            builder.Services.AddSingleton<IEnsureResponseCompliesWith>(f => compliance);
+            if (!(defineResponseFunc is null))
+                InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
 
             builder.Services.Configure<MvcOptions>(o =>
                 {
-                    FindExistingResultActionFilterAndThrow(
-                        o.Filters,
+                    FindExistingResultActionFilterAndThrow(o.Filters,
                         nameof(EnsurePaginationResponseResultActionFilter)
                     );
                     o.Filters.TryAdd<EnsurePaginationResponseResultActionFilter>();
@@ -162,14 +159,12 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            var compliance = new EnsureResponseCompliesWith();
-            compliance.Func = defineResponseFunc ?? compliance.Func;
-            builder.Services.AddSingleton<IEnsureResponseCompliesWith>(f => compliance);
+            if (!(defineResponseFunc is null))
+                InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
 
             builder.Services.Configure<MvcOptions>(o =>
                 {
-                    FindExistingResultActionFilterAndThrow(
-                        o.Filters,
+                    FindExistingResultActionFilterAndThrow(o.Filters,
                         nameof(EnsurePaginationResponseResultActionFilter)
                     );
                     o.Filters.TryAdd<EnsurePaginationResponseResultActionFilter>();
@@ -195,11 +190,8 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            // Sad that by default there isn't a way to just pass args.
-            // Need to look into how to do this like AddDependencyWithOptions<>.
-            var compliance = new EnsureResponseCompliesWith();
-            compliance.Func = defineResponseFunc ?? compliance.Func;
-            builder.Services.AddSingleton<IEnsureResponseCompliesWith>(f => compliance);
+            if (!(defineResponseFunc is null))
+                InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
 
             builder.Services.Configure<MvcOptions>(o =>
                 {
@@ -227,11 +219,8 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            // Sad that by default there isn't a way to just pass args.
-            // Need to look into how to do this like AddDependencyWithOptions<>.
-            var compliance = new EnsureResponseCompliesWith();
-            compliance.Func = defineResponseFunc ?? compliance.Func;
-            builder.Services.AddSingleton<IEnsureResponseCompliesWith>(f => compliance);
+            if (!(defineResponseFunc is null))
+                InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
 
             builder.Services.Configure<MvcOptions>(o =>
                 {
@@ -386,8 +375,8 @@ namespace Microsoft.Extensions.DependencyInjection
             string configSection = "RouteTokenOptions"
         )
         {
-            builder.Services.Configure<MvcOptions>(
-                o => o.Conventions.Add(new RouteTokensConvention(CommonRouteTokens(configuration, env, configSection)))
+            builder.Services.Configure<MvcOptions>(o =>
+                o.Conventions.Add(new RouteTokensConvention(CommonRouteTokens(configuration, env, configSection)))
             );
 
             return builder;
@@ -410,8 +399,8 @@ namespace Microsoft.Extensions.DependencyInjection
             string configSection = "RouteTokenOptions"
         )
         {
-            builder.Services.Configure<MvcOptions>(
-                o => o.Conventions.Add(new RouteTokensConvention(CommonRouteTokens(configuration, env, configSection)))
+            builder.Services.Configure<MvcOptions>(o =>
+                o.Conventions.Add(new RouteTokensConvention(CommonRouteTokens(configuration, env, configSection)))
             );
 
             return builder;
@@ -456,9 +445,8 @@ namespace Microsoft.Extensions.DependencyInjection
             var ret = configuration.GetSection(configSection).Get<Dictionary<string, string>>();
 
             if (ret is null)
-                throw new ArgumentException(
-                    $"In order to use the {nameof(RouteTokensConvention)} you " +
-                    $"will need to have an {configSection} configuration entry with key value pairs."
+                throw new ArgumentException($"In order to use the {nameof(RouteTokensConvention)} you " +
+                                            $"will need to have an {configSection} configuration entry with key value pairs."
                 );
 
             var hasEnv = ret.ContainsKey("Environment");

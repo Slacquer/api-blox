@@ -59,8 +59,7 @@ namespace APIBlox.AspNetCore
                 ? names.Count()
                 : 0;
 
-            var config = new DynamicControllerConfiguration(
-                name,
+            var config = new DynamicControllerConfiguration(name,
                 controllerConfig.RequestResourceType,
                 controllerConfig.ParentIdType,
                 controllerConfig.Routes.ToArray()

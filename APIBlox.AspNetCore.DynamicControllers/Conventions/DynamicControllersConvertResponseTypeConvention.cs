@@ -48,9 +48,8 @@ namespace APIBlox.AspNetCore
             var cType = action.Controller.ControllerType;
 
             if (!action.Attributes.Any())
-                throw new ArgumentException(
-                    $"Action {action.Controller.ControllerName}.{action.ActionName} " +
-                    $"isn't decorated with an {nameof(HttpMethodAttribute)}."
+                throw new ArgumentException($"Action {action.Controller.ControllerName}.{action.ActionName} " +
+                                            $"isn't decorated with an {nameof(HttpMethodAttribute)}."
                 );
 
             var responseTypes = action.Attributes.OfType<ProducesResponseTypeAttribute>()
