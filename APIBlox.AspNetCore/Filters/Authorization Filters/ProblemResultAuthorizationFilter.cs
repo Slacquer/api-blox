@@ -16,14 +16,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace APIBlox.AspNetCore.Filters.Authorization_Filters
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Class ProblemResultAuthorizationFilter.
     ///     <para>
-    ///         Will allow anonymous access when the  <see cref="IAllowAnonymousFilter" /> is used.  Otherwise sends
-    ///         <see cref="ProblemResult" />
+    ///         Will allow anonymous access when the  <see cref="T:Microsoft.AspNetCore.Mvc.Authorization.IAllowAnonymousFilter" /> is used.  Otherwise sends
+    ///         <see cref="T:APIBlox.AspNetCore.ActionResults.ProblemResult" />
     ///     </para>
     /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.Filters.IAsyncAuthorizationFilter" />
+    /// <seealso cref="T:Microsoft.AspNetCore.Mvc.Filters.IAsyncAuthorizationFilter" />
     public class ProblemResultAuthorizationFilter : IAsyncAuthorizationFilter
     {
         #region -    Constructors    -
@@ -41,11 +42,12 @@ namespace APIBlox.AspNetCore.Filters.Authorization_Filters
         #endregion
 
         /// <summary>
-        ///     Gets the policy.
+        ///     Gets the policy that was added during construction.
         /// </summary>
         /// <value>The policy.</value>
         public AuthorizationPolicy Policy { get; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Authorization as an asynchronous operation.
         /// </summary>
