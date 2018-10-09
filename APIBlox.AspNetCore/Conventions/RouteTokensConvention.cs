@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 #endregion
 
-namespace APIBlox.AspNetCore.Conventions
+// ReSharper disable once CheckNamespace
+namespace APIBlox.AspNetCore
 {
     internal class RouteTokensConvention : IApplicationModelConvention
     {

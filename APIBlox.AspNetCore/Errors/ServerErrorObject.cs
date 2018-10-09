@@ -21,24 +21,8 @@ namespace APIBlox.AspNetCore.Errors
 
         #endregion
 
-        /// <summary>
-        ///     [REQUIRED]
-        ///     <para>
-        ///         Gets or sets the reference id.
-        ///     </para>
-        /// </summary>
-        /// <value>The reference id.</value>
-        public string ReferenceId { get; set; }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Returns the enumeration of all dynamic member names.
-        ///     <para>
-        ///         The following are validated and fail if empty:
-        ///         <see cref="ReferenceId" />
-        ///     </para>
-        /// </summary>
-        /// <returns>A sequence that contains dynamic member names.</returns>
+        private string ReferenceId { get; }
+        
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             if (ReferenceId.IsEmptyNullOrWhiteSpace())

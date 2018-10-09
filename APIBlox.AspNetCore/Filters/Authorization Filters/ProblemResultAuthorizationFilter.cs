@@ -14,7 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 #endregion
 
-namespace APIBlox.AspNetCore.Filters.Authorization_Filters
+// ReSharper disable once CheckNamespace
+namespace APIBlox.AspNetCore.Filters.Authorization
 {
     /// <inheritdoc />
     /// <summary>

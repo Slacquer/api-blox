@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Attributes;
-using APIBlox.AspNetCore.Conventions;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Filters;
 using Microsoft.AspNetCore.Hosting;
