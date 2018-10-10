@@ -88,15 +88,10 @@ namespace APIBlox.AspNetCore
                     if (!action.Parameters.Any(p => p.Name.EqualsEx(pm.Name)))
                         action.Parameters.Insert(0, pm);
                 }
-
-                _log.LogInformation(() =>
-                    $"Action final parameter(s) {string.Join(",", action.Parameters.Select(p => p.ParameterName))} " +
-                    $"for action {action.Controller.ControllerName}.{action.ActionName}"
-                );
             }
         }
 
-        private static void ReorderParameters(ActionModel action)
+        private void ReorderParameters(ActionModel action)
         {
             var bodyParams = action.Parameters
                 .Where(p => !(p.BindingInfo is null))
@@ -115,6 +110,11 @@ namespace APIBlox.AspNetCore
 
             foreach (var pm in bodyParams)
                 action.Parameters.Add(pm);
+
+            _log.LogInformation(() =>
+                $"Action final ORDERED parameter(s) {string.Join(",", action.Parameters.Select(p => p.ParameterName))} " +
+                $"for action {action.Controller.ControllerName}.{action.ActionName}"
+            );
         }
 
         private bool IsGetOrDelete(ActionModel action)
