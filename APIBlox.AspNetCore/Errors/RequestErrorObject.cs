@@ -140,24 +140,12 @@ namespace APIBlox.AspNetCore.Errors
             Properties.TryAdd("Status", Status);
             Properties.TryAdd("Instance", Instance);
 
-            TryAlterRequestErrorObjectAction();
+            InternalHelpers.AlterRequestErrorObjectAction?.Invoke(this);
 
             if (Errors.Any())
                 Properties.TryAdd("Errors", Errors);
 
             return base.GetDynamicMemberNames();
-        }
-
-        private void TryAlterRequestErrorObjectAction()
-        {
-            try
-            {
-                InternalHelpers.AlterRequestErrorObjectAction?.Invoke(this);
-            }
-            catch (Exception)
-            {
-                // Someone fucked up... do nothing.
-            }
         }
     }
 }
