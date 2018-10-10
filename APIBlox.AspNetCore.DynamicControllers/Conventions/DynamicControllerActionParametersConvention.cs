@@ -53,40 +53,68 @@ namespace APIBlox.AspNetCore
 
             foreach (var action in actions)
             {
-                foreach (var sm in action.Controller.Selectors)
-                {
-                    var lst = new List<ParameterModel>();
+                AddParameters(action);
 
-                    if (sm.AttributeRouteModel?.Template?.Contains("{") == true)
-                        lst.AddRange(AddRouteTemplateParameters(sm.AttributeRouteModel.Template));
+                ReorderParameters(action);
+            }
+        }
 
-                    if (IsGetOrDelete(action))
-                        foreach (var pm in AddRequestObjectParameters(action.Controller.ControllerType.GetGenericArguments()[0]))
-                        {
-                            if (!lst.Any(p => p.Name.EqualsEx(pm.Name)))
-                                lst.Add(pm);
-                        }
+        private void AddParameters(ActionModel action)
+        {
+            foreach (var sm in action.Controller.Selectors)
+            {
+                var lst = new List<ParameterModel>();
 
-                    if (!lst.Any())
-                        continue;
+                if (sm.AttributeRouteModel?.Template?.Contains("{") == true)
+                    lst.AddRange(AddRouteTemplateParameters(sm.AttributeRouteModel.Template));
 
-                    _log.LogInformation(() =>
-                        $"Adding parameter(s) {string.Join(",", lst.Select(p => p.ParameterName))} " +
-                        $"to action {action.Controller.ControllerName}.{action.ActionName}"
-                    );
-
-                    foreach (var pm in lst)
+                if (IsGetOrDelete(action))
+                    foreach (var pm in AddRequestObjectParameters(action.Controller.ControllerType.GetGenericArguments()[0]))
                     {
-                        if (!action.Parameters.Any(p => p.Name.EqualsEx(pm.Name)))
-                            action.Parameters.Insert(0, pm);
+                        if (!lst.Any(p => p.Name.EqualsEx(pm.Name)))
+                            lst.Add(pm);
                     }
 
-                    _log.LogInformation(() =>
-                        $"Action final parameter(s) {string.Join(",", action.Parameters.Select(p => p.ParameterName))} " +
-                        $"for action {action.Controller.ControllerName}.{action.ActionName}"
-                    );
+                if (!lst.Any())
+                    continue;
+
+                _log.LogInformation(() =>
+                    $"Adding parameter(s) {string.Join(",", lst.Select(p => p.ParameterName))} " +
+                    $"to action {action.Controller.ControllerName}.{action.ActionName}"
+                );
+
+                foreach (var pm in lst)
+                {
+                    if (!action.Parameters.Any(p => p.Name.EqualsEx(pm.Name)))
+                        action.Parameters.Insert(0, pm);
                 }
+
+                _log.LogInformation(() =>
+                    $"Action final parameter(s) {string.Join(",", action.Parameters.Select(p => p.ParameterName))} " +
+                    $"for action {action.Controller.ControllerName}.{action.ActionName}"
+                );
             }
+        }
+
+        private static void ReorderParameters(ActionModel action)
+        {
+            var bodyParams = action.Parameters
+                .Where(p => !(p.BindingInfo is null))
+                .OrderBy(p=> p.ParameterName.EndsWithEx("id"))
+                .ThenBy(p => p.ParameterName).ToList();
+
+            var nonBody = action.Parameters
+                .Except(bodyParams)
+                .OrderBy(p=> p.ParameterName.EndsWithEx("id"))
+                .ThenBy(p => p.ParameterName).ToList();
+
+            action.Parameters.Clear();
+
+            foreach (var pm in nonBody)
+                action.Parameters.Add(pm);
+
+            foreach (var pm in bodyParams)
+                action.Parameters.Add(pm);
         }
 
         private bool IsGetOrDelete(ActionModel action)

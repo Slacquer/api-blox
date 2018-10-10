@@ -73,14 +73,14 @@ namespace DemoApi2.Presentation
 
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }); });
 
-            services.AddAuthorization();
+            //services.AddAuthorization();
 
-            services.AddMvc(o =>
-                {
-                    // All endpoints need authorization using our custom authorization filter
-                    o.Filters.Add(new ProblemResultAuthorizationFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
-                }
-            );
+            //services.AddMvc(o =>
+            //    {
+            //        // All endpoints need authorization using our custom authorization filter
+            //        o.Filters.Add(new ProblemResultAuthorizationFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
+            //    }
+            //);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
