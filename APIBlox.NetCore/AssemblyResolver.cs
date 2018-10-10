@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,8 +7,6 @@ using System.Runtime.Loader;
 using APIBlox.NetCore.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyModel.Resolution;
-
-#endregion
 
 namespace APIBlox.NetCore
 {
@@ -22,15 +18,9 @@ namespace APIBlox.NetCore
     /// <seealso cref="T:System.IDisposable" />
     public sealed class AssemblyResolver : IDisposable
     {
-        #region -    Fields    -
-
         private readonly ICompilationAssemblyResolver _assemblyResolver;
         private readonly DependencyContext _dependencyContext;
         private readonly AssemblyLoadContext _loadContext;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AssemblyResolver" /> class.
@@ -52,8 +42,6 @@ namespace APIBlox.NetCore
             _loadContext = AssemblyLoadContext.GetLoadContext(Assembly);
             _loadContext.Resolving += OnResolving;
         }
-
-        #endregion
 
         /// <summary>
         ///     Gets the assembly.

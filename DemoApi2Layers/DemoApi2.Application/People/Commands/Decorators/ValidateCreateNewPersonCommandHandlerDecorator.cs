@@ -1,28 +1,18 @@
-﻿#region -    Using Statements    -
-
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
 using DemoApi2.Domain.Contracts;
 using DemoApi2.Domain.People;
 using Microsoft.Extensions.Logging;
 
-#endregion
-
 namespace DemoApi2.Application.People.Commands.Decorators
 {
     public class ValidateCreateNewPersonCommandHandlerDecorator :
         ICommandHandler<PersonCommand, PersonResponse>
     {
-        #region -    Fields    -
-
         private readonly IDomainDataService<PersonDomainModel, int> _dataService;
         private readonly ICommandHandler<PersonCommand, PersonResponse> _decorated;
         private readonly ILogger<ValidateCreateNewPersonCommandHandlerDecorator> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public ValidateCreateNewPersonCommandHandlerDecorator(
             ILoggerFactory loggerFactory,
@@ -34,8 +24,6 @@ namespace DemoApi2.Application.People.Commands.Decorators
             _decorated = decorated;
             _dataService = dataService;
         }
-
-        #endregion
 
         public async Task<PersonResponse> HandleAsync(
             PersonCommand requestCommand,

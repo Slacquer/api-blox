@@ -1,12 +1,8 @@
-﻿#region -    Using Statements    -
-
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace DemoApi2.Presentation.Controllers
 {
@@ -14,20 +10,12 @@ namespace DemoApi2.Presentation.Controllers
     [ApiController]
     public class DefaultDeleteByController<TRequest> : ControllerBase
     {
-        #region -    Fields    -
-
         private readonly ICommandHandler<TRequest, dynamic> _deleteByHandler;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public DefaultDeleteByController(ICommandHandler<TRequest, dynamic> deleteByHandler)
         {
             _deleteByHandler = deleteByHandler;
         }
-
-        #endregion
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

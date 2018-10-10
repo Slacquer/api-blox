@@ -1,10 +1,6 @@
-﻿#region -    Using Statements    -
-
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-#endregion
 
 namespace DemoApi2.Domain.Contracts
 {

@@ -1,10 +1,6 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using APIBlox.NetCore.Contracts;
-
-#endregion
 
 namespace DemoApi2.Domain.Contracts
 {

@@ -1,14 +1,10 @@
-﻿#region -    Using Statements    -
-
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.RequestsResponses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Controllers
 {
@@ -24,15 +20,9 @@ namespace APIBlox.AspNetCore.Controllers
         IDynamicController<TRequest>
         where TRequest : class
     {
-        #region -    Fields    -
-
         private readonly ICommandHandler<TRequest, HandlerResponse> _deleteByHandler;
 
         private readonly string _rn = typeof(TRequest).Name;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicDeleteByController{TRequest}" /> class.
@@ -42,8 +32,6 @@ namespace APIBlox.AspNetCore.Controllers
         {
             _deleteByHandler = deleteByHandler;
         }
-
-        #endregion
 
         /// <summary>
         ///     Action for deleting a resource.

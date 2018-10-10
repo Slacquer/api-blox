@@ -1,13 +1,9 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-
-#endregion
 
 namespace APIBlox.NetCore.Extensions
 {
@@ -17,12 +13,8 @@ namespace APIBlox.NetCore.Extensions
     [DebuggerStepThrough]
     public static class TypeExtensions
     {
-        #region -    Fields    -
-
         // Cached results.
         private static readonly List<MethodInfo> Extensions = new List<MethodInfo>();
-
-        #endregion
 
         /// <summary>
         ///     Find an extension method for a given type with a specific

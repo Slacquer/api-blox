@@ -1,10 +1,6 @@
-﻿#region -    Using Statements    -
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using APIBlox.AspNetCore.Errors;
 using APIBlox.AspNetCore.RequestsResponses;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore.CommandQueryResponses

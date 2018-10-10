@@ -1,22 +1,14 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using APIBlox.NetCore.Contracts;
 using DemoApi2.Domain.Contracts;
 using Newtonsoft.Json;
 
-#endregion
-
 namespace DemoApi2.Domain
 {
     public abstract class DomainModelBase<TId> : IDomainModel<TId>
     {
-        #region -    Fields    -
-
         protected readonly List<IDomainEvent> EventsList = new List<IDomainEvent>();
-
-        #endregion
 
         /// <inheritdoc />
         public DateTimeOffset CreatedOn { get; } = DateTimeOffset.Now;

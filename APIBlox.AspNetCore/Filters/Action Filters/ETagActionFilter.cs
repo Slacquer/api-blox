@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,8 +11,6 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore.Filters
 {
@@ -22,8 +18,6 @@ namespace APIBlox.AspNetCore.Filters
 
     internal class ETagActionFilter : IAsyncActionFilter
     {
-        #region -    Fields    -
-
         private const int ActionMaxAgeDefault = 600; // client cache time 10min.
         private const int ActionSharedMaxAgeDefault = 86400; // caching proxy cache time  24hrs.
 
@@ -31,10 +25,6 @@ namespace APIBlox.AspNetCore.Filters
 
         private readonly int _maxAgeSeconds;
         private readonly int _sharedMaxAgeSecond;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ETagActionFilter" /> class.
@@ -51,8 +41,6 @@ namespace APIBlox.AspNetCore.Filters
             _maxAgeSeconds = maxAgeSeconds;
             _sharedMaxAgeSecond = sharedMaxAgeSecond;
         }
-
-        #endregion
 
         /// <inheritdoc />
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

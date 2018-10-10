@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
@@ -11,8 +9,6 @@ using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore.Filters.Authorization
@@ -29,8 +25,6 @@ namespace APIBlox.AspNetCore.Filters.Authorization
     /// <seealso cref="T:Microsoft.AspNetCore.Mvc.Filters.IAsyncAuthorizationFilter" />
     public class ProblemResultAuthorizationFilter : IAsyncAuthorizationFilter
     {
-        #region -    Constructors    -
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ProblemResultAuthorizationFilter" /> class.
         /// </summary>
@@ -40,8 +34,6 @@ namespace APIBlox.AspNetCore.Filters.Authorization
         {
             Policy = policy ?? throw new ArgumentNullException(nameof(policy));
         }
-
-        #endregion
 
         /// <summary>
         ///     Gets the policy that was added during construction.

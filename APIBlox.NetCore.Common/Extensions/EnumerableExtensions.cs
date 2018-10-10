@@ -1,11 +1,7 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
-#endregion
 
 namespace APIBlox.NetCore.Extensions
 {

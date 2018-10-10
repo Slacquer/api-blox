@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace APIBlox.AspNetCore.Attributes
 {

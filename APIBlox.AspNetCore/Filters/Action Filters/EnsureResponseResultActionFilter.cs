@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System.Collections;
+﻿using System.Collections;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -8,20 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore.Filters
 {
     internal class EnsureResponseResultActionFilter : IAsyncActionFilter
     {
-        #region -    Fields    -
-
         private readonly ILogger<EnsureResponseResultActionFilter> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <inheritdoc />
         /// <summary>
@@ -37,8 +27,6 @@ namespace APIBlox.AspNetCore.Filters
         {
             _log = loggerFactory.CreateLogger<EnsureResponseResultActionFilter>();
         }
-
-        #endregion
 
         protected bool ResultValueIsEnumerable { get; private set; }
 

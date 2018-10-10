@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore

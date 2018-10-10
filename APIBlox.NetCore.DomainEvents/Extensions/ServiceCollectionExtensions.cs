@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using APIBlox.NetCore;
+﻿using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection

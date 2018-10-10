@@ -1,14 +1,10 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Linq;
 using APIBlox.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection

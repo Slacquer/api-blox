@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
@@ -8,8 +6,6 @@ using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.RequestsResponses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Controllers
 {
@@ -27,15 +23,9 @@ namespace APIBlox.AspNetCore.Controllers
         IDynamicController<TRequest, TResponse, TId>
         where TResponse : IResource<TId>
     {
-        #region -    Fields    -
-
         private readonly IQueryHandler<TRequest, HandlerResponse> _getAllHandler;
 
         private readonly string _rn = typeof(TRequest).Name;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicQueryAllController{TRequest, TResponse, TId}" /> class.
@@ -45,8 +35,6 @@ namespace APIBlox.AspNetCore.Controllers
         {
             _getAllHandler = getAllHandler;
         }
-
-        #endregion
 
         /// <summary>
         ///     Action for getting a collection of resources.

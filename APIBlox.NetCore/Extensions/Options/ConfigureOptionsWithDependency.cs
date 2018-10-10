@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
-
-#endregion
+﻿using System;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.Options

@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -8,23 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class SimulateWaitTimeMiddleware
     {
-        #region -    Fields    -
-
         private readonly List<string> _excludeUrlsLike;
         private readonly ILogger<SimulateWaitTimeMiddleware> _log;
         private readonly RequestDelegate _next;
         private readonly Random _rnd = new Random((int) DateTime.Now.Ticks);
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SimulateWaitTimeMiddleware" /> class.
@@ -42,8 +32,6 @@ namespace APIBlox.AspNetCore
             _next = next;
             _excludeUrlsLike = excludeUrlsLike.ToList();
         }
-
-        #endregion
 
         public async Task InvokeAsync(HttpContext context)
         {

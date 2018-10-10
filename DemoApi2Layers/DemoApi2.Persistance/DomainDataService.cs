@@ -1,14 +1,10 @@
-﻿#region -    Using Statements    -
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Contracts;
 using DemoApi2.Domain.Contracts;
-
-#endregion
 
 namespace DemoApi2.Persistance
 {
@@ -19,22 +15,14 @@ namespace DemoApi2.Persistance
             where TDomainModel : class, IDomainModel<TId>
             where TId : struct
         {
-            #region -    Fields    -
-
             private static readonly List<TDomainModel> Repository = new List<TDomainModel>();
             private readonly IQueuedDomainEventsDispatcher _eventsDispatcher;
-
-            #endregion
-
-            #region -    Constructors    -
 
             // Not sure i like having the dispatcher in this thing, feels like it breaks the S in solid.
             public DomainDataService(IQueuedDomainEventsDispatcher eventsDispatcher)
             {
                 _eventsDispatcher = eventsDispatcher;
             }
-
-            #endregion
 
             /// <inheritdoc />
             public TDomainModel Create(TDomainModel poco)
@@ -77,9 +65,7 @@ namespace DemoApi2.Persistance
 
                 // this would be done by the entity.
                 foreach (var domainEvent in events)
-                {
                     _eventsDispatcher.AddEvent(domainEvent);
-                }
 
                 return _eventsDispatcher.PublishEventsAsync();
 

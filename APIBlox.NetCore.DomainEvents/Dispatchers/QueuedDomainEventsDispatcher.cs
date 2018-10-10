@@ -1,27 +1,17 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using Microsoft.Extensions.Logging;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.NetCore
 {
     internal class QueuedDomainEventsDispatcher : DispatcherBase, IQueuedDomainEventsDispatcher
     {
-        #region -    Fields    -
-
         private readonly Queue<IDomainEvent> _eventsQueue = new Queue<IDomainEvent>();
         private readonly ILogger<QueuedDomainEventsDispatcher> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public QueuedDomainEventsDispatcher(
             ILoggerFactory loggerFactory,
@@ -31,8 +21,6 @@ namespace APIBlox.NetCore
         {
             _log = loggerFactory.CreateLogger<QueuedDomainEventsDispatcher>();
         }
-
-        #endregion
 
         public void AddEvent<TDomainEvent>(TDomainEvent domainEvent)
             where TDomainEvent : class, IDomainEvent

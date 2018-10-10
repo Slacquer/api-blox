@@ -1,32 +1,20 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class OperationCanceledExceptionFilter : IAsyncExceptionFilter
     {
-        #region -    Fields    -
-
         private readonly ILogger _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public OperationCanceledExceptionFilter(ILoggerFactory loggerFactory)
         {
             _log = loggerFactory.CreateLogger<OperationCanceledExceptionFilter>();
         }
-
-        #endregion
 
         public Task OnExceptionAsync(ExceptionContext context)
         {

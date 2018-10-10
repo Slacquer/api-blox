@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using APIBlox.AspNetCore.Contracts;
-
-#endregion
+﻿using APIBlox.AspNetCore.Contracts;
 
 namespace DemoApi2.Application.People
 {

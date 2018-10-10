@@ -1,12 +1,8 @@
-﻿#region -    Using Statements    -
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Decorators.Queries
 {
@@ -21,14 +17,8 @@ namespace APIBlox.AspNetCore.Decorators.Queries
     public class MetricsQueryHandlerDecorator<TResult>
         : IQueryHandler<TResult>
     {
-        #region -    Fields    -
-
         private readonly IQueryHandler<TResult> _decorated;
         private readonly ILogger<MetricsQueryHandlerDecorator<TResult>> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MetricsQueryHandlerDecorator{TResult}" /> class.
@@ -43,8 +33,6 @@ namespace APIBlox.AspNetCore.Decorators.Queries
             _log = loggerFactory.CreateLogger<MetricsQueryHandlerDecorator<TResult>>();
             _decorated = decorated;
         }
-
-        #endregion
 
         /// <inheritdoc />
         /// <summary>
@@ -79,14 +67,8 @@ namespace APIBlox.AspNetCore.Decorators.Queries
     public class MetricsQueryHandlerDecorator<TRequestQuery, TResult>
         : IQueryHandler<TRequestQuery, TResult>
     {
-        #region -    Fields    -
-
         private readonly IQueryHandler<TRequestQuery, TResult> _decorated;
         private readonly ILogger<MetricsQueryHandlerDecorator<TRequestQuery, TResult>> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MetricsQueryHandlerDecorator{TRequestQuery, TResult}" /> class.
@@ -101,8 +83,6 @@ namespace APIBlox.AspNetCore.Decorators.Queries
             _log = loggerFactory.CreateLogger<MetricsQueryHandlerDecorator<TRequestQuery, TResult>>();
             _decorated = decorated;
         }
-
-        #endregion
 
         /// <inheritdoc />
         /// <summary>

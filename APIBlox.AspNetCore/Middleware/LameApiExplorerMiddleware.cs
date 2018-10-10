@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,8 +11,6 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
@@ -23,16 +19,10 @@ namespace APIBlox.AspNetCore
 
     internal class LameApiExplorerMiddleware
     {
-        #region -    Fields    -
-
         private readonly IActionDescriptorCollectionProvider _aDcp;
         private readonly ILogger<LameApiExplorerMiddleware> _log;
         private readonly RequestDelegate _next;
         private readonly string _url;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public LameApiExplorerMiddleware(
             RequestDelegate next,
@@ -46,8 +36,6 @@ namespace APIBlox.AspNetCore
             _aDcp = actionDescriptorCollectionProvider;
             _url = url;
         }
-
-        #endregion
 
         public async Task InvokeAsync(HttpContext context)
         {

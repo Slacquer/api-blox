@@ -1,30 +1,18 @@
-﻿#region -    Using Statements    -
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class RouteTokensConvention : IApplicationModelConvention
     {
-        #region -    Fields    -
-
         private readonly Dictionary<string, string> _kvps;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public RouteTokensConvention(Dictionary<string, string> kvps)
         {
             _kvps = kvps;
         }
-
-        #endregion
 
         public void Apply(ApplicationModel application)
         {

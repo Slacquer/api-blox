@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Contracts;
@@ -8,21 +6,13 @@ using DemoApi2.Application.Contracts;
 using DemoApi2.Domain.People.Events;
 using Microsoft.Extensions.Logging;
 
-#endregion
-
 namespace DemoApi2.Application.People.EventHandlers.PersonCreatedEventHandlers
 {
     [InjectableService]
     public class EmailWelcomeMessage : IDomainEventHandler<PersonCreatedEvent>
     {
-        #region -    Fields    -
-
         private readonly IEmailService _emailService;
         private readonly ILogger<EmailWelcomeMessage> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public EmailWelcomeMessage(
             ILoggerFactory loggerFactory,
@@ -32,8 +22,6 @@ namespace DemoApi2.Application.People.EventHandlers.PersonCreatedEventHandlers
             _log = loggerFactory.CreateLogger<EmailWelcomeMessage>();
             _emailService = emailService;
         }
-
-        #endregion
 
         /// <inheritdoc />
         public async Task HandleEventAsync(PersonCreatedEvent domainEvent)

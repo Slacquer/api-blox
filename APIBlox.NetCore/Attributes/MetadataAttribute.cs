@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace APIBlox.NetCore.Attributes
 {
@@ -17,8 +13,6 @@ namespace APIBlox.NetCore.Attributes
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public class MetadataAttribute : Attribute
     {
-        #region -    Constructors    -
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.NetCore.Attributes.MetadataAttribute" /> class.
@@ -50,8 +44,6 @@ namespace APIBlox.NetCore.Attributes
             V9 = v9;
             V10 = v10;
         }
-
-        #endregion
 
         /// <summary>
         ///     Gets the v1.

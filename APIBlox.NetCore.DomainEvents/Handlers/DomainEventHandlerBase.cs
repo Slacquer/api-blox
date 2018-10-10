@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.NetCore

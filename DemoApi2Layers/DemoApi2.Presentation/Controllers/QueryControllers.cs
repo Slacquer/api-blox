@@ -1,18 +1,12 @@
-﻿#region -    Using Statements    -
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
-using APIBlox.AspNetCore.CommandQueryResponses;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.RequestsResponses;
-using DemoApi2.Application.Locations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace DemoApi2.Presentation.Controllers
 {
@@ -22,22 +16,14 @@ namespace DemoApi2.Presentation.Controllers
         IDynamicController<TRequest, TResponse, TId>
         where TResponse : IResource<TId>
     {
-        #region -    Fields    -
-
         private readonly IQueryHandler<TRequest, IEnumerable<dynamic>> _getAllHandler;
 
         private readonly string _reqName = typeof(TRequest).Name;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public QueryController(IQueryHandler<TRequest, IEnumerable<dynamic>> getAllHandler)
         {
             _getAllHandler = getAllHandler;
         }
-
-        #endregion
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<IResource>), StatusCodes.Status200OK)]
@@ -57,22 +43,14 @@ namespace DemoApi2.Presentation.Controllers
     [ApiController]
     public class QueryByIdController<TRequest> : ControllerBase
     {
-        #region -    Fields    -
-
         private readonly IQueryHandler<TRequest, HandlerResponse> _getByIdHandler;
 
         private readonly string _reqName = typeof(TRequest).Name;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public QueryByIdController(IQueryHandler<TRequest, HandlerResponse> getByIdHandler)
         {
             _getByIdHandler = getByIdHandler;
         }
-
-        #endregion
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(IResource), StatusCodes.Status200OK)]

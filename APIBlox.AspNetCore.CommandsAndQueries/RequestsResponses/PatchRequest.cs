@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using Microsoft.AspNetCore.JsonPatch;
-
-#endregion
+﻿using Microsoft.AspNetCore.JsonPatch;
 
 namespace APIBlox.AspNetCore.RequestsResponses
 {

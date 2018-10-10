@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Net;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Errors;
@@ -10,24 +8,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class ServerFaultsMiddleware
     {
-        #region -    Fields    -
-
         private readonly IHostingEnvironment _env;
         private readonly ILogger<ServerFaultsMiddleware> _log;
         private readonly RequestDelegate _next;
         private readonly Func<string> _referenceIdFunc;
         private readonly string _typeUrl;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public ServerFaultsMiddleware(
             RequestDelegate next,
@@ -43,8 +33,6 @@ namespace APIBlox.AspNetCore
             _typeUrl = typeUrl;
             _referenceIdFunc = referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString());
         }
-
-        #endregion
 
         public async Task InvokeAsync(HttpContext context)
         {

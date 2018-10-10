@@ -1,11 +1,7 @@
-﻿#region -    Using Statements    -
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-
-#endregion
 
 namespace APIBlox.NetCore.JsonBits
 {

@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
@@ -8,8 +6,6 @@ using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.RequestsResponses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Controllers
 {
@@ -28,13 +24,7 @@ namespace APIBlox.AspNetCore.Controllers
         where TRequest : class
         where TResponse : IResource<TId>
     {
-        #region -    Fields    -
-
         private readonly ICommandHandler<TRequest, HandlerResponse> _createCommand;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicPostController{TRequest, TResponse, TId}" /> class.
@@ -44,8 +34,6 @@ namespace APIBlox.AspNetCore.Controllers
         {
             _createCommand = createCommand;
         }
-
-        #endregion
 
         /// <summary>
         ///     Action for creating a resource.

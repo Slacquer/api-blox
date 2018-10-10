@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.ActionResults;
@@ -13,8 +11,6 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Serialization;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection

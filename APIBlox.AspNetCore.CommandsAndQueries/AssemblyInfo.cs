@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System.Runtime.CompilerServices;
-
-#endregion
+﻿using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Sln Tests")]
 [assembly:

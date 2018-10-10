@@ -1,11 +1,7 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.NetCore
@@ -17,13 +13,7 @@ namespace APIBlox.NetCore
     /// <seealso cref="T:APIBlox.NetCore.Contracts.IDomainEventsDispatcher" />
     internal class DomainEventsDispatcher : DispatcherBase, IDomainEventsDispatcher
     {
-        #region -    Fields    -
-
         private readonly ILogger<DomainEventsDispatcher> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <inheritdoc />
         /// <summary>
@@ -39,8 +29,6 @@ namespace APIBlox.NetCore
         {
             _log = loggerFactory.CreateLogger<DomainEventsDispatcher>();
         }
-
-        #endregion
 
         /// <summary>
         ///     publish events as an asynchronous operation.

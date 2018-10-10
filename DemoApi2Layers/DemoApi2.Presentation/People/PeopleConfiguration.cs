@@ -1,18 +1,9 @@
-﻿#region -    Using Statements    -
-
-using APIBlox.AspNetCore.Contracts;
+﻿using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Controllers;
-using DemoApi2.Application.Locations;
-using DemoApi2.Application.Locations.Queries;
 using DemoApi2.Application.People;
 using DemoApi2.Application.People.Commands;
 using DemoApi2.Application.People.Queries;
-using DemoApi2.Presentation.Controllers;
-using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
-#endregion
 
 namespace DemoApi2.Presentation.People
 {
@@ -28,7 +19,8 @@ namespace DemoApi2.Presentation.People
             //
 
             //// Controllers
-            var peopleRoutes = new[] { "api/companies/{companyId:int}/departments/{departmentId:double}/people" };
+            var peopleRoutes = new[] {"api/companies/{companyId:int}/departments/{departmentId:double}/people"};
+
             //var locationRoutes = new[] { "{personId:int}/locations" };
 
             //config.AddController<PersonQueryById>(peopleRoutes, "people", typeof(QueryByIdController<>))
@@ -36,12 +28,11 @@ namespace DemoApi2.Presentation.People
             //    ;
 
             config.AddController<PersonQuery, PersonResponse, int>(peopleRoutes, "people", typeof(DynamicQueryAllController<,,>))
-                ;//.AddSubController<LocationQuery>(typeof(int), locationRoutes, "locations", typeof(QueryByIdController<>));
+                ; //.AddSubController<LocationQuery>(typeof(int), locationRoutes, "locations", typeof(QueryByIdController<>));
 
             //var noRouteParamsRoute = new[] { "api/serSettings" };
             //config.AddController<PersonNoRouteParamsJustAOrderByQuery, PersonResponse, int>(noRouteParamsRoute, "people", typeof(QueryController<,,>))
             //    ;//.AddSubController<LocationQuery>(typeof(int), locationRoutes, "locations", typeof(QueryByIdController<>));
-
 
             //var byIdRoute = new[] { "api/users/{userId:int}/userSettings/{id:int}" };
 

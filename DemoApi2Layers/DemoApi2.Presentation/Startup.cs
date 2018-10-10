@@ -1,9 +1,6 @@
-﻿#region -    Using Statements    -
-
-using APIBlox.AspNetCore.Filters.Authorization;
+﻿using APIBlox.AspNetCore.Errors;
 using DemoApi2.Presentation.People;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,22 +9,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 
-#endregion
-
 namespace DemoApi2.Presentation
 {
     public class Startup
     {
-        #region -    Fields    -
-
         private readonly IConfiguration _configuration;
         private readonly IHostingEnvironment _env;
 
         private readonly ILoggerFactory _loggerFactory;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public Startup(ILoggerFactory loggerFactory, IConfiguration configuration, IHostingEnvironment env)
         {
@@ -36,14 +25,12 @@ namespace DemoApi2.Presentation
             _env = env;
         }
 
-        #endregion
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services
                 .AddInjectableServices(_loggerFactory,
-                    new[] { "DemoApi" }, //, "APIBlox" },
+                    new[] {"DemoApi"}, //, "APIBlox" },
                     new[]
                     {
                         @"..\DemoApi2.Persistance\bin\Debug\netcoreapp2.1",
@@ -53,13 +40,14 @@ namespace DemoApi2.Presentation
                 .AddDefaultDomainEventsDispatcher()
                 .AddQueuedDomainEventsDispatcher()
                 .AddAlterRequestErrorObject(e =>
-                {
-                    e.Type = "about:blank2";
+                    {
+                        e.Type = "about:blank2";
 
-                    e.Errors.Add(new APIBlox.AspNetCore.Errors.DynamicErrorObject("OMG", "Altered!"));
-                })
+                        e.Errors.Add(new DynamicErrorObject("OMG", "Altered!"));
+                    }
+                )
                 .AddMvc()
-                .AddEnsureResponseResultActionFilter(o => new { Resources = o })
+                .AddEnsureResponseResultActionFilter(o => new {Resources = o})
                 .AddValidateResourceActionFilter()
                 .AddPopulateRequestObjectActionFilter()
                 .AddPopulateGenericRequestObjectActionFilter()
@@ -67,11 +55,10 @@ namespace DemoApi2.Presentation
                 .AddDynamicControllersFeature(c => PeopleConfiguration.Configure(services, c))
                 .AddConsumesProducesJsonResourceResultFilters()
                 .AddRouteTokensConvention(_configuration, _env)
-
                 .AddFluentValidation()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info {Title = "My API", Version = "v1"}); });
 
             //services.AddAuthorization();
 

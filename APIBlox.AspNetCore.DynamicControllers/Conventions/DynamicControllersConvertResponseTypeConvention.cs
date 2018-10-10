@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,27 +9,17 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class DynamicControllersConvertResponseTypeConvention : IApplicationModelConvention
     {
-        #region -    Fields    -
-
         private readonly ILogger<DynamicControllersConvertResponseTypeConvention> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public DynamicControllersConvertResponseTypeConvention(ILoggerFactory loggerFactory)
         {
             _log = loggerFactory.CreateLogger<DynamicControllersConvertResponseTypeConvention>();
         }
-
-        #endregion
 
         public void Apply(ApplicationModel application)
         {

@@ -1,12 +1,8 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Contracts;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -18,11 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class DynamicControllerConfigurationsExtensions
     {
-        #region -    Fields    -
-
         private static IInternalDynamicControllerConfigurationsService _configs;
-
-        #endregion
 
         /// <summary>
         ///     Add sub controller/resource configuration that has no specific response type.

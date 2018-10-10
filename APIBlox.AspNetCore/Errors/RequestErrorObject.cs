@@ -1,13 +1,9 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using APIBlox.NetCore;
 using APIBlox.NetCore.Extensions;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Errors
 {
@@ -19,8 +15,6 @@ namespace APIBlox.AspNetCore.Errors
     [Serializable]
     public class RequestErrorObject : DynamicDataObject
     {
-        #region -    Constructors    -
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Errors.RequestErrorObject" /> class.
@@ -44,8 +38,6 @@ namespace APIBlox.AspNetCore.Errors
             Status = status;
             Instance = instance;
         }
-
-        #endregion
 
         /// <summary>
         ///     [REQUIRED]

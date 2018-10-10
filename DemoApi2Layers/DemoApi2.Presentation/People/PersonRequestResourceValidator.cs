@@ -1,16 +1,10 @@
-﻿#region -    Using Statements    -
-
-using DemoApi2.Application.People;
+﻿using DemoApi2.Application.People;
 using FluentValidation;
-
-#endregion
 
 namespace DemoApi2.Presentation.People
 {
     public class PersonRequestResourceValidator : AbstractValidator<PersonResource>
     {
-        #region -    Constructors    -
-
         public PersonRequestResourceValidator()
         {
             RuleFor(p => p.FirstName)
@@ -28,7 +22,5 @@ namespace DemoApi2.Presentation.People
                 .NotEmpty()
                 .EmailAddress();
         }
-
-        #endregion
     }
 }

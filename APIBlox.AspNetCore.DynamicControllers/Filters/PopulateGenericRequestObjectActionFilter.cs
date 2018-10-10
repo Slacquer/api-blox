@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Extensions;
@@ -10,22 +8,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class PopulateGenericRequestObjectActionFilter : IAsyncActionFilter
     {
-        #region -    Fields    -
-
         private readonly ILogger<PopulateGenericRequestObjectActionFilter> _log;
 
         private readonly JsonSerializerSettings _settings;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PopulateGenericRequestObjectActionFilter" /> class.
@@ -45,8 +35,6 @@ namespace APIBlox.AspNetCore
                 //}
             };
         }
-
-        #endregion
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
@@ -111,12 +99,8 @@ namespace APIBlox.AspNetCore
             }
         }
 
-        #region -    Nested type: Bits    -
-
         private class Bits
         {
-            #region -    Constructors    -
-
             public Bits(ActionExecutingContext context)
             {
                 var q = context.HttpContext.Request.Query;
@@ -128,8 +112,6 @@ namespace APIBlox.AspNetCore
                 QueryString = JsonConvert.SerializeObject(query);
             }
 
-            #endregion
-
             public bool IsQuery { get; }
 
             public string QueryString { get; }
@@ -138,7 +120,5 @@ namespace APIBlox.AspNetCore
 
             public string RouteDataString { get; }
         }
-
-        #endregion
     }
 }

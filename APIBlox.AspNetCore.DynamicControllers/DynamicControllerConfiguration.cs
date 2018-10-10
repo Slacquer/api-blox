@@ -1,11 +1,7 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using APIBlox.AspNetCore.Contracts;
-
-#endregion
 
 namespace APIBlox.AspNetCore
 {
@@ -13,8 +9,6 @@ namespace APIBlox.AspNetCore
     [DebuggerDisplay("Internal Controller Name: {InternalControllerName}")]
     internal class DynamicControllerConfiguration : IDynamicControllerConfiguration
     {
-        #region -    Constructors    -
-
         public DynamicControllerConfiguration(
             string controllerName, Type requestResourceType,
             Type parentIdType, params string[] routes
@@ -25,8 +19,6 @@ namespace APIBlox.AspNetCore
             ParentIdType = parentIdType;
             ControllerName = controllerName;
         }
-
-        #endregion
 
         public string ControllerName { get; }
 

@@ -1,12 +1,8 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Attributes;
-
-#endregion
 
 namespace DemoApi2.Application.People.Commands
 {

@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,21 +10,13 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.Extensions.Logging;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class DynamicControllerActionParametersConvention : IApplicationModelConvention
     {
-        #region -    Fields    -
-
         private readonly IInternalDynamicControllerConfigurationsService _controllerConfigService;
         private readonly ILogger<DynamicControllerActionParametersConvention> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public DynamicControllerActionParametersConvention(
             ILoggerFactory loggerFactory,
@@ -36,8 +26,6 @@ namespace APIBlox.AspNetCore
             _log = loggerFactory.CreateLogger<DynamicControllerActionParametersConvention>();
             _controllerConfigService = controllerConfigService;
         }
-
-        #endregion
 
         /// <inheritdoc />
         public void Apply(ApplicationModel application)
@@ -95,12 +83,12 @@ namespace APIBlox.AspNetCore
         {
             var bodyParams = action.Parameters
                 .Where(p => !(p.BindingInfo is null))
-                .OrderBy(p=> p.ParameterName.EndsWithEx("id"))
+                .OrderBy(p => p.ParameterName.EndsWithEx("id"))
                 .ThenBy(p => p.ParameterName).ToList();
 
             var nonBody = action.Parameters
                 .Except(bodyParams)
-                .OrderBy(p=> p.ParameterName.EndsWithEx("id"))
+                .OrderBy(p => p.ParameterName.EndsWithEx("id"))
                 .ThenBy(p => p.ParameterName).ToList();
 
             action.Parameters.Clear();

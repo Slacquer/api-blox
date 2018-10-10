@@ -1,11 +1,7 @@
-﻿#region -    Using Statements    -
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using APIBlox.AspNetCore.Enums;
 using APIBlox.AspNetCore.Errors;
 using APIBlox.AspNetCore.Extensions;
-
-#endregion
 
 namespace APIBlox.AspNetCore.RequestsResponses
 {

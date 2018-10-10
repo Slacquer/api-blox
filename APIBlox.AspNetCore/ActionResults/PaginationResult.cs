@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using System.Net;
+﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace APIBlox.AspNetCore.ActionResults
 {
@@ -13,8 +9,6 @@ namespace APIBlox.AspNetCore.ActionResults
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ObjectResult" />
     public class PaginationResult : ObjectResult
     {
-        #region -    Constructors    -
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="PaginationResult" /> class.
         /// </summary>
@@ -24,7 +18,5 @@ namespace APIBlox.AspNetCore.ActionResults
         {
             StatusCode = (int) HttpStatusCode.OK;
         }
-
-        #endregion
     }
 }

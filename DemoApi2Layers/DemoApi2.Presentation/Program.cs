@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-
-#endregion
 
 namespace DemoApi2.Presentation
 {

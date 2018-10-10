@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using APIBlox.NetCore.Attributes;
+﻿using APIBlox.NetCore.Attributes;
 using Microsoft.AspNetCore.Http;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Enums
 {

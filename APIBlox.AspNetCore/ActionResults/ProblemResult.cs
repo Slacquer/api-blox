@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using APIBlox.AspNetCore.Errors;
+﻿using APIBlox.AspNetCore.Errors;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace APIBlox.AspNetCore.ActionResults
 {
@@ -18,16 +14,10 @@ namespace APIBlox.AspNetCore.ActionResults
     /// <seealso cref="T:Microsoft.AspNetCore.Http.StatusCodes" />
     public class ProblemResult : ObjectResult
     {
-        #region -    Fields    -
-
         /// <summary>
         ///     The error
         /// </summary>
         protected readonly RequestErrorObject Error;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ProblemResult" /> class.
@@ -41,8 +31,6 @@ namespace APIBlox.AspNetCore.ActionResults
             ContentTypes.Clear();
             ContentTypes.Add("application/problem+json");
         }
-
-        #endregion
 
         /// <inheritdoc />
         /// <summary>

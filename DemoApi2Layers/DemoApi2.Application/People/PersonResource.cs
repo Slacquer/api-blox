@@ -1,10 +1,6 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using APIBlox.AspNetCore.Contracts;
 using DemoApi2.Application.Locations;
-
-#endregion
 
 namespace DemoApi2.Application.People
 {

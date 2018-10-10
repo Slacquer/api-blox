@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Contracts;
@@ -8,8 +6,6 @@ using APIBlox.AspNetCore.RequestsResponses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Controllers
 {
@@ -25,15 +21,9 @@ namespace APIBlox.AspNetCore.Controllers
         IDynamicController<TPatchRequest>
         where TPatchRequest : PatchRequest
     {
-        #region -    Fields    -
-
         private readonly IPatchCommandHandler<TPatchRequest, HandlerResponse> _patchHandler;
 
         private readonly string _rn = typeof(TPatchRequest).Name;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicPatchController{TRequest}" /> class.
@@ -43,8 +33,6 @@ namespace APIBlox.AspNetCore.Controllers
         {
             _patchHandler = patchHandler;
         }
-
-        #endregion
 
         /// <summary>
         ///     Action for patching a resource.

@@ -1,11 +1,7 @@
-﻿#region -    Using Statements    -
-
-using APIBlox.NetCore.Attributes;
+﻿using APIBlox.NetCore.Attributes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace APIBlox.NetCore.Contracts
 {

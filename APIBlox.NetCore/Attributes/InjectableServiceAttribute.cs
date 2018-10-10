@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-
-#endregion
 
 namespace APIBlox.NetCore.Attributes
 {

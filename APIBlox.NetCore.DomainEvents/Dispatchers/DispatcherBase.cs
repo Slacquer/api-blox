@@ -1,25 +1,15 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using Microsoft.Extensions.DependencyInjection;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.NetCore
 {
     internal abstract class DispatcherBase
     {
-        #region -    Fields    -
-
         private readonly IServiceProvider _serviceProvider;
-
-        #endregion
-
-        #region -    Constructors    -
 
         protected DispatcherBase(
             IServiceProvider serviceProvider
@@ -27,8 +17,6 @@ namespace APIBlox.NetCore
         {
             _serviceProvider = serviceProvider;
         }
-
-        #endregion
 
         protected void ExecuteHandlers(IDomainEvent de, Action<Task> callback)
         {

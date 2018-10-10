@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System.Threading.Tasks;
-
-#endregion
+﻿using System.Threading.Tasks;
 
 namespace APIBlox.NetCore.Contracts
 {

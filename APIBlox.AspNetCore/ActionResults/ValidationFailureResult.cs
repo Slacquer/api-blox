@@ -1,13 +1,9 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Linq;
 using APIBlox.AspNetCore.Errors;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace APIBlox.AspNetCore.ActionResults
 {
@@ -18,8 +14,6 @@ namespace APIBlox.AspNetCore.ActionResults
     /// <seealso cref="T:APIBlox.AspNetCore.ActionResults.ProblemResult" />
     public class ValidationFailureResult : ProblemResult
     {
-        #region -    Constructors    -
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.ActionResults.ValidationFailureResult" /> class.
@@ -41,8 +35,6 @@ namespace APIBlox.AspNetCore.ActionResults
         {
             StatusCode = statusCode;
         }
-
-        #endregion
 
         /// <inheritdoc />
         /// <summary>

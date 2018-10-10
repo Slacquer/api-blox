@@ -1,16 +1,10 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using DemoApi2.Domain.People.Events;
-
-#endregion
 
 namespace DemoApi2.Domain.People
 {
     public sealed class PersonDomainModel : DomainModelBase<int>
     {
-        #region -    Constructors    -
-
         /// <inheritdoc />
         public PersonDomainModel(string firstName, string lastName, DateTimeOffset dob, string emailAddress)
         {
@@ -28,8 +22,6 @@ namespace DemoApi2.Domain.People
             Id = new Random().Next();
             EventsList.Add(new PersonCreatedEvent(this));
         }
-
-        #endregion
 
         public DateTimeOffset BirthDate { get; }
 

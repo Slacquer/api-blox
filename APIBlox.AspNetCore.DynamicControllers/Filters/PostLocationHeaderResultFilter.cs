@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Extensions;
@@ -10,27 +8,17 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class PostLocationHeaderResultFilter : IAsyncResultFilter
     {
-        #region -    Fields    -
-
         private readonly ILogger<PostLocationHeaderResultFilter> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public PostLocationHeaderResultFilter(ILoggerFactory loggerFactory)
         {
             _log = loggerFactory.CreateLogger<PostLocationHeaderResultFilter>();
         }
-
-        #endregion
 
         public Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
         {

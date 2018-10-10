@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using Newtonsoft.Json;
-
-#endregion
+﻿using Newtonsoft.Json;
 
 namespace APIBlox.NetCore
 {

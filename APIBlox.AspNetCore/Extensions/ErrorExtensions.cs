@@ -1,10 +1,6 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using APIBlox.AspNetCore.Errors;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Extensions
 {

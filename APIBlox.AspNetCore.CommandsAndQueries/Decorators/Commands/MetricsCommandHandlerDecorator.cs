@@ -1,12 +1,8 @@
-﻿#region -    Using Statements    -
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Decorators.Commands
 {
@@ -21,14 +17,8 @@ namespace APIBlox.AspNetCore.Decorators.Commands
     public class MetricsCommandHandlerDecorator<TRequestCommand>
         : ICommandHandler<TRequestCommand>
     {
-        #region -    Fields    -
-
         private readonly ICommandHandler<TRequestCommand> _decorated;
         private readonly ILogger<MetricsCommandHandlerDecorator<TRequestCommand>> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MetricsCommandHandlerDecorator{TRequestCommand}" /> class.
@@ -43,8 +33,6 @@ namespace APIBlox.AspNetCore.Decorators.Commands
             _log = loggerFactory.CreateLogger<MetricsCommandHandlerDecorator<TRequestCommand>>();
             _decorated = decorated;
         }
-
-        #endregion
 
         /// <inheritdoc />
         /// <summary>
@@ -82,14 +70,8 @@ namespace APIBlox.AspNetCore.Decorators.Commands
     public class MetricsCommandHandlerDecorator<TRequestCommand, TResult>
         : ICommandHandler<TRequestCommand, TResult>
     {
-        #region -    Fields    -
-
         private readonly ICommandHandler<TRequestCommand, TResult> _decorated;
         private readonly ILogger<MetricsCommandHandlerDecorator<TRequestCommand, TResult>> _log;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MetricsCommandHandlerDecorator{TRequestCommand, TResult}" /> class.
@@ -104,8 +86,6 @@ namespace APIBlox.AspNetCore.Decorators.Commands
             _log = loggerFactory.CreateLogger<MetricsCommandHandlerDecorator<TRequestCommand, TResult>>();
             _decorated = decorated;
         }
-
-        #endregion
 
         /// <inheritdoc />
         /// <summary>

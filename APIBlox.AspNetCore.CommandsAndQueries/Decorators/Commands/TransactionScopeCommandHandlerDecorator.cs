@@ -1,11 +1,7 @@
-﻿#region -    Using Statements    -
-
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using APIBlox.AspNetCore.Contracts;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Decorators.Commands
 {
@@ -19,13 +15,7 @@ namespace APIBlox.AspNetCore.Decorators.Commands
     public class TransactionScopeCommandHandlerDecorator<TRequestCommand>
         : ICommandHandler<TRequestCommand>
     {
-        #region -    Fields    -
-
         private readonly ICommandHandler<TRequestCommand> _decorated;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TransactionScopeCommandHandlerDecorator{TRequestCommand}" /> class.
@@ -35,8 +25,6 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         {
             _decorated = decorated;
         }
-
-        #endregion
 
         /// <inheritdoc />
         public async Task HandleAsync(TRequestCommand requestCommand, CancellationToken cancellationToken)
@@ -61,13 +49,7 @@ namespace APIBlox.AspNetCore.Decorators.Commands
     public class TransactionScopeCommandHandlerDecorator<TRequestCommand, TResult>
         : ICommandHandler<TRequestCommand, TResult>
     {
-        #region -    Fields    -
-
         private readonly ICommandHandler<TRequestCommand, TResult> _decorated;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <inheritdoc />
         /// <summary>
@@ -79,8 +61,6 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         {
             _decorated = decorated;
         }
-
-        #endregion
 
         /// <inheritdoc />
         public async Task<TResult> HandleAsync(TRequestCommand requestCommand, CancellationToken cancellationToken)

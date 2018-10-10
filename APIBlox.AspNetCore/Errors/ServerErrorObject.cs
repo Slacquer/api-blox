@@ -1,28 +1,20 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using APIBlox.NetCore.Extensions;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Errors
 {
     internal class ServerErrorObject : RequestErrorObject
     {
-        #region -    Constructors    -
-
         public ServerErrorObject(string title, string detail, int status, string instance, string referenceId)
             : base(title, detail, status, instance)
         {
             ReferenceId = referenceId;
         }
 
-        #endregion
-
         private string ReferenceId { get; }
-        
+
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             if (ReferenceId.IsEmptyNullOrWhiteSpace())

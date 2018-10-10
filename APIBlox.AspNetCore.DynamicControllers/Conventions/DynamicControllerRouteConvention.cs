@@ -1,32 +1,20 @@
-﻿#region -    Using Statements    -
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-
-#endregion
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class DynamicControllersRouteConvention : IApplicationModelConvention
     {
-        #region -    Fields    -
-
         private readonly IInternalDynamicControllerConfigurationsService _controllerConfigService;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public DynamicControllersRouteConvention(IInternalDynamicControllerConfigurationsService controllerConfigService)
         {
             _controllerConfigService = controllerConfigService;
         }
-
-        #endregion
 
         /// <inheritdoc />
         public void Apply(ApplicationModel application)

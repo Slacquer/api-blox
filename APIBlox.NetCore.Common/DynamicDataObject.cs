@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -9,8 +7,6 @@ using APIBlox.NetCore.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-
-#endregion
 
 namespace APIBlox.NetCore
 {
@@ -22,8 +18,6 @@ namespace APIBlox.NetCore
     /// <seealso cref="T:System.Dynamic.DynamicObject" />
     public class DynamicDataObject : DynamicObject
     {
-        #region -    Constructors    -
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.NetCore.DynamicDataObject" /> class.
@@ -38,8 +32,6 @@ namespace APIBlox.NetCore
             settings.Converters.Add(new StringEnumConverter(false));
             Settings = settings;
         }
-
-        #endregion
 
         /// <summary>
         ///     The properties collection
