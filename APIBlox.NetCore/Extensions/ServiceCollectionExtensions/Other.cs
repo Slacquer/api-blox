@@ -55,9 +55,6 @@ namespace Microsoft.Extensions.DependencyInjection
         ///         This only applies to NON-NESTED interfaces.
         ///     </para>
         ///     <para>
-        ///         Assembly paths for Executing, Calling and Entry are always searched.
-        ///     </para>
-        ///     <para>
         ///         Be sure to add me as close to the beginning of the service collection chain as possible.
         ///     </para>
         /// </summary>
@@ -94,9 +91,6 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     Adds Startup like configurations that implement <see cref="IDependencyInvertedConfiguration" />
         ///     and calls <see cref="IDependencyInvertedConfiguration.Configure" /> for
         ///     those found in the given namespace(s) and path(s).
-        ///     <para>
-        ///         Assembly paths for Executing, Calling and Entry are always searched.
-        ///     </para>
         ///     <para>
         ///         Be sure to add me as close to the beginning of the service collection chain as possible.
         ///     </para>
@@ -157,7 +151,7 @@ namespace Microsoft.Extensions.DependencyInjection
                                             "must have a parameter-less constructor."
                 );
 
-            ((IDependencyInvertedConfiguration) Activator.CreateInstance(type))
+            ((IDependencyInvertedConfiguration)Activator.CreateInstance(type))
                 .Configure(services, configuration, loggerFactory, environment);
         }
 
@@ -224,21 +218,18 @@ namespace Microsoft.Extensions.DependencyInjection
             bool injectable,
             bool inverted,
             string[] assemblyNamesLike,
-            IEnumerable<string> assemblyPaths = null
+            IReadOnlyCollection<string> assemblyPaths = null
         )
         {
-            if (!assemblyNamesLike.Any())
+            if (assemblyNamesLike is null || !assemblyNamesLike.Any())
                 throw new ArgumentException("You must specify at least one assembly name pattern.");
 
-            var callingLocation = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
-            var entryLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            var executingLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var def = new[] {callingLocation, entryLocation, executingLocation};
-            var aps = assemblyPaths?.Union(def) ?? def;
+            if (assemblyPaths is null || !assemblyPaths.Any())
+                throw new ArgumentException("You must specify at least one assembly path.");
 
             var found = GetResolvedTypes(injectable,
                 inverted,
-                GetAssemblyFilePaths(assemblyNamesLike, aps)
+                GetAssemblyFilePaths(assemblyNamesLike, assemblyPaths)
             ).Except(AssemblyTypes).ToList();
 
             _log.LogInformation(() =>
