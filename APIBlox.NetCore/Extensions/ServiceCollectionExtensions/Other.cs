@@ -75,11 +75,15 @@ namespace Microsoft.Extensions.DependencyInjection
             var injectable = AssemblyTypes.Where(kvp => !kvp.Key).ToList();
 
             if (!injectable.Any())
-                throw new ArgumentException($"No types decorated with {nameof(InjectableServiceAttribute)} could be found using" +
-                                            $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
-                                            "If this is intentional, please remove the " +
-                                            $"{nameof(AddInjectableServices)} entry."
+            {
+                _log.LogError(() =>
+                    $"No types decorated with {nameof(InjectableServiceAttribute)} could be found using" +
+                    $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
+                    "If this is intentional, please remove the " +
+                    $"{nameof(AddInjectableServices)} entry."
                 );
+                return services;
+            }
 
             foreach (var kvp in injectable)
                 services.RegisterServiceType(kvp.Value);
@@ -120,12 +124,16 @@ namespace Microsoft.Extensions.DependencyInjection
             var inverted = AssemblyTypes.Where(kvp => kvp.Key).ToList();
 
             if (!inverted.Any())
-                throw new ArgumentException("No types that implement " +
-                                            $"{nameof(IDependencyInvertedConfiguration)} could be found using" +
-                                            $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
-                                            "If this is intentional, please remove the " +
-                                            $"{nameof(AddInvertedDependentsAndConfigureServices)} entry."
+            {
+                _log.LogError(() =>
+                    "No types that implement " +
+                    $"{nameof(IDependencyInvertedConfiguration)} could be found using" +
+                    $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
+                    "If this is intentional, please remove the " +
+                    $"{nameof(AddInvertedDependentsAndConfigureServices)} entry."
                 );
+                return services;
+            }
 
             foreach (var kvp in inverted)
                 ConfigureInverted(kvp.Value, services, configuration, loggerFactory, environment);
@@ -147,9 +155,13 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             if (type.GetConstructors().All(c => c.GetParameters().Length != 0))
-                throw new ArgumentException($"Implementations of {nameof(IDependencyInvertedConfiguration)} " +
-                                            "must have a parameter-less constructor."
+            {
+                _log.LogError(() =>
+                    $"Implementations of {nameof(IDependencyInvertedConfiguration)} " +
+                    "must have a parameter-less constructor."
                 );
+                return;
+            }
 
             ((IDependencyInvertedConfiguration)Activator.CreateInstance(type))
                 .Configure(services, configuration, loggerFactory, environment);
@@ -168,7 +180,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 var fullPath = di.FullName;
 
                 if (!di.Exists)
-                    throw new DirectoryNotFoundException($"Path {fullPath} not found, please make sure your configuration is correct.");
+                {
+                    _log.LogError(() =>
+                        $"Path {fullPath} not found, please make sure your configuration is correct."
+                    );
+                    continue;
+
+                }
 
                 asses.AddRange(Directory.GetFiles(fullPath, "*.dll", SearchOption.AllDirectories)
                     .Where(s => assemblyNamesLike.Any(name => Path.GetFileName(s).ContainsEx(name))
@@ -222,10 +240,16 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             if (assemblyNamesLike is null || !assemblyNamesLike.Any())
-                throw new ArgumentException("You must specify at least one assembly name pattern.");
+            {
+                _log.LogError(() => "You must specify at least one assembly name pattern.");
+                return;
+            }
 
             if (assemblyPaths is null || !assemblyPaths.Any())
-                throw new ArgumentException("You must specify at least one assembly path.");
+            {
+                _log.LogError(() => "You must specify at least one assembly path.");
+                return;
+            }
 
             var found = GetResolvedTypes(injectable,
                 inverted,
@@ -252,10 +276,13 @@ namespace Microsoft.Extensions.DependencyInjection
             var lifetime = attr.ServiceLifetime;
 
             if (!interfaces.Any())
-                throw new ArgumentException($"Services decorated with the {nameof(InjectableServiceAttribute)} " +
-                                            "must implement at least 1 interface.",
-                    nameof(type)
+            {
+                _log.LogError(() =>
+                    $"Services decorated with the {nameof(InjectableServiceAttribute)}  " +
+                    "must implement at least 1 interface."
                 );
+                return;
+            }
 
             foreach (var face in interfaces.Where(i => !i.IsNested))
             {
@@ -277,22 +304,16 @@ namespace Microsoft.Extensions.DependencyInjection
                             descriptor = BuildDescriptor(decParams, type, lifetime);
                         }
                         else
-                        {
                             descriptor = BuildDescriptor(face, type, lifetime);
-                        }
                     }
                 }
 
                 // If interface doesn't have any generic args, then we will have nothing to pass
                 // to the implementation during creation for THIS INTERFACE, so we will not add it as a service.
                 else if (args == null || !args.Any() && type.IsGenericTypeDefinition)
-                {
                     continue;
-                }
                 else
-                {
                     descriptor = BuildDescriptor(face, type, lifetime);
-                }
 
                 services.Add(descriptor);
             }
