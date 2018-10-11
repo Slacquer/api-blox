@@ -211,6 +211,8 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 try
                 {
+                    _log.LogInformation(() => $"Attempting to resolve: {ass}");
+
                     using (var assResolver = new AssemblyResolver(ass))
                     {
                         ret.AddRange(assResolver.Assembly.GetTypes()
