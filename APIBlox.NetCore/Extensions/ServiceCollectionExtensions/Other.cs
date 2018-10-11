@@ -171,7 +171,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     throw new DirectoryNotFoundException($"Path {fullPath} not found, please make sure your configuration is correct.");
 
                 asses.AddRange(Directory.GetFiles(fullPath, "*.dll", SearchOption.AllDirectories)
-                    .Where(s => assemblyNamesLike.Any(name => s.ContainsEx(name))
+                    .Where(s => assemblyNamesLike.Any(name => Path.GetFileName(s).ContainsEx(name))
                                 && asses.Select(Path.GetFileName).All(fn =>
                                     !fn.EqualsEx(Path.GetFileName(s))
                                 )
