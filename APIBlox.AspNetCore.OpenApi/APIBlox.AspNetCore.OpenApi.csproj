@@ -3,11 +3,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> 
-    <RootNamespace>APIBlox.NetCore</RootNamespace> 
-    <Authors>Slacquer</Authors> 
-    <Company>Slacquers Building Blox</Company> 
-    <Description>Cross-Cutting.NetCore bits.  SourceLink is enabled.</Description> 
+    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion>
+    <RootNamespace>APIBlox.AspNetCore</RootNamespace>
+    <Authors>Slacquer</Authors>
+    <Company>Slacquers Building Blox</Company>
+    <Description>AspNetCore OpenAPI bits.  SourceLink is enabled.</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
@@ -19,7 +19,7 @@
     <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
     <PackageReleaseNotes>Initial pre-release.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
-    <AssemblyName>APIBlox.NetCore.Common</AssemblyName>
+    <AssemblyName>APIBlox.AspNetCore</AssemblyName>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/Slacquer/api-blox/blob/master/LICENSE</PackageLicenseUrl>
     <Version>0.0.0</Version>
@@ -32,17 +32,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.1.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-   
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove=".gitattributes" />
-    <None Remove=".gitignore" />
+    
   </ItemGroup>
 
 </Project>

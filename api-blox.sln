@@ -52,7 +52,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoApi2.Persistance", "Dem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoApi2.Infrastructure", "DemoApi2Layers\DemoApi2.Infrastructure\DemoApi2.Infrastructure.csproj", "{F9367760-785C-40D1-B9B2-CE90E17A2E38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIBlox.AspNetCore.CommandsQueriesControllersOhMy", "APIBlox.AspNetCore.CommandsQueriesControllersOhMy\APIBlox.AspNetCore.CommandsQueriesControllersOhMy.csproj", "{D033F0DC-4EF0-4208-8F53-E9583CA88A81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.AspNetCore.CommandsQueriesControllersOhMy", "APIBlox.AspNetCore.CommandsQueriesControllersOhMy\APIBlox.AspNetCore.CommandsQueriesControllersOhMy.csproj", "{D033F0DC-4EF0-4208-8F53-E9583CA88A81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIBlox.AspNetCore.OpenApi", "APIBlox.AspNetCore.OpenApi\APIBlox.AspNetCore.OpenApi.csproj", "{ABF743AE-5778-4EF5-8C16-CC2340ECFCCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,6 +110,10 @@ Global
 		{D033F0DC-4EF0-4208-8F53-E9583CA88A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D033F0DC-4EF0-4208-8F53-E9583CA88A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D033F0DC-4EF0-4208-8F53-E9583CA88A81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABF743AE-5778-4EF5-8C16-CC2340ECFCCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABF743AE-5778-4EF5-8C16-CC2340ECFCCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABF743AE-5778-4EF5-8C16-CC2340ECFCCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABF743AE-5778-4EF5-8C16-CC2340ECFCCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
