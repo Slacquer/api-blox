@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.RequestsResponses;
 using APIBlox.NetCore.Attributes;
 using DemoApi2.Domain.Contracts;
 using DemoApi2.Domain.People;
@@ -11,7 +12,7 @@ using DemoApi2.Domain.People;
 namespace DemoApi2.Application.People.Queries
 {
     [InjectableService]
-    public class GetAllPeopleQueryHandler : IQueryHandler<PersonQuery, IEnumerable<PersonResponse>>
+    public class GetAllPeopleQueryHandler : IQueryHandler<PersonQuery, HandlerResponse>
     {
         private readonly IDomainDataService<PersonDomainModel, int> _dataService;
 
@@ -20,22 +21,36 @@ namespace DemoApi2.Application.People.Queries
             _dataService = dataService;
         }
 
-        /// <inheritdoc />
-        public async Task<IEnumerable<PersonResponse>> HandleAsync(PersonQuery query, CancellationToken cancellationToken)
+        public async Task<HandlerResponse> HandleAsync(PersonQuery query, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await Task.FromResult(
-                _dataService.GeTRequestQueryable().Select(
-                    m => new PersonResponse
-                    {
-                        BirthDate = m.BirthDate,
-                        FirstName = m.FirstName,
-                        Id = m.Id,
-                        LastName = m.LastName
-                    }
-                )
-            ).ConfigureAwait(false);
+            var ret = new HandlerResponse();
+
+            //var tmp =  await Task.FromResult(
+            //    _dataService.GeTRequestQueryable().Select(
+            //        m => new PersonResponse
+            //        {
+            //            BirthDate = m.BirthDate,
+            //            FirstName = m.FirstName,
+            //            Id = m.Id,
+            //            LastName = m.LastName
+            //        }
+            //    )
+            //).ConfigureAwait(false);
+
+
+            var lst = new List<PersonResponse>();
+
+            for (int i = 0; i < 1000; i++)
+            {
+                lst.Add(new PersonResponse {FirstName = "Foo" + i, Id = i,});
+            }
+
+
+            ret.Result = lst;
+
+            return ret;
         }
     }
 }

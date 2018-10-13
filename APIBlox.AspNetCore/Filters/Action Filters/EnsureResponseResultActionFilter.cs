@@ -54,10 +54,10 @@ namespace APIBlox.AspNetCore.Filters
             if (!(retValue is null))
                 result.Value = retValue;
 
-            Handle(result);
+            Handle(context, result);
         }
 
-        protected virtual void Handle(ObjectResult result)
+        protected virtual void Handle(ActionExecutingContext context, ObjectResult result)
         {
         }
     }

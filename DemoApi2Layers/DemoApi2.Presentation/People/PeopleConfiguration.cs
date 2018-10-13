@@ -46,7 +46,7 @@ namespace DemoApi2.Presentation.People
             //    "userSettings",
             //    typeof(DefaultDeleteByController<>)
             //);
-            config.AddController<PersonCommand, PersonResponse, int>(peopleRoutes, typeof(DynamicPostController<,,>));
+            //config.AddController<PersonCommand, PersonResponse, int>(peopleRoutes, typeof(DynamicPostController<,,>));
 
             ////Resource validation
             //services.TryAddTransient<IValidator<PersonResource>, PersonRequestResourceValidator>();

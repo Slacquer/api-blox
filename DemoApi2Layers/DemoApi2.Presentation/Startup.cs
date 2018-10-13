@@ -48,7 +48,8 @@ namespace DemoApi2.Presentation
                     }
                 )
                 .AddMvc()
-                .AddEnsureResponseResultActionFilter(o => new {Resources = o})
+                //.AddEnsureResponseResultActionFilter(o => new {Resources = o})
+                .AddEnsurePaginationResultActionFilter(100)
                 .AddValidateResourceActionFilter()
                 .AddPopulateRequestObjectActionFilter()
                 .AddPopulateGenericRequestObjectActionFilter()

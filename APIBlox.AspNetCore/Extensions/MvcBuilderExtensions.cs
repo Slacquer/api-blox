@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using APIBlox.AspNetCore;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Attributes;
 using APIBlox.AspNetCore.Extensions;
@@ -121,6 +122,8 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!(defineResponseFunc is null))
                 InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
 
+            builder.Services.AddTransient<IPaginationBuilder, PaginationBuilder>();
+
             builder.Services.Configure<MvcOptions>(o =>
                 {
                     FindExistingResultActionFilterAndThrow(o.Filters,
@@ -147,15 +150,19 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
         /// </summary>
         /// <param name="builder">IMvcBuilder</param>
+        /// <param name="defaultPageSize">Default page size for pagination responses.</param>
         /// <param name="defineResponseFunc">Your user defined structure.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddEnsurePaginationResultActionFilter(
             this IMvcBuilder builder,
+            int defaultPageSize = 1000,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
             if (!(defineResponseFunc is null))
                 InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
+
+            builder.Services.AddTransient<IPaginationBuilder, PaginationBuilder>(s => new PaginationBuilder(defaultPageSize));
 
             builder.Services.Configure<MvcOptions>(o =>
                 {
