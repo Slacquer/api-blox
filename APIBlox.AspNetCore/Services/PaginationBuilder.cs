@@ -44,8 +44,24 @@ namespace APIBlox.AspNetCore
                     typeof(PaginationQuery),
                     new Dictionary<string, string>
                     {
-                        {"Offset", "$Offset"},
-                        {"Skip", "$Skip"}
+                        
+                        // should be {"Skip", new[]{"Offset","$Offset","$Skip"}}
+
+                        {"Offset", "Skip"},
+                        {"$Offset", "Skip"},
+                        {"$Skip", "Skip"},
+
+                        {"Limit", "Top"},
+                        {"$Limit", "Top"},
+                        {"$Top", "Top"},
+
+                        {"$OrderBy", "OrderBy"},
+                        {"$Where", "Where"},
+
+                        
+                        {"Project", "Select"},
+                        {"$Project", "Select"},
+                        {"$Select", "Select"},
                     }
                 }
             };
@@ -90,11 +106,11 @@ namespace APIBlox.AspNetCore
 
         private class PaginationQuery
         {
-            public int? Offset { get; set; }
+            //public int? Offset { get; set; }
             public int? Skip { get; set; }
 
 
-            public int? Limit { get; set; }
+            //public int? Limit { get; set; }
             public int? Top { get; set; }
 
             public string OrderBy { get; set; }
@@ -103,6 +119,7 @@ namespace APIBlox.AspNetCore
         }
     }
 
+    // change me to FIND the incoming member.Name in the given dictionary.
     internal class DynamicMappingResolver : DefaultContractResolver
     {
         private readonly Dictionary<Type, Dictionary<string, string>> _memberNameToJsonNameMap;
