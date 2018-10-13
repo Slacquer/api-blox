@@ -1,9 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using APIBlox.NetCore;
 using APIBlox.NetCore.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace APIBlox.AspNetCore.Errors
 {
@@ -15,6 +17,8 @@ namespace APIBlox.AspNetCore.Errors
     [Serializable]
     public class RequestErrorObject : DynamicDataObject
     {
+        private ILogger<RequestErrorObject> _logger;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Errors.RequestErrorObject" /> class.
@@ -38,6 +42,7 @@ namespace APIBlox.AspNetCore.Errors
             Status = status;
             Instance = instance;
         }
+
 
         /// <summary>
         ///     [REQUIRED]
@@ -132,12 +137,41 @@ namespace APIBlox.AspNetCore.Errors
             Properties.TryAdd("Status", Status);
             Properties.TryAdd("Instance", Instance);
 
-            InternalHelpers.AlterRequestErrorObjectAction?.Invoke(this);
+            TryAlterRequestObjectAction();
 
             if (Errors.Any())
                 Properties.TryAdd("Errors", Errors);
 
             return base.GetDynamicMemberNames();
+        }
+
+
+        private void TryAlterRequestObjectAction()
+        {
+            try
+            {
+                InternalHelpers.AlterRequestErrorObjectAction?.Invoke(this);
+            }
+            catch (Exception ex)
+            {
+                CreateLogger();
+
+                _logger.LogError(() =>
+                    $"An error has occured while invoking AddAlterRequestErrorObject.alterAction.  Ex: {ex.Message}"
+                );
+            }
+        }
+
+        private void CreateLogger()
+        {
+            if (!(_logger is null))
+                return;
+
+            var factory = new LoggerFactory();
+
+            factory.AddConsole(true).AddDebug().AddEventSourceLogger();
+
+            _logger = factory.CreateLogger<RequestErrorObject>();
         }
     }
 }
