@@ -9,26 +9,33 @@
     <Company>Slacquers Building Blox</Company>
     <Description>AspNetCore bits.  SourceLink is enabled.</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-    <!-- Source Link stuff -->
+    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <!-- Optional: Include the PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    
     <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
     <PackageReleaseNotes>Initial pre-release.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
     <AssemblyName>APIBlox.AspNetCore</AssemblyName>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/Slacquer/api-blox/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>0.0.0</Version>
-    <PackageTags>dynamic-controllers;controller;netcore2;api-rest;cqrs;aspnetcore;asp-net-core;dependency-injection;inversion-of-control;ioc;ioc-container;openapi;swagger</PackageTags>
+
+    <Version>0.0.1-alpha03</Version>
+
+    <PackageTags>dynamic-controllers;controller;netcore2;api-rest;cqrs;aspnetcore;asp-net-core;dependency-injection;inversion-of-control;ioc;ioc-container</PackageTags>
     <RepositoryUrl>https://github.com/Slacquer/api-blox</RepositoryUrl>
     <Copyright>Slacquers Building Blox</Copyright>
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
     <FileVersion>0.0.0.0</FileVersion>
     <RepositoryType>GIT</RepositoryType>
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,6 +43,10 @@
     <EmbeddedResource Remove="Filters\Result Filters\**" />
     <None Remove="Filters\Result Filters\**" />
   </ItemGroup>
+
+  <!--<ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.Vsts.Git" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
+  </ItemGroup>-->
 
   <ItemGroup>
     <None Remove=".gitattributes" />
@@ -49,11 +60,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.4" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    
   </ItemGroup>
 
   <ItemGroup>
