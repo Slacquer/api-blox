@@ -12,7 +12,7 @@ using DemoApi2.Domain.People;
 namespace DemoApi2.Application.People.Queries
 {
     [InjectableService]
-    public class GetAllPeopleQueryHandler : IQueryHandler<PersonQuery, HandlerResponse>
+    public class GetAllPeopleQueryHandler : IQueryHandler<PagedPersonQuery, HandlerResponse>
     {
         private readonly IDomainDataService<PersonDomainModel, int> _dataService;
 
@@ -21,7 +21,7 @@ namespace DemoApi2.Application.People.Queries
             _dataService = dataService;
         }
 
-        public async Task<HandlerResponse> HandleAsync(PersonQuery query, CancellationToken cancellationToken)
+        public async Task<HandlerResponse> HandleAsync(PagedPersonQuery query, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

@@ -27,7 +27,7 @@ namespace DemoApi2.Presentation.People
             //    .AddSubController<LocationQuery>(typeof(int), locationRoutes, "locations", typeof(QueryByIdController<>))
             //    ;
 
-            config.AddController<PersonQuery, PersonResponse, int>(peopleRoutes, "people", typeof(DynamicQueryAllController<,,>))
+            config.AddController<PagedPersonQuery, PersonResponse, int>(peopleRoutes, "people", typeof(DynamicQueryAllController<,,>))
                 ; //.AddSubController<LocationQuery>(typeof(int), locationRoutes, "locations", typeof(QueryByIdController<>));
 
             //var noRouteParamsRoute = new[] { "api/serSettings" };

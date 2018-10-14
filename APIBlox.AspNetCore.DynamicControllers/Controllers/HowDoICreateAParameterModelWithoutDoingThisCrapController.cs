@@ -17,7 +17,11 @@ namespace APIBlox.AspNetCore
         public ActionResult Dummy(
             uint v0, int v1, long v2, double v3, short v4, Guid v5,
             ushort v6, uint v7, ulong v8, short v9, int v10, long v11, decimal v12, char v13,
-            HashCode v14, string v15
+            HashCode v14, string v15,
+            int? v16,
+            long? v17,
+            double? v18,
+            decimal? v19
         )
         {
             return null;
