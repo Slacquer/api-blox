@@ -7,6 +7,7 @@ using APIBlox.NetCore.JsonBits;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -100,7 +101,10 @@ namespace APIBlox.AspNetCore
                 var query = q.Keys.ToDictionary(k => k, v => q[v].FirstOrDefault());
 
                 IsQuery = context.HttpContext.Request.Method.EqualsEx("get");
-                RouteDataString = JsonConvert.SerializeObject(data.Values);
+
+                var values =new RouteValueDictionary( data.Values.Where(kvp => !kvp.Key.EqualsEx("action") && !kvp.Key.EqualsEx("controller")));
+                RouteDataString = JsonConvert.SerializeObject(values);
+
                 QueryString = JsonConvert.SerializeObject(query);
             }
 

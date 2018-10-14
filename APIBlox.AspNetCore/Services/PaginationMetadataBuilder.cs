@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Services;
-using APIBlox.NetCore.Extensions;
-using APIBlox.NetCore.JsonBits;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace
@@ -104,92 +99,6 @@ namespace APIBlox.AspNetCore
             int? nextSkip = skip - top;
 
             return nextSkip > 0 ? nextSkip : null;
-        }
-
-        private class PaginationQuery
-        {
-            private const string CountParam = "$count";
-            private const string FilterParam = "$filter";
-            private const string OrderByParam = "$orderby";
-            private const string SelectParam = "$select";
-            private const string SkipParam = "$skip";
-            private const string TopParam = "$top";
-
-            private static readonly Dictionary<string, string[]> InMap = new Dictionary<string, string[]>
-            {
-                {"Skip", new[] {"$Skip", "Offset", "$Offset"}},
-                {"Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"}},
-                {"OrderBy", new[] {"$OrderBy"}},
-                {"Filter", new[] {"$Where", "Where", "$Filter"}},
-                {"Select", new[] {"$Select", "Project", "$Project"}}
-            };
-
-            public static readonly JsonSerializerSettings AliasesInSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new AliasContractResolver(InMap)
-            };
-
-            public PaginationQuery()
-            {
-            }
-
-            public PaginationQuery(PaginationQuery query)
-            {
-                Skip = query.Skip;
-                Top = query.Top;
-                OrderBy = query.OrderBy;
-                Filter = query.Filter;
-                Select = query.Select;
-                OtherParameters = query.OtherParameters;
-            }
-
-            public int? Count { get; set; }
-
-            public string Filter { get; set; }
-
-            public string OrderBy { get; set; }
-
-            public IEnumerable<KeyValuePair<string, StringValues>> OtherParameters { get; set; }
-
-            public string Select { get; set; }
-
-            public int? Skip { get; set; }
-
-            public int? Top { get; set; }
-
-            public override string ToString()
-            {
-                var qb = new QueryBuilder();
-
-                if (Skip.HasValue)
-                    qb.Add(SkipParam, Skip.Value.ToString());
-
-                if (Top.HasValue)
-                    qb.Add(TopParam, Top.Value.ToString());
-
-                if (Count.HasValue)
-                    qb.Add(CountParam, Count.Value.ToString());
-
-                if (!OrderBy.IsEmptyNullOrWhiteSpace())
-                    qb.Add(OrderByParam, OrderBy);
-
-                if (!Filter.IsEmptyNullOrWhiteSpace())
-                    qb.Add(FilterParam, Filter);
-
-                if (!Select.IsEmptyNullOrWhiteSpace())
-                    qb.Add(SelectParam, Select);
-
-                if (OtherParameters is null)
-                    return qb.ToString();
-
-                foreach (var p in OtherParameters)
-                {
-                    foreach (var v in p.Value)
-                        qb.Add(p.Key, v);
-                }
-
-                return qb.ToString();
-            }
         }
     }
 }
