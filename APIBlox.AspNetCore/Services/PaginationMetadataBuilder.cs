@@ -2,6 +2,7 @@
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Services;
+using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
@@ -38,16 +39,16 @@ namespace APIBlox.AspNetCore
             return BuildResponseFromQuery(requestQuery, resultCount, url);
         }
 
-        private PaginationMetadata BuildResponseFromQuery(PaginationQuery requestQuery, int count, string baseUrl)
+        private PaginationMetadata BuildResponseFromQuery(FilteredPaginationQuery requestQuery, int count, string baseUrl)
         {
-            PaginationQuery previousQuery = null;
-            PaginationQuery nextQuery = null;
+            FilteredPaginationQuery previousQuery = null;
+            FilteredPaginationQuery nextQuery = null;
 
             if (!(requestQuery.Skip is null) && requestQuery.Skip != 0)
             {
                 var previousSkip = GetPreviousSkip(requestQuery);
 
-                previousQuery = new PaginationQuery(requestQuery)
+                previousQuery = new FilteredPaginationQuery(requestQuery)
                 {
                     Skip = previousSkip
                 };
@@ -56,11 +57,13 @@ namespace APIBlox.AspNetCore
             var nextSkip = GetNextSkip(requestQuery);
 
             // If the next skip is beyond the result count, we are on the last page
-            if (nextSkip < count)
-                nextQuery = new PaginationQuery(requestQuery)
+            if (nextSkip <= count)
+            {
+                nextQuery = new FilteredPaginationQuery(requestQuery)
                 {
                     Skip = nextSkip
                 };
+            }
 
             return new PaginationMetadata
             {
@@ -70,12 +73,12 @@ namespace APIBlox.AspNetCore
             };
         }
 
-        private static PaginationQuery BuildFromQueryParams(IQueryCollection requestQuery)
+        private static FilteredPaginationQuery BuildFromQueryParams(IQueryCollection requestQuery)
         {
             var query = requestQuery.Keys.ToDictionary(k => k, v => requestQuery[v].FirstOrDefault());
 
             var convertIncoming = JsonConvert.SerializeObject(query, Formatting.Indented, PaginationQuery.AliasesInSettings);
-            var pagedQuery = JsonConvert.DeserializeObject<PaginationQuery>(convertIncoming);
+            var pagedQuery = JsonConvert.DeserializeObject<FilteredPaginationQuery>(convertIncoming);
 
             return pagedQuery;
         }

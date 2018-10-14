@@ -4,8 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using APIBlox.NetCore;
 using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Types;
 
-namespace APIBlox.AspNetCore.Errors
+namespace APIBlox.AspNetCore.Types.Errors
 {
     /// <inheritdoc />
     /// <summary>
@@ -24,7 +25,7 @@ namespace APIBlox.AspNetCore.Errors
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Errors.DynamicErrorObject" /> class.
+        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.Errors.DynamicErrorObject" /> class.
         /// </summary>
         /// <param name="title">The title.</param>
         /// <param name="detail">The detail.</param>

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using APIBlox.AspNetCore.RequestsResponses;
+using APIBlox.AspNetCore.Types;
 
 namespace APIBlox.AspNetCore.Contracts
 {

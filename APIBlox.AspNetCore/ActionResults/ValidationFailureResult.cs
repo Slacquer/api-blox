@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using APIBlox.AspNetCore.Errors;
+using APIBlox.AspNetCore.Types.Errors;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

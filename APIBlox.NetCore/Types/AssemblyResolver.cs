@@ -8,7 +8,7 @@ using APIBlox.NetCore.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyModel.Resolution;
 
-namespace APIBlox.NetCore
+namespace APIBlox.NetCore.Types
 {
     /// <inheritdoc />
     /// <summary>

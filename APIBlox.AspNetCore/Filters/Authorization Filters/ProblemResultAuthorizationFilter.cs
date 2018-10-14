@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
-using APIBlox.AspNetCore.Errors;
 using APIBlox.AspNetCore.Extensions;
+using APIBlox.AspNetCore.Types.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Mvc.Authorization;

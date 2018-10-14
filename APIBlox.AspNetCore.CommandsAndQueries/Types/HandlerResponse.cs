@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using APIBlox.AspNetCore.Enums;
-using APIBlox.AspNetCore.Errors;
 using APIBlox.AspNetCore.Extensions;
+using APIBlox.AspNetCore.Types.Errors;
 
-namespace APIBlox.AspNetCore.RequestsResponses
+namespace APIBlox.AspNetCore.Types
 {
     /// <summary>
     ///     Class HandlerResponse.

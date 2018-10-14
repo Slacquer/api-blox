@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace APIBlox.NetCore
+namespace APIBlox.NetCore.Types
 {
     /// <summary>
     ///     Class SimpleMapper

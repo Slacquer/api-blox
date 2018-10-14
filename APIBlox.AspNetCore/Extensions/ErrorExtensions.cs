@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using APIBlox.AspNetCore.Errors;
+using APIBlox.AspNetCore.Types.Errors;
 
 namespace APIBlox.AspNetCore.Extensions
 {

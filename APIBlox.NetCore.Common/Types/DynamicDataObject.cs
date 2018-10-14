@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,7 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
-namespace APIBlox.NetCore
+namespace APIBlox.NetCore.Types
 {
     /// <inheritdoc />
     /// <summary>
@@ -16,11 +17,12 @@ namespace APIBlox.NetCore
     ///     <para>About as close as you can get to a javaScript object.</para>
     /// </summary>
     /// <seealso cref="T:System.Dynamic.DynamicObject" />
+    [DebuggerStepThrough]
     public class DynamicDataObject : DynamicObject
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:APIBlox.NetCore.DynamicDataObject" /> class.
+        ///     Initializes a new instance of the <see cref="T:APIBlox.NetCore.Types.DynamicDataObject" /> class.
         /// </summary>
         public DynamicDataObject()
         {

@@ -1,13 +1,13 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using APIBlox.NetCore;
 using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Types;
 using Microsoft.Extensions.Logging;
 
-namespace APIBlox.AspNetCore.Errors
+namespace APIBlox.AspNetCore.Types.Errors
 {
     /// <inheritdoc />
     /// <summary>
@@ -21,7 +21,7 @@ namespace APIBlox.AspNetCore.Errors
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Errors.RequestErrorObject" /> class.
+        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.Errors.RequestErrorObject" /> class.
         /// </summary>
         public RequestErrorObject()
         {

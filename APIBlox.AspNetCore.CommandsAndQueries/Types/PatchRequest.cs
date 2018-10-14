@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 
-namespace APIBlox.AspNetCore.RequestsResponses
+namespace APIBlox.AspNetCore.Types
 {
     /// <summary>
     ///     Class PatchRequest.

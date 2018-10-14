@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using APIBlox.AspNetCore.Errors;
 using APIBlox.AspNetCore.Extensions;
+using APIBlox.AspNetCore.Types.Errors;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

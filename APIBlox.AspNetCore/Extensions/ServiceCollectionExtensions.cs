@@ -1,6 +1,6 @@
 ﻿using System;
 using APIBlox.AspNetCore;
-using APIBlox.AspNetCore.Errors;
+using APIBlox.AspNetCore.Types.Errors;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection

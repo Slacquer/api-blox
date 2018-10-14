@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using APIBlox.AspNetCore.Errors;
-using APIBlox.AspNetCore.RequestsResponses;
+using APIBlox.AspNetCore.Types;
+using APIBlox.AspNetCore.Types.Errors;
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore.CommandQueryResponses

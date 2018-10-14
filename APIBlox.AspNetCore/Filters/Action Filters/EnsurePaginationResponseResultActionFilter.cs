@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using APIBlox.NetCore;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;

@@ -1,6 +1,6 @@
 ﻿using System;
 using APIBlox.AspNetCore.Enums;
-using APIBlox.AspNetCore.Errors;
+using APIBlox.AspNetCore.Types.Errors;
 using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Extensions;
 

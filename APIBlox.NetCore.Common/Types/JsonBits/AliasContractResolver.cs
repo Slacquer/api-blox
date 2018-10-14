@@ -5,7 +5,7 @@ using APIBlox.NetCore.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace APIBlox.NetCore.JsonBits
+namespace APIBlox.NetCore.Types.JsonBits
 {
     /// <inheritdoc />
     /// <summary>
@@ -22,7 +22,7 @@ namespace APIBlox.NetCore.JsonBits
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:APIBlox.NetCore.JsonBits.AliasContractResolver" /> class.
+        ///     Initializes a new instance of the <see cref="T:APIBlox.NetCore.Types.JsonBits.AliasContractResolver" /> class.
         /// </summary>
         /// <param name="propertyAliasMap">The property alias map.</param>
         public AliasContractResolver(Dictionary<string, string[]> propertyAliasMap)

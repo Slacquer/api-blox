@@ -7,6 +7,7 @@ using APIBlox.NetCore;
 using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Types;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

@@ -1,5 +1,5 @@
 ﻿using System;
-using APIBlox.AspNetCore.Errors;
+using APIBlox.AspNetCore.Types.Errors;
 using DemoApi2.Presentation.People;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;

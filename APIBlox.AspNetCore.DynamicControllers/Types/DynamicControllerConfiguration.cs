@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using APIBlox.AspNetCore.Contracts;
 
+// ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     // ReSharper disable once UseNameofExpression

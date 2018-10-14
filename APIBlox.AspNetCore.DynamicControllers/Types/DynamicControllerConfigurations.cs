@@ -4,6 +4,7 @@ using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
+// ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class DynamicControllerConfigurationsService : IDynamicControllerConfigurations,

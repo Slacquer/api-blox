@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
 using APIBlox.AspNetCore.Services;
+using APIBlox.AspNetCore.Types;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
 namespace DemoApi2.Application.People.Queries
 {
-    public class PagedPersonQuery : PaginationQuery
+    public class PagedPersonQuery : FilteredPaginationQuery
     {
         public int CompanyId { get; private set; }
 
         public double DepartmentId { get; private set; }
+        
     }
 
     //public class PagedPersonQuery

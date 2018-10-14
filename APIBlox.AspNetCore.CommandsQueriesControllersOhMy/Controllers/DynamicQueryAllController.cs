@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Contracts;
-using APIBlox.AspNetCore.RequestsResponses;
+using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

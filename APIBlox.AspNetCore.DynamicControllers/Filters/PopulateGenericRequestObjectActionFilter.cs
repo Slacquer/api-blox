@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Extensions;
-using APIBlox.NetCore.JsonBits;
+using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;

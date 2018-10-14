@@ -3,7 +3,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace APIBlox.NetCore.JsonBits
+namespace APIBlox.NetCore.Types.JsonBits
 {
     /// <summary>
     ///     Class PopulateNonPublicSettersContractResolver.

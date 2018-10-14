@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Attributes;
 using APIBlox.NetCore.Extensions;
-using APIBlox.NetCore.JsonBits;
+using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;

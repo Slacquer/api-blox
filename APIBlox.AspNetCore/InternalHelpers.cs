@@ -1,5 +1,5 @@
 ﻿using System;
-using APIBlox.AspNetCore.Errors;
+using APIBlox.AspNetCore.Types.Errors;
 
 namespace APIBlox.AspNetCore
 {

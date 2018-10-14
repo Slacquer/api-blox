@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using APIBlox.NetCore.Extensions;
 
-namespace APIBlox.AspNetCore.Errors
+namespace APIBlox.AspNetCore.Types.Errors
 {
     internal class ServerErrorObject : RequestErrorObject
     {
