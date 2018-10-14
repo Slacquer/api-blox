@@ -15,8 +15,8 @@ namespace APIBlox.NetCore.JsonBits
     ///     properties when Deserializing, or to strings when serializing.
     /// </para>
     /// </summary>
-    /// <seealso cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver" />
-    public class AliasContractResolver : DefaultContractResolver
+    /// <seealso cref="PopulateNonPublicSettersContractResolver" />
+    public class AliasContractResolver : PopulateNonPublicSettersContractResolver
     {
         private readonly Dictionary<string, string[]> _map;
 

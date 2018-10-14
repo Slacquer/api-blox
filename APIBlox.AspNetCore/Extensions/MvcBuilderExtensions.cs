@@ -122,7 +122,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!(defineResponseFunc is null))
                 InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
 
-            builder.Services.AddTransient<IPaginationBuilder, PaginationBuilder>();
+            builder.Services.AddTransient<IPaginationMetadataBuilder, PaginationMetadataBuilder>();
 
             builder.Services.Configure<MvcOptions>(o =>
                 {
@@ -162,7 +162,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!(defineResponseFunc is null))
                 InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
 
-            builder.Services.AddTransient<IPaginationBuilder, PaginationBuilder>(s => new PaginationBuilder(defaultPageSize));
+            builder.Services.AddTransient<IPaginationMetadataBuilder, PaginationMetadataBuilder>(s => new PaginationMetadataBuilder(defaultPageSize));
 
             builder.Services.Configure<MvcOptions>(o =>
                 {

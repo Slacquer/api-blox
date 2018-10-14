@@ -12,12 +12,12 @@ namespace APIBlox.AspNetCore.Filters
 {
     internal class EnsurePaginationResponseResultActionFilter : EnsureResponseResultActionFilter
     {
-        private readonly IPaginationBuilder _paginationBuilder;
+        private readonly IPaginationMetadataBuilder _paginationBuilder;
 
 
         public EnsurePaginationResponseResultActionFilter(
             ILoggerFactory loggerFactory,
-            IPaginationBuilder paginationBuilder
+            IPaginationMetadataBuilder paginationBuilder
         )
             : base(loggerFactory)
         {
