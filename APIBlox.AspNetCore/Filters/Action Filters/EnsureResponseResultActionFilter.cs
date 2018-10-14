@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +32,8 @@ namespace APIBlox.AspNetCore.Filters
 
         protected bool ResultValueIsEnumerable { get; private set; }
 
+        protected int? ResultValueCount { get; private set; }
+
         public virtual async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var action = await next().ConfigureAwait(false);
@@ -48,12 +52,15 @@ namespace APIBlox.AspNetCore.Filters
             }
 
             var t = result.Value.GetType();
+
             ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable));
+            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>) result.Value).Count() : 0;
+
             var retValue = InternalHelpers.EnsureResponseCompliesWithAction(result.Value);
 
             if (!(retValue is null))
                 result.Value = retValue;
-
+            
             Handle(context, result);
         }
 

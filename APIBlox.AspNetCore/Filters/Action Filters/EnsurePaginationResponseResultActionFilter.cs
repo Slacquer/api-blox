@@ -26,7 +26,7 @@ namespace APIBlox.AspNetCore.Filters
 
         protected override void Handle(ActionExecutingContext context, ObjectResult result)
         {
-            if (!ResultValueIsEnumerable)
+            if (!ResultValueIsEnumerable || !ResultValueCount.HasValue)
                 return;
 
             var value = result.Value;
@@ -36,7 +36,7 @@ namespace APIBlox.AspNetCore.Filters
             var propValue = prop.GetValue(value);
 
             dynamicResult.AddProperty(prop.Name, propValue)
-                .AddProperty("Pagination", _paginationBuilder.Build(value as IEnumerable<object>, context));
+                .AddProperty("Pagination", _paginationBuilder.Build(ResultValueCount.Value, context));
 
             result.Value = dynamicResult;
         }
