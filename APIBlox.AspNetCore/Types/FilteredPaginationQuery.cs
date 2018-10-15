@@ -3,12 +3,21 @@ using Microsoft.AspNetCore.Http.Extensions;
 
 namespace APIBlox.AspNetCore.Types
 {
+    /// <inheritdoc />
+    /// <summary>
+    ///     Class FilteredPaginationQuery.
+    /// </summary>
+    /// <seealso cref="T:APIBlox.AspNetCore.Types.PaginationQuery" />
     public class FilteredPaginationQuery : PaginationQuery
     {
         private const string FilterParam = "$filter";
         private const string OrderByParam = "$orderby";
         private const string SelectParam = "$select";
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.FilteredPaginationQuery" /> class.
+        /// </summary>
         public FilteredPaginationQuery()
         {
         }
@@ -43,6 +52,7 @@ namespace APIBlox.AspNetCore.Types
         /// <value>The select.</value>
         public string Select { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Builds the query.
         /// </summary>
