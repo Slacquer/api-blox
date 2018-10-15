@@ -49,7 +49,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The running count.</value>
         [JsonProperty(PropertyName = "Rc")]
-        public int? RunningCount { get; set; }
+        internal int? RunningCount { get; set; }
 
         /// <summary>
         ///     Gets or sets the skip.
