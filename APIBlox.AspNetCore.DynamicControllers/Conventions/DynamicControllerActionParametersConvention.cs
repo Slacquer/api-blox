@@ -82,7 +82,7 @@ namespace APIBlox.AspNetCore
         private void ReorderParameters(ActionModel action)
         {
             var bodyParams = action.Parameters
-                .Where(p => !(p.BindingInfo is null))
+                .Where(p => !(p.BindingInfo is null))// && p.BindingInfo.BindingSource.DisplayName.ContainsEx("body"))
                 .OrderBy(p => p.ParameterName.EndsWithEx("id"))
                 .ThenBy(p => p.ParameterName).ToList();
 
