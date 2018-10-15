@@ -11,7 +11,7 @@ namespace APIBlox.AspNetCore.Types
     /// </summary>
     public class PaginationQuery
     {
-        private const string CountParam = "$count";
+        private const string RunningCountParam = "$rc";
         private const string SkipParam = "$skip";
         private const string TopParam = "$top";
 
@@ -21,7 +21,8 @@ namespace APIBlox.AspNetCore.Types
         protected static readonly Dictionary<string, string[]> InMap = new Dictionary<string, string[]>
         {
             {"Skip", new[] {"$Skip", "Offset", "$Offset"}},
-            {"Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"}}
+            {"Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"}},
+            {"RunningCount", new[] {"$Rc", "Count", "$Count", "RunningCount", "$RunningCount"}},
         };
 
         internal static readonly JsonSerializerSettings AliasesInSettings = new JsonSerializerSettings
@@ -43,7 +44,12 @@ namespace APIBlox.AspNetCore.Types
             Undefined = query.Undefined;
         }
 
-        internal int? Count { get; set; }
+        /// <summary>
+        ///     Gets or sets the running count.
+        /// </summary>
+        /// <value>The running count.</value>
+        [JsonProperty(PropertyName = "Rc")]
+        public int? RunningCount { get; set; }
 
         /// <summary>
         ///     Gets or sets the skip.
@@ -78,8 +84,8 @@ namespace APIBlox.AspNetCore.Types
             if (Top.HasValue)
                 qb.Add(TopParam, Top.Value.ToString());
 
-            if (Count.HasValue)
-                qb.Add(CountParam, Count.Value.ToString());
+            if (RunningCount.HasValue)
+                qb.Add(RunningCountParam, RunningCount.ToString());
 
             if (Undefined is null)
                 return qb;

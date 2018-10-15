@@ -3,6 +3,7 @@ using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Services;
 using APIBlox.AspNetCore.Types;
+using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
@@ -36,43 +37,113 @@ namespace APIBlox.AspNetCore
 
             var url = $"{req.Scheme}://{req.Host}{req.PathBase}{req.Path}{{0}}";
 
-            requestQuery.Count = resultCount;
+            // Throwing or should we just log.
+            if (resultCount > _defaultPageSize)
+                throw new IndexOutOfRangeException(
+                    $"The result set is larger ({resultCount}) than what has " +
+                    $"been defined as the Max page size of {_defaultPageSize}."
+                );
 
-            return BuildResponseFromQuery(requestQuery, url);
+            return BuildResponseFromQuery(requestQuery, resultCount, url);
         }
 
-        private PaginationMetadata BuildResponseFromQuery(FilteredPaginationQuery requestQuery, string baseUrl)
+        private PaginationMetadata BuildResponseFromQuery(FilteredPaginationQuery requestQuery, int resultCount, string baseUrl)
         {
+            var previousRc = requestQuery.RunningCount - resultCount;
+
+            SetRunningCount(requestQuery, resultCount);
+
             FilteredPaginationQuery previousQuery = null;
             FilteredPaginationQuery nextQuery = null;
-            if (!(requestQuery.Skip is null) && requestQuery.Skip != 0)
+
+            if (requestQuery.Skip.IsNullOrZero() && requestQuery.Top.IsNullOrZero())
             {
-                var previousSkip = GetPreviousSkip(requestQuery);
+                // No inputs, create new ones, no need to new up previousQuery.
+                // Set the top (take) to be the max and the skip to be what was just returned, resultCount.
+                var top = GetTop(requestQuery);
+                nextQuery = new FilteredPaginationQuery(requestQuery)
+                {
+                    Skip = requestQuery.RunningCount,
+                    Top = top,
+                    RunningCount = requestQuery.RunningCount
+                };
+            }
+            else if (!requestQuery.Top.IsNullOrZero() && requestQuery.Skip.IsNullOrZero())
+            {
+                // Only top specified, se we use it.
+                var top = GetTop(requestQuery);
+                nextQuery = new FilteredPaginationQuery(requestQuery)
+                {
+                    Skip = requestQuery.RunningCount,
+                    Top = top,
+                    RunningCount = requestQuery.RunningCount
+                };
+            }
+            else if (requestQuery.Top.HasValue)
+            {
+                var top = GetTop(requestQuery);
+                var pre = GetPreviousSkip(requestQuery);
+                var next = GetNextSkip(requestQuery);
+                var nextRc = requestQuery.RunningCount;
 
                 previousQuery = new FilteredPaginationQuery(requestQuery)
                 {
-                    Skip = previousSkip
+                    Top = top,
+                    Skip = pre,
+                    RunningCount = previousRc <= 0 ? null : previousRc
                 };
-            }
-
-            var nextSkip = GetNextSkip(requestQuery);
-
-            // We don't know the true count, nor do we really care.  However if the nextSkip is
-            // less than the MAX allowed then it stands to reason we have no results left, so we will NOT fill in next.
-            if (nextSkip < _defaultPageSize)
-            {
                 nextQuery = new FilteredPaginationQuery(requestQuery)
                 {
-                    Skip = nextSkip
+                    Top = top,
+                    Skip = next,
+                    RunningCount = nextRc
                 };
             }
 
             return new PaginationMetadata
             {
-                ResultCount = requestQuery.Count,
+                ResultCount = resultCount,
                 Next = nextQuery is null ? null : string.Format(baseUrl, nextQuery),
                 Previous = previousQuery is null ? null : string.Format(baseUrl, previousQuery)
             };
+        }
+
+        private static void SetRunningCount(PaginationQuery requestQuery, int resultCount)
+        {
+            if (!requestQuery.RunningCount.HasValue || requestQuery.Skip.IsNullOrZero() || requestQuery.Top.IsNullOrZero())
+                requestQuery.RunningCount = 0;
+
+            requestQuery.RunningCount += resultCount;
+        }
+
+        private int? GetTop(PaginationQuery requestQuery)
+        {
+            if (requestQuery.Top.IsNullOrZero())
+                return _defaultPageSize;
+            
+            return requestQuery.Top > _defaultPageSize ? _defaultPageSize : requestQuery.Top;
+        }
+
+        private int? GetNextSkip(PaginationQuery query)
+        {
+            var top = (query.Top.IsNullOrZero() || query.Top > _defaultPageSize) ? _defaultPageSize : query.Top;
+            var skip = query.Skip ?? query.RunningCount;
+
+            return skip + top;
+        }
+
+        private int? GetPreviousSkip(PaginationQuery query)
+        {
+            if (query.Skip.IsNullOrZero())
+                return null;
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var skip = query.Skip.Value;
+            var top = query.Top > _defaultPageSize ? _defaultPageSize : query.Top;
+
+            var nextSkip = skip - top;
+
+            return nextSkip > 0 ? nextSkip : null;
         }
 
         private static FilteredPaginationQuery BuildFromQueryParams(IQueryCollection requestQuery)
@@ -83,27 +154,6 @@ namespace APIBlox.AspNetCore
             var pagedQuery = JsonConvert.DeserializeObject<FilteredPaginationQuery>(convertIncoming);
 
             return pagedQuery;
-        }
-
-        private int? GetNextSkip(PaginationQuery query)
-        {
-            var top = query.Top ?? _defaultPageSize;
-            var skip = query.Skip ?? query.Count;
-
-            return skip + top;
-        }
-
-        private int? GetPreviousSkip(PaginationQuery query)
-        {
-            if (query.Skip is null)
-                return null;
-
-            var skip = query.Skip.Value;
-            var top = query.Top ?? _defaultPageSize;
-
-            int? nextSkip = skip - top;
-
-            return nextSkip > 0 ? nextSkip : null;
         }
     }
 }
