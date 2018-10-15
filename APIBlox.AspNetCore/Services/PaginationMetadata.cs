@@ -6,10 +6,10 @@
     public class PaginationMetadata
     {
         /// <summary>
-        ///     Gets or sets the count.
+        ///     Gets or sets the count for this result.
         /// </summary>
         /// <value>The count.</value>
-        public long? Count { get; set; }
+        public long? ResultCount { get; set; }
 
         /// <summary>
         ///     Gets or sets the next.

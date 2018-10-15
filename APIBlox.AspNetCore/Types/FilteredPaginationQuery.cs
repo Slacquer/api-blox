@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using APIBlox.NetCore.Extensions;
+﻿using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 
 namespace APIBlox.AspNetCore.Types
@@ -12,23 +9,21 @@ namespace APIBlox.AspNetCore.Types
         private const string OrderByParam = "$orderby";
         private const string SelectParam = "$select";
 
-
         public FilteredPaginationQuery()
         {
-
         }
 
         internal FilteredPaginationQuery(FilteredPaginationQuery query)
+            : base(query)
         {
-            InMap.TryAdd("OrderBy", new[] { "$OrderBy" });
-            InMap.TryAdd("Filter", new[] { "$Where", "Where", "$Filter" });
-            InMap.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
+            InMap.TryAdd("OrderBy", new[] {"$OrderBy"});
+            InMap.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
+            InMap.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
 
             Select = query.Select;
             OrderBy = query.OrderBy;
             Filter = query.Filter;
         }
-
 
         /// <summary>
         ///     Gets or sets the filter.

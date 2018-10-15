@@ -42,7 +42,6 @@ namespace APIBlox.AspNetCore
         private PaginationMetadata BuildResponseFromQuery(FilteredPaginationQuery requestQuery, int count, string baseUrl)
         {
             FilteredPaginationQuery previousQuery = null;
-            FilteredPaginationQuery nextQuery = null;
 
             if (!(requestQuery.Skip is null) && requestQuery.Skip != 0)
             {
@@ -56,19 +55,17 @@ namespace APIBlox.AspNetCore
 
             var nextSkip = GetNextSkip(requestQuery);
 
-            // If the next skip is beyond the result count, we are on the last page
-            if (nextSkip <= count)
+            // We don't know the true count, nor do we really care.
+            // So we wont test it, and simply always send a NEXT.
+            var nextQuery = new FilteredPaginationQuery(requestQuery)
             {
-                nextQuery = new FilteredPaginationQuery(requestQuery)
-                {
-                    Skip = nextSkip
-                };
-            }
+                Skip = nextSkip
+            };
 
             return new PaginationMetadata
             {
-                Count = count,
-                Next = nextQuery is null ? null : string.Format(baseUrl, nextQuery),
+                ResultCount = count,
+                Next = string.Format(baseUrl, nextQuery),
                 Previous = previousQuery is null ? null : string.Format(baseUrl, previousQuery)
             };
         }

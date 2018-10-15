@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+
+    <PackageReference Include="FluentAssertions" Version="5.3.2" />
+    <PackageReference Include="Moq" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiBlox.AspNetCore.CommandsAndQueries\APIBlox.AspNetCore.CommandsAndQueries.csproj" />
+    <ProjectReference Include="..\APIBlox.AspNetCore.CommandsQueriesControllersOhMy\APIBlox.AspNetCore.CommandsQueriesControllersOhMy.csproj" />
+    <ProjectReference Include="..\ApiBlox.AspNetCore.DynamicControllers\APIBlox.AspNetCore.DynamicControllers.csproj" />
+    <ProjectReference Include="..\APIBlox.AspNetCore.OpenApi\APIBlox.AspNetCore.OpenApi.csproj" />
+    <ProjectReference Include="..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
+    <ProjectReference Include="..\ApiBlox.NetCore.Common\APIBlox.NetCore.Common.csproj" />
+    <ProjectReference Include="..\APIBlox.NetCore.DomainEvents\APIBlox.NetCore.DomainEvents.csproj" />
+    <ProjectReference Include="..\ApiBlox.NetCore\APIBlox.NetCore.csproj" />
+  </ItemGroup>
+
+</Project>
