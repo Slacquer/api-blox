@@ -54,14 +54,14 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.NotNull(ret.Next);
             Assert.Contains("skip=10", ret.Next);
             Assert.Contains("top=10", ret.Next);
-            Assert.Contains("rc=10", ret.Next);
+            Assert.Contains("runningCount=10", ret.Next);
         }
 
         [Fact]
         public void IncomingTopSkipAndRcSoShouldHaveNextAndPreviousTopShouldNeverBeMoreThanMax()
         {
             var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&rc=10");
+            ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&runningCount=10");
 
             var builder = new PaginationMetadataBuilder(100);
             var ret = builder.Build(10, ctx);
@@ -71,12 +71,12 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Contains("skip=20", ret.Next);
             Assert.Contains("top=10", ret.Next);
-            Assert.Contains("rc=20", ret.Next);
+            Assert.Contains("runningCount=20", ret.Next);
 
             // RC should be gone
             Assert.Contains("top=10", ret.Previous);
             Assert.DoesNotContain("skip=", ret.Previous);
-            Assert.DoesNotContain("rc=", ret.Previous);
+            Assert.DoesNotContain("runningCount=", ret.Previous);
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Contains("top=100", ret.Next);
             Assert.Contains("skip=50", ret.Next);
-            Assert.Contains("rc=50", ret.Next);
+            Assert.Contains("runningCount=50", ret.Next);
 
             Assert.Null(ret.Previous);
 
@@ -104,7 +104,7 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Contains("top=10", ret.Next);
             Assert.Contains("skip=10", ret.Next);
-            Assert.Contains("rc=10", ret.Next);
+            Assert.Contains("runningCount=10", ret.Next);
 
             Assert.Null(ret.Previous);
         }
@@ -121,7 +121,7 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Contains("top=100", ret.Next);
             Assert.Contains("skip=50", ret.Next);
-            Assert.Contains("rc=50", ret.Next);
+            Assert.Contains("runningCount=50", ret.Next);
 
             Assert.Null(ret.Previous);
         }
@@ -140,7 +140,7 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Contains("top=10", ret.Next);
             Assert.Contains("skip=50", ret.Next);
-            Assert.Contains("rc=50", ret.Next);
+            Assert.Contains("runningCount=50", ret.Next);
 
             Assert.Contains("myExtraData=999", ret.Next);
 
@@ -151,7 +151,7 @@ namespace SlnTests.APIBlox.AspNetCore
         public void ShouldThrowSinceResultSetIsLargerThanMaxDefinedPageSize()
         {
             var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&rc=10");
+            ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&runningCount=10");
             var builder = new PaginationMetadataBuilder(5);
 
             var ex = Assert.Throws<IndexOutOfRangeException>(() => builder.Build(10, ctx));
@@ -163,7 +163,7 @@ namespace SlnTests.APIBlox.AspNetCore
         public void ShouldTreatZerosAsNoInputsSoShouldHaveNextNoPrevious()
         {
             var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?top=0&skip=0&rc=0");
+            ctx.HttpContext.Request.QueryString = new QueryString("?top=0&skip=0&runningCount=0");
 
             var builder = new PaginationMetadataBuilder(100);
             var ret = builder.Build(50, ctx);
@@ -173,13 +173,13 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Contains("top=100", ret.Next);
             Assert.Contains("skip=50", ret.Next);
-            Assert.Contains("rc=50", ret.Next);
+            Assert.Contains("runningCount=50", ret.Next);
             Assert.Null(ret.Previous);
 
 
 
             ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?top=100&skip=0&rc=0");
+            ctx.HttpContext.Request.QueryString = new QueryString("?top=100&skip=0&runningCount=0");
 
             builder = new PaginationMetadataBuilder(100);
             ret = builder.Build(50, ctx);
@@ -189,7 +189,7 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Contains("top=100", ret.Next);
             Assert.Contains("skip=50", ret.Next);
-            Assert.Contains("rc=50", ret.Next);
+            Assert.Contains("runningCount=50", ret.Next);
             Assert.Null(ret.Previous);
             
 
@@ -205,7 +205,7 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Contains("top=100", ret.Next);
             Assert.Contains("skip=50", ret.Next);
-            Assert.Contains("rc=50", ret.Next);
+            Assert.Contains("runningCount=50", ret.Next);
 
             Assert.Null(ret.Previous);
         }
@@ -214,7 +214,7 @@ namespace SlnTests.APIBlox.AspNetCore
         public void WhenTopOrSkipAreDisregardedOrMissingShouldRcShouldBeDisregardedAsWell()
         {
             var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?skip=0&rc=10");
+            ctx.HttpContext.Request.QueryString = new QueryString("?skip=0&runningCount=10");
 
             var builder = new PaginationMetadataBuilder(100);
             var ret = builder.Build(50, ctx);
@@ -224,7 +224,7 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Contains("top=100", ret.Next);
             Assert.Contains("skip=50", ret.Next);
-            Assert.Contains("rc=50", ret.Next);
+            Assert.Contains("runningCount=50", ret.Next);
             Assert.Null(ret.Previous);
         }
     }

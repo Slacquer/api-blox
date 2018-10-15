@@ -11,7 +11,7 @@ namespace APIBlox.AspNetCore.Types
     /// </summary>
     public class PaginationQuery
     {
-        private const string RunningCountParam = "$rc";
+        private const string RunningCountParam = "$runningCount";
         private const string SkipParam = "$skip";
         private const string TopParam = "$top";
 
@@ -48,8 +48,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the running count.
         /// </summary>
         /// <value>The running count.</value>
-        [JsonProperty(PropertyName = "Rc")]
-        internal int? RunningCount { get; set; }
+        public int? RunningCount { get; set; }
 
         /// <summary>
         ///     Gets or sets the skip.
