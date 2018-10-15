@@ -6,7 +6,7 @@ using APIBlox.NetCore.Extensions;
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static partial class ServiceCollectionExtensions
+    public static partial class ServiceCollectionExtensionsNetCore
     {
         /// <summary>
         ///     Decorates ALL registered service(s) that match your decorator.

@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class ApplicationBuilderExtensions.
     /// </summary>
-    public static class ApplicationBuilderExtensions
+    public static class ApplicationBuilderExtensionsAspNetCore
     {
         /// <summary>
         ///     Uses the lame API explorer middleware.  Yes, LAME.

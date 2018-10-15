@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.Logging
     /// </summary>
 
     //[DebuggerStepThrough]
-    public static class LoggerExtensions
+    public static class LoggerExtensionsNetCore
     {
         /// <summary>
         ///     Logs critical only when logging is enabled for <see cref="LogLevel" /> Critical.

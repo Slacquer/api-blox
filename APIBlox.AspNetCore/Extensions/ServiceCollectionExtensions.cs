@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class ServiceCollectionExtensions.
     /// </summary>
-    public static class ServiceCollectionExtensions
+    public static class ServiceCollectionExtensionsAspNetCore
     {
         /// <summary>
         ///     Adds a callback mechanism allowing you to modify a fully built

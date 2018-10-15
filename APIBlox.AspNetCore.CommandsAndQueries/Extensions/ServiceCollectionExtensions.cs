@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class ServiceCollectionExtensions.
     /// </summary>
-    public static class ServiceCollectionExtensions
+    public static class ServiceCollectionExtensionsCommandsAndQueries
     {
         /// <summary>
         ///     Decorates a REGISTERED command handler service.  Note that

@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class MvcBuilderExtensions.
     /// </summary>
-    public static class MvcBuilderExtensions
+    public static class MvcBuilderExtensionsAspNetCore
     {
         /// <summary>
         ///     Adds the MVC consumes produces json resource result filters for application/json" and

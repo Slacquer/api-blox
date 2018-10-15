@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class APIBloxNetCoreServiceCollectionExtensions.
     /// </summary>
-    public static partial class ServiceCollectionExtensions
+    public static partial class ServiceCollectionExtensionsNetCore
     {
         private static ILogger _log;
 

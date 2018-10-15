@@ -19,7 +19,7 @@
     <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
     <PackageReleaseNotes>Initial pre-release.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
-    <AssemblyName>APIBlox.AspNetCore</AssemblyName>
+    <AssemblyName>APIBlox.AspNetCore.OpenApi</AssemblyName>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/Slacquer/api-blox/blob/master/LICENSE</PackageLicenseUrl>
     <Version>0.0.0</Version>
@@ -44,6 +44,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

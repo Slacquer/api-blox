@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class MvcBuilderExtensions.
     /// </summary>
-    public static class MvcBuilderExtensions
+    public static class MvcBuilderExtensionsDynamicControllers
     {
         /// <summary>
         ///     IMvcBuilder extension method for adding the required mvc feature and conventions for dynamic controllers.

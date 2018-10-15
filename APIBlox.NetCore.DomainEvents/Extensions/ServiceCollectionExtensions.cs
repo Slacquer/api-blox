@@ -7,7 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class ServiceCollectionExtensions.
     /// </summary>
-    public static class ServiceCollectionExtensions
+    public static class ServiceCollectionExtensionsDomainEvents
     {
         /// <summary>
         ///     Adds the default domain events dispatcher to the service collection.
