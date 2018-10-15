@@ -36,13 +36,15 @@ namespace APIBlox.AspNetCore
 
             var url = $"{req.Scheme}://{req.Host}{req.PathBase}{req.Path}{{0}}";
 
-            return BuildResponseFromQuery(requestQuery, resultCount, url);
+            requestQuery.Count = resultCount;
+
+            return BuildResponseFromQuery(requestQuery, url);
         }
 
-        private PaginationMetadata BuildResponseFromQuery(FilteredPaginationQuery requestQuery, int count, string baseUrl)
+        private PaginationMetadata BuildResponseFromQuery(FilteredPaginationQuery requestQuery, string baseUrl)
         {
             FilteredPaginationQuery previousQuery = null;
-
+            FilteredPaginationQuery nextQuery = null;
             if (!(requestQuery.Skip is null) && requestQuery.Skip != 0)
             {
                 var previousSkip = GetPreviousSkip(requestQuery);
@@ -55,17 +57,20 @@ namespace APIBlox.AspNetCore
 
             var nextSkip = GetNextSkip(requestQuery);
 
-            // We don't know the true count, nor do we really care.
-            // So we wont test it, and simply always send a NEXT.
-            var nextQuery = new FilteredPaginationQuery(requestQuery)
+            // We don't know the true count, nor do we really care.  However if the nextSkip is
+            // less than the MAX allowed then it stands to reason we have no results left, so we will NOT fill in next.
+            if (nextSkip < _defaultPageSize)
             {
-                Skip = nextSkip
-            };
+                nextQuery = new FilteredPaginationQuery(requestQuery)
+                {
+                    Skip = nextSkip
+                };
+            }
 
             return new PaginationMetadata
             {
-                ResultCount = count,
-                Next = string.Format(baseUrl, nextQuery),
+                ResultCount = requestQuery.Count,
+                Next = nextQuery is null ? null : string.Format(baseUrl, nextQuery),
                 Previous = previousQuery is null ? null : string.Format(baseUrl, previousQuery)
             };
         }
@@ -83,7 +88,7 @@ namespace APIBlox.AspNetCore
         private int? GetNextSkip(PaginationQuery query)
         {
             var top = query.Top ?? _defaultPageSize;
-            var skip = query.Skip ?? 0;
+            var skip = query.Skip ?? query.Count;
 
             return skip + top;
         }

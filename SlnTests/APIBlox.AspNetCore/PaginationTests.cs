@@ -66,18 +66,20 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.True(ret.Next != null);
             Assert.True(ret.Previous != null);
         }
-
+        
         [Fact]
-        public void ShouldBePaginatedEventWithoutAnyParamsAndPreviousShouldBeNullSinceNoPaginationWasSpecified()
+        public void NextShouldBeNullSinceCountIsLessThanMaxSoMustBeOnLastPage()
         {
-            var builder = new PaginationMetadataBuilder();
-            var ret = builder.Build(100, _actionExecutingContext);
+            _actionExecutingContext.HttpContext.Request.QueryString = new QueryString("?skip=25&top=25");
+
+            var builder = new PaginationMetadataBuilder(50);
+            var ret = builder.Build(3, _actionExecutingContext);
 
             Assert.NotNull(ret);
-            Assert.True(ret.ResultCount == 100);
-            Assert.Contains("skip", ret.Next);
-            Assert.True(ret.Next != null);
-            Assert.True(ret.Previous == null);
+            Assert.True(ret.ResultCount == 3);
+            Assert.Contains("top", ret.Previous);
+            Assert.True(ret.Next == null);
+            Assert.True(ret.Previous != null);
         }
     }
 }
