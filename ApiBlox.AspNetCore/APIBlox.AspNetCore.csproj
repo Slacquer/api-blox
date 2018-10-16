@@ -52,11 +52,6 @@
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
     <None Remove="APIBlox.AspNetCore.csproj.DotSettings" />
-    <None Remove="LameFiles\HtmlDocument.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="LameFiles\HtmlDocument.json" />
   </ItemGroup>
 
   <ItemGroup>
