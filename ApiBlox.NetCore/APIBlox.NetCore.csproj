@@ -19,7 +19,7 @@
     <Company>Slacquers Building Blox</Company>
     <Description>.NetCore bits.  SourceLink is enabled.</Description>
     <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
-    <PackageReleaseNotes>Initial pre-release.</PackageReleaseNotes>
+    <PackageReleaseNotes>Initial Release.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
     <RootNamespace>APIBlox.NetCore</RootNamespace>
     <AssemblyName>APIBlox.NetCore</AssemblyName>

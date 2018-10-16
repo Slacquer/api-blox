@@ -14,7 +14,7 @@ namespace SlnTests.APIBlox.AspNetCore.OpenApi
         {
             var col = new ServiceCollection();
 
-            col.AddOpenApiBits();
+            //col.AddOpenApiBits();
         }
     }
 }

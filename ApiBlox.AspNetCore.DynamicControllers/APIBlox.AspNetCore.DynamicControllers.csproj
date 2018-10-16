@@ -26,7 +26,7 @@
     <Product>APIBlox.AspNetCore.DynamicControllers</Product>
     <PackageId>APIBlox.AspNetCore.DynamicControllers</PackageId>
     <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
-    <PackageReleaseNotes>Initial pre-release.</PackageReleaseNotes>
+    <PackageReleaseNotes>Initial Release.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Slacquer/api-blox/blob/master/LICENSE</PackageLicenseUrl>
     <Version>0.0.1-alpha03</Version>
