@@ -21,7 +21,7 @@
 <br>
 <br>
 
-> **Paginated (pagination is faked, but structure is real) Ok Request (200)**
+> **Paginated Ok Request (200)**
 
 ```json
 {
@@ -119,7 +119,7 @@
           "detail": "Some root level exception",
           "errors": [
             {
-              "detail": "Specified argument was out of the range of valid valuesî
+              "detail": "Specified argument was out of the range of valid values‚Äù
               "title": "Error Details",
               "type": "ArgumentOutOfRangeException"
             }
