@@ -49,9 +49,9 @@
     }
   ],
   "pagination": {
-    "totalCount": 0,
-    "next": "https://foo.com/nextPage",
-    "previous": "https://foo.com/firstPage"
+    "runningCount": 0,
+    "next": "https://foo.com/nextPage?$skip=10&top=10&runningCount=5",
+    "previous": "https://foo.com/firstPage?top=10"
   }
 }
 
@@ -84,30 +84,21 @@
 <br>
 
 > **POST, validation error example**  
-> _**Bad Request (400)**_  
-> This example has dynamic bits, “Property” added by developer
+> _**Unauthorized (401)**_  
 
 ```json
 {
-  "error": {
-    "detail": "Please refer to the errors property for additional details",
-    "errors": [
-      {
-        "detail": "The length of 'Last Name' must be at least 5 characters. You entered 1 characters.",
-        "property": "LastName",
-        "title": "Invalid Property Value"
-      },
-      {
-        "detail": "'First Name' should not be empty.",
-        "property": "FirstName",
-        "title": "Invalid Property Value"
-      }
-    ],
-    "instance": "/api/qa/people",
-    "status": 400,
-    "title": "One or more validation errors has occured.",
-    "type": "about:blank"
-  }
+  "detail": "Please see errors property for more details",
+  "errors": [
+    {
+      "detail": "Example detail",
+      "title": "You are not authenticated, meaning not authenticated at all or authenticated incorrectly."
+    }
+  ],
+  "instance": "[request url]",
+  "status": 401,
+  "title": "Un-authorized",
+  "type": "https://httpstatuses.com/401"
 }
 
 ```
@@ -151,26 +142,12 @@
 
 > **PRDOUCTION SERVER FAULT STRUCTURE**  
 > _**Server Error (500)**_  
-> Note that the NON-Production fault would be logged, just not sent back in the response.  This could be done just like NON-prod if used in a public API.
+> Note that the **NON-Production fault** would be logged, just not sent back in the response.  This could be done just like NON-prod if used in a public API.
 
 ```json
 {
     "error": {
-      "detail": "Please refer to the error property for additional information.",
-      "errors": [
-        {
-          "detail": "Some root level exception",
-          "errors": [
-            {
-              "detail": "Specified argument was out of the range of valid values”
-              "title": "Error Details",
-              "type": "ArgumentOutOfRangeException"
-            }
-          ],
-          "title": "Please refer to the error property for additional information.",
-          "type": "Exception"
-        }
-      ],
+      "detail": "Please contact support.",
       "instance": "/api/qa/people",
       "referenceId": "1110183247",
       "status": 500,

@@ -1,25 +1,32 @@
 [1]: https://github.com/dotnet/sourcelink
+[2]: mailto:slacquer2018@gmail.com
 [3]: ./response-objects.md
-[sdk]: https://www.microsoft.com/net/download/dotnet-core/2.0
+[sdk]: https://www.microsoft.com/net/download
 [logo]: ./logo-blue-large.png
 
 ![:)][logo]   
 # API Blox
 
+October 15th, 2018 **v1.0.0**
+
 ## Minimal Instructions
  Solution contains the following NuGet packages.  
 
-- APIBlox.NetCore.Common  
-- APIBlox.NetCore  
 - APIBlox.AspNetCore  
-- APIBlox.AspNetCore.DynamicControllers  
 - APIBlox.AspNetCore.CommandsAndQueries  
+- APIBlox.AspNetCore.CommandsQueriesControllersOhMy
+- APIBlox.AspNetCore.DynamicControllers  
+- APIBlox.NetCore  
+- APIBlox.NetCore.Common  
+- APIBlox.NetCore.DomainEvents
+
+
 
 ## Things to keep in mind  
- - Solution requires AspNetCore 2.1.4 SDK to be installed, get it [**here**][sdk] (scroll to bottom somewhere).
- Also regarding the sdk, if you are having issues adding packages like mine that use 2.1.4, be sure to 
+ - Solution requires AspNetCore 2.1.5 SDK to be installed, get it [**here**][sdk].
+ Also regarding the sdk, if you are having issues adding packages like mine that use 2.1.5, be sure to 
  alter you project file first, otherwise you will end up getting the  
-  **Detected package downgrade: Microsoft.AspNetCore.App from 2.1.4 to 2.1.1 blah blah blah**  
+  **Detected package downgrade: Microsoft.AspNetCore.App from 2.1.5 to 2.\*.\* blah blah blah**  
  So change your project file first, for example:  
 ```xml
 
@@ -35,7 +42,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   ...
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App"  Version="2.1.4"/>
+    <PackageReference Include="Microsoft.AspNetCore.App"  Version="2.1.5"/>
   </ItemGroup>
 </Project>
 ```
@@ -44,175 +51,22 @@
 - _**None**_ of the methodology included requires full blown MVC, you can use the minimalist _**MvcCore**_.  
 - I love regions, most devs don't so I have removed them here to keep you happy :)
 - This document and the project(s) are a work in progress, feedback and changes would be appreciated but please be kind.
-
+- _Also see_ [_Response Object.docx_][3] for in-depth response information.
+- **I know the documentation is lacking, but I will get to at some point**, if you have questions or just need some help, my contact is at the bottom of this docuemnt.
 <br>
 
 ## Quick Starts
  [Simple](#quick-start-simple)  
  [Inverted Dependencies](#quick-start-inverted-dependencies)  
  [Dynamic Controller(s)](#quick-start-dynamic-controllers)   
+ [CommandsQueriesControllersOhMy Quick Start](#quick-start-commands-queries-controllers-oh-my)  
  [Commands, Queries and Decorators](#quick-start-commands-queries-and-decorators)  
  [Domain Events](#quick-start-domain-events) 
 
 ## Code
 
- ### APIBlox.NetCore.Common
- Cross-cutting concerns
+<br>
 
- ### Bits Of Interest
- _**DynamicDataObject**_  
- _Also see_ [_Response Object.docx_][3]
- ```csharp
- ```
-
- ### APIBlox.NetCore  
- NetCore Bits
- ```csharp
- // IServiceCollection extensions
- 
- // TODO
- services.AddDependencyWithOptions<TOptions, TDependent>();
- 
- // TODO
- services.AddInjectableServices();
- 
- // TODO
- services.AddInvertedDependentsAndConfigureServices();
- 
- // TODO
- services.AddServiceDecoration<TService>, TDecorator();
- services.AddServiceDecoration(serviceType, decoratorType);
- 
- // ILogger extensions
- // These extensions are provided so that message building (which can be expensive) 
- // does not occur unless logging is enabled.  Meaning, if logging is not enabled 
- // for whichever log level, then the callback isn't called.
- 
- logger.LogCritical(Func<string> messageFunc)
- logger.LogError(Func<string> messageFunc)
- logger.LogWarning(Func<string> messageFunc)
- logger.LogInformation(Func<string> messageFunc)
- ```
- 
- 
- ### APIBlox.AspNetCore  
- AspNetCore Bits  
- ### Middleware
- _**LameApiExplorerMiddleware**_
- Exactly as the name implies.  Yes this isn't pretty but if you want to keep the API light (as much as possible) and only use MvcCore, then you will not be able to use **Swashbuckle** as it requires full blown MVC.  This will show you your controllers, method types and actions in a sortable table (doesn't sound like much but it does actually help when figuring out WHY a route is kicking your ass).
-
- _**ServerFaultsMiddleware**_
- TBD
-
- _**SimulateWaitTimeMiddleware**_
- TBD
-
- ```csharp
- // IServiceCollection extensions
- 
- // TODO
- services.AddMvcConvention<TConvention>();
- 
- // TODO
- services.AddMvcFilter<TFilter>();
- 
- // Requires an configuration entry for 
- // APIBlox.AspNetCore.Conventions.RouteTokenOptions
- services.AddMvcRouteRouteTokensConvention();
- 
- // TODO
- services.AddETagActionFilter();
- 
- // Adds the MVC consumes produces json resource result filters.  For either IMvcBuilder 
- // or IMvcCoreBuilder, when using IMvcCoreBuilder it will also call MvcCoreBuilders
- // .AddJsonFormatters().AddDataAnnotations() extension methods.
- services.AddMvcConsumesProducesJsonResourceResultFilters();
- 
- // TODO
- services.AddMvcEnsureResponseResultActionFilter();
- 
- // TODO
- services.AddMvcEnsurePaginationResultActionFilter();
- 
- // TODO
- services.AddMvcOperationCancelledExceptionFilter();
- 
- // Adds RFC 7807 Problem Details for HTTP APIs support.  We are using our
- // APIBlox.AspNetCore.Filters.ValidateResourceActionFilter which will
- // generate an APIBlox.AspNetCore.ActionResults.ValidationFailureResult
- // Note this filter requires that ApiBehaviorOptions.SuppressModelStateInvalidFilter = true
- // and it will be set for you in this extension method.
- services.AddValidateResourceActionFilter();
- ```
- 
- ### APIBlox.AspNetCore.DynamicControllers  
- AspNetCore Bits  
- Simple dynamic controllers package that puts the focus on resources.
- 
- ```csharp
- // IDynamicControllerConfigurations extensions
- 
- // TODO
- configurations.AddController<TRequest, TResponse, TId>();
- configurations.AddController<TResponse, TId>(routes, controllers);
- 
- 
- // IDynamicControllerConfiguration extensions
- parentConfiguration.AddSubController<TRequest, TResponse, TId>();
- parentConfiguration.AddSubController<TResponse, TId>();
- 
- // IMvcBuilder, IMvcCoreBuild extensions
- 
- //
- builder.AddDynamicControllersFeature();
- ```
-  #### Dynamic Controller MVC Conventions
-  The following conventions are used  
--  DynamicControllersRouteConvention  
--  DynamicControllerSubRouteConvention  
--  DynamicControllersConvertResponseTypeConvention
- 
- 
- ```csharp
- // Note the excerpt here.  This is how the 
- // DynamicControllersConvertResponseTypeConvention populates your response types.
- //
- // So for example your generic controller could have a GET like so
- [HttpGet]
- [ProducesResponseType(typeof(IEnumerable), StatusCodes.Status200OK)]
- public Task<IActionResult> Get()
- {
-     ...
- }
- 
- // DynamicControllersConvertResponseTypeConvention.cs
- ...
-var t = cType.GenericTypeArguments[cType.GenericTypeArguments.Length == 1 ? 0 : 1];
-
-foreach (var rt in responseTypes)
-{
-    if (typeof(IEnumerable).IsAssignableTo(rt.Type))
-        rt.Type = typeof(IEnumerable<>).MakeGenericType(t);
-    else if (typeof(IResource).IsAssignableTo(rt.Type)) // Using marker interface
-        rt.Type = t;
-}
- ...
- ```
- 
- ### APIBlox.AspNetCore.CommandsAndQueries  
- AspNetCore Bits  
-  Simple CQRS implementation that utilizes the decorator pattern.
- 
- ```csharp
- // IServiceCollection extensions
- 
- // TODO
- services.AddCommandHandlerDecoration<THandler>();
- 
- // TODO
- services.AddQueryHandlerDecoration<THandler>();
- ```
- 
  ## Quick Starts
  
  ### Quick Start Simple
@@ -231,38 +85,39 @@ foreach (var rt in responseTypes)
  namespace MyNamespace
  {
      public class Startup
-     {
-         private readonly IConfiguration _configuration;
-         private readonly IHostingEnvironment _hostingEnvironment;
-         
-         public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
-         {
-             _configuration = configuration;
-             _hostingEnvironment = hostingEnvironment;
-         }
-         
-         public void ConfigureServices(IServiceCollection services)
-         {
-             services.AddMvcCore() // Or AddMvc()
-                 .AddMvcConsumesProducesJsonResourceResultFilters()
-                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
- 
-             services
-                 .AddInjectableServices(new[] { "MyAssemblyName" })
-                 .AddValidateResourceActionFilter()
-                 .AddMvcOperationCancelledExceptionFilter()
-                 .AddMvcEnsureDataObjectActionFilter()
-                 .AddMvcRouteRouteTokensConvention(_configuration, _hostingEnvironment);
-         }
- 
-         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-         {
-             app.UseServerFaultsMiddleware();
-             app.UseLameApiExplorerMiddleware();
- 
-             app.UseMvc();
-         }
-     }
+    {
+        private readonly IConfiguration _config;
+        private readonly IHostingEnvironment _environment;
+        private readonly ILoggerFactory _loggerFactory;
+
+        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory, IHostingEnvironment environment)
+        {
+            _config = configuration;
+            _loggerFactory = loggerFactory;
+            _environment = environment;
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services
+                .AddInjectableServices(_loggerFactory, new[] {"MyAssemblyName"}, new[] {"MyAssemblyPath"});
+
+            services.AddMvcCore() // Or AddMvc()
+                .AddConsumesProducesJsonResourceResultFilters()
+                .AddValidateResourceActionFilter()
+                .AddOperationCancelledExceptionFilter()
+                .AddEnsureResponseResultActionFilter()
+                .AddRouteTokensConvention(_config, _environment)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseServerFaults();
+
+            app.UseMvc();
+        }
+    }
  }
  ```
  
@@ -369,6 +224,8 @@ foreach (var rt in responseTypes)
  ##### *[Back to quick starts list](#quick-starts)
  
  In addition to whats found in [Quick Start Simple](#quick-start-simple)
+
+**Instead of rolling your own**, you may want to take a look a the features found in the [CommandsQueriesControllersOhMy Quick Start](#quick-start-cqrs-ohmy)
  
  - Startup.cs
  ```csharp
@@ -450,9 +307,9 @@ foreach (var rt in responseTypes)
  {
      [Route("api/[controller]")]
      [ApiController]
-     public class MyDynamicQueryLikeController<TResponse, TId> : ControllerBase,
-         IDynamicController<TResponse, TId>
-         where TResponse : class, IResource<TId>
+     public class MyDynamicQueryLikeController<TRequest, TResponse, TId> : ControllerBase,
+        IDynamicController<TRequest, TResponse, TId>
+        where TResponse : IResource<TId>
      {
          [HttpGet]
          //
@@ -493,9 +350,9 @@ foreach (var rt in responseTypes)
      [Route("api/[controller]")]
      [ApiController]
      public class MyDynamicCommandLikeController<TRequest, TResponse, TId> : ControllerBase,
-         IDynamicController<TRequest, TResponse, TId>
-         where TResponse : class, IResource<TId>, new()
-         where TRequest : class, IResource
+        IDynamicController<TRequest, TResponse, TId>
+        where TRequest : class
+        where TResponse : IResource<TId>
      {
          [HttpPost]
          [ProducesResponseType(typeof(IResource<>), StatusCodes.Status201Created)]
@@ -508,6 +365,67 @@ foreach (var rt in responseTypes)
  }
  ```
  
+
+ ### Quick Start Commands Queries Controllers Oh My 
+ ##### *[Back to quick starts list](#quick-starts)
+ 
+ In addition to whats found in [Quick Start Simple](#quick-start-simple) and [Dynamic Controller(s)](#quick-start-dynamic-controllers)  
+
+Theres not much todo here, simply use the controllers that are available.  Keep in mind that the following controllers use command and query handlers [(see commands and queries quick start)](#quick-start-commands-queries-and-decorators).  If this isn't your thing, then you will need to create your own controllers.
+
+- DynamicDeleteByController
+- DynamicGenericPatchController
+- DynamicPatchController
+- DynamicPostController
+- DynamicPutController
+- DynamicQueryAllController
+- DynamicQueryByController
+
+<br>
+
+
+ - Startup.cs
+ ```csharp
+ namespace MyNamespace
+ {
+     public class Startup
+     {
+         public void ConfigureServices(IServiceCollection services)
+         {
+             services.AddMvcCore() // Or AddMvc()
+                 ...
+                 .AddDynamicControllersFeature(configurations =>
+                     {
+                         var peopleRoutes = new[]
+                         {
+                             "api/[environment]/[version]/people",
+                             //
+                             // For those that believe routes should be nothing but
+                             // resources, who says versions isn't a resource?!
+                             "api/[environment]/versions/[version]/people"
+                         };
+ 
+                         configurations.AddController<ResponseResource, int>(
+                             peopleRoutes, typeof(DynamicQueryAllController<,>)
+                         );
+ 
+                         // Since our Post takes 1 more generic arg, we need to call AddController again.
+                         // With that being said, we COULD simply have a GIANT single controller.
+ 
+                         configurations.AddController<RequestResource, ResponseResource, int>(
+                             peopleRoutes, typeof(DynamicPostController<,,>)
+                         );
+                     }
+                 )
+                 ...;
+         }
+     }
+ }
+ ```
+
+
+
+
  ### Quick Start Commands Queries And Decorators
  ##### *[Back to quick starts list](#quick-starts)
  
@@ -533,7 +451,7 @@ foreach (var rt in responseTypes)
 #### Thanks for having a look :)
 _My hope is that these packages may help someone other than myself_.  
 Thanks,    
-Slacquer
+Slacquer -[email][2]
 
 
 Thanks For Icon,
