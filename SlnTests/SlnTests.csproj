@@ -24,6 +24,7 @@
     <ProjectReference Include="..\ApiBlox.AspNetCore.CommandsAndQueries\APIBlox.AspNetCore.CommandsAndQueries.csproj" />
     <ProjectReference Include="..\APIBlox.AspNetCore.CommandsQueriesControllersOhMy\APIBlox.AspNetCore.CommandsQueriesControllersOhMy.csproj" />
     <ProjectReference Include="..\ApiBlox.AspNetCore.DynamicControllers\APIBlox.AspNetCore.DynamicControllers.csproj" />
+    <ProjectReference Include="..\APIBlox.AspNetCore.OpenApi\APIBlox.AspNetCore.OpenApi.csproj" />
     <ProjectReference Include="..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
     <ProjectReference Include="..\ApiBlox.NetCore.Common\APIBlox.NetCore.Common.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.DomainEvents\APIBlox.NetCore.DomainEvents.csproj" />
