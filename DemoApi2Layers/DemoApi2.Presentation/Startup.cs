@@ -78,8 +78,7 @@ namespace DemoApi2.Presentation
             app.UseServerFaults();
 
             app.UseAuthentication();
-
-            app.UseLameApiExplorer();
+            
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 

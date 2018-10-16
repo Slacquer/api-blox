@@ -15,21 +15,6 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ApplicationBuilderExtensionsAspNetCore
     {
         /// <summary>
-        ///     Uses the lame API explorer middleware.  Yes, LAME.
-        ///     <para>Use me last in the pipeline as I terminate (I do not call the next delegate).</para>
-        /// </summary>
-        /// <param name="application">The application.</param>
-        /// <param name="url">Optional URL to use.  When omitted, /api/lame is used.</param>
-        /// <returns>IApplicationBuilder.</returns>
-        public static IApplicationBuilder UseLameApiExplorer(
-            this IApplicationBuilder application,
-            string url = null
-        )
-        {
-            return application.UseMiddleware<LameApiExplorerMiddleware>(url ?? "/api/lame");
-        }
-
-        /// <summary>
         ///     Configures the server faults middleware using <see cref="ServerFaultsMiddleware" />.
         ///     <para>
         ///         I should be used as early as possible in the configure pipeline.  Unless if using
