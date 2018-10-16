@@ -17,7 +17,7 @@
 
 
     <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
-    <PackageReleaseNotes>Initial pre-release.</PackageReleaseNotes>
+    <PackageReleaseNotes>Initial Release.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
     <AssemblyName>APIBlox.NetCore.DomainEvents</AssemblyName>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
