@@ -83,12 +83,12 @@ namespace APIBlox.AspNetCore
         {
             var bodyParams = action.Parameters
                 .Where(p => !(p.BindingInfo is null))// && p.BindingInfo.BindingSource.DisplayName.ContainsEx("body"))
-                .OrderBy(p => p.ParameterName.EndsWithEx("id"))
+                .OrderByDescending(p => p.ParameterName.EndsWithEx("id"))
                 .ThenBy(p => p.ParameterName).ToList();
 
             var nonBody = action.Parameters
                 .Except(bodyParams)
-                .OrderBy(p => p.ParameterName.EndsWithEx("id"))
+                .OrderByDescending(p => p.ParameterName.EndsWithEx("id"))
                 .ThenBy(p => p.ParameterName).ToList();
 
             action.Parameters.Clear();
