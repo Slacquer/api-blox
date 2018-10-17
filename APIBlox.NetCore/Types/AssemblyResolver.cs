@@ -25,22 +25,32 @@ namespace APIBlox.NetCore.Types
         /// <summary>
         ///     Initializes a new instance of the <see cref="AssemblyResolver" /> class.
         /// </summary>
-        /// <param name="path">The path.</param>
-        public AssemblyResolver(string path)
+        /// <param name="assemblyFile">The file.</param>
+        public AssemblyResolver(FileInfo assemblyFile)
         {
-            var p = new DirectoryInfo(path).FullName;
-            Assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(p);
+
+            Assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyFile.FullName);
             _dependencyContext = DependencyContext.Load(Assembly);
 
             _assemblyResolver = new CompositeCompilationAssemblyResolver(new ICompilationAssemblyResolver[]
                 {
-                    new AppBaseCompilationAssemblyResolver(Path.GetDirectoryName(p)),
+                    new AppBaseCompilationAssemblyResolver(assemblyFile.DirectoryName),
                     new ReferenceAssemblyPathResolver(),
                     new PackageCompilationAssemblyResolver()
                 }
             );
             _loadContext = AssemblyLoadContext.GetLoadContext(Assembly);
             _loadContext.Resolving += OnResolving;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="T:APIBlox.NetCore.Types.AssemblyResolver" /> class.
+        /// </summary>
+        /// <param name="assemblyFile">The file.</param>
+        public AssemblyResolver(string assemblyFile)
+            : this(new FileInfo(assemblyFile))
+        {
         }
 
         /// <summary>
