@@ -182,7 +182,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     _log.LogInformation(() => $"Searching {actualPath} for assemblies.");
 
-                    assFiles.AddRange(Directory.GetFiles(actualPath, "*.dll")
+                    assFiles.AddRange(Directory.GetFiles(actualPath, "*.dll", SearchOption.AllDirectories)
                         .Where(s =>
                             assemblyNamesLike.Any(name =>
                                 Path.GetFileName(s).ContainsEx(name)
