@@ -34,8 +34,8 @@ namespace DemoApi2.Presentation
                     new[] {"DemoApi"}, //, "APIBlox" },
                     new[]
                     {
-                        @"..\DemoApi2.Persistance\bin\Debug\netcoreapp2.1",
-                        @"..\DemoApi2.Infrastructure\bin\Debug\netcoreapp2.1"
+                        @"..\DemoApi2.Persistance\bin\**\Debug",
+                        @"..\DemoApi2.Infrastructure\bin\**\Debug\netcoreapp2.1"
                     }
                 )
                 .AddDefaultDomainEventsDispatcher()

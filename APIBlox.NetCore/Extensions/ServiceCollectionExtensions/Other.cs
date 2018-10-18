@@ -163,51 +163,51 @@ namespace Microsoft.Extensions.DependencyInjection
                 return;
             }
 
-            ((IDependencyInvertedConfiguration) Activator.CreateInstance(type))
+            ((IDependencyInvertedConfiguration)Activator.CreateInstance(type))
                 .Configure(services, configuration, loggerFactory, environment);
         }
 
-        private static IEnumerable<string> GetAssemblyFilePaths(
+        private static IEnumerable<string> GetAssemblyFiles(
             string[] assemblyNamesLike,
             IEnumerable<string> assemblyPaths
         )
         {
-            var asses = new List<string>();
+            var assFiles = new List<string>();
 
             foreach (var path in assemblyPaths)
             {
-                var di = new DirectoryInfo(path);
-                var fullPath = di.FullName;
+                var actualPaths = new PathParser(path).GetDirectories().Select(d => d.FullName);
 
-                if (!di.Exists)
+                foreach (var actualPath in actualPaths)
                 {
-                    _log.LogError(() =>
-                        $"Path {fullPath} not found, please make sure your configuration is correct."
-                    );
-                    continue;
-                }
+                    _log.LogInformation(() => $"Searching {actualPath} for assemblies.");
 
-                asses.AddRange(Directory.GetFiles(fullPath, "*.dll", SearchOption.AllDirectories)
-                    .Where(s => assemblyNamesLike.Any(name => Path.GetFileName(s).ContainsEx(name))
-                                && asses.Select(Path.GetFileName).All(fn =>
+                    assFiles.AddRange(Directory.GetFiles(actualPath, "*.dll", SearchOption.AllDirectories)
+                        .Where(s =>
+                            assemblyNamesLike.Any(name =>
+                                Path.GetFileName(s).ContainsEx(name)
+                            )
+                            && assFiles.Select(Path.GetFileName)
+                                .All(fn =>
                                     !fn.EqualsEx(Path.GetFileName(s))
                                 )
-                    )
-                );
+                        )
+                    );
+                }
             }
 
-            return asses;
+            return assFiles;
         }
 
         private static IEnumerable<KeyValuePair<bool, Type>> GetResolvedTypes(
             bool injectable, bool inverted,
-            IEnumerable<string> asses
+            IEnumerable<string> assemblyFiles
         )
         {
             var ret = new List<KeyValuePair<bool, Type>>();
             var assResolver = new AssemblyResolver();
 
-            foreach (var ass in asses)
+            foreach (var ass in assemblyFiles)
             {
                 try
                 {
@@ -257,7 +257,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var found = GetResolvedTypes(injectable,
                 inverted,
-                GetAssemblyFilePaths(assemblyNamesLike, assemblyPaths)
+                GetAssemblyFiles(assemblyNamesLike, assemblyPaths)
             ).Except(AssemblyTypes).ToList();
 
             _log.LogInformation(() =>
