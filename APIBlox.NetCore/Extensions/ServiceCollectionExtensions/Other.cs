@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using APIBlox.NetCore;
 using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Extensions;
@@ -164,7 +163,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return;
             }
 
-            ((IDependencyInvertedConfiguration)Activator.CreateInstance(type))
+            ((IDependencyInvertedConfiguration) Activator.CreateInstance(type))
                 .Configure(services, configuration, loggerFactory, environment);
         }
 
@@ -186,7 +185,6 @@ namespace Microsoft.Extensions.DependencyInjection
                         $"Path {fullPath} not found, please make sure your configuration is correct."
                     );
                     continue;
-
                 }
 
                 asses.AddRange(Directory.GetFiles(fullPath, "*.dll", SearchOption.AllDirectories)
@@ -207,6 +205,7 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             var ret = new List<KeyValuePair<bool, Type>>();
+            var assResolver = new AssemblyResolver();
 
             foreach (var ass in asses)
             {
@@ -214,17 +213,19 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     _log.LogInformation(() => $"Attempting to resolve: {ass}");
 
-                    using (var assResolver = new AssemblyResolver(ass))
-                    {
-                        ret.AddRange(assResolver.Assembly.GetTypes()
-                            .Where(x =>
-                                !x.GetTypeInfo().IsAbstract && injectable &&
-                                x.GetCustomAttributes<InjectableServiceAttribute>().Any()
-                                || inverted && x.GetInterfaces().Any(t => typeof(IDependencyInvertedConfiguration).IsAssignableTo(t))
-                            )
-                            .Select(t => new KeyValuePair<bool, Type>(typeof(IDependencyInvertedConfiguration).IsAssignableTo(t), t))
-                        );
-                    }
+                    var assembly = assResolver.LoadFromAssemblyPath(ass);
+
+                    if (assembly is null)
+                        continue;
+
+                    ret.AddRange(assembly.GetTypes()
+                        .Where(x =>
+                            !x.GetTypeInfo().IsAbstract && injectable &&
+                            x.GetCustomAttributes<InjectableServiceAttribute>().Any()
+                            || inverted && x.GetInterfaces().Any(t => typeof(IDependencyInvertedConfiguration).IsAssignableTo(t))
+                        )
+                        .Select(t => new KeyValuePair<bool, Type>(typeof(IDependencyInvertedConfiguration).IsAssignableTo(t), t))
+                    );
                 }
                 catch (Exception ex) when (ex is InvalidOperationException || ex is BadImageFormatException)
                 {
@@ -307,16 +308,22 @@ namespace Microsoft.Extensions.DependencyInjection
                             descriptor = BuildDescriptor(decParams, type, lifetime);
                         }
                         else
+                        {
                             descriptor = BuildDescriptor(face, type, lifetime);
+                        }
                     }
                 }
 
                 // If interface doesn't have any generic args, then we will have nothing to pass
                 // to the implementation during creation for THIS INTERFACE, so we will not add it as a service.
                 else if (args == null || !args.Any() && type.IsGenericTypeDefinition)
+                {
                     continue;
+                }
                 else
+                {
                     descriptor = BuildDescriptor(face, type, lifetime);
+                }
 
                 services.Add(descriptor);
             }
