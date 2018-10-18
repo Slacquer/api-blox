@@ -31,12 +31,7 @@ namespace SlnTests.APIBlox.NetCore
                     Directory.CreateDirectory(p);
             }
         }
-
-        public void Dispose()
-        {
-            Directory.Delete(_paths[0], true);
-        }
-
+        
         private readonly List<string> _paths = new List<string>();
 
         [Fact]
@@ -72,6 +67,11 @@ namespace SlnTests.APIBlox.NetCore
 
             Assert.NotNull(parser);
             Assert.True(parser.Count == 1);
+        }
+
+        public void Dispose()
+        {
+            Directory.Delete(_paths[0], true);
         }
     }
 }
