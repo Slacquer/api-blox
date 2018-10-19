@@ -230,8 +230,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     .ToList();
             }
 
-            _log.LogInformation(() => string.Format("Excluded Search Paths: {0}",
-                    string.Join(",\n", _excludedPaths)
+            _log.LogInformation(() => string.Format("Excluded Search Paths: \n{0}",
+                    string.Join(",\n", _excludedPaths.OrderBy(s => s))
                 )
             );
 
@@ -240,7 +240,14 @@ namespace Microsoft.Extensions.DependencyInjection
             if (actualPaths is null || !actualPaths.Any())
                 return ret;
 
-            foreach (var actualPath in actualPaths)
+            var ordered = actualPaths.OrderBy(s => s);
+
+            _log.LogInformation(() => string.Format("Included Search Paths: \n{0}",
+                    string.Join(",\n", ordered)
+                )
+            );
+
+            foreach (var actualPath in ordered)
             {
                 _log.LogInformation(() => $"Searching {actualPath} for assemblies.");
 
@@ -296,7 +303,11 @@ namespace Microsoft.Extensions.DependencyInjection
                         .Select(t => new KeyValuePair<bool, Type>(typeof(IDependencyInvertedConfiguration).IsAssignableTo(t), t))
                     );
                 }
-                catch (Exception ex) when (ex is InvalidOperationException || ex is BadImageFormatException)
+                catch (Exception ex) 
+                    //when (
+                    //ex is InvalidOperationException
+                    //|| ex is BadImageFormatException
+                    //|| ex is ReflectionTypeLoadException)
                 {
                     _log.LogWarning(() => ex.Message);
                 }
