@@ -167,52 +167,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Configure(services, configuration, loggerFactory, environment);
         }
 
-        private static IEnumerable<string> GetAssemblyFiles(
-            string[] assemblyNamesLike,
-            IEnumerable<string> assemblyPaths
-        )
-        {
-            var assFiles = new List<string>();
-            var lst = assemblyPaths.ToList();
-
-            var excluded = lst.Where(s => s.StartsWith("!")).ToList();
-            var included = lst.Except(excluded);
-
-            _excludedPaths.AddRange(excluded
-                .SelectMany(s => PathParser.FindAll(s.Replace("!", ""))
-                    .Select(di => di.FullName)
-                )
-                .Except(_excludedPaths)
-            );
-
-            foreach (var path in included)
-            {
-                var actualPaths = PathParser.FindAll(path,
-                        d => !_excludedPaths.Any(s => s.Contains(d) || d.Contains(s))
-                    ).Select(d => d.FullName)
-                    .ToList();
-
-                foreach (var actualPath in actualPaths)
-                {
-                    _log.LogInformation(() => $"Searching {actualPath} for assemblies.");
-
-                    assFiles.AddRange(Directory.GetFiles(actualPath, "*.dll", SearchOption.AllDirectories)
-                        .Where(s =>
-                            assemblyNamesLike.Any(name =>
-                                Path.GetFileName(s).ContainsEx(name)
-                            )
-                            && assFiles.Select(Path.GetFileName)
-                                .All(fn =>
-                                    !fn.EqualsEx(Path.GetFileName(s))
-                                )
-                        )
-                    );
-                }
-            }
-
-            return assFiles;
-        }
-
         private static void InitializeAssemblyTypes(
             bool injectable,
             bool inverted,
@@ -237,8 +191,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 GetAssemblyFiles(assemblyNamesLike, assemblyPaths)
             ).Except(AssemblyTypes).ToList();
 
-            _log.LogInformation(() => string.Format("Excluded Paths: {0}", string.Join(",\n", _excludedPaths)));
-
             _log.LogInformation(() =>
                 string.Format(injectable
                         ? "\n{1} list:\n{0}"
@@ -250,6 +202,62 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
             AssemblyTypes.AddRange(found);
+        }
+
+        private static IEnumerable<string> GetAssemblyFiles(
+            string[] assemblyNamesLike,
+            IEnumerable<string> assemblyPaths
+        )
+        {
+            var lst = assemblyPaths.ToList();
+            var excluded = lst.Where(s => s.StartsWith("!")).ToList();
+            var included = lst.Except(excluded);
+
+            _excludedPaths.AddRange(excluded
+                .SelectMany(s => PathParser.FindAll(s.Replace("!", ""))
+                    .Select(di => di.FullName)
+                )
+                .Except(_excludedPaths)
+            );
+
+            List<string> actualPaths = null;
+
+            foreach (var path in included)
+            {
+                actualPaths = PathParser.FindAll(path,
+                        d => !_excludedPaths.Any(s => s.Contains(d) || d.Contains(s))
+                    ).Select(d => d.FullName)
+                    .ToList();
+            }
+
+            _log.LogInformation(() => string.Format("Excluded Search Paths: {0}",
+                    string.Join(",\n", _excludedPaths)
+                )
+            );
+
+            var ret = new List<string>();
+
+            if (actualPaths is null || !actualPaths.Any())
+                return ret;
+
+            foreach (var actualPath in actualPaths)
+            {
+                _log.LogInformation(() => $"Searching {actualPath} for assemblies.");
+
+                ret.AddRange(Directory.GetFiles(actualPath, "*.dll")
+                    .Where(s =>
+                        assemblyNamesLike.Any(name =>
+                            Path.GetFileName(s).ContainsEx(name)
+                        )
+                        && ret.Select(Path.GetFileName)
+                            .All(fn =>
+                                !fn.EqualsEx(Path.GetFileName(s))
+                            )
+                    )
+                );
+            }
+
+            return ret;
         }
 
         private static IEnumerable<KeyValuePair<bool, Type>> GetResolvedTypes(

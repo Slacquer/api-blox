@@ -93,7 +93,7 @@ namespace APIBlox.NetCore.Types
 
         private IEnumerable<string> GetAssemblyFiles(string filePath)
         {
-            var tmp = Directory.GetFileSystemEntries(filePath, "*.dll", SearchOption.AllDirectories)
+            var tmp = Directory.GetFiles(filePath, "*.dll")
                 .Where(s => !_assCache.ContainsKey(Path.GetFileName(s)))
                 .Select(s => new KeyValuePair<string, string>(Path.GetFileName(s), s))
                 .ToList();
