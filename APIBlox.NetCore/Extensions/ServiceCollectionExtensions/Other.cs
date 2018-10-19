@@ -187,13 +187,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             foreach (var path in included)
             {
-                var actualPaths = PathParser.FindAll(path, d =>
-                    {
-                        var ret = !_excludedPaths.Any(s => s.Contains(d) || d.Contains(s));
-
-                        return ret;
-                    }
-                ).Select(d => d.FullName);
+                var actualPaths = PathParser.FindAll(path,
+                        d => !_excludedPaths.Any(s => s.Contains(d) || d.Contains(s))
+                    ).Select(d => d.FullName)
+                    .ToList();
 
                 foreach (var actualPath in actualPaths)
                 {
