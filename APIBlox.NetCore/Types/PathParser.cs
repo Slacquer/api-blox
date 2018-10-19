@@ -24,10 +24,7 @@ namespace APIBlox.NetCore.Types
                 throw new NullReferenceException("Empty path!");
 
             var parts = searchPath.Split(new[] {"**"}, StringSplitOptions.RemoveEmptyEntries);
-
-            if (parts.Length == 1)
-                return new List<DirectoryInfo> {new DirectoryInfo(parts[0])};
-
+            
             var root = parts[0];
             var excludes = parts.Except(new[] {root}).Select(RemoveTrailingSlash).ToList();
 
