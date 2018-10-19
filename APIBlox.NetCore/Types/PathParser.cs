@@ -37,9 +37,12 @@ namespace APIBlox.NetCore.Types
             var root = new DirectoryInfo(_pathParts[0]).FullName;
             paths.AddRange(Directory.GetDirectories(root, "*", SearchOption.AllDirectories)
                 .Where(d =>
-                    _pathParts.Any(p => d.EndsWithEx(p))
-                    && !paths.Any(di => di.EqualsEx(d))
-                    && (filterAction?.Invoke(d) ?? true)
+                    {
+                        var ret = _pathParts.Any(p => d.EndsWithEx(p))
+                            && !paths.Any(di => di.EqualsEx(d));
+                        
+                        return ret && (filterAction?.Invoke(d) ?? true);
+                    }
                 )
             );
 

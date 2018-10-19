@@ -61,7 +61,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">IServiceCollection</param>
         /// <param name="loggerFactory">ILoggerFactory</param>
         /// <param name="assemblyNamesLike">The assembly names like.</param>
-        /// <param name="assemblyPaths">The assembly paths.</param>
+        /// <param name="assemblyPaths">The assembly paths, supporting absolute, relative and ** or ! to exclude.</param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddInjectableServices(
             this IServiceCollection services,
@@ -108,7 +108,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </param>
         /// <param name="configuration">IConfiguration</param>
         /// <param name="assemblyNamesLike">The assembly names like.</param>
-        /// <param name="assemblyPaths">The assembly paths.</param>
+        /// <param name="assemblyPaths">The assembly paths, supporting absolute, relative and ** or ! to exclude.</param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddInvertedDependentsAndConfigureServices(
             this IServiceCollection services,
@@ -173,10 +173,21 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             var assFiles = new List<string>();
+            var lst = assemblyPaths.ToList();
 
-            foreach (var path in assemblyPaths)
+            var excluded = lst.Where(s => s.StartsWith("!")).ToList();
+            var included = lst.Except(excluded);
+            var fullExcluded = excluded.Select(s => new DirectoryInfo(s.Replace("!", "")).FullName).ToList();
+
+            foreach (var path in included)
             {
-                var actualPaths = new PathParser(path).GetDirectories().Select(d => d.FullName);
+                var actualPaths = new PathParser(path).GetDirectories(d =>
+                    {
+                        var ret = !fullExcluded.Any(s => s.Contains(d) || d.Contains(s));
+
+                        return ret;
+                    }
+                ).Select(d => d.FullName);
 
                 foreach (var actualPath in actualPaths)
                 {
