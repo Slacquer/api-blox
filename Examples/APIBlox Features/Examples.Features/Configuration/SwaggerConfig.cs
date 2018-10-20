@@ -12,6 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     c.DescribeAllEnumsAsStrings();
                     c.SwaggerDoc(version, new Info {Title = siteTitle, Version = version});
+                    c.IncludeXmlComments(@".\Examples.Features.xml", true);
                 }
             );
         }

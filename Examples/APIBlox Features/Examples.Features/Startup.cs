@@ -19,12 +19,12 @@ using System.Reflection;
 
 namespace Examples
 {
-    public class Startup
+    internal class Startup
     {
 #if UseAPIBlox
         private readonly string[] _assemblyNames;
         private readonly string[] _assemblyPaths;
-        private const string AboutErrorsUrl = "about:blank";
+        private const string AboutErrorsUrl = "http://hey.look.at.me/errorcodes";
 #endif
 
         private readonly IConfiguration _configuration;
@@ -63,7 +63,17 @@ namespace Examples
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
                 //
                 //  Change what is returned to the user when an error occurs.
-                .AddAlterRequestErrorObject(err => err.Type = AboutErrorsUrl)
+                .AddAlterRequestErrorObject(err =>
+                {
+                    err.Type = AboutErrorsUrl;
+                    err.AddProperty("Some Custom Property",
+                        new
+                        {
+                            SetInStartup = "Adding stuff like this MIGHT " +
+                                           "be something you need for your standards."
+                        }
+                    );
+                })
                 //
                 // Too much for this project, take a look at the Example Clean Architecture
                 //.AddInvertedDependentsAndConfigureServices(
@@ -85,7 +95,7 @@ namespace Examples
                 .AddPopulateRequestObjectActionFilter()
                 //
                 // Pagination
-                .AddEnsurePaginationResultActionFilter(25, data => new { Resources = data })
+                .AddEnsurePaginationResultActionFilter(25)
                 //
                 // No pagination
                 //.AddEnsureResponseResultActionFilter(data => new { NonPaginatedResources = data })
@@ -95,7 +105,8 @@ namespace Examples
                 //
                 // If using AddMvcCore then we need this one.
                 //.AddConsumesProducesJsonResourceResultFilters()
-
+                //
+                // Custom tokens, example has version
                 .AddRouteTokensConvention(_configuration, _environment, "ExampleTokens")
 #endif
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

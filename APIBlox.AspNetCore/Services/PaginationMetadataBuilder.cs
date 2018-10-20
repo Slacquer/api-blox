@@ -40,7 +40,7 @@ namespace APIBlox.AspNetCore
             // Throwing or should we just log.
             if (resultCount > _defaultPageSize)
                 throw new IndexOutOfRangeException(
-                    $"The result set is larger ({resultCount}) than what has " +
+                    $"The result set  ({resultCount}) is larger than what has " +
                     $"been defined as the Max page size of {_defaultPageSize}."
                 );
 

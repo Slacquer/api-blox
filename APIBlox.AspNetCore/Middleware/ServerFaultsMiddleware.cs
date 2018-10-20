@@ -46,7 +46,7 @@ namespace APIBlox.AspNetCore
 
                 return;
             }
-
+            
             try
             {
                 context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
