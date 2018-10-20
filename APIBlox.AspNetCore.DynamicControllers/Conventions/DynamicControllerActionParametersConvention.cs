@@ -108,8 +108,9 @@ namespace APIBlox.AspNetCore
         private bool IsGetOrDelete(ActionModel action)
         {
             if (!action.Attributes.Any())
-                throw new ArgumentException($"Action {action.Controller.ControllerName}.{action.ActionName} " +
-                                            $"isn't decorated with an {nameof(HttpMethodAttribute)}."
+                throw new ArgumentException(
+                    $"Action {action.Controller.ControllerName}.{action.ActionName} " +
+                    $"isn't decorated with an {nameof(HttpMethodAttribute)}."
                 );
 
             return action.Attributes.OfType<HttpMethodAttribute>()

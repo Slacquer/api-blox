@@ -447,8 +447,9 @@ namespace Microsoft.Extensions.DependencyInjection
             var ret = configuration.GetSection(configSection).Get<Dictionary<string, string>>();
 
             if (ret is null)
-                throw new ArgumentException($"In order to use the {nameof(RouteTokensConvention)} you " +
-                                            $"will need to have an {configSection} configuration entry with key value pairs."
+                throw new ArgumentException(
+                    $"In order to use the {nameof(RouteTokensConvention)} you " +
+                    $"will need to have an {configSection} configuration entry with key value pairs."
                 );
 
             var hasEnv = ret.ContainsKey("Environment");
@@ -479,7 +480,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (!(objFilter is EnsureResponseResultActionFilter resultFilter))
                     continue;
 
-                throw new ArgumentException($"You have already added an {resultFilter.GetType().Name}, the {who} can not be used.");
+                throw new ArgumentException(
+                    $"You have already added an {resultFilter.GetType().Name}, " +
+                    $"the {who} can not be used."
+                );
             }
         }
     }

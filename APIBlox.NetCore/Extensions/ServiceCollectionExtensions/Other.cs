@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static partial class ServiceCollectionExtensionsNetCore
     {
         private static ILogger _log;
-        private static List<string> _excludedPaths = new List<string>();
+        private static readonly List<string> ExcludedPaths = new List<string>();
         private static readonly List<KeyValuePair<bool, Type>> AssemblyTypes = new List<KeyValuePair<bool, Type>>();
 
         /// <summary>
@@ -141,6 +141,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
+
         private static ServiceDescriptor BuildDescriptor(
             Type type,
             Type instance, ServiceLifetime lifetime
@@ -213,11 +214,11 @@ namespace Microsoft.Extensions.DependencyInjection
             var excluded = lst.Where(s => s.StartsWith("!")).ToList();
             var included = lst.Except(excluded);
 
-            _excludedPaths.AddRange(excluded
+            ExcludedPaths.AddRange(excluded
                 .SelectMany(s => PathParser.FindAll(s.Replace("!", ""))
                     .Select(di => di.FullName)
                 )
-                .Except(_excludedPaths)
+                .Except(ExcludedPaths)
             );
 
             List<string> actualPaths = null;
@@ -225,13 +226,13 @@ namespace Microsoft.Extensions.DependencyInjection
             foreach (var path in included)
             {
                 actualPaths = PathParser.FindAll(path,
-                        d => !_excludedPaths.Any(s => s.Contains(d) || d.Contains(s))
+                        d => !ExcludedPaths.Any(s => s.Contains(d) || d.Contains(s))
                     ).Select(d => d.FullName)
                     .ToList();
             }
 
             _log.LogInformation(() => string.Format("Excluded Search Paths: \n{0}",
-                    string.Join(",\n", _excludedPaths.OrderBy(s => s))
+                    string.Join(",\n", ExcludedPaths.OrderBy(s => s))
                 )
             );
 
@@ -281,7 +282,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     var path = Path.GetDirectoryName(ass);
 
-                    if (_excludedPaths.Any(s => s.ContainsEx(path) || path.ContainsEx(s)))
+                    if (ExcludedPaths.Any(s => s.ContainsEx(path) || path.ContainsEx(s)))
                     {
                         _log.LogInformation(() => $"Skipping {ass}, it lives in one of the specified excluded paths.");
                         continue;
@@ -298,9 +299,15 @@ namespace Microsoft.Extensions.DependencyInjection
                         .Where(x =>
                             !x.GetTypeInfo().IsAbstract && injectable &&
                             x.GetCustomAttributes<InjectableServiceAttribute>().Any()
-                            || inverted && x.GetInterfaces().Any(t => typeof(IDependencyInvertedConfiguration).IsAssignableTo(t))
+                            || inverted && x.GetInterfaces().Any(t =>
+                                typeof(IDependencyInvertedConfiguration).IsAssignableTo(t)
+                            )
                         )
-                        .Select(t => new KeyValuePair<bool, Type>(typeof(IDependencyInvertedConfiguration).IsAssignableTo(t), t))
+                        .Select(t => new KeyValuePair<bool, Type>(
+                                typeof(IDependencyInvertedConfiguration).IsAssignableTo(t),
+                                t
+                            )
+                        )
                     );
                 }
                 catch (Exception ex) 

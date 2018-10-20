@@ -57,7 +57,9 @@ namespace APIBlox.AspNetCore.Controllers
                 return new ProblemResult(ret.Error);
 
             if (ret.Result is null)
-                throw new NullReferenceException("When responding to a GET you must either set an error or pass a result!");
+                throw new NullReferenceException(
+                    "When responding to a GET you must either set an error or pass a result!"
+                );
 
             return Ok(ret.Result);
         }

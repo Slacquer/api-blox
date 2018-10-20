@@ -59,7 +59,9 @@ namespace APIBlox.AspNetCore.Controllers
                 : null;
 
             if (errorResult is null && ret.Result is null)
-                throw new NullReferenceException("When responding to a POST you must either set an error or pass some results!");
+                throw new NullReferenceException(
+                    "When responding to a POST you must either set an error or pass some results!"
+                );
 
             return errorResult ?? CreatedAtRoute(new {ret.Result.Id}, ret.Result);
         }

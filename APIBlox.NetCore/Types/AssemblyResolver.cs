@@ -37,7 +37,10 @@ namespace APIBlox.NetCore.Types
         public Assembly LoadFromAssemblyPath(string assemblyFullPath)
         {
             if (assemblyFullPath.IsEmptyNullOrWhiteSpace() || !File.Exists(assemblyFullPath))
-                throw new ArgumentException($"Invalid assembly file path: {assemblyFullPath}", nameof(assemblyFullPath));
+                throw new ArgumentException(
+                    $"Invalid assembly file path: {assemblyFullPath}",
+                    nameof(assemblyFullPath)
+                );
 
             if (_loadedCache.Contains(assemblyFullPath))
                 return null;
@@ -46,10 +49,12 @@ namespace APIBlox.NetCore.Types
             var fileName = Path.GetFileName(assemblyFullPath);
             var directory = Path.GetDirectoryName(assemblyFullPath);
 
-            var inCompileLibraries =
-                DependencyContext.Default.CompileLibraries.Any(l => l.Name.Equals(fileNameWithOutExtension, StringComparison.OrdinalIgnoreCase));
-            var inRuntimeLibraries =
-                DependencyContext.Default.RuntimeLibraries.Any(l => l.Name.Equals(fileNameWithOutExtension, StringComparison.OrdinalIgnoreCase));
+            var inCompileLibraries = DependencyContext.Default.CompileLibraries.Any(l =>
+                l.Name.Equals(fileNameWithOutExtension, StringComparison.OrdinalIgnoreCase)
+            );
+            var inRuntimeLibraries = DependencyContext.Default.RuntimeLibraries.Any(l =>
+                l.Name.Equals(fileNameWithOutExtension, StringComparison.OrdinalIgnoreCase)
+            );
 
             var assembly = inCompileLibraries || inRuntimeLibraries
                 ? Assembly.Load(new AssemblyName(fileNameWithOutExtension))

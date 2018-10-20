@@ -46,9 +46,10 @@ namespace APIBlox.AspNetCore
             var id = jo.DescendantsAndSelf().OfType<JProperty>().FirstOrDefault(t => t.Name.EqualsEx("id"));
 
             if (id is null)
-                throw new NullReferenceException("Response result does not appear to contain an " +
-                                                 "ID property, therefore an GET url can not be created.  " +
-                                                 "Hopefully this is your fault and not mine..."
+                throw new NullReferenceException(
+                    "Response result does not appear to contain an " +
+                    "ID property, therefore an GET url can not be created.  " +
+                    "Hopefully this is your fault and not mine..."
                 );
 
             return id.Value.ToString();

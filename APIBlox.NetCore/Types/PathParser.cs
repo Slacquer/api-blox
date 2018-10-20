@@ -9,7 +9,7 @@ namespace APIBlox.NetCore.Types
     /// <summary>
     ///     Class PathParser.
     /// </summary>
-    public class PathParser
+    public static class PathParser
     {
         /// <summary>
         ///     Builds a list of directory info objects using ** pattern matching.
