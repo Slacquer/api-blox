@@ -4,11 +4,29 @@
         <name>Examples.Features</name>
     </assembly>
     <members>
+        <member name="T:Examples.Contracts.IRandomNumberGeneratorService">
+            <summary>
+                Interface IRandomNumberGeneratorService
+            </summary>
+        </member>
+        <member name="M:Examples.Contracts.IRandomNumberGeneratorService.GenerateNumber">
+            <summary>
+                Generates the number.
+            </summary>
+            <returns>System.Int32.</returns>
+        </member>
         <member name="T:Examples.Controllers.ExamplesController">
+            <inheritdoc />
             <summary>
                 Class ExamplesController.
             </summary>
             <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="M:Examples.Controllers.ExamplesController.#ctor(Examples.Contracts.IRandomNumberGeneratorService)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Controllers.ExamplesController"/> class.
+            </summary>
+            <param name="randomNumberGeneratorService">The random number generator service.</param>
         </member>
         <member name="M:Examples.Controllers.ExamplesController.Get(System.String)">
              <summary>
@@ -18,9 +36,9 @@
             
              <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
         </member>
-        <member name="M:Examples.Controllers.ExamplesController.GetErrorResponseExample(APIBlox.AspNetCore.Enums.CommonStatusCodes,System.String)">
+        <member name="M:Examples.Controllers.ExamplesController.GetProblemResultExample(APIBlox.AspNetCore.Enums.CommonStatusCodes,System.String)">
             <summary>
-                Gets the error response example.
+                Gets a problem result example.
             </summary>
             <param name="statusCode">The status code.</param>
             <param name="description">The description, when empty no error details are displayed</param>
@@ -102,6 +120,18 @@
                 you omit me, then the APIBlox ValidateResourceActionFilter will kick in resulting in an 400.
             </summary>
             <value>The cool new value.</value>
+        </member>
+        <member name="T:Examples.Services.RandomNumberGeneratorService">
+            <summary>
+                Class RandomNumberGeneratorService.
+            </summary>
+            <seealso cref="T:Examples.Contracts.IRandomNumberGeneratorService" />
+        </member>
+        <member name="M:Examples.Services.RandomNumberGeneratorService.GenerateNumber">
+            <summary>
+                Generates the number.
+            </summary>
+            <returns>System.Int32.</returns>
         </member>
     </members>
 </doc>

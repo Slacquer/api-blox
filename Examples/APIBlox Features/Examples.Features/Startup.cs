@@ -1,10 +1,7 @@
-﻿//
-//  Set this value to anything other than UseAPIBlox to turn
-// off all APIBlox features, this way you can see the difference(s).
-#define UseAPIBlox
-//
-//
-
+﻿
+using System.IO;
+using Examples.Contracts;
+using Examples.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +46,7 @@ namespace Examples
             _assemblyPaths = new[]
             {
                 _environment.ContentRootPath,
-                Assembly.GetExecutingAssembly().Location
+               new FileInfo( Assembly.GetExecutingAssembly().Location).DirectoryName
             };
 #endif
         }
@@ -83,7 +80,15 @@ namespace Examples
                 //    _assemblyNames,
                 //    _assemblyPaths
                 //)
-
+#else
+                // You may think to yourself... "This is no big deal, why would I need to do use your dumb InjectableServiceAttribute?
+                // In fact I could clean up this bit of code just by putting it in an extension method and all is good."...
+                //      Oh Really Tough guy? what happens when this presentation project does NOT have a reference to
+                // the assembly that contains the implementation of the contract that lives at the application layer?
+                //      huh!?
+                //          then what!
+                //                  huh!
+                .AddSingleton<IRandomNumberGeneratorService, RandomNumberGeneratorService>()
 #endif
                 .AddMvc()
 #if UseAPIBlox
@@ -95,7 +100,7 @@ namespace Examples
                 .AddPopulateRequestObjectActionFilter()
                 //
                 // Pagination
-                .AddEnsurePaginationResultActionFilter(25)
+                .AddEnsurePaginationResultActionFilter(100)
                 //
                 // No pagination
                 //.AddEnsureResponseResultActionFilter(data => new { NonPaginatedResources = data })

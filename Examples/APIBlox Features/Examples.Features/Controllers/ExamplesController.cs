@@ -1,27 +1,48 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Examples.Resources;
+using Microsoft.AspNetCore.Mvc;
+using Examples.Contracts;
+
+#if UseAPIBlox
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Attributes;
 using APIBlox.AspNetCore.Enums;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Types.Errors;
-using Examples.Resources;
-using Microsoft.AspNetCore.Mvc;
+#endif
 
 namespace Examples.Controllers
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Class ExamplesController.
     /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
+    /// <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+#if UseAPIBlox
     [Route("[environment]Api/versions/[version]/resources/[controller]")]
+#else
+    [Route("devApi/versions/1/resources/[controller]")]
+#endif
     [ApiController]
     public class ExamplesController : ControllerBase
     {
+        private readonly IRandomNumberGeneratorService _rndSvc;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ExamplesController"/> class.
+        /// </summary>
+        /// <param name="randomNumberGeneratorService">The random number generator service.</param>
+        public ExamplesController(IRandomNumberGeneratorService randomNumberGeneratorService)
+        {
+            _rndSvc = randomNumberGeneratorService;
+        }
+        
         ///  <summary>
         ///      Gets the specified wait.
         ///  </summary>
@@ -33,20 +54,21 @@ namespace Examples.Controllers
         {
             var examples = new List<string>();
 
-            for (var i = 0; i < 24; i++)
+            for (var i = 0; i < _rndSvc.GenerateNumber(100); i++)
                 examples.Add($"FuBar {i}");
 
             return Ok(examples);
         }
 
         /// <summary>
-        ///     Gets the error response example.
+        ///     Gets a problem result example.
         /// </summary>
         /// <param name="statusCode">The status code.</param>
         /// <param name="description">The description, when empty no error details are displayed</param>
         /// <returns>ActionResult.</returns>
         [HttpGet("problemResult")]
-        public ActionResult GetErrorResponseExample(CommonStatusCodes statusCode = CommonStatusCodes.Forbidden, string description = null)
+#if UseAPIBlox
+        public ActionResult GetProblemResultExample(CommonStatusCodes statusCode = CommonStatusCodes.Forbidden, string description = null)
         {
             if (statusCode == CommonStatusCodes.Ok)
                 return Ok("Try one that isn't a success code :)");
@@ -55,6 +77,13 @@ namespace Examples.Controllers
             errObject.SetError(statusCode, description);
 
             return new ProblemResult(errObject);
+#else
+        public ActionResult GetErrorResponseExample(int statusCode, string description = null)
+        {
+            HttpContext.Response.StatusCode = statusCode;
+
+            return new ObjectResult(description);
+#endif
         }
 
         /// <summary>
@@ -105,8 +134,12 @@ namespace Examples.Controllers
         ///     Posts the specified resource.
         /// </summary>
         /// <param name="requestResource">The request resource.</param>
-        [HttpPost("{valueId}/subResources")]
-        public void Post([Populate] ExampleRequestObject requestResource)
+        [HttpPost("{valueId:int}/subResources")]
+#if UseAPIBlox
+        public ActionResult Post([Populate] ExampleRequestObject requestResource)
+#else
+        public ActionResult Post(ExampleRequestObject requestResource)
+#endif
         {
             // You may be thinking... "Why would this be helpful, I mean I could just add
             // the parameters to the method and they get filled in for me!"
@@ -118,6 +151,8 @@ namespace Examples.Controllers
             //  SIDE NOTE:
             // we should be returning a route with id, but
             // I'm lazy and that's not the point of all this... :/
+
+            return Ok(new { Id = 1, requestResource.CoolNewValue, requestResource.ValueId });
         }
 
         /// <summary>
@@ -131,7 +166,7 @@ namespace Examples.Controllers
         /// <param name="id">The identifier.</param>
         /// <param name="value">The value.</param>
         /// <param name="cancellationToken"></param>
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] string value, CancellationToken cancellationToken)
         {
             await Task.Delay(30000, cancellationToken);
