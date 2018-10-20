@@ -32,8 +32,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 );
 
             if (qi is null)
-                throw new ArgumentException($"The {type} must be an generic type of IQueryHandler<>, " +
-                                            "IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
+                throw new ArgumentException(
+                    $"The {type} must be an generic type of IQueryHandler<>, " +
+                    "IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
                 );
 
             foreach (var decorator in decorators.Reverse())
@@ -63,7 +64,10 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             if (!decorators.Any())
-                throw new ArgumentNullException(nameof(decorators), "Why would you decorate a handler with nothing?");
+                throw new ArgumentNullException(
+                    nameof(decorators),
+                    "Why would you decorate a handler with nothing?"
+                );
 
             var ths = typeof(THandler);
 
@@ -74,8 +78,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 );
 
             if (qi is null)
-                throw new ArgumentException($"The {ths} must be an generic type of " +
-                                            "IQueryHandler<>, IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
+                throw new ArgumentException(
+                    $"The {ths} must be an generic type of " +
+                    "IQueryHandler<>, IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
                 );
 
             foreach (var decorator in decorators.Reverse())

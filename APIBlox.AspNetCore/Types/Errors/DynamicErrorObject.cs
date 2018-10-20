@@ -84,8 +84,9 @@ namespace APIBlox.AspNetCore.Types.Errors
                 );
 
             if (Title.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException("Although not required deeper than the root, we will require " +
-                                            $"{GetType().Name}.{nameof(Title)}",
+                throw new ArgumentException(
+                    "Although not required deeper than the root, we will require " +
+                    $"{GetType().Name}.{nameof(Title)}",
                     nameof(Title)
                 );
 

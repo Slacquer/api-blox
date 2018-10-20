@@ -18,7 +18,9 @@ namespace APIBlox.AspNetCore.Types.Errors
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             if (ReferenceId.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException($"Although {GetType().Name}.{nameof(ReferenceId)} is not required by RFC7807, we still want it!",
+                throw new ArgumentException(
+                    $"Although {GetType().Name}.{nameof(ReferenceId)} " +
+                    "is not required by RFC7807, we still want it!",
                     nameof(ReferenceId)
                 );
 

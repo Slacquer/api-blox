@@ -9,41 +9,47 @@ namespace APIBlox.NetCore.Types
     /// <summary>
     ///     Class PathParser.
     /// </summary>
-    public class PathParser
+    public static class PathParser
     {
-        private readonly string[] _pathParts;
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PathParser" /> class.
+        ///     Builds a list of directory info objects using ** pattern matching.
         /// </summary>
-        /// <param name="path">The path.</param>
-        public PathParser(string path)
-        {
-            _pathParts = path.Split(new[] { "**" }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        /// <summary>
-        ///     Gets a list of directory info objects using ** pattern matching.
-        /// </summary>
-        /// <param name="filterAction">Filter results while being added.</param>
+        /// <param name="searchPath">The search path.</param>
+        /// <param name="filterAction">The filter action.</param>
         /// <returns>IEnumerable&lt;DirectoryInfo&gt;.</returns>
-        public IEnumerable<DirectoryInfo> GetDirectories(Func<string, bool> filterAction = null)
+        /// <exception cref="NullReferenceException">Empty path!</exception>
+        public static IEnumerable<DirectoryInfo> FindAll(string searchPath, Func<string, bool> filterAction = null)
         {
-            if (_pathParts.Length == 1)
-                return new[] { new DirectoryInfo(_pathParts[0]) };
+            if (searchPath.IsEmptyNullOrWhiteSpace())
+                throw new NullReferenceException("Empty path!");
 
-            var paths = new List<string>();
+            var parts = searchPath.Split(new[] {"**"}, StringSplitOptions.RemoveEmptyEntries);
+            
+            var root = parts[0];
+            var excludes = parts.Except(new[] {root}).Select(RemoveTrailingSlash).ToList();
 
-            var root = new DirectoryInfo(_pathParts[0]).FullName;
-            paths.AddRange(Directory.GetDirectories(root, "*", SearchOption.AllDirectories)
-                .Where(d =>
-                    _pathParts.Any(p => d.EndsWithEx(p))
-                    && !paths.Any(di => di.EqualsEx(d))
-                    && (filterAction?.Invoke(d) ?? true)
+            var ret = new List<DirectoryInfo>();
+            var rootDi = new DirectoryInfo(root);
+
+            if (!Directory.Exists(rootDi.FullName))
+                return ret;
+
+            ret.AddRange(Directory.GetDirectories(rootDi.FullName, "*", SearchOption.AllDirectories)
+                .Where(s =>
+                    excludes.All(e =>
+                        s.ContainsEx(e)
+                    )
+                    && (filterAction?.Invoke(s) ?? true)
                 )
+                .Select(s => new DirectoryInfo(s))
             );
 
-            return paths.Distinct().Select(p => new DirectoryInfo(p));
+            return ret;
+        }
+
+        private static string RemoveTrailingSlash(string path)
+        {
+            return path.EndsWith(@"\") ? path.Substring(0, path.Length - 1) : path;
         }
     }
 }

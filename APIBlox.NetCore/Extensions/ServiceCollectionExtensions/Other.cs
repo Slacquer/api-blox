@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static partial class ServiceCollectionExtensionsNetCore
     {
         private static ILogger _log;
-
+        private static readonly List<string> ExcludedPaths = new List<string>();
         private static readonly List<KeyValuePair<bool, Type>> AssemblyTypes = new List<KeyValuePair<bool, Type>>();
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">IServiceCollection</param>
         /// <param name="loggerFactory">ILoggerFactory</param>
         /// <param name="assemblyNamesLike">The assembly names like.</param>
-        /// <param name="assemblyPaths">The assembly paths.</param>
+        /// <param name="assemblyPaths">The assembly paths, supporting absolute, relative and ** or ! to exclude.</param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddInjectableServices(
             this IServiceCollection services,
@@ -108,7 +108,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </param>
         /// <param name="configuration">IConfiguration</param>
         /// <param name="assemblyNamesLike">The assembly names like.</param>
-        /// <param name="assemblyPaths">The assembly paths.</param>
+        /// <param name="assemblyPaths">The assembly paths, supporting absolute, relative and ** or ! to exclude.</param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddInvertedDependentsAndConfigureServices(
             this IServiceCollection services,
@@ -141,6 +141,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
+
         private static ServiceDescriptor BuildDescriptor(
             Type type,
             Type instance, ServiceLifetime lifetime
@@ -165,75 +166,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             ((IDependencyInvertedConfiguration)Activator.CreateInstance(type))
                 .Configure(services, configuration, loggerFactory, environment);
-        }
-
-        private static IEnumerable<string> GetAssemblyFiles(
-            string[] assemblyNamesLike,
-            IEnumerable<string> assemblyPaths
-        )
-        {
-            var assFiles = new List<string>();
-
-            foreach (var path in assemblyPaths)
-            {
-                var actualPaths = new PathParser(path).GetDirectories().Select(d => d.FullName);
-
-                foreach (var actualPath in actualPaths)
-                {
-                    _log.LogInformation(() => $"Searching {actualPath} for assemblies.");
-
-                    assFiles.AddRange(Directory.GetFiles(actualPath, "*.dll", SearchOption.AllDirectories)
-                        .Where(s =>
-                            assemblyNamesLike.Any(name =>
-                                Path.GetFileName(s).ContainsEx(name)
-                            )
-                            && assFiles.Select(Path.GetFileName)
-                                .All(fn =>
-                                    !fn.EqualsEx(Path.GetFileName(s))
-                                )
-                        )
-                    );
-                }
-            }
-
-            return assFiles;
-        }
-
-        private static IEnumerable<KeyValuePair<bool, Type>> GetResolvedTypes(
-            bool injectable, bool inverted,
-            IEnumerable<string> assemblyFiles
-        )
-        {
-            var ret = new List<KeyValuePair<bool, Type>>();
-            var assResolver = new AssemblyResolver();
-
-            foreach (var ass in assemblyFiles)
-            {
-                try
-                {
-                    _log.LogInformation(() => $"Attempting to resolve: {ass}");
-
-                    var assembly = assResolver.LoadFromAssemblyPath(ass);
-
-                    if (assembly is null)
-                        continue;
-
-                    ret.AddRange(assembly.GetTypes()
-                        .Where(x =>
-                            !x.GetTypeInfo().IsAbstract && injectable &&
-                            x.GetCustomAttributes<InjectableServiceAttribute>().Any()
-                            || inverted && x.GetInterfaces().Any(t => typeof(IDependencyInvertedConfiguration).IsAssignableTo(t))
-                        )
-                        .Select(t => new KeyValuePair<bool, Type>(typeof(IDependencyInvertedConfiguration).IsAssignableTo(t), t))
-                    );
-                }
-                catch (Exception ex) when (ex is InvalidOperationException || ex is BadImageFormatException)
-                {
-                    _log.LogWarning(() => ex.Message);
-                }
-            }
-
-            return ret;
         }
 
         private static void InitializeAssemblyTypes(
@@ -271,6 +203,124 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
             AssemblyTypes.AddRange(found);
+        }
+
+        private static IEnumerable<string> GetAssemblyFiles(
+            string[] assemblyNamesLike,
+            IEnumerable<string> assemblyPaths
+        )
+        {
+            var lst = assemblyPaths.ToList();
+            var excluded = lst.Where(s => s.StartsWith("!")).ToList();
+            var included = lst.Except(excluded);
+
+            ExcludedPaths.AddRange(excluded
+                .SelectMany(s => PathParser.FindAll(s.Replace("!", ""))
+                    .Select(di => di.FullName)
+                )
+                .Except(ExcludedPaths)
+            );
+
+            List<string> actualPaths = null;
+
+            foreach (var path in included)
+            {
+                _log.LogInformation(() => $"Searching Path: {path}");
+
+                actualPaths = PathParser.FindAll(path,
+                        d => !ExcludedPaths.Any(s => s.Contains(d) || d.Contains(s))
+                    ).Select(d => d.FullName)
+                    .ToList();
+            }
+
+            _log.LogInformation(() => string.Format("Excluded Search Paths: \n{0}",
+                    string.Join(",\n", ExcludedPaths.OrderBy(s => s))
+                )
+            );
+
+            var ret = new List<string>();
+
+            if (actualPaths is null || !actualPaths.Any())
+                return ret;
+
+            var ordered = actualPaths.OrderBy(s => s);
+
+            _log.LogInformation(() => string.Format("Included Search Paths: \n{0}",
+                    string.Join(",\n", ordered)
+                )
+            );
+
+            foreach (var actualPath in ordered)
+            {
+                ret.AddRange(Directory.GetFiles(actualPath, "*.dll")
+                    .Where(s =>
+                        assemblyNamesLike.Any(name =>
+                            Path.GetFileName(s).ContainsEx(name)
+                        )
+                        && ret.Select(Path.GetFileName)
+                            .All(fn =>
+                                !fn.EqualsEx(Path.GetFileName(s))
+                            )
+                    )
+                );
+            }
+
+            return ret;
+        }
+
+        private static IEnumerable<KeyValuePair<bool, Type>> GetResolvedTypes(
+            bool injectable, bool inverted,
+            IEnumerable<string> assemblyFiles
+        )
+        {
+            var ret = new List<KeyValuePair<bool, Type>>();
+            var assResolver = new AssemblyResolver();
+
+            foreach (var ass in assemblyFiles)
+            {
+                try
+                {
+                    var path = Path.GetDirectoryName(ass);
+
+                    if (ExcludedPaths.Any(s => s.ContainsEx(path) || path.ContainsEx(s)))
+                    {
+                        _log.LogInformation(() => $"Skipping {ass}, it lives in one of the specified excluded paths.");
+                        continue;
+                    }
+
+                    _log.LogInformation(() => $"Attempting to resolve: {ass}");
+
+                    var assembly = assResolver.LoadFromAssemblyPath(ass);
+
+                    if (assembly is null)
+                        continue;
+
+                    ret.AddRange(assembly.GetTypes()
+                        .Where(x =>
+                            !x.GetTypeInfo().IsAbstract && injectable &&
+                            x.GetCustomAttributes<InjectableServiceAttribute>().Any()
+                            || inverted && x.GetInterfaces().Any(t =>
+                                typeof(IDependencyInvertedConfiguration).IsAssignableTo(t)
+                            )
+                        )
+                        .Select(t => new KeyValuePair<bool, Type>(
+                                typeof(IDependencyInvertedConfiguration).IsAssignableTo(t),
+                                t
+                            )
+                        )
+                    );
+                }
+                catch (Exception ex) 
+                    //when (
+                    //ex is InvalidOperationException
+                    //|| ex is BadImageFormatException
+                    //|| ex is ReflectionTypeLoadException)
+                {
+                    _log.LogWarning(() => ex.Message);
+                }
+            }
+
+            return ret;
         }
 
         private static void RegisterServiceType(this IServiceCollection services, Type type)
@@ -334,7 +384,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!(_log is null))
                 return;
 
-            _log = loggerFactory.CreateLogger("APIBlox.NetCore.ServiceCollectionExtensions.Other");
+            _log = loggerFactory.CreateLogger("APIBlox.NetCore");
         }
     }
 }

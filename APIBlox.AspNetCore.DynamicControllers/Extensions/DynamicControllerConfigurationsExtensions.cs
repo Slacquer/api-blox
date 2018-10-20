@@ -55,7 +55,10 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             if (!controllers.Any())
-                throw new ArgumentNullException(nameof(controllers), "You must specify some kind of controller!");
+                throw new ArgumentNullException(
+                    nameof(controllers),
+                    "You must specify some kind of controller!"
+                );
 
             if (_configs is null)
                 _configs = (IInternalDynamicControllerConfigurationsService) configurations;
@@ -124,7 +127,10 @@ namespace Microsoft.Extensions.DependencyInjection
             where TResponse : IResource<TId>
         {
             if (!controllers.Any())
-                throw new ArgumentNullException(nameof(controllers), "You must specify some kind of controller!");
+                throw new ArgumentNullException(
+                    nameof(controllers),
+                    "You must specify some kind of controller!"
+                );
 
             if (_configs is null)
                 _configs = (IInternalDynamicControllerConfigurationsService) configurations;
@@ -183,7 +189,10 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             if (!controllers.Any())
-                throw new ArgumentNullException(nameof(controllers), "You must specify some kind of controller!");
+                throw new ArgumentNullException(
+                    nameof(controllers),
+                    "You must specify some kind of controller!"
+                );
 
             var pc = (DynamicControllerConfiguration) parentConfiguration;
             var req = typeof(TRequest);
@@ -269,7 +278,10 @@ namespace Microsoft.Extensions.DependencyInjection
             where TResponse : IResource<TId>
         {
             if (!controllers.Any())
-                throw new ArgumentNullException(nameof(controllers), "You must specify some kind of controller!");
+                throw new ArgumentNullException(
+                    nameof(controllers),
+                    "You must specify some kind of controller!"
+                );
 
             var pc = (DynamicControllerConfiguration) parentConfiguration;
             var req = typeof(TRequest);
@@ -337,8 +349,9 @@ namespace Microsoft.Extensions.DependencyInjection
             if (count == maxParams)
                 return;
 
-            throw new ArgumentException($"The controller {controller.Name} takes {count} params, you specified " +
-                                        $"{maxParams}, your using the wrong method, try the other one."
+            throw new ArgumentException(
+                $"The controller {controller.Name} takes {count} params, you specified " +
+                $"{maxParams}, your using the wrong method, try the other one."
             );
         }
     }

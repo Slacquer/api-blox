@@ -29,12 +29,16 @@ namespace APIBlox.AspNetCore.Extensions
         )
         {
             if (error is null)
-                throw new NullReferenceException($"{nameof(RequestErrorObject)} can not be null.");
+                throw new NullReferenceException(
+                    $"{nameof(RequestErrorObject)} can not be null."
+                );
 
             var attr = statusCode.GetAttributeOfType<MetadataAttribute>();
 
             error.Title = attr.V1.ToString();
-            error.Status = statusCode == CommonStatusCodes.DataConflictUpserts ? 409 : (int?) statusCode;
+            error.Status = statusCode == CommonStatusCodes.DataConflictUpserts 
+                ? 409 
+                : (int?) statusCode;
 
             if (description.IsEmptyNullOrWhiteSpace())
             {

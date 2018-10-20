@@ -24,8 +24,9 @@ namespace APIBlox.AspNetCore
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
             if (!_service.ControllerConfigurations.Any())
-                throw new ArgumentException("No dynamic controller configurations were found.  " +
-                                            $"If this is intentional, then do not use {nameof(DynamicControllerFeatureProvider)}."
+                throw new ArgumentException(
+                    "No dynamic controller configurations were found.  " +
+                    $"If this is intentional, then do not use {nameof(DynamicControllerFeatureProvider)}."
                 );
 
             _feature = feature;

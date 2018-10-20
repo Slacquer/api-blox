@@ -49,8 +49,9 @@ namespace APIBlox.AspNetCore.ActionResults
             var ms = context.ModelState;
 
             if (ms.IsValid)
-                throw new ArgumentException("The validation state is VALID, the action result " +
-                                            $"{nameof(ValidationFailureResult)} is being inappropriately used."
+                throw new ArgumentException(
+                    "The validation state is VALID, the action result " +
+                    $"{nameof(ValidationFailureResult)} is being inappropriately used."
                 );
 
             var errors = context.ModelState.Keys

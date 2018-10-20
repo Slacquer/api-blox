@@ -31,13 +31,13 @@ namespace SlnTests.APIBlox.NetCore
                     Directory.CreateDirectory(p);
             }
         }
-        
+
         private readonly List<string> _paths = new List<string>();
 
         [Fact]
         public void ShouldHavePathsFromSingleDoubleAsterisks()
         {
-            var parser = new PathParser(_paths[1].Replace(@"\g", @"\**")).GetDirectories().ToList();
+            var parser = PathParser.FindAll(_paths[1].Replace(@"\g", @"\**")).ToList();
 
             Assert.NotNull(parser);
             Assert.True(parser.Count > 0);
@@ -50,7 +50,7 @@ namespace SlnTests.APIBlox.NetCore
         [Fact]
         public void ShouldHavePathsFromSingleDoubleAsterisksOnlyBin()
         {
-            var parser = new PathParser(_paths[3].Replace(@"\a", @"\**")).GetDirectories().ToList();
+            var parser = PathParser.FindAll(_paths[3].Replace(@"\a", @"\**")).ToList();
 
             Assert.NotNull(parser);
             Assert.True(parser.Count > 0);
@@ -63,7 +63,8 @@ namespace SlnTests.APIBlox.NetCore
         [Fact]
         public void ShouldHaveSinglePathAsNoAsterisksWereProvided()
         {
-            var parser = new PathParser(_paths[2]).GetDirectories().ToList();
+            // root folder will never be counted, so we use -2
+            var parser = PathParser.FindAll(_paths[_paths.Count-2]).ToList();
 
             Assert.NotNull(parser);
             Assert.True(parser.Count == 1);

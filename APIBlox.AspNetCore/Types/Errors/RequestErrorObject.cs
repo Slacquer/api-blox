@@ -117,19 +117,35 @@ namespace APIBlox.AspNetCore.Types.Errors
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             if (Title.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException($"RFC7807 states that {GetType().Name}.{nameof(Title)} is required.", nameof(Title));
+                throw new ArgumentException(
+                    $"RFC7807 states that {GetType().Name}" +
+                    $".{nameof(Title)} is required.",
+                    nameof(Title)
+                );
 
             if (Detail.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException($"RFC7807 states that {GetType().Name}.{nameof(Detail)} is required.", nameof(Detail));
+                throw new ArgumentException(
+                    $"RFC7807 states that {GetType().Name}" +
+                    $".{nameof(Detail)} is required.",
+                    nameof(Detail)
+                );
 
             if (Type.IsEmptyNullOrWhiteSpace())
                 Type = "about:blank";
 
             if (!Status.HasValue)
-                throw new ArgumentException($"RFC7807 states that {GetType().Name}.{nameof(Status)} is required.", nameof(Status));
+                throw new ArgumentException(
+                    $"RFC7807 states that {GetType().Name}" +
+                    $".{nameof(Status)} is required.",
+                    nameof(Status)
+                );
 
             if (Instance.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException($"RFC7807 states that {GetType().Name}.{nameof(Instance)} is required.", nameof(Instance));
+                throw new ArgumentException(
+                    $"RFC7807 states that {GetType().Name}" +
+                    $".{nameof(Instance)} is required.",
+                    nameof(Instance)
+                );
 
             Properties.TryAdd("Type", Type);
             Properties.TryAdd("Title", Title);
