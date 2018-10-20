@@ -9,7 +9,7 @@
                 Interface IRandomNumberGeneratorService
             </summary>
         </member>
-        <member name="M:Examples.Contracts.IRandomNumberGeneratorService.GenerateNumber">
+        <member name="M:Examples.Contracts.IRandomNumberGeneratorService.GenerateNumber(System.Int32)">
             <summary>
                 Generates the number.
             </summary>
@@ -30,7 +30,7 @@
         </member>
         <member name="M:Examples.Controllers.ExamplesController.Get(System.String)">
              <summary>
-                 Gets the specified wait.
+                 app.UseSimulateWaitTime(_environment); example 
              </summary>
             <param name="wait">if not null then simulate wait middleware will kick in.</param>
             
@@ -38,7 +38,7 @@
         </member>
         <member name="M:Examples.Controllers.ExamplesController.GetProblemResultExample(APIBlox.AspNetCore.Enums.CommonStatusCodes,System.String)">
             <summary>
-                Gets a problem result example.
+                ProblemResult example
             </summary>
             <param name="statusCode">The status code.</param>
             <param name="description">The description, when empty no error details are displayed</param>
@@ -46,7 +46,7 @@
         </member>
         <member name="M:Examples.Controllers.ExamplesController.ThrowExceptionForServerFaultExample(System.String)">
             <summary>
-                Throws the exception for server fault example.
+                app.UseServerFaults(); example
             </summary>
             <param name="exceptionMessage">The exception message.</param>
             <returns>ActionResult.</returns>
@@ -77,19 +77,17 @@
         </member>
         <member name="M:Examples.Controllers.ExamplesController.Post(Examples.Resources.ExampleRequestObject)">
             <summary>
-                Posts the specified resource.
+                services.AddPopulateRequestObjectActionFilter() example
             </summary>
             <param name="requestResource">The request resource.</param>
         </member>
         <member name="M:Examples.Controllers.ExamplesController.Put(System.Int32,System.String,System.Threading.CancellationToken)">
             <summary>
-                This method doesn't PUT anything, its actually an example that will show how
-                the APIBlox OperationCanceledExceptionFilter will prevent errors from showing up in your
-                logs when someone makes a call to one of your actions, doesn't bother to wait, and ends
-                up going to YOUTUBE (or somewhere else).  If you don't know what i mean, be sure to comment
-                out the  startup entry services.AddOperationCanceledExceptionFilter().  Then execute this
-                action, and within 30 seconds browse to a new location.
+                services.AddOperationCanceledExceptionFilter() example
             </summary>
+            <remarks>
+                This method doesn't PUT anything, its actually an example that will show how the APIBlox OperationCanceledExceptionFilter will prevent errors from showing up in your logs when someone makes a call to one of your actions, doesn't bother to wait, and ends up going to YOUTUBE (or somewhere else).  If you don't know what i mean, be sure to comment out the  startup entry services.AddOperationCanceledExceptionFilter().  Then execute this action, and within 30 seconds browse to a new location.
+            </remarks>
             <param name="id">The identifier.</param>
             <param name="value">The value.</param>
             <param name="cancellationToken"></param>
@@ -127,7 +125,7 @@
             </summary>
             <seealso cref="T:Examples.Contracts.IRandomNumberGeneratorService" />
         </member>
-        <member name="M:Examples.Services.RandomNumberGeneratorService.GenerateNumber">
+        <member name="M:Examples.Services.RandomNumberGeneratorService.GenerateNumber(System.Int32)">
             <summary>
                 Generates the number.
             </summary>

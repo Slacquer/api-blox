@@ -44,7 +44,7 @@ namespace Examples.Controllers
         }
         
         ///  <summary>
-        ///      Gets the specified wait.
+        ///      app.UseSimulateWaitTime(_environment); example 
         ///  </summary>
         /// <param name="wait">if not null then simulate wait middleware will kick in.</param>
         /// 
@@ -61,7 +61,7 @@ namespace Examples.Controllers
         }
 
         /// <summary>
-        ///     Gets a problem result example.
+        ///     ProblemResult example
         /// </summary>
         /// <param name="statusCode">The status code.</param>
         /// <param name="description">The description, when empty no error details are displayed</param>
@@ -87,7 +87,7 @@ namespace Examples.Controllers
         }
 
         /// <summary>
-        ///     Throws the exception for server fault example.
+        ///     app.UseServerFaults(); example
         /// </summary>
         /// <param name="exceptionMessage">The exception message.</param>
         /// <returns>ActionResult.</returns>
@@ -131,7 +131,7 @@ namespace Examples.Controllers
         }
 
         /// <summary>
-        ///     Posts the specified resource.
+        ///     services.AddPopulateRequestObjectActionFilter() example
         /// </summary>
         /// <param name="requestResource">The request resource.</param>
         [HttpPost("{valueId:int}/subResources")]
@@ -156,13 +156,11 @@ namespace Examples.Controllers
         }
 
         /// <summary>
-        ///     This method doesn't PUT anything, its actually an example that will show how
-        ///     the APIBlox OperationCanceledExceptionFilter will prevent errors from showing up in your
-        ///     logs when someone makes a call to one of your actions, doesn't bother to wait, and ends
-        ///     up going to YOUTUBE (or somewhere else).  If you don't know what i mean, be sure to comment
-        ///     out the  startup entry services.AddOperationCanceledExceptionFilter().  Then execute this
-        ///     action, and within 30 seconds browse to a new location.
+        ///     services.AddOperationCanceledExceptionFilter() example
         /// </summary>
+        /// <remarks>
+        ///     This method doesn't PUT anything, its actually an example that will show how the APIBlox OperationCanceledExceptionFilter will prevent errors from showing up in your logs when someone makes a call to one of your actions, doesn't bother to wait, and ends up going to YOUTUBE (or somewhere else).  If you don't know what i mean, be sure to comment out the  startup entry services.AddOperationCanceledExceptionFilter().  Then execute this action, and within 30 seconds browse to a new location.
+        /// </remarks>
         /// <param name="id">The identifier.</param>
         /// <param name="value">The value.</param>
         /// <param name="cancellationToken"></param>

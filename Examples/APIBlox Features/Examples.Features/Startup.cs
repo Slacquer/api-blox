@@ -46,7 +46,8 @@ namespace Examples
             _assemblyPaths = new[]
             {
                 _environment.ContentRootPath,
-               new FileInfo( Assembly.GetExecutingAssembly().Location).DirectoryName
+                new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
+                $"!{environment.ContentRootPath}\\**\\obj"
             };
 #endif
         }
