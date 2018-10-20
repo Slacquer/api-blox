@@ -217,20 +217,20 @@ namespace Microsoft.Extensions.DependencyInjection
             ExcludedPaths.AddRange(excluded
                 .SelectMany(s => PathParser.FindAll(s.Replace("!", ""))
                     .Select(di => di.FullName)
-                )
-                .Except(ExcludedPaths)
+                ).Except(ExcludedPaths)
             );
 
-            List<string> actualPaths = null;
+            var actualPaths = new List<string>();
 
             foreach (var path in included)
             {
                 _log.LogInformation(() => $"Searching Path: {path}");
 
-                actualPaths = PathParser.FindAll(path,
+                actualPaths.AddRange(PathParser.FindAll(path,
                         d => !ExcludedPaths.Any(s => s.Contains(d) || d.Contains(s))
                     ).Select(d => d.FullName)
-                    .ToList();
+                    .Except(actualPaths)
+                );
             }
 
             _log.LogInformation(() => string.Format("Excluded Search Paths: \n{0}",
@@ -240,7 +240,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var ret = new List<string>();
 
-            if (actualPaths is null || !actualPaths.Any())
+            if (!actualPaths.Any())
                 return ret;
 
             var ordered = actualPaths.OrderBy(s => s);
