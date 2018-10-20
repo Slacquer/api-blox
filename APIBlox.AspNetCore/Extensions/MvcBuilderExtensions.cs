@@ -6,6 +6,7 @@ using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Attributes;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Filters;
+using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -393,7 +394,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">IMvcBuilder</param>
         /// <param name="configuration">The configuration.</param>
         /// <param name="env">The env.</param>
-        /// <param name="configSection">Configuration section</param>
+        /// <param name="configSection">Configuration section in the form of string dictionary.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddRouteTokensConvention(
             this IMvcBuilder builder,
@@ -452,10 +453,11 @@ namespace Microsoft.Extensions.DependencyInjection
                     $"will need to have an {configSection} configuration entry with key value pairs."
                 );
 
-            var hasEnv = ret.ContainsKey("Environment");
+            var hasEnv = ret.ContainsKey("Environment")
+                         || ret.ContainsKey("environment");
 
             if (!hasEnv)
-                ret.Add("Environment", env.EnvironmentName.ToLowerInvariant());
+                ret.Add("environment", env.EnvironmentName.ToCamelCase());
 
             return ret;
         }
@@ -477,11 +479,14 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             foreach (var objFilter in filters)
             {
-                if (!(objFilter is EnsureResponseResultActionFilter resultFilter))
+                if (!(objFilter is TypeFilterAttribute attr))
+                    continue;
+
+                if (!attr.ImplementationType.IsAssignableTo(typeof(EnsureResponseResultActionFilter)))
                     continue;
 
                 throw new ArgumentException(
-                    $"You have already added an {resultFilter.GetType().Name}, " +
+                    $"You have already added an {attr.ImplementationType.Name}, " +
                     $"the {who} can not be used."
                 );
             }

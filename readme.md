@@ -52,7 +52,13 @@ October 15th, 2018 **v1.0.9**
 - I love regions, most devs don't so I have removed them here to keep you happy :)
 - This document and the project(s) are a work in progress, feedback and changes would be appreciated but please be kind.
 - _Also see_ [_Response Object.docx_][3] for in-depth response information.
-- **I know the documentation is lacking, but I will get to at some point**, if you have questions or just need some help, my contact is at the bottom of this docuemnt.
+- **I know the documentation is lacking, but I will get to at some point**, if you have questions or just need some help, my contact is at the bottom of this docuemnt.  
+
+<br>
+
+## Decided for v1.1.0+
+By _**v1.1.0**_ I will have created examples for each and every package, and will add documentation later...
+
 <br>
 
 ## Quick Starts

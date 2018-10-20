@@ -24,7 +24,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="description">The description.</param>
         /// <exception cref="NullReferenceException">You must create the {nameof(RequestErrorObject)}</exception>
         public static void SetError(
-            RequestErrorObject error, CommonStatusCodes statusCode,
+            this RequestErrorObject error, CommonStatusCodes statusCode,
             string description = null
         )
         {
