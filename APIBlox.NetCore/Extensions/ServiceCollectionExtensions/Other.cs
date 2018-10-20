@@ -212,10 +212,10 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var lst = assemblyPaths.ToList();
             var excluded = lst.Where(s => s.StartsWith("!")).ToList();
-            var included = lst.Except(excluded);
+            var included = lst.Except(excluded).ToList();
 
             ExcludedPaths.AddRange(excluded
-                .SelectMany(s => PathParser.FindAll(s.Replace("!", ""))
+                .SelectMany(s => PathParser.FindAllSubDirectories(s.Replace("!", ""))
                     .Select(di => di.FullName)
                 ).Except(ExcludedPaths)
             );
@@ -224,9 +224,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             foreach (var path in included)
             {
-                _log.LogInformation(() => $"Searching Path: {path}");
+                _log.LogInformation(() => $"Searching Path For Sub Directories: {path}");
 
-                actualPaths.AddRange(PathParser.FindAll(path,
+                actualPaths.AddRange(PathParser.FindAllSubDirectories(path,
                         d => !ExcludedPaths.Any(s => s.Contains(d) || d.Contains(s))
                     ).Select(d => d.FullName)
                     .Except(actualPaths)
@@ -234,19 +234,26 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             _log.LogInformation(() => string.Format("Excluded Search Paths: \n{0}",
+                ExcludedPaths.Any() ?
                     string.Join(",\n", ExcludedPaths.OrderBy(s => s))
+                    : "Pattern matching did not find any paths to EXCLUDE."
                 )
             );
 
             var ret = new List<string>();
 
+            // For each original included that doesn't use pattern matching we must include it!
+            actualPaths.AddRange(included.Where(s => !s.Contains("**")));
+
             if (!actualPaths.Any())
                 return ret;
 
-            var ordered = actualPaths.OrderBy(s => s);
+            var ordered = actualPaths.OrderBy(s => s).ToList();
 
             _log.LogInformation(() => string.Format("Included Search Paths: \n{0}",
+                ordered.Any() ?
                     string.Join(",\n", ordered)
+                    : "Pattern matching did not find any paths to INCLUDE."
                 )
             );
 
@@ -280,13 +287,15 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 try
                 {
-                    var path = Path.GetDirectoryName(ass);
+                    // un necessary if previous code did its job.
 
-                    if (ExcludedPaths.Any(s => s.ContainsEx(path) || path.ContainsEx(s)))
-                    {
-                        _log.LogInformation(() => $"Skipping {ass}, it lives in one of the specified excluded paths.");
-                        continue;
-                    }
+                    //var path = Path.GetDirectoryName(ass);
+
+                    //if (ExcludedPaths.Any(s => s.ContainsEx(path) || path.ContainsEx(s)))
+                    //{
+                    //    _log.LogInformation(() => $"Skipping {ass}, it lives in one of the specified excluded paths.");
+                    //    continue;
+                    //}
 
                     _log.LogInformation(() => $"Attempting to resolve: {ass}");
 
@@ -310,11 +319,11 @@ namespace Microsoft.Extensions.DependencyInjection
                         )
                     );
                 }
-                catch (Exception ex) 
-                    //when (
-                    //ex is InvalidOperationException
-                    //|| ex is BadImageFormatException
-                    //|| ex is ReflectionTypeLoadException)
+                catch (Exception ex)
+                //when (
+                //ex is InvalidOperationException
+                //|| ex is BadImageFormatException
+                //|| ex is ReflectionTypeLoadException)
                 {
                     _log.LogWarning(() => ex.Message);
                 }

@@ -18,7 +18,7 @@ namespace APIBlox.NetCore.Types
         /// <param name="filterAction">The filter action.</param>
         /// <returns>IEnumerable&lt;DirectoryInfo&gt;.</returns>
         /// <exception cref="NullReferenceException">Empty path!</exception>
-        public static IEnumerable<DirectoryInfo> FindAll(string searchPath, Func<string, bool> filterAction = null)
+        public static IEnumerable<DirectoryInfo> FindAllSubDirectories(string searchPath, Func<string, bool> filterAction = null)
         {
             if (searchPath.IsEmptyNullOrWhiteSpace())
                 throw new NullReferenceException("Empty path!");
