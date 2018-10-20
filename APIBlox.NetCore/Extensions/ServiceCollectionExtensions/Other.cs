@@ -212,10 +212,10 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var lst = assemblyPaths.ToList();
             var excluded = lst.Where(s => s.StartsWith("!")).ToList();
-            var included = lst.Except(excluded);
+            var included = lst.Except(excluded).ToList();
 
             ExcludedPaths.AddRange(excluded
-                .SelectMany(s => PathParser.FindAll(s.Replace("!", ""))
+                .SelectMany(s => PathParser.FindAllSubDirectories(s.Replace("!", ""))
                     .Select(di => di.FullName)
                 ).Except(ExcludedPaths)
             );
@@ -224,9 +224,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             foreach (var path in included)
             {
-                _log.LogInformation(() => $"Searching Path: {path}");
+                _log.LogInformation(() => $"Searching Path For Sub Directories: {path}");
 
-                actualPaths.AddRange(PathParser.FindAll(path,
+                actualPaths.AddRange(PathParser.FindAllSubDirectories(path,
                         d => !ExcludedPaths.Any(s => s.Contains(d) || d.Contains(s))
                     ).Select(d => d.FullName)
                     .Except(actualPaths)
@@ -239,6 +239,9 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
             var ret = new List<string>();
+
+            // For each original included that doesn't use pattern matching we must include it!
+            actualPaths.AddRange(included.Where(s => !s.Contains("**")));
 
             if (!actualPaths.Any())
                 return ret;
@@ -310,11 +313,11 @@ namespace Microsoft.Extensions.DependencyInjection
                         )
                     );
                 }
-                catch (Exception ex) 
-                    //when (
-                    //ex is InvalidOperationException
-                    //|| ex is BadImageFormatException
-                    //|| ex is ReflectionTypeLoadException)
+                catch (Exception ex)
+                //when (
+                //ex is InvalidOperationException
+                //|| ex is BadImageFormatException
+                //|| ex is ReflectionTypeLoadException)
                 {
                     _log.LogWarning(() => ex.Message);
                 }
