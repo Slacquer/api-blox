@@ -248,7 +248,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!actualPaths.Any())
                 return ret;
 
-            var ordered = actualPaths.OrderBy(s => s).ToList();
+            var ordered = actualPaths.OrderBy(s => new DirectoryInfo(s).FullName).ToList();
 
             _log.LogInformation(() => string.Format("Included Search Paths: \n{0}",
                 ordered.Any() ?

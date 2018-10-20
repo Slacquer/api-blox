@@ -1,7 +1,5 @@
 ﻿
 using System.IO;
-using Examples.Contracts;
-using Examples.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 #if UseAPIBlox
 using System.Reflection;
+#else
+using Examples.Contracts;
+using Examples.Services;
 #endif
 
 namespace Examples
