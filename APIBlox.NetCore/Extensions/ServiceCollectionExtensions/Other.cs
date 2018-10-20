@@ -234,7 +234,9 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             _log.LogInformation(() => string.Format("Excluded Search Paths: \n{0}",
+                ExcludedPaths.Any() ?
                     string.Join(",\n", ExcludedPaths.OrderBy(s => s))
+                    : "Pattern matching did not find any paths to EXCLUDE."
                 )
             );
 
@@ -246,10 +248,12 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!actualPaths.Any())
                 return ret;
 
-            var ordered = actualPaths.OrderBy(s => s);
+            var ordered = actualPaths.OrderBy(s => s).ToList();
 
             _log.LogInformation(() => string.Format("Included Search Paths: \n{0}",
+                ordered.Any() ?
                     string.Join(",\n", ordered)
+                    : "Pattern matching did not find any paths to INCLUDE."
                 )
             );
 
@@ -283,13 +287,15 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 try
                 {
-                    var path = Path.GetDirectoryName(ass);
+                    // un necessary if previous code did its job.
 
-                    if (ExcludedPaths.Any(s => s.ContainsEx(path) || path.ContainsEx(s)))
-                    {
-                        _log.LogInformation(() => $"Skipping {ass}, it lives in one of the specified excluded paths.");
-                        continue;
-                    }
+                    //var path = Path.GetDirectoryName(ass);
+
+                    //if (ExcludedPaths.Any(s => s.ContainsEx(path) || path.ContainsEx(s)))
+                    //{
+                    //    _log.LogInformation(() => $"Skipping {ass}, it lives in one of the specified excluded paths.");
+                    //    continue;
+                    //}
 
                     _log.LogInformation(() => $"Attempting to resolve: {ass}");
 
