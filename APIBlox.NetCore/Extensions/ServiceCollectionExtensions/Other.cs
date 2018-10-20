@@ -225,6 +225,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             foreach (var path in included)
             {
+                _log.LogInformation(() => $"Searching Path: {path}");
+
                 actualPaths = PathParser.FindAll(path,
                         d => !ExcludedPaths.Any(s => s.Contains(d) || d.Contains(s))
                     ).Select(d => d.FullName)
@@ -250,8 +252,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             foreach (var actualPath in ordered)
             {
-                _log.LogInformation(() => $"Searching {actualPath} for assemblies.");
-
                 ret.AddRange(Directory.GetFiles(actualPath, "*.dll")
                     .Where(s =>
                         assemblyNamesLike.Any(name =>
@@ -384,7 +384,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!(_log is null))
                 return;
 
-            _log = loggerFactory.CreateLogger("APIBlox.NetCore.ServiceCollectionExtensions.Other");
+            _log = loggerFactory.CreateLogger("APIBlox.NetCore");
         }
     }
 }

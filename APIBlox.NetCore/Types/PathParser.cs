@@ -36,11 +36,10 @@ namespace APIBlox.NetCore.Types
 
             ret.AddRange(Directory.GetDirectories(rootDi.FullName, "*", SearchOption.AllDirectories)
                 .Where(s =>
-                    {
-                        var addable = excludes.All(e => s.ContainsEx(e));
-
-                        return addable && (filterAction?.Invoke(s) ?? true);
-                    }
+                    excludes.All(e =>
+                        s.ContainsEx(e)
+                    )
+                    && (filterAction?.Invoke(s) ?? true)
                 )
                 .Select(s => new DirectoryInfo(s))
             );
