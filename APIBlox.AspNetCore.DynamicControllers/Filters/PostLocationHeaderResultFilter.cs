@@ -78,6 +78,7 @@ namespace APIBlox.AspNetCore
             if (!cti.IsGenericType || !(context.Result is ObjectResult result))
                 return;
 
+            // ReSharper disable once Mvc.ActionNotResolved
             var partialUrl = $"{controller.Url.Action()}/{FindId(result)}";
             var uri = new UriBuilder(req.Scheme, req.Host.Host, req.Host.Port ?? 80) {Path = partialUrl};
             var url = uri.Uri.AbsoluteUri;
