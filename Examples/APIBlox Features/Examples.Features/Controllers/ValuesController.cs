@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[environment]Api/[version]/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
@@ -21,7 +21,12 @@ namespace Examples.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get(bool wait = true)
         {
-            return new string[] { "value1", "value2" };
+            var values = new List<string>();
+
+            for (var i = 0; i < 100; i++)
+                values.Add($"FuBar {i}");
+
+            return Ok(values);
         }
 
         [HttpGet("problemResult")]

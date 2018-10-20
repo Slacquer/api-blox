@@ -88,13 +88,15 @@ namespace Examples
                 .AddEnsurePaginationResultActionFilter(25, data => new { Resources = data })
                 //
                 // No pagination
-                .AddEnsureResponseResultActionFilter(data => new { NonPaginatedResources = data })
+                //.AddEnsureResponseResultActionFilter(data => new { NonPaginatedResources = data })
                 //
                 // Resource Validator.
                 .AddValidateResourceActionFilter()
                 //
                 // If using AddMvcCore then we need this one.
                 //.AddConsumesProducesJsonResourceResultFilters()
+
+                .AddRouteTokensConvention(_configuration, _environment, "ExampleTokens")
 #endif
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
