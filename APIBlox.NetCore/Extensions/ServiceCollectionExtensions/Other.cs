@@ -294,7 +294,10 @@ namespace Microsoft.Extensions.DependencyInjection
                         var assembly = assResolver.LoadFromAssemblyFileInfo(assFi);
 
                         if (assembly is null)
+                        {
+                            _log.LogWarning(() => $"NULL result from LoadFromAssemblyFileInfo for file: {assFi}");
                             continue;
+                        }
 
                         ret.AddRange(assembly.GetTypes()
                             .Where(x =>
