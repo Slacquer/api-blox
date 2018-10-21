@@ -276,39 +276,43 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             var ret = new List<KeyValuePair<bool, Type>>();
-            var assResolver = new AssemblyResolver();
+
 
             foreach (var assFi in assemblyFiles)
             {
                 try
                 {
-                    if (!assFi.Exists)
+
+                    using (var assResolver = new AssemblyResolver())
                     {
-                        _log.LogWarning(() => $"Skipping {assFi}, it no longer exists!");
-                        continue;
+                        if (!assFi.Exists)
+                        {
+                            _log.LogWarning(() => $"Skipping {assFi}, it no longer exists!");
+                            continue;
+                        }
+
+                        _log.LogInformation(() => $"Attempting to resolve: {assFi}");
+
+                        var assembly = assResolver.LoadFromAssemblyFileInfo(assFi);
+
+                        if (assembly is null)
+                            continue;
+
+                        ret.AddRange(assembly.GetTypes()
+                            .Where(x =>
+                                !x.GetTypeInfo().IsAbstract && injectable &&
+                                x.GetCustomAttributes<InjectableServiceAttribute>().Any()
+                                || inverted && x.GetInterfaces().Any(t =>
+                                    typeof(IDependencyInvertedConfiguration).IsAssignableTo(t)
+                                )
+                            )
+                            .Select(t => new KeyValuePair<bool, Type>(
+                                    typeof(IDependencyInvertedConfiguration).IsAssignableTo(t),
+                                    t
+                                )
+                            )
+                        );
                     }
-
-                    _log.LogInformation(() => $"Attempting to resolve: {assFi}");
-
-                    var assembly = assResolver.LoadFromAssemblyFileInfo(assFi);
-
-                    if (assembly is null)
-                        continue;
-
-                    ret.AddRange(assembly.GetTypes()
-                        .Where(x =>
-                            !x.GetTypeInfo().IsAbstract && injectable &&
-                            x.GetCustomAttributes<InjectableServiceAttribute>().Any()
-                            || inverted && x.GetInterfaces().Any(t =>
-                                typeof(IDependencyInvertedConfiguration).IsAssignableTo(t)
-                            )
-                        )
-                        .Select(t => new KeyValuePair<bool, Type>(
-                                typeof(IDependencyInvertedConfiguration).IsAssignableTo(t),
-                                t
-                            )
-                        )
-                    );
                 }
                 catch (Exception ex)
                 {
