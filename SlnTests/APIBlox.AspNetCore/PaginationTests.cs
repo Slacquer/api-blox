@@ -156,7 +156,7 @@ namespace SlnTests.APIBlox.AspNetCore
 
             var ex = Assert.Throws<IndexOutOfRangeException>(() => builder.Build(10, ctx));
 
-            Assert.Contains("The result set is larger", ex.Message);
+            Assert.Equal("The result set of 10 is larger than what has been defined as the Max page size of 5.", ex.Message);
         }
 
         [Fact]
