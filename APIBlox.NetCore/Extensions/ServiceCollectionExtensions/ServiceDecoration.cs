@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    ///     Class ServiceCollectionExtensionsNetCoreServiceDecoration.
+    /// </summary>
     public static class ServiceCollectionExtensionsNetCoreServiceDecoration
     {
         private static ILogger _log;
