@@ -1,15 +1,14 @@
-﻿
-using System.IO;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-using Microsoft.Extensions.Logging;
-
 #if UseAPIBlox
+using System.IO;
 using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
 #else
 using Examples.Contracts;
 using Examples.Services;
@@ -23,42 +22,44 @@ namespace Examples
         private readonly string[] _assemblyNames;
         private readonly string[] _assemblyPaths;
         private const string AboutErrorsUrl = "http://hey.look.at.me/errorcodes";
-#endif
-
         private readonly IConfiguration _configuration;
         private readonly IHostingEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
-
-
+#endif
         private const string Version = "v1";
         private const string SiteTitle = "APIBlox Example: Features";
 
+#if UseAPIBlox
         public Startup(IConfiguration configuration, IHostingEnvironment environment, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
             _environment = environment;
             _loggerFactory = loggerFactory;
 
-#if UseAPIBlox
+
             _assemblyNames = new[]
             {
                 "Examples."
             };
-            _assemblyPaths = new[]
+
+            var excludeThese = APIBlox.NetCore.Types.PathParser.FindAllSubDirectories($"{environment.ContentRootPath}\\**\\obj")
+                .Select(di => $"!{di.FullName}");
+
+            _assemblyPaths = new List<string>(excludeThese)
             {
                 _environment.ContentRootPath,
                 new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
-                $"!{environment.ContentRootPath}\\**\\obj"
-            };
-#endif
+            }.ToArray();
         }
+#endif
 
         public void ConfigureServices(IServiceCollection services)
         {
             services
 #if UseAPIBlox
-                //
-                // Instead of having to manually add to service collection.
+
+            //
+            // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
                 //
                 //  Change what is returned to the user when an error occurs.
@@ -94,8 +95,9 @@ namespace Examples
 #endif
                 .AddMvc()
 #if UseAPIBlox
-                //
-                // Handles cancellation token cancelled.
+
+            //
+            // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
                 //
                 // Automatically fill in request object(s) from query params and route data.
@@ -134,7 +136,6 @@ namespace Examples
 #else
             app.UseDeveloperExceptionPage();
 #endif
-
             app.UseHsts();
 
             app.UseMvc();
