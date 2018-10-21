@@ -2,36 +2,49 @@
 using System.Linq;
 using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Extensions;
+using Microsoft.Extensions.Logging;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static partial class ServiceCollectionExtensionsNetCore
+    public static class ServiceCollectionExtensionsNetCoreServiceDecoration
     {
+        private static ILogger _log;
+
         /// <summary>
         ///     Decorates ALL registered service(s) that match your decorator.
         /// </summary>
         /// <typeparam name="TService">The type of the t service.</typeparam>
         /// <typeparam name="TDecorator">The type of the t decorator.</typeparam>
         /// <param name="services">The services.</param>
+        /// <param name="loggerFactory">ILoggerFactory</param>
         /// <returns>IServiceCollection.</returns>
-        public static IServiceCollection AddServiceDecoration<TService, TDecorator>(this IServiceCollection services)
+        public static IServiceCollection AddServiceDecoration<TService, TDecorator>(
+            this IServiceCollection services,
+            ILoggerFactory loggerFactory
+        )
         {
-            return services.AddServiceDecoration(typeof(TService), typeof(TDecorator));
+            CreateLog(loggerFactory);
+
+            return services.AddServiceDecoration(loggerFactory, typeof(TService), typeof(TDecorator));
         }
 
         /// <summary>
         ///     Decorates ALL registered service(s) that match your decorator.
         /// </summary>
         /// <param name="services">The services.</param>
+        /// <param name="loggerFactory">ILoggerFactory</param>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="decoratorType">Type of the decorator.</param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddServiceDecoration(
             this IServiceCollection services,
+             ILoggerFactory loggerFactory,
             Type serviceType, Type decoratorType
         )
         {
+            CreateLog(loggerFactory);
+
             if (serviceType.IsOpenGeneric() && decoratorType.IsOpenGeneric())
                 DecorateOpenGeneric(services, serviceType, decoratorType);
             else
@@ -46,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             if (!TryDecorateDescriptors(services, serviceType, decorator))
-                throw new ArgumentException(
+                _log.LogCritical(() =>
                     $"Could not find any registered services for type {serviceType}. " +
                     " You need to add the service manually or decorate it " +
                     $"with the {nameof(InjectableServiceAttribute)}"
@@ -67,9 +80,12 @@ namespace Microsoft.Extensions.DependencyInjection
                             );
 
             if (!valid)
-                throw new ArgumentException(
-                    $"Could not find any registered services for type {serviceType}."
+            {
+                var t = serviceType;
+                _log.LogCritical(() =>
+                    $"Could not find any registered services for type {t}."
                 );
+            }
         }
 
         private static ServiceDescriptor DecorateService(this ServiceDescriptor descriptor, Type decoratorType)
@@ -124,6 +140,14 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             return true;
+        }
+
+        private static void CreateLog(ILoggerFactory loggerFactory)
+        {
+            if (!(_log is null))
+                return;
+
+            _log = loggerFactory.CreateLogger("APIBlox.NetCore-ServiceDecoration");
         }
     }
 }

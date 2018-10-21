@@ -2,6 +2,7 @@
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
+using Microsoft.Extensions.Logging;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -15,8 +16,14 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     Decorates a REGISTERED command handler service.  Note that
         ///     decorations are executed in the order they are added.
         /// </summary>
+        /// <typeparam name="THandler">The type of the t handler.</typeparam>
+        /// <param name="services">The services.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="decorators">The decorators.</param>
+        /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddCommandHandlerDecoration<THandler>(
             this IServiceCollection services,
+            ILoggerFactory loggerFactory,
             params Type[] decorators
         )
         {
@@ -43,11 +50,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     var p = qi.GetGenericArguments();
                     var decParams = decorator.MakeGenericType(p);
-                    services.AddServiceDecoration(qi, decParams);
+                    services.AddServiceDecoration(loggerFactory, qi, decParams);
                 }
                 else
                 {
-                    services.AddServiceDecoration(qi, decorator);
+                    services.AddServiceDecoration(loggerFactory, qi, decorator);
                 }
             }
 
@@ -58,8 +65,14 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     Decorates a REGISTERED query handler service.  Note that
         ///     decorations are executed in the order they are added.
         /// </summary>
+        /// <typeparam name="THandler">The type of the t handler.</typeparam>
+        /// <param name="services">The services.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="decorators">The decorators.</param>
+        /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddQueryHandlerDecoration<THandler>(
             this IServiceCollection services,
+            ILoggerFactory loggerFactory,
             params Type[] decorators
         )
         {
@@ -89,11 +102,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     var p = qi.GetGenericArguments();
                     var decParams = decorator.MakeGenericType(p);
-                    services.AddServiceDecoration(qi, decParams);
+                    services.AddServiceDecoration(loggerFactory, qi, decParams);
                 }
                 else
                 {
-                    services.AddServiceDecoration(qi, decorator);
+                    services.AddServiceDecoration(loggerFactory, qi, decorator);
                 }
             }
 

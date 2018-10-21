@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class APIBloxNetCoreServiceCollectionExtensions.
     /// </summary>
-    public static partial class ServiceCollectionExtensionsNetCore
+    public static class ServiceCollectionExtensionsNetCoreOther
     {
         private static ILogger _log;
         private static readonly List<string> ExcludedPaths = new List<string>();
@@ -272,7 +272,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 );
             }
 
-            return ret;
+            return ret.Select(s => new FileInfo(s).FullName);
         }
 
         private static IEnumerable<KeyValuePair<bool, Type>> GetResolvedTypes(
@@ -287,16 +287,6 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 try
                 {
-                    // un necessary if previous code did its job.
-
-                    //var path = Path.GetDirectoryName(ass);
-
-                    //if (ExcludedPaths.Any(s => s.ContainsEx(path) || path.ContainsEx(s)))
-                    //{
-                    //    _log.LogInformation(() => $"Skipping {ass}, it lives in one of the specified excluded paths.");
-                    //    continue;
-                    //}
-
                     _log.LogInformation(() => $"Attempting to resolve: {ass}");
 
                     var assembly = assResolver.LoadFromAssemblyPath(ass);
@@ -320,10 +310,6 @@ namespace Microsoft.Extensions.DependencyInjection
                     );
                 }
                 catch (Exception ex)
-                //when (
-                //ex is InvalidOperationException
-                //|| ex is BadImageFormatException
-                //|| ex is ReflectionTypeLoadException)
                 {
                     _log.LogWarning(() => ex.Message);
                 }
@@ -393,7 +379,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!(_log is null))
                 return;
 
-            _log = loggerFactory.CreateLogger("APIBlox.NetCore");
+            _log = loggerFactory.CreateLogger("APIBlox.NetCore-Other");
         }
     }
 }
