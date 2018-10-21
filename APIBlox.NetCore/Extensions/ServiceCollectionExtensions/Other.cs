@@ -276,13 +276,11 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             var ret = new List<KeyValuePair<bool, Type>>();
-
-
+            
             foreach (var assFi in assemblyFiles)
             {
                 try
                 {
-
                     using (var assResolver = new AssemblyResolver())
                     {
                         if (!assFi.Exists)
