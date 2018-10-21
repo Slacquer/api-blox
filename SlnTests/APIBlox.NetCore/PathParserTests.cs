@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region -    Using Statements    -
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,10 +8,16 @@ using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 using Xunit;
 
+#endregion
+
 namespace SlnTests.APIBlox.NetCore
 {
     public class PathParserTests : IDisposable
     {
+        private readonly List<string> _paths = new List<string>();
+
+        #region Setup/Teardown
+
         public PathParserTests()
         {
             var path = Path.GetTempPath();
@@ -32,7 +40,12 @@ namespace SlnTests.APIBlox.NetCore
             }
         }
 
-        private readonly List<string> _paths = new List<string>();
+        public void Dispose()
+        {
+            Directory.Delete(_paths[0], true);
+        }
+
+        #endregion
 
         [Fact]
         public void ShouldHavePathsFromSingleDoubleAsterisks()
@@ -64,15 +77,10 @@ namespace SlnTests.APIBlox.NetCore
         public void ShouldHaveSinglePathAsNoAsterisksWereProvided()
         {
             // root folder will never be counted, so we use -2
-            var parser = PathParser.FindAllSubDirectories(_paths[_paths.Count-2]).ToList();
+            var parser = PathParser.FindAllSubDirectories(_paths[_paths.Count - 2]).ToList();
 
             Assert.NotNull(parser);
             Assert.True(parser.Count == 1);
-        }
-
-        public void Dispose()
-        {
-            Directory.Delete(_paths[0], true);
         }
     }
 }

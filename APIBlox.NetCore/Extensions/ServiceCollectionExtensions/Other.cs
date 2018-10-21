@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region -    Using Statements    -
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+#endregion
+
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,9 +23,13 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceCollectionExtensionsNetCoreOther
     {
+        #region -    Fields    -
+
         private static ILogger _log;
-        private static readonly List<string> ExcludedPaths = new List<string>();
-        private static readonly List<KeyValuePair<bool, Type>> AssemblyTypes = new List<KeyValuePair<bool, Type>>();
+        private static readonly List<KeyValuePair<bool, Type>>
+            WorkingAssemblyTypes = new List<KeyValuePair<bool, Type>>();
+
+        #endregion
 
         /// <summary>
         ///     Adds a service that requires Dependency Injection, while performing a setup action.
@@ -61,18 +69,24 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">IServiceCollection</param>
         /// <param name="loggerFactory">ILoggerFactory</param>
         /// <param name="assemblyNamesLike">The assembly names like.</param>
-        /// <param name="assemblyPaths">The assembly paths, supporting absolute, relative and ** or ! to exclude.</param>
+        /// <param name="assemblyPaths">
+        ///     The assembly paths, a prefix of '!' (without ticks) will indicate
+        ///     a path NOT to use search.  If you need template  parsing <see cref="PathParser" />
+        ///     <para>
+        ///         Path searching includes sub directories
+        ///     </para>
+        /// </param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddInjectableServices(
-            this IServiceCollection services,
-            ILoggerFactory loggerFactory,
+            this IServiceCollection services, ILoggerFactory loggerFactory,
             string[] assemblyNamesLike, string[] assemblyPaths = null
         )
         {
             CreateLog(loggerFactory);
 
             InitializeAssemblyTypes(true, false, assemblyNamesLike, assemblyPaths);
-            var injectable = AssemblyTypes.Where(kvp => !kvp.Key).ToList();
+
+            var injectable = WorkingAssemblyTypes.Where(kvp => !kvp.Key).ToList();
 
             if (!injectable.Any())
             {
@@ -108,20 +122,25 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </param>
         /// <param name="configuration">IConfiguration</param>
         /// <param name="assemblyNamesLike">The assembly names like.</param>
-        /// <param name="assemblyPaths">The assembly paths, supporting absolute, relative and ** or ! to exclude.</param>
+        /// <param name="assemblyPaths">
+        ///     The assembly paths, a prefix of '!' (without ticks) will indicate
+        ///     a path NOT to use search.  If you need template  parsing <see cref="PathParser" />
+        ///     <para>
+        ///         Path searching includes sub directories
+        ///     </para>
+        /// </param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddInvertedDependentsAndConfigureServices(
-            this IServiceCollection services,
-            IConfiguration configuration,
-            ILoggerFactory loggerFactory,
-            string environment,
+            this IServiceCollection services, IConfiguration configuration,
+            ILoggerFactory loggerFactory, string environment,
             string[] assemblyNamesLike, string[] assemblyPaths = null
         )
         {
             CreateLog(loggerFactory);
 
             InitializeAssemblyTypes(false, true, assemblyNamesLike, assemblyPaths);
-            var inverted = AssemblyTypes.Where(kvp => kvp.Key).ToList();
+
+            var inverted = WorkingAssemblyTypes.Where(kvp => kvp.Key).ToList();
 
             if (!inverted.Any())
             {
@@ -141,155 +160,137 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-
-        private static ServiceDescriptor BuildDescriptor(
-            Type type,
-            Type instance, ServiceLifetime lifetime
-        )
-        {
-            return new ServiceDescriptor(type, instance, lifetime);
-        }
-
-        private static void ConfigureInverted(
-            Type type,
-            IServiceCollection services, IConfiguration configuration, ILoggerFactory loggerFactory, string environment
-        )
-        {
-            if (type.GetConstructors().All(c => c.GetParameters().Length != 0))
-            {
-                _log.LogError(() =>
-                    $"Implementations of {nameof(IDependencyInvertedConfiguration)} " +
-                    "must have a parameter-less constructor."
-                );
-                return;
-            }
-
-            ((IDependencyInvertedConfiguration)Activator.CreateInstance(type))
-                .Configure(services, configuration, loggerFactory, environment);
-        }
-
         private static void InitializeAssemblyTypes(
-            bool injectable,
-            bool inverted,
-            string[] assemblyNamesLike,
+            bool injectable, bool inverted, string[] assemblyNamesLike,
             IReadOnlyCollection<string> assemblyPaths = null
         )
         {
             if (assemblyNamesLike is null || !assemblyNamesLike.Any())
-            {
-                _log.LogError(() => "You must specify at least one assembly name pattern.");
-                return;
-            }
+                throw new NullReferenceException("You must specify at least one assembly name pattern.");
 
             if (assemblyPaths is null || !assemblyPaths.Any())
-            {
-                _log.LogError(() => "You must specify at least one assembly path.");
-                return;
-            }
+                throw new NullReferenceException("You must specify at least one assembly path.");
 
-            var found = GetResolvedTypes(injectable,
+            var workingPaths = BuildDirectoriesList(assemblyPaths);
+            var workingAssemblyFiles = GetWorkingAssemblyFileInfos(assemblyNamesLike, workingPaths).ToList();
+
+            if (!workingAssemblyFiles.Any())
+                throw new ArgumentException(
+                    "Search results indicate there are NO assemblies to" +
+                    " work within the given assemblyPaths!",
+                    nameof(assemblyPaths)
+                );
+
+            var notAlreadyInWorkingAssemblyTypes = GetResolvedAssemblyTypes(
+                injectable,
                 inverted,
-                GetAssemblyFiles(assemblyNamesLike, assemblyPaths)
-            ).Except(AssemblyTypes).ToList();
+                workingAssemblyFiles
+            ).Except(WorkingAssemblyTypes);
 
             _log.LogInformation(() =>
                 string.Format(injectable
                         ? "\n{1} list:\n{0}"
                         : "\n{2} list:\n{0}",
-                    string.Join(",\n", found.Select(k => k.Value).ToList()),
+                    string.Join(",\n", notAlreadyInWorkingAssemblyTypes.Select(k => k.Value).ToList()),
                     nameof(InjectableServiceAttribute),
                     nameof(IDependencyInvertedConfiguration)
                 )
             );
 
-            AssemblyTypes.AddRange(found);
+            WorkingAssemblyTypes.AddRange(notAlreadyInWorkingAssemblyTypes);
         }
 
-        private static IEnumerable<string> GetAssemblyFiles(
-            string[] assemblyNamesLike,
-            IEnumerable<string> assemblyPaths
+        private static IEnumerable<DirectoryInfo> BuildDirectoriesList(
+            IReadOnlyCollection<string> assemblyPaths
         )
         {
-            var lst = assemblyPaths.ToList();
-            var excluded = lst.Where(s => s.StartsWith("!")).ToList();
-            var included = lst.Except(excluded).ToList();
+            // if not absolute then log error and skip it.
+            var included = assemblyPaths.Where(s => !s.TrimStart().StartsWith("!"));
+            var excluded = assemblyPaths.Where(s => s.TrimStart().StartsWith("!"));
 
-            ExcludedPaths.AddRange(excluded
-                .SelectMany(s => PathParser.FindAllSubDirectories(s.Replace("!", ""))
-                    .Select(di => di.FullName)
-                ).Except(ExcludedPaths)
-            );
+            var absIncluded = GetAbsDirectoryInfos(included, true);
+            var absExcluded = GetAbsDirectoryInfos(excluded, false).ToList();
 
-            var actualPaths = new List<string>();
+            return absExcluded.Any()
+                ? absIncluded.Where(absDi =>
+                    !absExcluded.Any(exDi => absDi.FullName.StartsWithEx(exDi.FullName))
+                )
+                : absIncluded;
+        }
 
-            foreach (var path in included)
+        private static IEnumerable<DirectoryInfo> GetAbsDirectoryInfos(
+            IEnumerable<string> paths, bool including
+        )
+        {
+            var absDis = new List<DirectoryInfo>();
+
+            foreach (var p in paths)
             {
-                _log.LogInformation(() => $"Searching Path For Sub Directories: {path}");
+                var path = including ? p : p.StartsWith("!") ? p.Substring(1) : p;
+                try
+                {
+                    var absPath = Path.GetFullPath(path);
+                    var di = new DirectoryInfo(absPath);
 
-                actualPaths.AddRange(PathParser.FindAllSubDirectories(path,
-                        d => !ExcludedPaths.Any(s => s.Contains(d) || d.Contains(s))
-                    ).Select(d => d.FullName)
-                    .Except(actualPaths)
-                );
+                    if (!di.Exists)
+                        throw new DirectoryNotFoundException();
+
+                    absDis.Add(di);
+                    absDis.AddRange(di.GetDirectories("*", SearchOption.AllDirectories).Except(absDis));
+                }
+                catch (Exception ex)
+                {
+                    var be = including ? "INCLUDED" : "EXCLUDED";
+                    _log.LogError(() => $"Error building DirectoryInfo from {path}.  Error: {ex.Message}.  It will be NOT be {be}!");
+                }
             }
 
-            _log.LogInformation(() => string.Format("Excluded Search Paths: \n{0}",
-                ExcludedPaths.Any() ?
-                    string.Join(",\n", ExcludedPaths.OrderBy(s => s))
-                    : "Pattern matching did not find any paths to EXCLUDE."
-                )
-            );
+            return absDis;
+        }
 
-            var ret = new List<string>();
+        private static IEnumerable<FileInfo> GetWorkingAssemblyFileInfos(
+            string[] assemblyNamesLike,
+            IEnumerable<DirectoryInfo> pathsToSearchOnly
+        )
+        {
+            var ret = new List<FileInfo>();
 
-            // For each original included that doesn't use pattern matching we must include it!
-            actualPaths.AddRange(included.Where(s => !s.Contains("**")));
-
-            if (!actualPaths.Any())
-                return ret;
-
-            var ordered = actualPaths.OrderBy(s => new DirectoryInfo(s).FullName).ToList();
-
-            _log.LogInformation(() => string.Format("Included Search Paths: \n{0}",
-                ordered.Any() ?
-                    string.Join(",\n", ordered)
-                    : "Pattern matching did not find any paths to INCLUDE."
-                )
-            );
-
-            foreach (var actualPath in ordered)
+            foreach (var di in pathsToSearchOnly)
             {
-                ret.AddRange(Directory.GetFiles(actualPath, "*.dll")
+                ret.AddRange(di.GetFiles("*.dll")
                     .Where(s =>
-                        assemblyNamesLike.Any(name =>
-                            Path.GetFileName(s).ContainsEx(name)
-                        )
-                        && ret.Select(Path.GetFileName)
-                            .All(fn =>
-                                !fn.EqualsEx(Path.GetFileName(s))
-                            )
+                        // In include assembly names?
+                        assemblyNamesLike.Any(name => s.Name.ContainsEx(name))
+                        // Not already listed?
+                        && ret.All(fi => !fi.FullName.EqualsEx(s.FullName))
                     )
                 );
             }
 
-            return ret.Select(s => new FileInfo(s).FullName);
+            return ret;
         }
 
-        private static IEnumerable<KeyValuePair<bool, Type>> GetResolvedTypes(
+        private static IEnumerable<KeyValuePair<bool, Type>> GetResolvedAssemblyTypes(
             bool injectable, bool inverted,
-            IEnumerable<string> assemblyFiles
+            IEnumerable<FileInfo> assemblyFiles
         )
         {
             var ret = new List<KeyValuePair<bool, Type>>();
             var assResolver = new AssemblyResolver();
 
-            foreach (var ass in assemblyFiles)
+            foreach (var assFi in assemblyFiles)
             {
                 try
                 {
-                    _log.LogInformation(() => $"Attempting to resolve: {ass}");
+                    if (!assFi.Exists)
+                    {
+                        _log.LogWarning(() => $"Skipping {assFi}, it no longer exists!");
+                        continue;
+                    }
 
-                    var assembly = assResolver.LoadFromAssemblyPath(ass);
+                    _log.LogInformation(() => $"Attempting to resolve: {assFi}");
+
+                    var assembly = assResolver.LoadFromAssemblyFileInfo(assFi);
 
                     if (assembly is null)
                         continue;
@@ -318,7 +319,9 @@ namespace Microsoft.Extensions.DependencyInjection
             return ret;
         }
 
-        private static void RegisterServiceType(this IServiceCollection services, Type type)
+        private static void RegisterServiceType(
+            this IServiceCollection services, Type type
+        )
         {
             var interfaces = type.GetInterfaces();
             var attr = type.GetCustomAttribute<InjectableServiceAttribute>();
@@ -328,7 +331,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 _log.LogError(() =>
                     $"Services decorated with the {nameof(InjectableServiceAttribute)}  " +
-                    "must implement at least 1 interface."
+                    $"must implement at least 1 interface.  Therefore {type} will be skipped."
                 );
                 return;
             }
@@ -372,6 +375,31 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 services.Add(descriptor);
             }
+        }
+
+        private static ServiceDescriptor BuildDescriptor(
+            Type type, Type instance, ServiceLifetime lifetime
+        )
+        {
+            return new ServiceDescriptor(type, instance, lifetime);
+        }
+
+        private static void ConfigureInverted(
+            Type type, IServiceCollection services, IConfiguration configuration,
+            ILoggerFactory loggerFactory, string environment
+        )
+        {
+            if (type.GetConstructors().All(c => c.GetParameters().Length != 0))
+            {
+                _log.LogError(() =>
+                    $"Implementations of {nameof(IDependencyInvertedConfiguration)} " +
+                    $"must have a parameter-less constructor.  Therefore {type} will be skipped."
+                );
+                return;
+            }
+
+            ((IDependencyInvertedConfiguration)Activator.CreateInstance(type))
+                .Configure(services, configuration, loggerFactory, environment);
         }
 
         private static void CreateLog(ILoggerFactory loggerFactory)

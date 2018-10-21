@@ -100,14 +100,10 @@ namespace APIBlox.NetCore.Types
         {
             var tmp = Directory.GetFiles(filePath, "*.dll")
                 .Where(s => !_assCache.ContainsKey(Path.GetFileName(s)))
-                .Select(s => new KeyValuePair<string, string>(Path.GetFileName(s), s))
-                .ToList();
+                .Select(s => new KeyValuePair<string, string>(Path.GetFileName(s), s));
 
             foreach (var kvp in tmp)
-            {
-                if (!_assCache.ContainsKey(kvp.Key))
-                    _assCache.Add(kvp.Key, kvp.Value);
-            }
+                _assCache.Add(kvp.Key, kvp.Value);
 
             return _assCache.Select(kvp => kvp.Value).OrderBy(s => s);
         }

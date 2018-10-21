@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#region -    Using Statements    -
+
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+
+#endregion
 
 namespace SlnTests.APIBlox.AspNetCore.OpenApi
 {
     public class BuilderTests
     {
-
         [Fact]
         public void DocumentShouldNotBeEmpty()
         {

@@ -1,3 +1,5 @@
+#region -    Using Statements    -
+
 using System;
 using System.Collections.Generic;
 using APIBlox.AspNetCore;
@@ -9,10 +11,26 @@ using Microsoft.AspNetCore.Routing;
 using Moq;
 using Xunit;
 
+#endregion
+
 namespace SlnTests.APIBlox.AspNetCore
 {
     public class PaginationTests
     {
+        private readonly ActionContext _actionContext;
+
+        private ActionExecutingContext GetActionExecutingContext()
+        {
+            return new ActionExecutingContext(
+                _actionContext,
+                new List<IFilterMetadata>(),
+                new Dictionary<string, object>(),
+                new Mock<Controller>().Object
+            );
+        }
+
+        #region Setup/Teardown
+
         public PaginationTests()
         {
             var c = new DefaultHttpContext();
@@ -29,17 +47,7 @@ namespace SlnTests.APIBlox.AspNetCore
             );
         }
 
-        private readonly ActionContext _actionContext;
-
-        private ActionExecutingContext GetActionExecutingContext()
-        {
-            return new ActionExecutingContext(
-                _actionContext,
-                new List<IFilterMetadata>(),
-                new Dictionary<string, object>(),
-                new Mock<Controller>().Object
-            );
-        }
+        #endregion
 
         [Fact]
         public void IncomingTopButNoSkipAndNoRcSoFirstCallShouldHaveNextButNoPrevious()
@@ -176,8 +184,6 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.Contains("runningCount=50", ret.Next);
             Assert.Null(ret.Previous);
 
-
-
             ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=100&skip=0&runningCount=0");
 
@@ -191,8 +197,6 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.Contains("skip=50", ret.Next);
             Assert.Contains("runningCount=50", ret.Next);
             Assert.Null(ret.Previous);
-            
-
 
             ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?skip=0");
