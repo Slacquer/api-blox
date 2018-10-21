@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using APIBlox.NetCore.Extensions;
 using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.DependencyModel.Resolution;
 
 namespace APIBlox.NetCore.Types
 {
@@ -18,6 +19,10 @@ namespace APIBlox.NetCore.Types
     {
         private readonly Dictionary<string, string> _assCache = new Dictionary<string, string>();
         private readonly List<string> _loadedCache = new List<string>();
+
+        private ICompilationAssemblyResolver _assemblyResolver;
+        private AssemblyLoadContext _loadContext;
+        private DependencyContext _dependencyContext;
 
         /// <summary>
         ///     Loads an assembly and all its referenced assemblies.
@@ -61,11 +66,51 @@ namespace APIBlox.NetCore.Types
                 : AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyFullPath);
 
             if (assembly != null)
+            {
+                _dependencyContext = DependencyContext.Load(assembly);
+
+                _assemblyResolver = new CompositeCompilationAssemblyResolver(new ICompilationAssemblyResolver[]
+                    {
+                        new AppBaseCompilationAssemblyResolver(directory),
+                        new ReferenceAssemblyPathResolver(),
+                        new PackageCompilationAssemblyResolver()
+                    }
+                );
+
+                _loadContext = AssemblyLoadContext.GetLoadContext(assembly);
+                
+                _loadContext.Resolving += OnResolving;
+
                 LoadReferencedAssemblies(assembly, fileName, directory);
+            }
 
             return assembly;
         }
 
+        private Assembly OnResolving(AssemblyLoadContext context, AssemblyName name)
+        {
+            var library = _dependencyContext.RuntimeLibraries
+                .FirstOrDefault(r => r.Name.EqualsEx(name.Name));
+
+            if (library is null)
+                return null;
+
+            var assemblies = new List<string>();
+
+            var wrapper = new CompilationLibrary(library.Type,
+                library.Name,
+                library.Version,
+                library.Hash,
+                library.RuntimeAssemblyGroups.SelectMany(g => g.AssetPaths),
+                library.Dependencies,
+                library.Serviceable
+            );
+            _assemblyResolver.TryResolveAssemblyPaths(wrapper, assemblies);
+
+            return assemblies.Count > 0
+                ? _loadContext.LoadFromAssemblyPath(assemblies[0])
+                : null;
+        }
 
         private void LoadReferencedAssemblies(Assembly assembly, string fileName, string directory)
         {
