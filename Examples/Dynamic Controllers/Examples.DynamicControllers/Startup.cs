@@ -30,9 +30,10 @@ namespace Examples
         private readonly IConfiguration _configuration;
         private readonly IHostingEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
-#endif
-
         private const string SiteTitle = "APIBlox Example: Features, DynamiControllers";
+#else
+        private const string SiteTitle = "APIBlox Example: UseAPIBlox is OFF.";
+#endif
         private const string Version = "v1";
 
 #if UseAPIBlox
