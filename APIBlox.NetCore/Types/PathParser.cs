@@ -23,10 +23,10 @@ namespace APIBlox.NetCore.Types
             if (searchPath.IsEmptyNullOrWhiteSpace())
                 throw new NullReferenceException("Empty path!");
 
-            var parts = searchPath.Split(new[] {"**"}, StringSplitOptions.RemoveEmptyEntries);
-            
+            var parts = searchPath.Split(new[] { "**" }, StringSplitOptions.RemoveEmptyEntries);
+
             var root = parts[0];
-            var excludes = parts.Except(new[] {root}).Select(RemoveTrailingSlash).ToList();
+            var excludes = parts.Except(new[] { root }).Select(RemoveTrailingSlash).ToList();
 
             var ret = new List<DirectoryInfo>();
             var rootDi = new DirectoryInfo(root);
@@ -35,10 +35,7 @@ namespace APIBlox.NetCore.Types
                 return ret;
 
             ret.AddRange(Directory.GetDirectories(rootDi.FullName, "*", SearchOption.AllDirectories)
-                .Where(s =>
-                    excludes.All(e =>
-                        s.ContainsEx(e)
-                    )
+                .Where(s => excludes.All(e => s.ContainsEx(e))
                     && (filterAction?.Invoke(s) ?? true)
                 )
                 .Select(s => new DirectoryInfo(s))

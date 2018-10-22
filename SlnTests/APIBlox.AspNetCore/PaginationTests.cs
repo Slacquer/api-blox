@@ -50,6 +50,38 @@ namespace SlnTests.APIBlox.AspNetCore
         #endregion
 
         [Fact]
+        public void IncomingTopIsLessThanSkipAndRcEqualsSkipSoNextValuesShouldBeCorrect()
+        {
+            var ctx = GetActionExecutingContext();
+            ctx.HttpContext.Request.QueryString = new QueryString("?top=2&skip=5&rc=7");
+
+            var builder = new PaginationMetadataBuilder(10);
+            var ret = builder.Build(2, ctx);
+
+            Assert.NotNull(ret.Previous);
+            Assert.NotNull(ret.Next);
+            Assert.Contains("skip=7", ret.Next);
+            Assert.Contains("top=2", ret.Next);
+            Assert.Contains("runningCount=9", ret.Next);
+        }
+
+        [Fact]
+        public void IncomingTopIsMoreThanSkipAndRcEqualsSkipSoNextValuesShouldBeCorrect()
+        {
+            var ctx = GetActionExecutingContext();
+            ctx.HttpContext.Request.QueryString = new QueryString("?top=5&skip=3&rc=3");
+
+            var builder = new PaginationMetadataBuilder(10);
+            var ret = builder.Build(3, ctx);
+
+            Assert.NotNull(ret.Previous);
+            Assert.NotNull(ret.Next);
+            Assert.Contains("skip=8", ret.Next);
+            Assert.Contains("top=5", ret.Next);
+            Assert.Contains("runningCount=6", ret.Next);
+        }
+
+        [Fact]
         public void IncomingTopButNoSkipAndNoRcSoFirstCallShouldHaveNextButNoPrevious()
         {
             var ctx = GetActionExecutingContext();

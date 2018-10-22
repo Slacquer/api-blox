@@ -22,7 +22,7 @@ namespace APIBlox.AspNetCore.Types
         {
             {"Skip", new[] {"$Skip", "Offset", "$Offset"}},
             {"Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"}},
-            {"RunningCount", new[] {"$Rc", "Count", "$Count", "RunningCount", "$RunningCount"}},
+            {"RunningCount", new[] {"$Rc", "Rc", "Count", "$Count", "$RunningCount"}},
         };
 
         internal static readonly JsonSerializerSettings AliasesInSettings = new JsonSerializerSettings
