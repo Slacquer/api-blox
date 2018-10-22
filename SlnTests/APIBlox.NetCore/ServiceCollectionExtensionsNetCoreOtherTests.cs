@@ -14,6 +14,8 @@ using Xunit;
 
 namespace SlnTests.APIBlox.NetCore
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
     public class ServiceCollectionExtensionsNetCoreOtherTests
     {
         private readonly ILoggerFactory _loggerFactory;
@@ -57,13 +59,13 @@ namespace SlnTests.APIBlox.NetCore
         {
             var sc = new ServiceCollection();
 
-            var names = new[] {"SlnTests"};
-            var paths = new List<string>(PathParser.FindAllSubDirectories(@"..\..\..\..\**\obj\").Select(di=> $"!{di.FullName}"))
+            var names = new[] { "SlnTests" };
+            var paths = new List<string>(PathParser.FindAllSubDirectories(@"..\..\..\..\**\obj\").Select(di => $"!{di.FullName}"))
             {
                 @"..\..\..\..\",
                 @"C\Program Files\**"
             }.ToArray();
-            
+
 
             _loggerFactory.AddProvider(new AssertLoggerProvider(msg =>
                     {
@@ -81,7 +83,7 @@ namespace SlnTests.APIBlox.NetCore
         {
             var sc = new ServiceCollection();
 
-            var names = new[] {"SlnTests"};
+            var names = new[] { "SlnTests" };
             var paths = new List<string>(_paths)
             {
                 @"..\..\**"

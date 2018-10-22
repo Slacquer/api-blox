@@ -2,37 +2,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> 
-
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
-    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
- 
-    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-
-    <!-- Optional: Include the PDB in the built .nupkg -->
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <Authors>Slacquer</Authors>
-    <Company>Slacquers Building Blox</Company>
-    <Description>.NetCore bits.  SourceLink is enabled.</Description>
-    <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
-    <PackageReleaseNotes>Initial Release.</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
     <RootNamespace>APIBlox.NetCore</RootNamespace>
+
+    <Description>.NetCore bits.  SourceLink is enabled.</Description>
+    
     <AssemblyName>APIBlox.NetCore</AssemblyName>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://github.com/Slacquer/api-blox/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>0.0.1-alpha03</Version>
-    <PackageTags>dynamic-controllers;controller;netcore2;api-rest;cqrs;aspnetcore;asp-net-core;dependency-injection;inversion-of-control;ioc;ioc-container</PackageTags>
-    <RepositoryUrl>https://github.com/Slacquer/api-blox</RepositoryUrl>
-    <Copyright>Slacquers Building Blox</Copyright>
-    <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <FileVersion>0.0.0.0</FileVersion>
-    <RepositoryType>GIT</RepositoryType>
+   
+    <Product>APIBlox.NetCore</Product>
+
+    <PackageId>APIBlox.NetCore</PackageId>
 
   </PropertyGroup>
 

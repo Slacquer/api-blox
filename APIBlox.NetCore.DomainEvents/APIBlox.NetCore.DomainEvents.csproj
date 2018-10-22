@@ -1,34 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> 
+   
     <RootNamespace>APIBlox.NetCore</RootNamespace>
-    <Authors>Slacquer</Authors> 
-    <Company>Slacquers Building Blox</Company> 
+   
     <Description>Simple domain events.  SourceLink is enabled.</Description> 
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
-    <!-- Source Link stuff -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-
-
-    <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
-    <PackageReleaseNotes>Initial Release.</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
+    
     <AssemblyName>APIBlox.NetCore.DomainEvents</AssemblyName>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://github.com/Slacquer/api-blox/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>0.0.0</Version>
-    <PackageTags>domain-events;dynamic-controllers;controller;netcore2;api-rest;cqrs;aspnetcore;asp-net-core;dependency-injection;inversion-of-control;ioc;ioc-container;openapi;swagger</PackageTags>
-    <RepositoryUrl>https://github.com/Slacquer/api-blox</RepositoryUrl>
-    <Copyright>Slacquers Building Blox</Copyright>
-    <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <FileVersion>0.0.0.0</FileVersion>
-    <RepositoryType>GIT</RepositoryType>
+   
+    <Product>APIBlox.NetCore.DomainEvents</Product>
+
+    <PackageId>APIBlox.NetCore.DomainEvents</PackageId>
+
   </PropertyGroup>
 
   <ItemGroup>

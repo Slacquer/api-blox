@@ -2,35 +2,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Authors>Slacquer</Authors>
-    <Company>Slacquers Building Blox</Company>
-    <Description>Combination package for Commands and Queries when using Dynamic Controllers.  SourceLink is enabled.</Description>
-    <AssemblyName>APIBlox.AspNetCore.CommandsQueriesControllersOhMy</AssemblyName>
     <RootNamespace>APIBlox.AspNetCore</RootNamespace>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-    <!-- Source Link stuff -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    
+    <AssemblyName>APIBlox.AspNetCore.CommandsQueriesControllersOhMy</AssemblyName>
+
+    <Description>Combination package for Commands and Queries when using Dynamic Controllers.  SourceLink is enabled.</Description>
+
     <Product>APIBlox.AspNetCore.CommandsQueriesControllersOhMy</Product>
+
     <PackageId>APIBlox.AspNetCore.CommandsQueriesControllersOhMy</PackageId>
-    <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Initial Release.</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/Slacquer/api-blox/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>0.0.0</Version>
-    <PackageTags>dynamic-controllers;controller;netcore2;api-rest;cqrs;aspnetcore;asp-net-core;dependency-injection;inversion-of-control;ioc;ioc-container;openapi;swagger</PackageTags>
-    <RepositoryUrl>https://github.com/Slacquer/api-blox</RepositoryUrl>
-    <Copyright>Slacquers Building Blox</Copyright>
-    <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <FileVersion>0.0.0.0</FileVersion>
-    <RepositoryType>GIT</RepositoryType>
+
   </PropertyGroup>
 
   <ItemGroup>
