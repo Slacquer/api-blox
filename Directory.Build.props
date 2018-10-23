@@ -4,7 +4,7 @@
     <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion>
     <Authors>Slacquer</Authors>
     <Company>Slacquers Building Blox</Company>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
