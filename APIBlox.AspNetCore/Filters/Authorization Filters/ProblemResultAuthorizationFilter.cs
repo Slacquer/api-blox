@@ -54,16 +54,16 @@ namespace APIBlox.AspNetCore.Filters.Authorization
                 return;
 
             var policyEvaluator = context.HttpContext.RequestServices.GetRequiredService<IPolicyEvaluator>();
-
             var authenticateResult = await policyEvaluator.AuthenticateAsync(Policy, context.HttpContext);
             var authorizeResult = await policyEvaluator.AuthorizeAsync(Policy, authenticateResult, context.HttpContext, context);
-
             var errObject = new RequestErrorObject();
 
             if (authorizeResult.Challenged)
                 errObject.SetErrorToUnAuthorized();
             else if (authorizeResult.Forbidden)
                 errObject.SetErrorToForbidden(string.Join(", ", Policy.AuthenticationSchemes));
+            else
+                return;
 
             context.Result = new ProblemResult(errObject);
         }
