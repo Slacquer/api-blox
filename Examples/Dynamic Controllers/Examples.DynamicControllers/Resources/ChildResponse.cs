@@ -3,12 +3,12 @@ using APIBlox.AspNetCore.Contracts;
 
 namespace Examples.Resources
 {
-    internal class ChildResponse : IResource<double>
+    internal class ChildResponse : IResource<int>
     {
         public int Age { get; set; }
 
         public string FirstName { get; set; }
-        public double Id { get; set; }
+        public int Id { get; set; }
 
         public string LastName { get; set; }
 

@@ -58,7 +58,6 @@ namespace Examples
             }.ToArray();
         }
 #endif
-
         public void ConfigureServices(IServiceCollection services)
         {
             services
@@ -66,6 +65,7 @@ namespace Examples
                 //
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
+
                 //
                 //  Change what is returned to the user when an error occurs.
                 .AddAlterRequestErrorObject(err =>
@@ -90,21 +90,23 @@ namespace Examples
                 //    _assemblyPaths
                 //)
 #else
-
-                // You may think to yourself... "This is no big deal, why would I need to do use your dumb InjectableServiceAttribute?
-                // In fact I could clean up this bit of code just by putting it in an extension method and all is good."...
-                //      Oh Really Tough guy? what happens when this presentation project does NOT have a reference to
-                // the assembly that contains the implementation of the contract that lives at the application layer?
-                //      huh!?
-                //          then what!
-                //                  huh!
+            // You may think to yourself... "This is no big deal, why would I need to do use your dumb InjectableServiceAttribute?
+            // In fact I could clean up this bit of code just by putting it in an extension method and all is good."...
+            //      Oh Really Tough guy? what happens when this presentation project does NOT have a reference to
+            // the assembly that contains the implementation of the contract that lives at the application layer?
+            //      huh!?
+            //          then what!
+            //                  huh!
                 .AddSingleton<IRandomNumberGeneratorService, RandomNumberGeneratorService>()
 #endif
                 .AddMvc()
 #if UseAPIBlox
+
                 //
                 //  DynamicControllers and configuration
-                .AddDynamicControllersFeature(configs => configs.AddFamilyDynamicControllersConfiguration())
+                .AddDynamicControllersFeature(configs =>
+                    configs.AddFamilyDynamicControllersConfiguration(),
+                   addPostLocationHeaderResultFilter: true)
                 //
                 // Fills in request objects for us.
                 .AddPopulateGenericRequestObjectActionFilter()

@@ -101,6 +101,9 @@
             </summary>
             <param name="id">The identifier.</param>
         </member>
+        <member name="T:Examples.Resources.ChildRequest">
+            <inheritdoc />
+        </member>
         <member name="T:Examples.Resources.ExampleRequestObject">
             <summary>
                 Class ExampleRequestObject.
@@ -122,13 +125,18 @@
             </summary>
             <value>The parent value id.</value>
         </member>
+        <member name="T:Examples.Resources.ParentResponse">
+            <inheritdoc />
+        </member>
         <member name="T:Examples.Services.RandomNumberGeneratorService">
+            <inheritdoc />
             <summary>
                 Class RandomNumberGeneratorService.
             </summary>
             <seealso cref="T:Examples.Contracts.IRandomNumberGeneratorService" />
         </member>
         <member name="M:Examples.Services.RandomNumberGeneratorService.GenerateNumber(System.Int32)">
+            <inheritdoc />
             <summary>
                 Generates the number.
             </summary>

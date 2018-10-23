@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.NetCore.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
@@ -15,10 +17,18 @@ namespace APIBlox.AspNetCore
             Type parentIdType, params string[] routes
         )
         {
-            Routes.AddRange(routes);
+            Routes.AddRange(UnQualifyRoutes(routes));
             RequestResourceType = requestResourceType;
             ParentIdType = parentIdType;
             ControllerName = controllerName;
+        }
+
+        private static IEnumerable<string> UnQualifyRoutes(string[] routes)
+        {
+            if (routes is null || !routes.Any())
+                return null;
+
+            return routes.Select(s => s.RemoveTrailingWhack());
         }
 
         public string ControllerName { get; }

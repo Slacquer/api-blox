@@ -1,7 +1,9 @@
 ﻿using APIBlox.AspNetCore.Types;
+using Examples.Contracts;
 
 namespace Examples.Resources
 {
+    /// <inheritdoc />
     internal class ChildRequest : PaginationQuery
     {
         public int ParentId { get; private set; }

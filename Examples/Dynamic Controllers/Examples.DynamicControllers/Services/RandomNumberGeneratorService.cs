@@ -5,15 +5,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Examples.Services
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Class RandomNumberGeneratorService.
     /// </summary>
-    /// <seealso cref="Examples.Contracts.IRandomNumberGeneratorService" />
+    /// <seealso cref="T:Examples.Contracts.IRandomNumberGeneratorService" />
     [InjectableService(ServiceLifetime = ServiceLifetime.Singleton)]
     public class RandomNumberGeneratorService : IRandomNumberGeneratorService
     {
         private static readonly Random Rnd = new Random((int) (DateTime.Now.Ticks % 100));
 
+        /// <inheritdoc />
         /// <summary>
         ///     Generates the number.
         /// </summary>

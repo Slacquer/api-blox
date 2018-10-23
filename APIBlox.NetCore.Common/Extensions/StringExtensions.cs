@@ -37,7 +37,38 @@ namespace APIBlox.NetCore.Extensions
         {
             return value is null
                 ? defaultValue
-                : (T) Convert.ChangeType(value, typeof(T));
+                : (T)Convert.ChangeType(value, typeof(T));
+        }
+
+        /// <summary>
+        ///     Removes the trailing whack \ or / from a string.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>System.String.</returns>
+        public static string RemoveTrailingWhack(this string value)
+        {
+            if (value is null)
+                return null;
+
+            var trimmed = value.Trim();
+
+            return trimmed.EndsWith(@"\") || trimmed.EndsWith(@"/") ? trimmed.Substring(0, trimmed.Length - 1) : trimmed;
+        }
+
+        /// <summary>
+        ///     Add a trailing whack \ or / from a string.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>System.String.</returns>
+        public static string AddTrailingWhack(this string value)
+        {
+            if (value is null)
+                return null;
+
+            var trimmed = value.Trim();
+            var slash = trimmed.Contains(@"\") ? @"\" : "/";
+
+            return trimmed.EndsWith(@"\") || trimmed.EndsWith(@"/") ? trimmed : $"{trimmed}{slash}";
         }
 
         /// <summary>
@@ -153,7 +184,7 @@ namespace APIBlox.NetCore.Extensions
             if (str.IsEmptyNullOrWhiteSpace())
                 return str;
 
-            var bits = str.Split(new[] {" ", "_"}, StringSplitOptions.RemoveEmptyEntries);
+            var bits = str.Split(new[] { " ", "_" }, StringSplitOptions.RemoveEmptyEntries);
             var sb = new StringBuilder();
             var ci = new CultureInfo(cultureName ?? CultureInfo.CurrentCulture.DisplayName, false).TextInfo;
 
