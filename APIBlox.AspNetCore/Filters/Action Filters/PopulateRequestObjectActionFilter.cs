@@ -102,7 +102,10 @@ namespace APIBlox.AspNetCore
 
                 IsQuery = context.HttpContext.Request.Method.EqualsEx("get");
 
-                var values =new RouteValueDictionary( data.Values.Where(kvp => !kvp.Key.EqualsEx("action") && !kvp.Key.EqualsEx("controller")));
+                var values = new RouteValueDictionary(data.Values.Where(kvp =>
+                        !kvp.Key.EqualsEx("action") && !kvp.Key.EqualsEx("controller")
+                    )
+                );
                 RouteDataString = JsonConvert.SerializeObject(values);
 
                 QueryString = JsonConvert.SerializeObject(query);

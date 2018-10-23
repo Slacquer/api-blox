@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using APIBlox.NetCore;
+﻿using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +11,6 @@ namespace APIBlox.AspNetCore.Filters
     internal class EnsurePaginationResponseResultActionFilter : EnsureResponseResultActionFilter
     {
         private readonly IPaginationMetadataBuilder _paginationBuilder;
-
 
         public EnsurePaginationResponseResultActionFilter(
             ILoggerFactory loggerFactory,
