@@ -6,7 +6,6 @@ namespace Examples.Resources
 {
     public class ChildRootRequest : PaginationQuery, IChildRequest
     {
-        [Required]
-        public bool MustLikeCandy { get;set; }
+        public bool LikesCandy { get;set; }
     }
 }
