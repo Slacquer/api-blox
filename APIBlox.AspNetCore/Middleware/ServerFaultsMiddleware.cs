@@ -61,7 +61,8 @@ namespace APIBlox.AspNetCore
             {
                 _log.LogCritical("Could not write response, Ex: {0}", BuildError(ex, null));
 
-                throw;
+                if (!_env.IsProduction())
+                    throw;
             }
         }
 
