@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Types.Errors;
@@ -58,7 +59,7 @@ namespace APIBlox.AspNetCore
             }
             catch (Exception ex)
             {
-                _log.LogCritical("Could not write response, Ex: {0}", ex.Message);
+                _log.LogCritical("Could not write response, Ex: {0}", BuildError(ex, null));
 
                 throw;
             }
@@ -91,7 +92,26 @@ namespace APIBlox.AspNetCore
             dto.Detail = null;
             dto.Title = "Please contact support.";
 
-            return dto.Serialize();
+            serialized = dto.Serialize();
+
+            _log.LogInformation(() => $"PRODUCTION Exception Message Result: {serialized}");
+
+            return serialized;
+        }
+
+        private static string BuildError(Exception ex, StringBuilder sb)
+        {
+            sb = sb ?? new StringBuilder();
+
+            sb.AppendLine($"{ex.GetType().Name}: {ex.Message}");
+
+
+            if (ex.InnerException is null)
+                return sb.ToString();
+
+            BuildError(ex.InnerException, sb);
+
+            return sb.ToString();
         }
     }
 }

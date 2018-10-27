@@ -7,6 +7,7 @@ using System.Linq;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -25,6 +26,7 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// <summary>
         ///     The logger
         /// </summary>
+        [JsonIgnore]
         protected ILogger<RequestErrorObject> Logger;
 
         #endregion
@@ -87,6 +89,7 @@ namespace APIBlox.AspNetCore.Types.Errors
         ///     Gets or sets a value indicating whether [no throw].
         /// </summary>
         /// <value><c>true</c> if [no throw]; otherwise, <c>false</c>.</value>
+        [JsonIgnore]
         protected internal bool NoThrow { get; set; }
 
         /// <summary>
