@@ -155,7 +155,7 @@ namespace APIBlox.AspNetCore.Types.Errors
 
             TryAlterRequestObjectAction();
 
-            if (Errors.Any())
+            if (!(Errors is null) && Errors.Any())
                 Properties.TryAdd("Errors", Errors);
 
             return base.GetDynamicMemberNames();

@@ -78,8 +78,9 @@ namespace APIBlox.AspNetCore.Types.Errors
             var errors = Errors?.Any() == true;
 
             if (Detail.IsEmptyNullOrWhiteSpace() && errors)
-                throw new ArgumentException("Although not required deeper than the root, we will require" +
-                                            $" {GetType().Name}.{nameof(Detail)} when errors is not empty.",
+                throw new ArgumentException(
+                    "Although not required deeper than the root, we will require" +
+                    $" {GetType().Name}.{nameof(Detail)} when errors is not empty.",
                     nameof(Detail)
                 );
 
