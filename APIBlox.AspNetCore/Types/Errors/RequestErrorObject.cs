@@ -1,11 +1,14 @@
-﻿using System;
+﻿#region -    Using Statements    -
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using APIBlox.NetCore;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 using Microsoft.Extensions.Logging;
+
+#endregion
 
 namespace APIBlox.AspNetCore.Types.Errors
 {
@@ -17,7 +20,16 @@ namespace APIBlox.AspNetCore.Types.Errors
     [Serializable]
     public class RequestErrorObject : DynamicDataObject
     {
-        private ILogger<RequestErrorObject> _logger;
+        #region -    Fields    -
+
+        /// <summary>
+        ///     The logger
+        /// </summary>
+        protected ILogger<RequestErrorObject> Logger;
+
+        #endregion
+
+        #region -    Constructors    -
 
         /// <inheritdoc />
         /// <summary>
@@ -43,6 +55,7 @@ namespace APIBlox.AspNetCore.Types.Errors
             Instance = instance;
         }
 
+        #endregion
 
         /// <summary>
         ///     [REQUIRED]
@@ -69,6 +82,12 @@ namespace APIBlox.AspNetCore.Types.Errors
         ///     </para>
         /// </summary>
         public string Instance { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether [no throw].
+        /// </summary>
+        /// <value><c>true</c> if [no throw]; otherwise, <c>false</c>.</value>
+        protected internal bool NoThrow { get; set; }
 
         /// <summary>
         ///     [REQUIRED]
@@ -117,41 +136,61 @@ namespace APIBlox.AspNetCore.Types.Errors
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             if (Title.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException(
-                    $"RFC7807 states that {GetType().Name}" +
-                    $".{nameof(Title)} is required.",
-                    nameof(Title)
-                );
+            {
+                var msg = $"RFC7807 states that {GetType().Name}" +
+                          $".{nameof(Title)} is required.";
+
+                if (NoThrow)
+                    Logger.LogError(() => msg);
+                else
+                    throw new ArgumentException(msg, nameof(Title));
+            }
+            else
+                Properties.TryAdd("Title", Title);
 
             if (Detail.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException(
-                    $"RFC7807 states that {GetType().Name}" +
-                    $".{nameof(Detail)} is required.",
-                    nameof(Detail)
-                );
+            {
+                var msg = $"RFC7807 states that {GetType().Name}" +
+                          $".{nameof(Detail)} is required.";
+
+                if (NoThrow)
+                    Logger.LogError(() => msg);
+                else
+                    throw new ArgumentException(msg, nameof(Detail));
+            }
+            else
+                Properties.TryAdd("Detail", Detail);
 
             if (Type.IsEmptyNullOrWhiteSpace())
                 Type = "about:blank";
 
+            Properties.TryAdd("Type", Type);
+
             if (!Status.HasValue)
-                throw new ArgumentException(
-                    $"RFC7807 states that {GetType().Name}" +
-                    $".{nameof(Status)} is required.",
-                    nameof(Status)
-                );
+            {
+                var msg = $"RFC7807 states that {GetType().Name}" +
+                          $".{nameof(Status)} is required.";
+
+                if (NoThrow)
+                    Logger.LogError(() => msg);
+                else
+                    throw new ArgumentException(msg, nameof(Status));
+            }
+            else
+                Properties.TryAdd("Status", Status);
 
             if (Instance.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException(
-                    $"RFC7807 states that {GetType().Name}" +
-                    $".{nameof(Instance)} is required.",
-                    nameof(Instance)
-                );
+            {
+                var msg = $"RFC7807 states that {GetType().Name}" +
+                          $".{nameof(Instance)} is required.";
 
-            Properties.TryAdd("Type", Type);
-            Properties.TryAdd("Title", Title);
-            Properties.TryAdd("Detail", Detail);
-            Properties.TryAdd("Status", Status);
-            Properties.TryAdd("Instance", Instance);
+                if (NoThrow)
+                    Logger.LogError(() => msg);
+                else
+                    throw new ArgumentException(msg, nameof(Instance));
+            }
+            else
+                Properties.TryAdd("Instance", Instance);
 
             TryAlterRequestObjectAction();
 
@@ -160,7 +199,6 @@ namespace APIBlox.AspNetCore.Types.Errors
 
             return base.GetDynamicMemberNames();
         }
-
 
         private void TryAlterRequestObjectAction()
         {
@@ -172,7 +210,7 @@ namespace APIBlox.AspNetCore.Types.Errors
             {
                 CreateLogger();
 
-                _logger.LogError(() =>
+                Logger.LogError(() =>
                     $"An error has occured while invoking AddAlterRequestErrorObject.alterAction.  Ex: {ex.Message}"
                 );
             }
@@ -180,14 +218,14 @@ namespace APIBlox.AspNetCore.Types.Errors
 
         private void CreateLogger()
         {
-            if (!(_logger is null))
+            if (!(Logger is null))
                 return;
 
             var factory = new LoggerFactory();
 
             factory.AddConsole(true).AddDebug().AddEventSourceLogger();
 
-            _logger = factory.CreateLogger<RequestErrorObject>();
+            Logger = factory.CreateLogger<RequestErrorObject>();
         }
     }
 }

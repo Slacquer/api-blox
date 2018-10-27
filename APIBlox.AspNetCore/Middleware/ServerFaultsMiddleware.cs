@@ -46,10 +46,10 @@ namespace APIBlox.AspNetCore
 
                 return;
             }
-            
+
             try
             {
-                context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 context.Response.Headers["Content-Type"] = "application/problem+json";
 
                 await context.Response.WriteAsync(BuildResponse(error.Error, context.Request.Path),
@@ -68,7 +68,7 @@ namespace APIBlox.AspNetCore
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
-                (int) HttpStatusCode.InternalServerError,
+                (int)HttpStatusCode.InternalServerError,
                 instance,
                 _referenceIdFunc()
             )
@@ -86,6 +86,7 @@ namespace APIBlox.AspNetCore
             if (!_env.IsProduction())
                 return serialized;
 
+            dto.NoThrow = true;
             dto.Errors = null;
             dto.Detail = null;
             dto.Title = "Please contact support.";

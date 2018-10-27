@@ -1,3 +1,15 @@
+_October 27th, 2018_  **v1.0.49**
+- A fairly significant bug - continues  
+...Same as below, but it has been bugging me for a while, I didnt think any throwing should be going 
+on while the middleware was doing its thing.  So I have introduced a NoThrow protected internal property 
+to allow the faults middlware to tun OFF throwing....
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _October 27th, 2018_  **v1.0.48**
 - A fairly significant bug.  
 ...*ServerFaultsMiddleware* sets errors to null when NOT in development (after logging) to prevent consumers from seeing too much.  However, the  
