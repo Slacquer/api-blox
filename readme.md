@@ -10,7 +10,7 @@
 ![:)][logo]   
 # API Blox
 
- #(date)# **#(version)#**
+ $(Date:yyyyMMddHHmm) **1.0.66**
 
 ## Minimal Instructions
  Solution contains the following NuGet packages.  
