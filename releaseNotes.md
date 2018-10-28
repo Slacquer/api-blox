@@ -1,3 +1,13 @@
+_October 28th, 2018_  **v1.0.69**  
+- Couple of issues,  
+...Extension method mishap, looking at implementation types rather than the contracts.  Also changed caching for assembly loader to use just the file name rather than full path...
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _October 27th, 2018_  **v1.0.69**
 - A simple pagination issue,  
 ...The contract reolver was not being injected for alias mapping, therefore when 
