@@ -1,3 +1,13 @@
+_October 27th, 2018_  **v1.0.52**
+- A fairly significant bug - continues, **again**   
+...After some soul searching I realized I was just bandaiding things, so I stopped took a breath and re-wrote most of the ServerFaultsMiddleware....
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _October 27th, 2018_  **v1.0.49**
 - A fairly significant bug - continues  
 ...Same as below, but it has been bugging me for a while, I didnt think any throwing should be going 

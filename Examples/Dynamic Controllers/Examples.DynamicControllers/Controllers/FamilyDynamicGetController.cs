@@ -38,13 +38,13 @@ namespace Examples.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            var req = (TRequest)RouteData.Values[typeof(TRequest).Name];
+            var req = (TRequest) RouteData.Values[typeof(TRequest).Name];
 
             var ret = new TResponse();
 
             JsonConvert.PopulateObject(JsonConvert.SerializeObject(req), ret);
 
-            return Task.FromResult((IActionResult)Ok(ret));
+            return Task.FromResult((IActionResult) Ok(ret));
         }
     }
 }

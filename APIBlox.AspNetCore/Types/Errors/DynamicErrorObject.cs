@@ -1,10 +1,15 @@
-﻿using System;
+﻿#region -    Using Statements    -
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using APIBlox.NetCore;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+#endregion
 
 namespace APIBlox.AspNetCore.Types.Errors
 {
@@ -15,6 +20,17 @@ namespace APIBlox.AspNetCore.Types.Errors
     /// <seealso cref="T:System.Dynamic.DynamicObject" />
     public class DynamicErrorObject : DynamicDataObject
     {
+        #region -    Fields    -
+
+        /// <summary>
+        ///     The logger
+        /// </summary>
+        [JsonIgnore] protected ILogger<DynamicErrorObject> Logger;
+
+        #endregion
+
+        #region -    Constructors    -
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicErrorObject" /> class.
         /// </summary>
@@ -31,9 +47,13 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// <param name="detail">The detail.</param>
         public DynamicErrorObject(string title, string detail)
         {
+            CreateLogger();
+
             Title = title;
             Detail = detail;
         }
+
+        #endregion
 
         /// <summary>
         ///     [REQUIRED]
@@ -51,6 +71,13 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// </remarks>
         /// <value>The inner error.</value>
         public Collection<DynamicErrorObject> Errors { get; set; } = new Collection<DynamicErrorObject>();
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether [no throw].
+        /// </summary>
+        /// <value><c>true</c> if [no throw]; otherwise, <c>false</c>.</value>
+        [JsonIgnore]
+        internal bool NoThrow { get; set; }
 
         /// <summary>
         ///     [REQUIRED]
@@ -78,26 +105,51 @@ namespace APIBlox.AspNetCore.Types.Errors
             var errors = Errors?.Any() == true;
 
             if (Detail.IsEmptyNullOrWhiteSpace() && errors)
-                throw new ArgumentException(
-                    "Although not required deeper than the root, we will require" +
-                    $" {GetType().Name}.{nameof(Detail)} when errors is not empty.",
-                    nameof(Detail)
-                );
+            {
+                var msg = "Although not required deeper than the root, we will require" +
+                          $" {GetType().Name}.{nameof(Detail)} when errors is not empty.";
+
+                if (NoThrow)
+                    Logger.LogError(() => msg);
+                else
+                    throw new ArgumentException(msg, nameof(Detail));
+            }
+            else
+            {
+                Properties.TryAdd("Detail", Detail);
+            }
 
             if (Title.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException(
-                    "Although not required deeper than the root, we will require " +
-                    $"{GetType().Name}.{nameof(Title)}",
-                    nameof(Title)
-                );
+            {
+                var msg = "Although not required deeper than the root, we will require " +
+                          $"{GetType().Name}.{nameof(Title)}";
 
-            Properties.TryAdd("Title", Title);
-            Properties.TryAdd("Detail", Detail);
+                if (NoThrow)
+                    Logger.LogError(() => msg);
+                else
+                    throw new ArgumentException(msg, nameof(Title));
+            }
+            else
+            {
+                Properties.TryAdd("Title", Title);
+            }
 
             if (errors)
                 Properties.Add("Errors", Errors);
 
             return base.GetDynamicMemberNames();
+        }
+
+        private void CreateLogger()
+        {
+            if (!(Logger is null))
+                return;
+
+            var factory = new LoggerFactory();
+
+            factory.AddConsole(true).AddDebug().AddEventSourceLogger();
+
+            Logger = factory.CreateLogger<DynamicErrorObject>();
         }
     }
 }

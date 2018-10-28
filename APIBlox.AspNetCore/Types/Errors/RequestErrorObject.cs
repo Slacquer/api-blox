@@ -38,7 +38,9 @@ namespace APIBlox.AspNetCore.Types.Errors
         ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.Errors.RequestErrorObject" /> class.
         /// </summary>
         public RequestErrorObject()
+        : this(null, null, null, null)
         {
+
         }
 
         /// <summary>
@@ -49,8 +51,10 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// <param name="status">The status.</param>
         /// <param name="instance">The instance.</param>
         /// <inheritdoc />
-        public RequestErrorObject(string title, string detail, int status, string instance)
+        public RequestErrorObject(string title, string detail, int? status, string instance)
         {
+            CreateLogger();
+
             Title = title;
             Detail = detail;
             Status = status;
@@ -90,7 +94,7 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// </summary>
         /// <value><c>true</c> if [no throw]; otherwise, <c>false</c>.</value>
         [JsonIgnore]
-        protected internal bool NoThrow { get; set; }
+        internal bool NoThrow { get; set; }
 
         /// <summary>
         ///     [REQUIRED]
@@ -138,6 +142,8 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// <returns>A sequence that contains dynamic member names.</returns>
         public override IEnumerable<string> GetDynamicMemberNames()
         {
+            CreateLogger();
+
             if (Title.IsEmptyNullOrWhiteSpace())
             {
                 var msg = $"RFC7807 states that {GetType().Name}" +
@@ -211,8 +217,6 @@ namespace APIBlox.AspNetCore.Types.Errors
             }
             catch (Exception ex)
             {
-                CreateLogger();
-
                 Logger.LogError(() =>
                     $"An error has occured while invoking AddAlterRequestErrorObject.alterAction.  Ex: {ex.Message}"
                 );
