@@ -1,4 +1,4 @@
-__  **1.0.62**
+_ #(date)#_ **#(version)#**
 - A fairly significant bug - continues, **again**   
 ...After some soul searching I realized I was just bandaiding things, so I stopped took a breath and re-wrote most of the ServerFaultsMiddleware....
  
