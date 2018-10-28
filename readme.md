@@ -10,7 +10,7 @@
 ![:)][logo]   
 # API Blox
 
-October 15th, 2018 **v1.0.9**
+#(date)# **#(version)#**
 
 ## Minimal Instructions
  Solution contains the following NuGet packages.  

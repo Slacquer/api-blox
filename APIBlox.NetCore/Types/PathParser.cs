@@ -15,10 +15,11 @@ namespace APIBlox.NetCore.Types
         ///     Builds a list of directory info objects using ** pattern matching.
         /// </summary>
         /// <param name="searchPath">The search path.</param>
+        /// <param name="includeSearchPath">Optionally include the search path in the results (although not a subfolder).</param>
         /// <param name="filterAction">The filter action.</param>
         /// <returns>IEnumerable&lt;DirectoryInfo&gt;.</returns>
         /// <exception cref="NullReferenceException">Empty path!</exception>
-        public static IEnumerable<DirectoryInfo> FindAllSubDirectories(string searchPath, Func<string, bool> filterAction = null)
+        public static IEnumerable<DirectoryInfo> FindAllSubDirectories(string searchPath, bool includeSearchPath = false, Func<string, bool> filterAction = null)
         {
             if (searchPath.IsEmptyNullOrWhiteSpace())
                 throw new NullReferenceException("Empty path!");
@@ -26,7 +27,9 @@ namespace APIBlox.NetCore.Types
             var parts = searchPath.Split(new[] { "**" }, StringSplitOptions.RemoveEmptyEntries);
 
             var root = parts[0];
-            var excludes = parts.Except(new[] { root }).Select(RemoveTrailingSlash).ToList();
+            var excludes = parts.Except(new[] {root})
+                .Select(s => s.RemoveTrailingWhack())
+                .ToList();
 
             var ret = new List<DirectoryInfo>();
             var rootDi = new DirectoryInfo(root);
@@ -34,8 +37,12 @@ namespace APIBlox.NetCore.Types
             if (!Directory.Exists(rootDi.FullName))
                 return ret;
 
+            if (includeSearchPath)
+                ret.Add(rootDi);
+
             ret.AddRange(Directory.GetDirectories(rootDi.FullName, "*", SearchOption.AllDirectories)
-                .Where(s => excludes.All(e => s.ContainsEx(e))
+                .Where(s =>
+                    excludes.All(e => s.ContainsEx(e))
                     && (filterAction?.Invoke(s) ?? true)
                 )
                 .Select(s => new DirectoryInfo(s))
@@ -44,9 +51,5 @@ namespace APIBlox.NetCore.Types
             return ret;
         }
 
-        private static string RemoveTrailingSlash(string path)
-        {
-            return path.EndsWith(@"\") ? path.Substring(0, path.Length - 1) : path;
-        }
     }
 }
