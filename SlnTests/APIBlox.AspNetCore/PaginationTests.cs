@@ -51,6 +51,23 @@ namespace SlnTests.APIBlox.AspNetCore
         #endregion
 
         [Fact]
+        public void IncomingAliasTests()
+        {
+            var ctx = GetActionExecutingContext();
+            ctx.HttpContext.Request.QueryString = new QueryString("?$top=2&$skip=5&rc=7");
+
+            var builder = new PaginationMetadataBuilder(10);
+            var ret = builder.Build(2, ctx);
+
+            Assert.NotNull(ret.Previous);
+            Assert.NotNull(ret.Next);
+            Assert.Contains("skip=7", ret.Next);
+            Assert.Contains("top=2", ret.Next);
+            Assert.Contains("runningCount=9", ret.Next);
+        }
+
+
+        [Fact]
         public void IncomingTopIsLessThanSkipAndRcEqualsSkipSoNextValuesShouldBeCorrect()
         {
             var ctx = GetActionExecutingContext();

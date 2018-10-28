@@ -67,13 +67,11 @@ namespace Examples
                     configs.AddFamilyDynamicControllersConfiguration(),
                    addPostLocationHeaderResultFilter: true)
                 //
-                // Fills in request objects for us.
-                .AddPopulateGenericRequestObjectActionFilter()
-                //
                 // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
-
-                //.AddEnsureResponseResultActionFilter()
+                //
+                // Fills in request objects for us.
+                .AddPopulateGenericRequestObjectActionFilter()
                 //
                 // Pagination
                 .AddEnsurePaginationResultActionFilter(100)

@@ -44,11 +44,14 @@ namespace APIBlox.NetCore.Types
                     nameof(assemblyFullPath)
                 );
 
-            if (_loadedCache.Contains(assemblyFullPath))
+            var fileName = Path.GetFileName(assemblyFullPath);
+
+            var loaded = fileName;
+
+            if (_loadedCache.Contains(loaded))
                 return null;
 
             var fileNameWithOutExtension = Path.GetFileNameWithoutExtension(assemblyFullPath);
-            var fileName = Path.GetFileName(assemblyFullPath);
             var directory = Path.GetDirectoryName(assemblyFullPath);
 
             var inCompileLibraries = DependencyContext.Default.CompileLibraries.Any(l =>
@@ -94,7 +97,7 @@ namespace APIBlox.NetCore.Types
 
         private void LoadReferencedAssemblies(Assembly assembly, string fileName, string directory)
         {
-            var loaded = Path.Combine(directory, fileName);
+            var loaded = fileName;
 
             if (_loadedCache.Contains(loaded))
                 return;

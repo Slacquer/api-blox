@@ -441,7 +441,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
 
             var existing = services.FirstOrDefault(s =>
-                s.ImplementationType == typeof(IJsonBitsContractResolver));
+                s.ServiceType == typeof(IJsonBitsContractResolver));
 
             if (!(existing is null))
                 services.Remove(existing);

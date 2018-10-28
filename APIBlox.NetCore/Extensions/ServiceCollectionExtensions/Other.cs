@@ -79,7 +79,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddInjectableServices(
             this IServiceCollection services, ILoggerFactory loggerFactory,
-            string[] assemblyNamesLike, string[] assemblyPaths = null
+            string[] assemblyNamesLike, string[] assemblyPaths
         )
         {
             CreateLog(loggerFactory);
@@ -133,7 +133,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddInvertedDependentsAndConfigureServices(
             this IServiceCollection services, IConfiguration configuration,
             ILoggerFactory loggerFactory, string environment,
-            string[] assemblyNamesLike, string[] assemblyPaths = null
+            string[] assemblyNamesLike, string[] assemblyPaths
         )
         {
             CreateLog(loggerFactory);

@@ -80,7 +80,15 @@ namespace APIBlox.NetCore.Types.JsonBits
                 || kvp.Value.Any(s => s.EqualsEx(propertyName))
             );
 
-            return !(propName.Value is null) ? propName.Key : base.ResolvePropertyName(propertyName);
+            if (propName.Value is null)
+            {
+                var ret = base.ResolvePropertyName(propertyName);
+                return ret;
+            }
+
+
+            return propName.Key;
         }
+
     }
 }

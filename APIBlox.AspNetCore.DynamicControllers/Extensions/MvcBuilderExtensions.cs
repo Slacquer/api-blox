@@ -94,7 +94,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddPopulateGenericRequestObjectActionFilter(this IMvcBuilder builder)
         {
-            var existing = builder.Services.FirstOrDefault(s => s.ImplementationType == typeof(IJsonBitsContractResolver));
+            var existing = builder.Services.FirstOrDefault(s => s.ServiceType == typeof(IJsonBitsContractResolver));
 
             if (!(existing is null))
                 builder.Services.Remove(existing);

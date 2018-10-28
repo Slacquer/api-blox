@@ -64,7 +64,7 @@ namespace APIBlox.AspNetCore
 
         private void HandleExecute(ActionExecutingContext context)
         {
-            var bits = new Bits(context);
+            var bits = new Bits(context, _settings);
 
             if (bits.IsQuery)
             {
@@ -114,7 +114,7 @@ namespace APIBlox.AspNetCore
         {
             #region -    Constructors    -
 
-            public Bits(ActionExecutingContext context)
+            public Bits(ActionExecutingContext context, JsonSerializerSettings settings)
             {
                 var q = context.HttpContext.Request.Query;
                 var data = context.RouteData;
@@ -122,9 +122,9 @@ namespace APIBlox.AspNetCore
                 RequestObjectType = context.Controller.GetType().GetGenericArguments().First();
                 IsQuery = context.HttpContext.Request.Method.EqualsEx("get");
                 var values = new RouteValueDictionary(data.Values.Where(kvp => !kvp.Key.EqualsEx("action") && !kvp.Key.EqualsEx("controller")));
-                RouteDataString = JsonConvert.SerializeObject(values);
+                RouteDataString = JsonConvert.SerializeObject(values, settings);
 
-                QueryString = JsonConvert.SerializeObject(query);
+                QueryString = JsonConvert.SerializeObject(query, settings);
             }
 
             #endregion
