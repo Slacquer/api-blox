@@ -1,24 +1,34 @@
-﻿using System.Collections.Generic;
+﻿#region -    Using Statements    -
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using APIBlox.NetCore.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#endregion
+
 namespace APIBlox.NetCore.Types.JsonBits
 {
     /// <inheritdoc />
     /// <summary>
     ///     Class AliasContractResolver.
-    /// <para>
-    ///     Given a dictionary of aliases this resolver will map either to
-    ///     properties when Deserializing, or to strings when serializing.
-    /// </para>
+    ///     <para>
+    ///         Given a dictionary of aliases this resolver will map either to
+    ///         properties when Deserializing, or to strings when serializing.
+    ///     </para>
     /// </summary>
     /// <seealso cref="PopulateNonPublicSettersContractResolver" />
     public class AliasContractResolver : PopulateNonPublicSettersContractResolver
     {
+        #region -    Fields    -
+
         private readonly Dictionary<string, string[]> _map;
+
+        #endregion
+
+        #region -    Constructors    -
 
         /// <inheritdoc />
         /// <summary>
@@ -29,6 +39,8 @@ namespace APIBlox.NetCore.Types.JsonBits
         {
             _map = propertyAliasMap;
         }
+
+        #endregion
 
         /// <inheritdoc />
         /// <summary>

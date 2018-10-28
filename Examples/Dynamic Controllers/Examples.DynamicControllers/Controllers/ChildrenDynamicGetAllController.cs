@@ -32,7 +32,7 @@ namespace Examples.Controllers
 
             // This kid must like candy so do something else with the result.
 
-            return Ok(req);
+            return Ok();
         }
     }
 }

@@ -72,6 +72,8 @@ namespace Examples
                 //
                 // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
+
+                //.AddEnsureResponseResultActionFilter()
                 //
                 // Pagination
                 .AddEnsurePaginationResultActionFilter(100)

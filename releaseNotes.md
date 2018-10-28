@@ -1,3 +1,15 @@
+_October 27th, 2018_  **v1.0.69**
+- A simple pagination issue,  
+...The contract reolver was not being injected for alias mapping, therefore when 
+pagination entries came in the request, unless they were an exact match IE: SKIP not 
+$SKIP, then they were not being auto populated...
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _October 27th, 2018_  **v1.0.68**
 - A fairly significant bug - continues, **again**   
 ...After some soul searching I realized I was just bandaiding things, so I stopped took a breath and re-wrote most of the ServerFaultsMiddleware....

@@ -25,10 +25,13 @@ namespace Examples.Controllers
             // The action filter will fill some things in for us when we use
             // the extension method .AddPopulateGenericRequestObjectActionFilter()
             var req = (TRequest) RouteData.Values[typeof(TRequest).Name];
+            
+            var lst = new List<TRequest>();
 
-            var parent = req as ParentRequest;
+            for (var i = 0; i < 30; i++)
+                lst.Add(req);
 
-            return parent is null ? Ok(req as ChildRequest) : Ok(parent);
+            return Ok(lst);
         }
 
         [HttpGet("{id}")]

@@ -25,9 +25,9 @@ namespace APIBlox.AspNetCore.Types
         internal FilteredPaginationQuery(FilteredPaginationQuery query)
             : base(query)
         {
-            InMap.TryAdd("OrderBy", new[] {"$OrderBy"});
-            InMap.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
-            InMap.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
+            PaginationMap.TryAdd("OrderBy", new[] {"$OrderBy"});
+            PaginationMap.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
+            PaginationMap.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
 
             Select = query.Select;
             OrderBy = query.OrderBy;

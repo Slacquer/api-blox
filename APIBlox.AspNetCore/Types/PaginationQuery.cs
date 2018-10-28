@@ -18,7 +18,7 @@ namespace APIBlox.AspNetCore.Types
         /// <summary>
         ///     The in map for deciphering incoming query params.
         /// </summary>
-        protected static readonly Dictionary<string, string[]> InMap = new Dictionary<string, string[]>
+        public static readonly Dictionary<string, string[]> PaginationMap = new Dictionary<string, string[]>
         {
             {"Skip", new[] {"$Skip", "Offset", "$Offset"}},
             {"Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"}},
@@ -27,7 +27,7 @@ namespace APIBlox.AspNetCore.Types
 
         internal static readonly JsonSerializerSettings AliasesInSettings = new JsonSerializerSettings
         {
-            ContractResolver = new AliasContractResolver(InMap)
+            ContractResolver = new AliasContractResolver(PaginationMap)
         };
 
         /// <summary>
