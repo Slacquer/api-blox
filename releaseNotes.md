@@ -1,4 +1,4 @@
-_October 28th, 2018_  **v1.0.69**  
+_October 28th, 2018_  **v1.0.70**  
 - Couple of issues,  
 ...Extension method mishap, looking at implementation types rather than the contracts.  Also changed caching for assembly loader to use just the file name rather than full path...
  
