@@ -1,13 +1,10 @@
-﻿#region -    Using Statements    -
-
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using APIBlox.NetCore.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-
-#endregion
 
 namespace APIBlox.NetCore.Types.JsonBits
 {
@@ -22,13 +19,9 @@ namespace APIBlox.NetCore.Types.JsonBits
     /// <seealso cref="PopulateNonPublicSettersContractResolver" />
     public class AliasContractResolver : PopulateNonPublicSettersContractResolver
     {
-        #region -    Fields    -
+        private static readonly Dictionary<string, string> _aliases = new Dictionary<string, string>();
 
         private readonly Dictionary<string, string[]> _map;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <inheritdoc />
         /// <summary>
@@ -39,8 +32,6 @@ namespace APIBlox.NetCore.Types.JsonBits
         {
             _map = propertyAliasMap;
         }
-
-        #endregion
 
         /// <inheritdoc />
         /// <summary>
@@ -60,7 +51,7 @@ namespace APIBlox.NetCore.Types.JsonBits
             var propName = _map.FirstOrDefault(kvp =>
                 kvp.Value.Any(s => s.EqualsEx(member.Name))
             );
-
+            
             if (!(propName.Value is null))
                 prop.PropertyName = propName.Key;
 
@@ -75,20 +66,21 @@ namespace APIBlox.NetCore.Types.JsonBits
         /// <returns>Resolved name of the property.</returns>
         protected override string ResolvePropertyName(string propertyName)
         {
-            var propName = _map.FirstOrDefault(kvp =>
-                kvp.Key.EqualsEx(propertyName)
-                || kvp.Value.Any(s => s.EqualsEx(propertyName))
-            );
+            var propName = _map.FirstOrDefault(kvp => kvp.Key.EqualsEx(propertyName) || kvp.Value.Any(s => s.EqualsEx(propertyName)));
 
             if (propName.Value is null)
             {
                 var ret = base.ResolvePropertyName(propertyName);
+
                 return ret;
             }
 
+            var aliasKey = $"{propName.Key}Alias";
+
+            if (!_aliases.ContainsKey(aliasKey))
+                _aliases.Add(aliasKey, propertyName);
 
             return propName.Key;
         }
-
     }
 }

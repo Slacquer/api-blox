@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Services;
@@ -49,6 +50,15 @@ namespace APIBlox.AspNetCore
 
         private PaginationMetadata BuildResponseFromQuery(FilteredPaginationQuery requestQuery, int resultCount, string baseUrl)
         {
+            // If resultCount is 0 or empty then we are just going to display the structure.
+            if (resultCount == 0)
+            {
+                return new PaginationMetadata
+                {
+                    ResultCount = resultCount
+                };
+            }
+
             var previousRc = requestQuery.RunningCount - resultCount;
 
             SetRunningCount(requestQuery, resultCount);
@@ -120,7 +130,7 @@ namespace APIBlox.AspNetCore
         {
             if (requestQuery.Top.IsNullOrZero())
                 return _defaultPageSize;
-            
+
             return requestQuery.Top > _defaultPageSize ? _defaultPageSize : requestQuery.Top;
         }
 
@@ -148,10 +158,28 @@ namespace APIBlox.AspNetCore
 
         private static FilteredPaginationQuery BuildFromQueryParams(IQueryCollection requestQuery)
         {
+            var map = PaginationQuery.PaginationMap;
             var query = requestQuery.Keys.ToDictionary(k => k, v => requestQuery[v].FirstOrDefault());
 
-            var convertIncoming = JsonConvert.SerializeObject(query, Formatting.Indented, PaginationQuery.AliasesInSettings);
-            var pagedQuery = JsonConvert.DeserializeObject<FilteredPaginationQuery>(convertIncoming);
+            var tmp = new Dictionary<string, string>(query);
+            
+            foreach (var kvp in query)
+            {
+                if (map.ContainsKey(kvp.Key))
+                    continue;
+
+                foreach (var kvps in map)
+                {
+                    if (kvps.Value.Any(s=> s.EqualsEx(kvp.Key)))
+                    {
+                        tmp.Add($"{kvps.Key}Alias", kvp.Key);
+                    }
+                }
+            }
+            
+            var convertIncoming = JsonConvert.SerializeObject(tmp, Formatting.Indented, PaginationQuery.AliasesInSettings);
+
+            var pagedQuery = JsonConvert.DeserializeObject<FilteredPaginationQuery>(convertIncoming, PaginationQuery.AliasesInSettings);
 
             return pagedQuery;
         }

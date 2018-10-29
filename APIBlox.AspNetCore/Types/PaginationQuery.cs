@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.AspNetCore.Http.Extensions;
 using Newtonsoft.Json;
@@ -11,10 +12,6 @@ namespace APIBlox.AspNetCore.Types
     /// </summary>
     public class PaginationQuery
     {
-        private const string RunningCountParam = "$runningCount";
-        private const string SkipParam = "$skip";
-        private const string TopParam = "$top";
-
         /// <summary>
         ///     The in map for deciphering incoming query params.
         /// </summary>
@@ -42,6 +39,15 @@ namespace APIBlox.AspNetCore.Types
             Skip = query.Skip;
             Top = query.Top;
             Undefined = query.Undefined;
+
+            if (!query.RunningCountAlias.IsEmptyNullOrWhiteSpace())
+                RunningCountAlias = query.RunningCountAlias;
+
+            if (!query.SkipAlias.IsEmptyNullOrWhiteSpace())
+                SkipAlias = query.SkipAlias;
+
+            if (!query.TopAlias.IsEmptyNullOrWhiteSpace())
+                TopAlias = query.TopAlias;
         }
 
         /// <summary>
@@ -50,17 +56,28 @@ namespace APIBlox.AspNetCore.Types
         /// <value>The running count.</value>
         public int? RunningCount { get; set; }
 
+        [JsonProperty]
+        internal string RunningCountAlias { get; set; } = "$runningCount";
+
+
         /// <summary>
         ///     Gets or sets the skip.
         /// </summary>
         /// <value>The skip.</value>
         public int? Skip { get; set; }
 
+        [JsonProperty]
+        internal string SkipAlias { get; set; } = "$skip";
+
         /// <summary>
         ///     Gets or sets the top.
         /// </summary>
         /// <value>The top.</value>
         public int? Top { get; set; }
+
+        [JsonProperty]
+        internal string TopAlias { get; set; } = "$top";
+
 
         /// <summary>
         ///     Gets or sets the undefined parameters.
@@ -78,19 +95,19 @@ namespace APIBlox.AspNetCore.Types
             var qb = new QueryBuilder();
 
             if (Skip.HasValue)
-                qb.Add(SkipParam, Skip.Value.ToString());
+                qb.Add(SkipAlias.ToCamelCase(), Skip.Value.ToString());
 
             if (Top.HasValue)
-                qb.Add(TopParam, Top.Value.ToString());
+                qb.Add(TopAlias.ToCamelCase(), Top.Value.ToString());
 
             if (RunningCount.HasValue)
-                qb.Add(RunningCountParam, RunningCount.ToString());
+                qb.Add(RunningCountAlias.ToCamelCase(), RunningCount.ToString());
 
             if (Undefined is null)
                 return qb;
 
             foreach (var p in Undefined)
-                qb.Add(p.Key, p.Value.ToString());
+                qb.Add(p.Key.ToCamelCase(), p.Value.ToString());
 
             return qb;
         }

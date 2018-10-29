@@ -1,5 +1,6 @@
 ﻿using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
+using Newtonsoft.Json;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -10,10 +11,6 @@ namespace APIBlox.AspNetCore.Types
     /// <seealso cref="T:APIBlox.AspNetCore.Types.PaginationQuery" />
     public class FilteredPaginationQuery : PaginationQuery
     {
-        private const string FilterParam = "$filter";
-        private const string OrderByParam = "$orderby";
-        private const string SelectParam = "$select";
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.FilteredPaginationQuery" /> class.
@@ -25,13 +22,22 @@ namespace APIBlox.AspNetCore.Types
         internal FilteredPaginationQuery(FilteredPaginationQuery query)
             : base(query)
         {
-            PaginationMap.TryAdd("OrderBy", new[] {"$OrderBy"});
-            PaginationMap.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
-            PaginationMap.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
+            PaginationMap.TryAdd("OrderBy", new[] { "$OrderBy" });
+            PaginationMap.TryAdd("Filter", new[] { "$Where", "Where", "$Filter" });
+            PaginationMap.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
 
             Select = query.Select;
             OrderBy = query.OrderBy;
             Filter = query.Filter;
+
+            if (!query.FilterAlias.IsEmptyNullOrWhiteSpace())
+                FilterAlias = query.FilterAlias;
+
+            if (!query.OrderByAlias.IsEmptyNullOrWhiteSpace())
+                OrderByAlias = query.OrderByAlias;
+
+            if (!query.SelectAlias.IsEmptyNullOrWhiteSpace())
+                SelectAlias = query.SelectAlias;
         }
 
         /// <summary>
@@ -40,17 +46,29 @@ namespace APIBlox.AspNetCore.Types
         /// <value>The filter.</value>
         public string Filter { get; set; }
 
+        [JsonProperty]
+        internal string FilterAlias { get; set; } = "$filter";
+
+
         /// <summary>
         ///     Gets or sets the order by.
         /// </summary>
         /// <value>The order by.</value>
         public string OrderBy { get; set; }
 
+        [JsonProperty]
+        internal string OrderByAlias { get; set; } = "$orderBy";
+
+
         /// <summary>
         ///     Gets or sets the select.
         /// </summary>
         /// <value>The select.</value>
         public string Select { get; set; }
+
+        [JsonProperty]
+        internal string SelectAlias { get; set; } = "$select";
+
 
         /// <inheritdoc />
         /// <summary>
@@ -62,13 +80,13 @@ namespace APIBlox.AspNetCore.Types
             var qb = base.BuildQuery();
 
             if (!OrderBy.IsEmptyNullOrWhiteSpace())
-                qb.Add(OrderByParam, OrderBy);
+                qb.Add(OrderByAlias.ToCamelCase(), OrderBy);
 
             if (!Filter.IsEmptyNullOrWhiteSpace())
-                qb.Add(FilterParam, Filter);
+                qb.Add(FilterAlias.ToCamelCase(), Filter);
 
             if (!Select.IsEmptyNullOrWhiteSpace())
-                qb.Add(SelectParam, Select);
+                qb.Add(SelectAlias.ToCamelCase(), Select);
 
             return qb;
         }

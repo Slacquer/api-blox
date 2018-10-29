@@ -1,3 +1,15 @@
+_October 29th, 2018_  **v1.0.***  
+- Pagination,  
+...Would return a next value when the array was empty, now it will be null...  
+...Would return default query param names but should not have.  IE: consumer sends $Limit, pagination always returned Top.  Now it will send whatever the consumer uses, as long as it's in the known map list See APIBlox.ApsNetCore.Types.PaginationQuery.PaginationMap for map information.
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _October 28th, 2018_  **v1.0.72**  
 - Couple of issues,  
 ...Extension method mishap, looking at implementation types rather than the contracts.  Also changed caching for assembly loader to use just the file name rather than full path...
