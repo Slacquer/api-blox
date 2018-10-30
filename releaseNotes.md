@@ -1,10 +1,21 @@
+_October 30th, 2018_  **v1.0.74**  
+- AssemblyLoader,  
+...Was being used incorrectly by the AddInjectableServices extension, it should have new'd it up only once...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _October 29th, 2018_  **v1.0.73**  
 - Pagination,  
 ...Would return a next value when the array was empty, now it will be null...  
 ...Would return default query param names but should not have.  IE: consumer sends $Limit, pagination always returned Top.  Now it will send whatever the consumer uses, as long as it's in the known map list See APIBlox.ApsNetCore.Types.PaginationQuery.PaginationMap for map information.
  
 - Serializtion  
-...Added an overload to simple mapper, specifying settings for both serialize and deserialize...
+...Added an overload to simple mapper, specifying settings for both serialize and deserialize...  
+
 Thanks,  
 _Slacquer_  
 

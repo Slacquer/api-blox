@@ -25,18 +25,20 @@ namespace APIBlox.NetCore.Types
         ///     Loads an assembly and all its referenced assemblies.
         /// </summary>
         /// <param name="assemblyFileInfo">The assembly file information.</param>
+        /// <param name="alreadyLoaded">True when assembly has already been loaded</param>
         /// <returns>Assembly.</returns>
-        public Assembly LoadFromAssemblyFileInfo(FileInfo assemblyFileInfo)
+        public Assembly LoadFromAssemblyFileInfo(FileInfo assemblyFileInfo, out bool alreadyLoaded)
         {
-            return LoadFromAssemblyPath(assemblyFileInfo.FullName);
+            return LoadFromAssemblyPath(assemblyFileInfo.FullName, out alreadyLoaded);
         }
 
         /// <summary>
         ///     Loads an assembly and all its referenced assemblies.
         /// </summary>
         /// <param name="assemblyFullPath">The assembly full path.</param>
+        /// <param name="alreadyLoaded">True when assembly has already been loaded</param>
         /// <returns>Assembly.</returns>
-        public Assembly LoadFromAssemblyPath(string assemblyFullPath)
+        public Assembly LoadFromAssemblyPath(string assemblyFullPath, out bool alreadyLoaded)
         {
             if (assemblyFullPath.IsEmptyNullOrWhiteSpace() || !File.Exists(assemblyFullPath))
                 throw new ArgumentException(
@@ -49,7 +51,10 @@ namespace APIBlox.NetCore.Types
             var loaded = fileName;
 
             if (_loadedCache.Contains(loaded))
+            {
+                alreadyLoaded = true;
                 return null;
+            }
 
             var fileNameWithOutExtension = Path.GetFileNameWithoutExtension(assemblyFullPath);
             var directory = Path.GetDirectoryName(assemblyFullPath);
@@ -67,6 +72,10 @@ namespace APIBlox.NetCore.Types
 
             if (assembly != null)
                 LoadReferencedAssemblies(assembly, fileName, directory);
+
+            _loadedCache.Add(loaded);
+
+            alreadyLoaded = false;
 
             return assembly;
         }
@@ -110,6 +119,10 @@ namespace APIBlox.NetCore.Types
             foreach (var reference in references)
             {
                 var lfn = $"{reference.Name}.dll";
+
+                if (_loadedCache.Contains(lfn))
+                    continue;
+
                 var path = Path.Combine(directory, lfn);
 
                 if (!filesInDirectory.Contains(path))

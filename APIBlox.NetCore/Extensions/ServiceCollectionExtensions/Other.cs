@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class APIBloxNetCoreServiceCollectionExtensions.
     /// </summary>
-    public static class ServiceCollectionExtensionsNetCoreOther
+     public static class ServiceCollectionExtensionsNetCoreOther
     {
         #region -    Fields    -
 
@@ -276,28 +276,30 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             var ret = new List<KeyValuePair<bool, Type>>();
-            
-            foreach (var assFi in assemblyFiles)
+
+            using (var assResolver = new AssemblyResolver())
             {
-                try
+                foreach (var assFi in assemblyFiles)
                 {
-                    using (var assResolver = new AssemblyResolver())
+                    try
                     {
                         if (!assFi.Exists)
                         {
                             _log.LogWarning(() => $"Skipping {assFi}, it no longer exists!");
                             continue;
                         }
-
-                        _log.LogInformation(() => $"Attempting to resolve: {assFi}");
-
-                        var assembly = assResolver.LoadFromAssemblyFileInfo(assFi);
+                        
+                        var assembly = assResolver.LoadFromAssemblyFileInfo(assFi, out var alreadyLoaded);
 
                         if (assembly is null)
                         {
-                            _log.LogWarning(() => $"NULL result from LoadFromAssemblyFileInfo for file: {assFi}");
+                            if (!alreadyLoaded)
+                                _log.LogWarning(() => $"NULL result from LoadFromAssemblyFileInfo for file: {assFi}");
+
                             continue;
                         }
+
+                        _log.LogInformation(() => $"Resolved Assembly: {assFi}");
 
                         ret.AddRange(assembly.GetTypes()
                             .Where(x =>
@@ -313,11 +315,12 @@ namespace Microsoft.Extensions.DependencyInjection
                                 )
                             )
                         );
+
                     }
-                }
-                catch (Exception ex)
-                {
-                    _log.LogWarning(() => ex.Message);
+                    catch (Exception ex)
+                    {
+                        _log.LogWarning(() => ex.Message);
+                    }
                 }
             }
 
@@ -361,22 +364,16 @@ namespace Microsoft.Extensions.DependencyInjection
                             descriptor = BuildDescriptor(decParams, type, lifetime);
                         }
                         else
-                        {
                             descriptor = BuildDescriptor(face, type, lifetime);
-                        }
                     }
                 }
 
                 // If interface doesn't have any generic args, then we will have nothing to pass
                 // to the implementation during creation for THIS INTERFACE, so we will not add it as a service.
                 else if (args == null || !args.Any() && type.IsGenericTypeDefinition)
-                {
                     continue;
-                }
                 else
-                {
                     descriptor = BuildDescriptor(face, type, lifetime);
-                }
 
                 services.Add(descriptor);
             }
