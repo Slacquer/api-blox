@@ -70,6 +70,7 @@ namespace APIBlox.AspNetCore
                 c.ControllerName == "HowDoICreateAParameterModelWithoutDoingThisCrap"
             );
             _controllerConfigService.Parameters = dummy.Actions.First().Parameters.ToList();
+            _controllerConfigService.RequiredParameters = dummy.Actions.Last().Parameters.ToList();
             application.Controllers.Remove(dummy);
         }
 

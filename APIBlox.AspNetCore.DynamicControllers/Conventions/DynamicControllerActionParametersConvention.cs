@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using APIBlox.AspNetCore.Contracts;
@@ -82,7 +83,7 @@ namespace APIBlox.AspNetCore
         private void ReorderParameters(ActionModel action)
         {
             var bodyParams = action.Parameters
-                .Where(p => !(p.BindingInfo is null))// && p.BindingInfo.BindingSource.DisplayName.ContainsEx("body"))
+                .Where(p => !(p.BindingInfo is null)) // && p.BindingInfo.BindingSource.DisplayName.ContainsEx("body"))
                 .OrderByDescending(p => p.ParameterName.EndsWithEx("id"))
                 .ThenBy(p => p.ParameterName).ToList();
 
@@ -147,23 +148,34 @@ namespace APIBlox.AspNetCore
                 );
 
             return props
-                .Select(pi => GetParameter(pi.PropertyType.Name, pi.Name))
+                .Select(pi => GetParameter(pi.PropertyType.Name, pi.Name, pi))
                 .Where(p => p != null);
         }
 
-        private ParameterModel GetParameter(string typeName, string parameterName)
+        private ParameterModel GetParameter(string typeName, string parameterName, MemberInfo pi = null)
         {
-            var parameter = _controllerConfigService.Parameters.FirstOrDefault(p =>
-                p.DisplayName.StartsWithEx(typeName) || p.ParameterType.Name.EqualsEx(typeName)
-            );
+            ParameterModel parameter;
+
+            // This is just sad.  I have got to figure out how to create a parameter.
+
+            if (!(pi is null) && pi.GetCustomAttributes().Any(a => a is RequiredAttribute))
+                parameter = _controllerConfigService.RequiredParameters.FirstOrDefault(p =>
+                    p.DisplayName.StartsWithEx(typeName) || p.ParameterType.Name.EqualsEx(typeName)
+                );
+            else
+                parameter = _controllerConfigService.Parameters.FirstOrDefault(p =>
+                    p.DisplayName.StartsWithEx(typeName) || p.ParameterType.Name.EqualsEx(typeName)
+                );
 
             if (parameter is null)
                 return null;
 
-            return new ParameterModel(parameter)
+            var ret = new ParameterModel(parameter)
             {
                 ParameterName = parameterName.ToCamelCase()
             };
+
+            return ret;
         }
     }
 }

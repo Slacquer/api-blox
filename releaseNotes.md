@@ -1,3 +1,13 @@
+_October 30th, 2018_  **v1.0.76**  
+- HELP ME!,  
+...I have implemented a rediculous way of handling required inputs, I need help figuring this out....  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _October 30th, 2018_  **v1.0.75**  
 - AssemblyLoader,  
 ...Previous statemnt is untrue, had to put it back as when used in published apps (all assemblies in one folder) for whatever reason SOME referenced assemblies never get loaded....  

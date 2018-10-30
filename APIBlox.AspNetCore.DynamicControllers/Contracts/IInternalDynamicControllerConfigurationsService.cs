@@ -8,6 +8,7 @@ namespace APIBlox.AspNetCore.Contracts
         List<DynamicControllerConfiguration> ControllerConfigurations { get; }
 
         List<ParameterModel> Parameters { get; set; }
+        List<ParameterModel> RequiredParameters { get; set; }
 
         void AddControllerConfig(DynamicControllerConfiguration controllerConfig);
     }
