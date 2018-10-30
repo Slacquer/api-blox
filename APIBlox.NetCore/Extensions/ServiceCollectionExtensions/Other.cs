@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Class APIBloxNetCoreServiceCollectionExtensions.
     /// </summary>
-     public static class ServiceCollectionExtensionsNetCoreOther
+    public static class ServiceCollectionExtensionsNetCoreOther
     {
         #region -    Fields    -
 
@@ -277,18 +277,18 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var ret = new List<KeyValuePair<bool, Type>>();
 
-            using (var assResolver = new AssemblyResolver())
+            foreach (var assFi in assemblyFiles)
             {
-                foreach (var assFi in assemblyFiles)
+                try
                 {
-                    try
+                    using (var assResolver = new AssemblyResolver())
                     {
                         if (!assFi.Exists)
                         {
                             _log.LogWarning(() => $"Skipping {assFi}, it no longer exists!");
                             continue;
                         }
-                        
+
                         var assembly = assResolver.LoadFromAssemblyFileInfo(assFi, out var alreadyLoaded);
 
                         if (assembly is null)
@@ -315,12 +315,11 @@ namespace Microsoft.Extensions.DependencyInjection
                                 )
                             )
                         );
-
                     }
-                    catch (Exception ex)
-                    {
-                        _log.LogWarning(() => ex.Message);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    _log.LogWarning(() => ex.Message);
                 }
             }
 

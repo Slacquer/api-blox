@@ -1,3 +1,13 @@
+_October 30th, 2018_  **v1.0.75**  
+- AssemblyLoader,  
+...Previous statemnt is untrue, had to put it back as when used in published apps (all assemblies in one folder) for whatever reason SOME referenced assemblies never get loaded....  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _October 30th, 2018_  **v1.0.74**  
 - AssemblyLoader,  
 ...Was being used incorrectly by the AddInjectableServices extension, it should have new'd it up only once...  
