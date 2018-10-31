@@ -87,7 +87,6 @@ namespace Examples
         public void Configure(IApplicationBuilder app)
         {
 #if UseAPIBlox
-
             //
             // Handle any and all server (500) errors with a defined structure.
             app.UseServerFaults();

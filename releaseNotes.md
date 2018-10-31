@@ -1,4 +1,15 @@
 _October 30th, 2018_  **v1.0.76**  
+- ServerErrorFaults,  
+...Added ab verboseProduction switch to allow seeing whats going on even in production (IE: you release your software to dev in production mode, you may want to actually see whats wrong!)....  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
+_October 30th, 2018_  **v1.0.76**  
 - HELP ME!,  
 ...I have implemented a rediculous way of handling required inputs, I need help figuring this out....  
 
@@ -7,6 +18,7 @@ _Slacquer_
 
 <br>
 <br>
+
 
 _October 30th, 2018_  **v1.0.75**  
 - AssemblyLoader,  

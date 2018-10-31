@@ -24,6 +24,7 @@ namespace APIBlox.AspNetCore
         private readonly RequestDelegate _next;
         private readonly Func<string> _referenceIdFunc;
         private readonly string _typeUrl;
+        private readonly bool _verboseProduction;
 
         #endregion
 
@@ -34,6 +35,7 @@ namespace APIBlox.AspNetCore
             ILogger<ServerFaultsMiddleware> logger,
             IHostingEnvironment env,
             string typeUrl,
+            bool verboseProduction,
             Func<string> referenceIdFunc
         )
         {
@@ -41,6 +43,7 @@ namespace APIBlox.AspNetCore
             _log = logger;
             _env = env;
             _typeUrl = typeUrl;
+            _verboseProduction = verboseProduction;
             _referenceIdFunc = referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString());
         }
 
@@ -93,7 +96,7 @@ namespace APIBlox.AspNetCore
                 _log.LogCritical(() => $"Could not create NON production response: {ex.Message}");
             }
 
-            if (!_env.IsProduction())
+            if (!_env.IsProduction() || _verboseProduction)
                 return serialized;
 
             try

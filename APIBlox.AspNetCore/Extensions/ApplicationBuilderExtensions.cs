@@ -24,6 +24,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="app">The application.</param>
         /// <param name="typeUrl">The url to specify in the <see cref="ProblemDetails.Type" /></param>
+        /// <param name="verboseProduction">
+        ///     When true no messages will be filtered out during production.  Be careful as anything
+        ///     that is picked up during an error will be sent back in the 500 result.
+        /// </param>
         /// <param name="referenceIdFunc">
         ///     A callback function to set the reference number of the fault, by default this is
         ///     <see cref="DateTimeOffset.Now" />.Ticks
@@ -31,11 +35,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IApplicationBuilder.</returns>
         public static IApplicationBuilder UseServerFaults(
             this IApplicationBuilder app,
-            string typeUrl = @"about:blank", Func<string> referenceIdFunc = null
+            string typeUrl = @"about:blank", bool verboseProduction = false, Func<string> referenceIdFunc = null
         )
         {
             return app.UseExceptionHandler(c =>
-                c.UseMiddleware<ServerFaultsMiddleware>(typeUrl,
+                c.UseMiddleware<ServerFaultsMiddleware>(
+                    typeUrl,
+                    verboseProduction,
                     referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString())
                 )
             );
