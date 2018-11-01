@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,8 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -23,13 +19,9 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceCollectionExtensionsNetCoreOther
     {
-        #region -    Fields    -
-
         private static ILogger _log;
         private static readonly List<KeyValuePair<bool, Type>>
             WorkingAssemblyTypes = new List<KeyValuePair<bool, Type>>();
-
-        #endregion
 
         /// <summary>
         ///     Adds a service that requires Dependency Injection, while performing a setup action.

@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-
-#endregion
 
 namespace SlnTests.APIBlox.AspNetCore.OpenApi
 {

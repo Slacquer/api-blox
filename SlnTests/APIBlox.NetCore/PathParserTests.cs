@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,16 +6,12 @@ using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 using Xunit;
 
-#endregion
-
 namespace SlnTests.APIBlox.NetCore
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class PathParserTests : IDisposable
     {
         private readonly List<string> _paths = new List<string>();
-
-        #region Setup/Teardown
 
         public PathParserTests()
         {
@@ -45,8 +39,6 @@ namespace SlnTests.APIBlox.NetCore
         {
             Directory.Delete(_paths[0], true);
         }
-
-        #endregion
 
         [Fact]
         public void ShouldHavePathsFromSingleDoubleAsterisks()

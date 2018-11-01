@@ -16,7 +16,7 @@ namespace APIBlox.AspNetCore.Controllers
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IDynamicController{TRequest}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class DynamicPutController<TRequest> : ControllerBase,
+    public sealed class DynamicPutController<TRequest> : ControllerBase,
         IDynamicController<TRequest>
         where TRequest : class
     {
@@ -46,7 +46,7 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public virtual async Task<IActionResult> Put(TRequest value, CancellationToken cancellationToken)
+        public async Task<IActionResult> Put(TRequest value, CancellationToken cancellationToken)
         {
             //  If a service does not support UPSERT, then a PATCH/PUT call against a resource that
             //  does not exist MUST result in an HTTP "409 Conflict" error.

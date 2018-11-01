@@ -14,7 +14,7 @@ namespace APIBlox.AspNetCore
             new List<DynamicControllerConfiguration>();
 
         public List<ParameterModel> Parameters { get; set; } = new List<ParameterModel>();
-        public List<ParameterModel> RequiredParameters { get; set; } = new List<ParameterModel>();
+        //public List<ParameterModel> RequiredParameters { get; set; } = new List<ParameterModel>();
 
         public void AddControllerConfig(DynamicControllerConfiguration controllerConfig)
         {

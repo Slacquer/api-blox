@@ -16,14 +16,12 @@ namespace APIBlox.AspNetCore.Controllers
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IDynamicController{TRequest}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class DynamicDeleteByController<TRequest> : ControllerBase,
+    public sealed class DynamicDeleteByController<TRequest> : ControllerBase,
         IDynamicController<TRequest>
         where TRequest : class
     {
         private readonly ICommandHandler<TRequest, HandlerResponse> _deleteByHandler;
-
-        private readonly string _rn = typeof(TRequest).Name;
-
+        
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicDeleteByController{TRequest}" /> class.
         /// </summary>
@@ -39,6 +37,7 @@ namespace APIBlox.AspNetCore.Controllers
         ///         Responses: 204, 401, 403, 404
         ///     </para>
         /// </summary>
+        /// <param name="request">TRequest input parameter(s)</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;IActionResult&gt;.</returns>
         [HttpDelete]
@@ -46,13 +45,12 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual async Task<IActionResult> Delete(CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete([FromQuery] TRequest request, CancellationToken cancellationToken)
         {
-            var req = (TRequest) RouteData.Values[_rn];
-            var ret = await _deleteByHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
+            var ret = await _deleteByHandler.HandleAsync(request, cancellationToken).ConfigureAwait(false);
 
             return ret.HasErrors
-                ? (IActionResult) new ProblemResult(ret.Error)
+                ? (IActionResult)new ProblemResult(ret.Error)
                 : NoContent();
         }
     }

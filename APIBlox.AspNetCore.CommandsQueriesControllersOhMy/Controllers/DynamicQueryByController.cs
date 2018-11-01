@@ -19,12 +19,11 @@ namespace APIBlox.AspNetCore.Controllers
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IDynamicController{TRequest, TResponse, TId}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class DynamicQueryByController<TRequest, TResponse, TId> : ControllerBase,
+    public sealed class DynamicQueryByController<TRequest, TResponse, TId> : ControllerBase,
         IDynamicController<TRequest, TResponse, TId>
         where TResponse : IResource<TId>
     {
         private readonly IQueryHandler<TRequest, HandlerResponse> _getByHandler;
-        private readonly string _rn = typeof(TRequest).Name;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicQueryByController{TRequest, TResponse, TId}" /> class.
@@ -41,6 +40,7 @@ namespace APIBlox.AspNetCore.Controllers
         ///         Responses: 200, 401, 403, 404
         ///     </para>
         /// </summary>
+        /// <param name="request">TRequest input parameter(s)</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;IActionResult&gt;.</returns>
         [HttpGet]
@@ -48,10 +48,9 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public virtual async Task<IActionResult> Get(CancellationToken cancellationToken)
+        public async Task<IActionResult> Get([FromQuery] TRequest request, CancellationToken cancellationToken)
         {
-            var req = (TRequest) RouteData.Values[_rn];
-            var ret = await _getByHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
+            var ret = await _getByHandler.HandleAsync(request, cancellationToken).ConfigureAwait(false);
 
             if (ret.HasErrors)
                 return new ProblemResult(ret.Error);

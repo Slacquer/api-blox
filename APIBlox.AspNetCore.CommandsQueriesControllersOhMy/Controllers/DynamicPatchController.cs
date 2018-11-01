@@ -17,7 +17,7 @@ namespace APIBlox.AspNetCore.Controllers
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IDynamicController{TRequest}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class DynamicPatchController<TPatchRequest> : ControllerBase,
+    public sealed class DynamicPatchController<TPatchRequest> : ControllerBase,
         IDynamicController<TPatchRequest>
         where TPatchRequest : PatchRequest
     {
@@ -49,7 +49,7 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public virtual async Task<IActionResult> Patch(
+        public async Task<IActionResult> Patch(
             JsonPatchDocument patch,
             CancellationToken cancellationToken
         )

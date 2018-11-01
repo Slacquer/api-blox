@@ -19,7 +19,7 @@ namespace APIBlox.AspNetCore.Controllers
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IDynamicController{TRequest, TResponse, TId}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class DynamicPostController<TRequest, TResponse, TId> : ControllerBase,
+    public sealed class DynamicPostController<TRequest, TResponse, TId> : ControllerBase,
         IDynamicController<TRequest, TResponse, TId>
         where TRequest : class
         where TResponse : IResource<TId>
@@ -50,7 +50,7 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public virtual async Task<IActionResult> Post(TRequest value, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post(TRequest value, CancellationToken cancellationToken)
         {
             var ret = await _createCommand.HandleAsync(value, cancellationToken).ConfigureAwait(false);
 

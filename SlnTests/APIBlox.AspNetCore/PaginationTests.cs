@@ -1,5 +1,3 @@
-#region -    Using Statements    -
-
 using System;
 using System.Collections.Generic;
 using APIBlox.AspNetCore;
@@ -10,8 +8,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using Xunit;
-
-#endregion
 
 namespace SlnTests.APIBlox.AspNetCore
 {
@@ -30,8 +26,6 @@ namespace SlnTests.APIBlox.AspNetCore
             );
         }
 
-        #region Setup/Teardown
-
         public PaginationTests()
         {
             var c = new DefaultHttpContext();
@@ -47,8 +41,6 @@ namespace SlnTests.APIBlox.AspNetCore
                 new Mock<ActionDescriptor>().Object
             );
         }
-
-        #endregion
 
         [Fact]
         public void IncomingAliasTests()

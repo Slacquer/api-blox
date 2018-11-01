@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,8 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
-#endregion
-
 namespace SlnTests.APIBlox.NetCore
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -20,8 +16,6 @@ namespace SlnTests.APIBlox.NetCore
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly List<string> _paths = new List<string>();
-
-        #region Setup/Teardown
 
         public ServiceCollectionExtensionsNetCoreOtherTests()
         {
@@ -51,8 +45,6 @@ namespace SlnTests.APIBlox.NetCore
             for (var i = 0; i < 10; i++)
                 _paths.Add(Path.Combine(i % 2 == 0 ? "!" + root : root, i.ToString()));
         }
-
-        #endregion
 
         [Fact]
         public void LoggerOutputShouldComplainAboutAsterisksForInvalidPath()
@@ -105,20 +97,12 @@ namespace SlnTests.APIBlox.NetCore
 
     public class AssertLoggerProvider : ILoggerProvider
     {
-        #region -    Fields    -
-
         private readonly Action<string> _action;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public AssertLoggerProvider(Action<string> action)
         {
             _action = action;
         }
-
-        #endregion
 
         public void Dispose()
         {
@@ -132,20 +116,12 @@ namespace SlnTests.APIBlox.NetCore
 
     public class AssertLogger : ILogger
     {
-        #region -    Fields    -
-
         private readonly Action<string> _action;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public AssertLogger(Action<string> action)
         {
             _action = action;
         }
-
-        #endregion
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {

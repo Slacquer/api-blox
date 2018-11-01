@@ -15,6 +15,7 @@ namespace APIBlox.AspNetCore.Types
         /// <summary>
         ///     The in map for deciphering incoming query params.
         /// </summary>
+        [JsonIgnore]
         public static readonly Dictionary<string, string[]> PaginationMap = new Dictionary<string, string[]>
         {
             {"Skip", new[] {"$Skip", "Offset", "$Offset"}},
@@ -84,7 +85,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The other.</value>
         [JsonExtensionData]
-        public IDictionary<string, JToken> Undefined { get; set; }
+        internal IDictionary<string, JToken> Undefined { get; set; }
 
         /// <summary>
         ///     Builds the query.

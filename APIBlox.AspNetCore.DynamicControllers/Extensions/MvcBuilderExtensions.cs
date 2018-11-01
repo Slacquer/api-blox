@@ -41,7 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.AddConvention<DynamicControllersRouteConvention>()
                 .AddConvention<DynamicControllerSubRouteConvention>()
                 .AddConvention<DynamicControllersConvertResponseTypeConvention>()
-                .AddConvention<DynamicControllerActionParametersConvention>();
+               ;// .AddConvention<DynamicControllerActionParametersConvention>();
 
             builder.ConfigureApplicationPartManager(setup =>
                 setup.FeatureProviders.TryAdd(new DynamicControllerFeatureProvider(configurations))

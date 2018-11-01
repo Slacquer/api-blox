@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using APIBlox.AspNetCore.Attributes;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types.JsonBits;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
@@ -52,7 +51,6 @@ namespace APIBlox.AspNetCore
             {
                 JsonConvert.PopulateObject(bits.RouteDataString, bits.RequestModelObject, _settings);
                 JsonConvert.PopulateObject(bits.QueryString, bits.RequestModelObject, _settings);
-                SetViewData(context, bits.RequestModelObject.GetType().Name, bits.RequestModelObject);
             }
             else
             {
@@ -61,7 +59,6 @@ namespace APIBlox.AspNetCore
                     _settings
                 );
                 JsonConvert.PopulateObject(bits.QueryString, req, _settings);
-                SetViewData(context, bits.RequestModelObject.GetType().Name, req);
             }
 
             _log.LogInformation(() =>
@@ -72,14 +69,6 @@ namespace APIBlox.AspNetCore
                     return $"Set RouteData.Value: Key={bits.RequestModelObject.GetType().Name} for {cn}/{an}";
                 }
             );
-        }
-
-        private static void SetViewData(ActionExecutingContext context, string name, object req)
-        {
-            if (!(context.Controller is Controller c))
-                context.RouteData.Values.Add(name, req);
-            else
-                c.ViewData[name] = req;
         }
 
         private class Bits

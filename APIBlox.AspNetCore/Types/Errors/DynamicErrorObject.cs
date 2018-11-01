@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,8 +6,6 @@ using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Types.Errors
 {
@@ -20,16 +16,10 @@ namespace APIBlox.AspNetCore.Types.Errors
     /// <seealso cref="T:System.Dynamic.DynamicObject" />
     public class DynamicErrorObject : DynamicDataObject
     {
-        #region -    Fields    -
-
         /// <summary>
         ///     The logger
         /// </summary>
         [JsonIgnore] protected ILogger<DynamicErrorObject> Logger;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicErrorObject" /> class.
@@ -52,8 +42,6 @@ namespace APIBlox.AspNetCore.Types.Errors
             Title = title;
             Detail = detail;
         }
-
-        #endregion
 
         /// <summary>
         ///     [REQUIRED]

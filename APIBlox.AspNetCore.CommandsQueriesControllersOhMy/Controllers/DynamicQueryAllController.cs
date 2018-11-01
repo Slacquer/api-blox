@@ -19,14 +19,12 @@ namespace APIBlox.AspNetCore.Controllers
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IDynamicController{TRequest, TResponse, TId}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class DynamicQueryAllController<TRequest, TResponse, TId> : ControllerBase,
+    public sealed class DynamicQueryAllController<TRequest, TResponse, TId> : ControllerBase,
         IDynamicController<TRequest, TResponse, TId>
         where TResponse : IResource<TId>
     {
         private readonly IQueryHandler<TRequest, HandlerResponse> _getAllHandler;
-
-        private readonly string _rn = typeof(TRequest).Name;
-
+        
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicQueryAllController{TRequest, TResponse, TId}" /> class.
         /// </summary>
@@ -42,6 +40,7 @@ namespace APIBlox.AspNetCore.Controllers
         ///         Responses: 200, 204, 401, 403
         ///     </para>
         /// </summary>
+        /// <param name="request">TRequest input parameter(s)</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;IActionResult&gt;.</returns>
         [HttpGet]
@@ -49,10 +48,9 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public virtual async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll([FromQuery] TRequest request, CancellationToken cancellationToken)
         {
-            var req = (TRequest) RouteData.Values[_rn];
-            var ret = await _getAllHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
+            var ret = await _getAllHandler.HandleAsync(request, cancellationToken).ConfigureAwait(false);
 
             if (ret.HasErrors)
                 return new ProblemResult(ret.Error);
