@@ -1,15 +1,3 @@
-_October 31th, 2018_  **v1.0.79**  
-- Dynamic Controller action parameters,  
-...In regards to previous release **v1.0.78**, The FromQuery attribute is confusing things like 
-swashbuckle, so a convention was added to allow removing the binding source after all MVC bits 
-have run, thus still allowing FromQuery, but any bits running after APIBlox will think they do 
-NOT come from query.  Or at least that is what I am hoping for...  
-
-Thanks,  
-_Slacquer_  
-
-<br>
-<br>
 
 _October 31th, 2018_  **v1.0.78**  
 - Dynamic Controller action parameters,  
