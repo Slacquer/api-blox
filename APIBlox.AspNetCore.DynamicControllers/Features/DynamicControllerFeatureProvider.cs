@@ -36,7 +36,7 @@ namespace APIBlox.AspNetCore
             foreach (var config in lst)
                 AddController(config);
 
-            //feature.Controllers.Add(typeof(HowDoICreateAParameterModelWithoutDoingThisCrapController).GetTypeInfo());
+            feature.Controllers.Add(typeof(HowDoICreateAParameterModelWithoutDoingThisCrapController).GetTypeInfo());
         }
 
         private void AddController(DynamicControllerConfiguration config)
