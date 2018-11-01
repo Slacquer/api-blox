@@ -19,12 +19,11 @@ namespace Examples.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public ActionResult GetAll(CancellationToken cancellationToken)
+        public ActionResult GetAll([FromQuery] TRequest request, CancellationToken cancellationToken)
         {
             // The action filter will fill some things in for us when we use
             // the extension method .AddPopulateGenericRequestObjectActionFilter()
-            var req = (TRequest) RouteData.Values[typeof(TRequest).Name];
-            
+
             // keep in mind the route had the LikesCandy value (specified in our route template in config),
             // and APIBlox filled the TRequest for us, but it's worth noting that the TRequest
             // didn't HAVE to have a LikesCandy property for you to get the value,

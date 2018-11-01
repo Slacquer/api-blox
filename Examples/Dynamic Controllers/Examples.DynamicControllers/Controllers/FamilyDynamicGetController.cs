@@ -20,16 +20,15 @@ namespace Examples.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public ActionResult GetAll(CancellationToken cancellationToken)
+        public ActionResult GetAll([FromQuery] TRequest request,CancellationToken cancellationToken)
         {
             // The action filter will fill some things in for us when we use
             // the extension method .AddPopulateGenericRequestObjectActionFilter()
-            var req = (TRequest) RouteData.Values[typeof(TRequest).Name];
             
-            var lst = new List<TRequest>();
+            var lst = new List<TResponse>();
 
             for (var i = 0; i < 30; i++)
-                lst.Add(req);
+                lst.Add(new TResponse());
 
             return Ok(lst);
         }
@@ -39,13 +38,11 @@ namespace Examples.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<IActionResult> Get(CancellationToken cancellationToken)
+        public Task<IActionResult> Get([FromQuery] TRequest request,CancellationToken cancellationToken)
         {
-            var req = (TRequest) RouteData.Values[typeof(TRequest).Name];
-
             var ret = new TResponse();
 
-            JsonConvert.PopulateObject(JsonConvert.SerializeObject(req), ret);
+            JsonConvert.PopulateObject(JsonConvert.SerializeObject(request), ret);
 
             return Task.FromResult((IActionResult) Ok(ret));
         }
