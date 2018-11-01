@@ -26,7 +26,7 @@ namespace APIBlox.AspNetCore.Filters
                 return;
             }
 
-            _log.LogWarning(() => $"Validation failed for {context.Result}, returning new ValidationFailureResult");
+            _log.LogWarning(() => $"Validation failed for {context}, returning new ValidationFailureResult");
 
             context.Result = new ValidationFailureResult();
         }

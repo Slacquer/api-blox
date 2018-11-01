@@ -1,6 +1,6 @@
-_October 31th, 2018_  **v1.0.76**  
+_October 31th, 2018_  **v1.0.78**  
 - Dynamic Controller action parameters,  
-...In regards to previous release v1.0.76, The answer may have been staring 
+...In regards to previous release **v1.0.76**, The answer may have been staring 
 me in the face the whole time.  I did NOT add a TRequest input to any of 
 the generic actions, thus requiring me to do all this filter adding BS.  
 I have now added it, the theory is that with it now having a input parameter 
@@ -14,7 +14,7 @@ _Slacquer_
 <br>
 <br>
 
-_October 30th, 2018_  **v1.0.76**  
+_October 30th, 2018_  **v1.0.77**  
 - ServerErrorFaults,  
 ...Added ab verboseProduction switch to allow seeing whats going on 
 even in production (IE: you release your software to dev in production 

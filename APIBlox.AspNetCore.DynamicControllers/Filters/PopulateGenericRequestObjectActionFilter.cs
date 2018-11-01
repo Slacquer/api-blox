@@ -76,15 +76,12 @@ namespace APIBlox.AspNetCore
                 var data = context.RouteData;
                 var query = q.Keys.ToDictionary(k => k, v => q[v].FirstOrDefault());
                 RequestObjectType = context.Controller.GetType().GetGenericArguments().First();
-                IsQuery = context.HttpContext.Request.Method.EqualsEx("get");
                 var values = new RouteValueDictionary(data.Values.Where(kvp => !kvp.Key.EqualsEx("action") && !kvp.Key.EqualsEx("controller")));
                 RouteDataString = JsonConvert.SerializeObject(values, settings);
 
                 QueryString = JsonConvert.SerializeObject(query, settings);
             }
-
-            public bool IsQuery { get; }
-
+            
             public string QueryString { get; }
 
             public Type RequestObjectType { get; }
