@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\APIBlox.AspNetCore.CommandsQueriesControllersOhMy\APIBlox.AspNetCore.CommandsQueriesControllersOhMy.csproj" />
     <ProjectReference Include="..\..\..\ApiBlox.AspNetCore.DynamicControllers\APIBlox.AspNetCore.DynamicControllers.csproj" />
     <ProjectReference Include="..\..\..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
     <ProjectReference Include="..\..\..\ApiBlox.NetCore.Common\APIBlox.NetCore.Common.csproj" />
