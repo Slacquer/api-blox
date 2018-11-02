@@ -1,4 +1,16 @@
 
+_October 31th, 2018_  **v1.0.80**  
+- DynamicDataObjects,  
+...Changed DynamicDataObjects default serialization settings to be indented...  
+
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _October 31th, 2018_  **v1.0.79**  
 - Dynamic Post Controller,  
 ...Apparently sometimes responses do not match the request and just have the id populated, 
