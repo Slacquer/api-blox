@@ -1,4 +1,19 @@
 
+_October 31th, 2018_  **v1.0.79**  
+- Dynamic Post Controller,  
+...Apparently sometimes responses do not match the request and just have the id populated, 
+so I have to dig a little looking for an ID to use in the createdAtRoute....  
+
+- ServerFaultsMiddleware,  
+...I have created an HandledRequestException that contains a RequestErrorObject, the ServerFaultsMiddleware will check the current exception, if it is HandledRequestException, it will simply check its status code and set the response to the code and serialize the HandledRequestException.RequestErrorObject and be done...  
+
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _October 31th, 2018_  **v1.0.78**  
 - Dynamic Controller action parameters,  
 ...In regards to previous release **v1.0.76**, The answer may have been staring 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using APIBlox.AspNetCore.Exceptions;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Types.Errors;
 using Microsoft.AspNetCore.Diagnostics;
@@ -52,12 +53,24 @@ namespace APIBlox.AspNetCore
 
             try
             {
-                context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
-                context.Response.Headers["Content-Type"] = "application/problem+json";
+                string response;
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                await context.Response.WriteAsync(BuildResponse(error.Error, context.Request.Path),
-                    context.RequestAborted
-                ).ConfigureAwait(false);
+                if (error.Error is HandledRequestException handled)
+                {
+                    if (handled.RequestErrorObject.Status != null)
+                        context.Response.StatusCode = handled.RequestErrorObject.Status.Value;
+                    
+                    response = handled.RequestErrorObject.Serialize();
+                }
+                else
+                {
+                    context.Response.Headers["Content-Type"] = "application/problem+json";
+
+                    response = BuildResponse(error.Error, context.Request.Path);
+                }
+
+                await context.Response.WriteAsync(response, context.RequestAborted).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -104,7 +117,7 @@ namespace APIBlox.AspNetCore
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
-                (int) HttpStatusCode.InternalServerError,
+                (int)HttpStatusCode.InternalServerError,
                 instance,
                 _referenceIdFunc()
             )
@@ -121,7 +134,7 @@ namespace APIBlox.AspNetCore
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
-                (int) HttpStatusCode.InternalServerError,
+                (int)HttpStatusCode.InternalServerError,
                 instance,
                 _referenceIdFunc()
             )

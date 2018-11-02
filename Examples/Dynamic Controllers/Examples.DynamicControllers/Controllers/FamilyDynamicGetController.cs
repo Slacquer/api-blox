@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
-using Examples.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
