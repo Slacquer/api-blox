@@ -90,5 +90,13 @@ namespace APIBlox.AspNetCore.Extensions
                 return assembly.GetExportedTypes();
             }
         }
+
+
+        // In addition we will need to be able to either parse and edit a template populating
+        // it with the code from the consumers types, using a typeBuilder to add things to
+        // the types created above.  I think I'm on the right track, just not sure about combining things.
+        //
+        //  https://stackoverflow.com/questions/30264032/typebuilder-adding-attributes
+        //
     }
 }

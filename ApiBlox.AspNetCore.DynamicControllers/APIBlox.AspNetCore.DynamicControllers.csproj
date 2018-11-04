@@ -43,4 +43,10 @@
     <ProjectReference Include="..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Templates\GetController.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
