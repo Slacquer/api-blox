@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // We can use our tokens here as well.
             var route = new[]
             {
-                "api/noControllers/{someId}/dynamicControllerResources/{id}"
+                "api/noControllers/{someId:int}/dynamicControllerResources/{id:int}"
             };
 
             configs.AddController<DynamicControllerRequest, DynamicControllerResponse, int>(

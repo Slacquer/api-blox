@@ -48,7 +48,7 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAll([FromQuery] TRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll([FromRoute] TRequest request, CancellationToken cancellationToken)
         {
             var ret = await _getAllHandler.HandleAsync(request, cancellationToken).ConfigureAwait(false);
 
