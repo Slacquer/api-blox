@@ -65,7 +65,7 @@ namespace Examples
                 //  DynamicControllers and configuration
                 .AddDynamicControllersFeature(configs =>
                     {
-                        //configs.AddFamilyDynamicControllersConfiguration();
+                        configs.AddFamilyDynamicControllersConfiguration();
                         configs.AddFullyDynamicConfiguration();
                     },
                    addPostLocationHeaderResultFilter: true)

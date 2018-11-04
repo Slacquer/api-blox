@@ -1,10 +1,12 @@
 
 _October 31th, 2018_  **v1.0.81**  
 - DynamicControllers,  
-...Changed all Dynamic controllers to use [FromRoute] 
-rather than [FromQuery].  This does force the consume to be specific in 
+...Changed all queryable controllers to use [FromRoute] 
+rather than [FromQuery].  This does force the consumer to be specific in 
 their request models (IE: if you expect a value to come from body then 
-you muse use [FromBody] on that property).  This plays nicely with swashbuckle...  
+you muse use [FromBody] on that property).  This plays nicely with 
+swashbuckle, however non queryable controllers do not use any attribute 
+(FromBody or form), thus attributes are of little significance...  
 
 - PaginationQuery and FilteredPaginationQuery  
 ...Changed to use [FromRoute] 

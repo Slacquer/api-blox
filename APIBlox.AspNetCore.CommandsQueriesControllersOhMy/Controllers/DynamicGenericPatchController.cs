@@ -52,7 +52,7 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Patch(
-            [FromRoute] JsonPatchDocument<TPatchObject> patch,
+            JsonPatchDocument<TPatchObject> patch,
             CancellationToken cancellationToken
         )
         {

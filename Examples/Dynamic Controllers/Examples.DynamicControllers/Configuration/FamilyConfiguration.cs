@@ -54,7 +54,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // We could create a ROOT level route for children and return result based on if they like candy or not
             // (Clearly I am having a tough time coming up with example data, don't judge me, sorry for partying...).
-            var childrenRoutes = new[]  { "api/dev-v0.0.1/resources/children/{LikesCandy:bool}" };
+            var childrenRoutes = new[] { "api/dev-v0.0.1/resources/children/{LikesCandy:bool}" };
             configs.AddController<ChildRootRequest, ChildResponse, int>(
                 childrenRoutes,
                 //

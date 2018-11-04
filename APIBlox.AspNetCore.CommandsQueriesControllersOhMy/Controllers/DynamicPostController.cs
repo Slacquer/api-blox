@@ -56,7 +56,7 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Post([FromRoute] TRequest value, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post(TRequest value, CancellationToken cancellationToken)
         {
             var ret = await _createCommand.HandleAsync(value, cancellationToken).ConfigureAwait(false);
 
