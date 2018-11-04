@@ -83,7 +83,7 @@ namespace APIBlox.AspNetCore
 
         private string BuildResponse(Exception err, string instance)
         {
-            var serialized = "Could not create NON production response.  Error UNKNOWN";
+            var serialized = $"Could not create NON production response.  Error {err.Message}";
 
             try
             {
