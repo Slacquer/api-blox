@@ -4,6 +4,10 @@ _October 31th, 2018_  **v1.0.81**
 ...Changed queryAll, queryBy and deleteBy controllers to use [FromRoute] 
 rather than [FromQuery].  This plays nicely with swashbuckle...  
 
+- PaginationQuery and FilteredPaginationQuery  
+...Changed to use [FromRoute] 
+on their public properties in accordance with the above entry...  
+
 - ServerFaultsMiddleware,  
 ...Changed the UNKNOWN message to show exception.message...  
 

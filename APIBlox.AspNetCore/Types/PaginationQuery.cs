@@ -2,6 +2,7 @@
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -55,6 +56,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the running count.
         /// </summary>
         /// <value>The running count.</value>
+        [FromQuery(Name = "runningCount")]
         public int? RunningCount { get; set; }
 
         [JsonProperty]
@@ -65,6 +67,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the skip.
         /// </summary>
         /// <value>The skip.</value>
+        [FromQuery(Name = "skip")]
         public int? Skip { get; set; }
 
         [JsonProperty]
@@ -74,6 +77,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the top.
         /// </summary>
         /// <value>The top.</value>
+        [FromQuery(Name = "top")]
         public int? Top { get; set; }
 
         [JsonProperty]

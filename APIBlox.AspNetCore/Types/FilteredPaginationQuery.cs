@@ -1,5 +1,6 @@
 ﻿using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace APIBlox.AspNetCore.Types
@@ -44,6 +45,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the filter.
         /// </summary>
         /// <value>The filter.</value>
+        [FromQuery(Name = "filter")]
         public string Filter { get; set; }
 
         [JsonProperty]
@@ -54,6 +56,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the order by.
         /// </summary>
         /// <value>The order by.</value>
+        [FromQuery(Name = "orderBy")]
         public string OrderBy { get; set; }
 
         [JsonProperty]
@@ -64,6 +67,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the select.
         /// </summary>
         /// <value>The select.</value>
+        [FromQuery(Name = "select")]
         public string Select { get; set; }
 
         [JsonProperty]
