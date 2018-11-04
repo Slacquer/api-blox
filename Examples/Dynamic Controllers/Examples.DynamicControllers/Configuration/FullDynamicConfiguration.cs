@@ -15,9 +15,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 "api/noControllers/{someId}/dynamicControllerResources/{id}"
             };
 
+            // This will only be able to be displayed, it will not function as the
+            // controller requires a query handler (CQRS).  Take a look at the CQRS example.
             configs.AddController<DynamicControllerRequest, DynamicControllerResponse, int>(
                 route,
-                "noControllers",
+                "NoControllers",
                 typeof(DynamicQueryByController<,,>)
             );
         }

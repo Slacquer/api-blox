@@ -19,7 +19,7 @@ namespace Examples.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public ActionResult GetAll([FromQuery] TRequest request,CancellationToken cancellationToken)
+        public ActionResult GetAll([FromRoute] TRequest request,CancellationToken cancellationToken)
         {
             // The action filter will fill some things in for us when we use
             // the extension method .AddPopulateGenericRequestObjectActionFilter()
@@ -37,7 +37,7 @@ namespace Examples.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<IActionResult> Get([FromQuery] TRequest request,CancellationToken cancellationToken)
+        public Task<IActionResult> Get([FromRoute] TRequest request,CancellationToken cancellationToken)
         {
             var ret = new TResponse();
 
