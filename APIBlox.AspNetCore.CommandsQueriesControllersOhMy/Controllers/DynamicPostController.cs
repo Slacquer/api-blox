@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace APIBlox.AspNetCore.Controllers
 {
- /// <summary>
+    /// <summary>
     ///     Class DynamicPostController.
     /// </summary>
     /// <typeparam name="TRequest">The type of the t request.</typeparam>
@@ -56,7 +56,7 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Post(TRequest value, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post([FromRoute] TRequest value, CancellationToken cancellationToken)
         {
             var ret = await _createCommand.HandleAsync(value, cancellationToken).ConfigureAwait(false);
 
@@ -75,11 +75,12 @@ namespace APIBlox.AspNetCore.Controllers
             var id = FindId(ret.Result);
 
             return id == -1
-                ? (IActionResult) Ok(ret.Result)
-                : (IActionResult) CreatedAtRoute(new {id}, ret.Result);
+                ? (IActionResult)Ok(ret.Result)
+                : (IActionResult)CreatedAtRoute(new { id }, ret.Result);
         }
 
-        // But it seems sometimes responses do not match what was requested, I think that's a violation but what do I know...
+        // But it seems sometimes responses do not match what was
+        // requested, I think that's a violation but what do I know...
         private object FindId(object result)
         {
             try

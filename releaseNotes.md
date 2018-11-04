@@ -1,8 +1,10 @@
 
 _October 31th, 2018_  **v1.0.81**  
 - DynamicControllers,  
-...Changed queryAll, queryBy and deleteBy controllers to use [FromRoute] 
-rather than [FromQuery].  This plays nicely with swashbuckle...  
+...Changed all Dynamic controllers to use [FromRoute] 
+rather than [FromQuery].  This does force the consume to be specific in 
+their request models (IE: if you expect a value to come from body then 
+you muse use [FromBody] on that property).  This plays nicely with swashbuckle...  
 
 - PaginationQuery and FilteredPaginationQuery  
 ...Changed to use [FromRoute] 
