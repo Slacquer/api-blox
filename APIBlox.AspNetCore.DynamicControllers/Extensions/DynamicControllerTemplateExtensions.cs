@@ -67,27 +67,27 @@ namespace APIBlox.AspNetCore.Extensions
 
                 failures = null;
 
-                if (!emitResult.Success)
+                if (emitResult.Success)
                 {
-                    var diagnostics = emitResult.Diagnostics.Where(diagnostic =>
-                        diagnostic.IsWarningAsError ||
-                        diagnostic.Severity == DiagnosticSeverity.Error
-                    );
+                    ms.Seek(0, SeekOrigin.Begin);
+                    var assembly = Assembly.Load(ms.ToArray());
 
-                    var errors = diagnostics.Select(diagnostic =>
-                            $"{diagnostic.Id}: {diagnostic.GetMessage()}"
-                        )
-                        .ToList();
-
-                    failures = errors;
-
-                    return null;
+                    return assembly.GetExportedTypes();
                 }
 
-                ms.Seek(0, SeekOrigin.Begin);
-                var assembly = Assembly.Load(ms.ToArray());
+                var diagnostics = emitResult.Diagnostics.Where(diagnostic =>
+                    diagnostic.IsWarningAsError ||
+                    diagnostic.Severity == DiagnosticSeverity.Error
+                );
 
-                return assembly.GetExportedTypes();
+                var errors = diagnostics.Select(diagnostic =>
+                        $"{diagnostic.Id}: {diagnostic.GetMessage()}"
+                    )
+                    .ToList();
+
+                failures = errors;
+
+                return null;
             }
         }
 
