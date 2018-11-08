@@ -1,5 +1,5 @@
 
-_November 8th, 2018_  **v1.0.82**  
+_November 8th, 2018_  **v1.0.84**  
 - RequestErrorObject,  
 ...Added/changed a few of the extension methods...  
 
