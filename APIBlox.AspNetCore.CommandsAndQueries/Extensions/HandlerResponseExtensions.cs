@@ -2,8 +2,7 @@
 using APIBlox.AspNetCore.Types;
 using APIBlox.AspNetCore.Types.Errors;
 
-// ReSharper disable once CheckNamespace
-namespace APIBlox.AspNetCore.CommandQueryResponses
+namespace APIBlox.AspNetCore.Extensions
 {
     /// <summary>
     ///     Class HandlerResponseExtensions.
@@ -17,7 +16,7 @@ namespace APIBlox.AspNetCore.CommandQueryResponses
         /// </summary>
         /// <param name="response">The response.</param>
         /// <returns>HandlerResponse.</returns>
-        public static RequestErrorObject NewError(this HandlerResponse response)
+        public static RequestErrorObject CreateError(this HandlerResponse response)
         {
             response.Error = new RequestErrorObject();
 

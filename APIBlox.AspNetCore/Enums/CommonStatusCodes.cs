@@ -20,6 +20,14 @@ namespace APIBlox.AspNetCore.Enums
         [Metadata("No Content", "The request input parameters yielded no results.")]
         NoResults = StatusCodes.Status204NoContent,
 
+
+
+        /// <summary>
+        ///     400
+        /// </summary>
+        [Metadata("Bad Request", "The request input parameters caused validation errors.")]
+        BadRequest = StatusCodes.Status400BadRequest,
+
         /// <summary>
         ///     401
         /// </summary>
@@ -37,6 +45,12 @@ namespace APIBlox.AspNetCore.Enums
         /// </summary>
         [Metadata("Not Found", "The request input parameters yielded no results.")]
         NotFound = StatusCodes.Status404NotFound,
+
+        /// <summary>
+        ///     406
+        /// </summary>
+        [Metadata("NotAcceptable", "The request input parameters are unacceptable.")]
+        NotAcceptable = StatusCodes.Status406NotAcceptable,
 
         /// <summary>
         ///     409

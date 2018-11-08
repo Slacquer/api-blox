@@ -9,8 +9,6 @@ namespace APIBlox.AspNetCore.Exceptions
     /// <seealso cref="System.Exception" />
     public class HandledRequestException : Exception
     {
-        #region -    Constructors    -
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="HandledRequestException" /> class.
         /// </summary>
@@ -19,8 +17,6 @@ namespace APIBlox.AspNetCore.Exceptions
         {
             RequestErrorObject = requestErrorObject;
         }
-
-        #endregion
 
         /// <summary>
         ///     Gets the request error object.

@@ -1,4 +1,19 @@
 
+_November 8th, 2018_  **v1.0.82**  
+- RequestErrorObject,  
+...Added/changed a few of the extension methods...  
+
+- CommonStatusCodes,  
+...Added a few codes...  
+
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _October 31th, 2018_  **v1.0.81**  
 - DynamicControllers,  
 ...Changed all queryable controllers to use [FromRoute] 
