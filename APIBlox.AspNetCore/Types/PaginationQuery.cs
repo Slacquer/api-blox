@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using APIBlox.NetCore.Extensions;
-using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -11,24 +10,8 @@ namespace APIBlox.AspNetCore.Types
     /// <summary>
     ///     Class PaginationQuery.
     /// </summary>
-    public class PaginationQuery
+    public class PaginationQuery : OrderedQuery
     {
-        /// <summary>
-        ///     The in map for deciphering incoming query params.
-        /// </summary>
-        [JsonIgnore]
-        public static readonly Dictionary<string, string[]> PaginationMap = new Dictionary<string, string[]>
-        {
-            {"Skip", new[] {"$Skip", "Offset", "$Offset"}},
-            {"Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"}},
-            {"RunningCount", new[] {"$Rc", "Rc", "Count", "$Count", "$RunningCount"}},
-        };
-
-        internal static readonly JsonSerializerSettings AliasesInSettings = new JsonSerializerSettings
-        {
-            ContractResolver = new AliasContractResolver(PaginationMap)
-        };
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="PaginationQuery" /> class.
         /// </summary>
@@ -38,6 +21,10 @@ namespace APIBlox.AspNetCore.Types
 
         internal PaginationQuery(PaginationQuery query)
         {
+            Map.TryAdd("Skip", new[] { "$Skip", "Offset", "$Offset" });
+            Map.TryAdd("Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"});
+            Map.TryAdd("RunningCount", new[] {"$Rc", "Rc", "Count", "$Count", "$RunningCount"});
+
             Skip = query.Skip;
             Top = query.Top;
             Undefined = query.Undefined;
@@ -91,13 +78,14 @@ namespace APIBlox.AspNetCore.Types
         [JsonExtensionData]
         internal IDictionary<string, JToken> Undefined { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Builds the query.
         /// </summary>
         /// <returns>QueryBuilder.</returns>
-        protected virtual QueryBuilder BuildQuery()
+        protected override QueryBuilder BuildQuery()
         {
-            var qb = new QueryBuilder();
+            var qb = base.BuildQuery();
 
             if (Skip.HasValue)
                 qb.Add(SkipAlias.ToCamelCase(), Skip.Value.ToString());
@@ -117,10 +105,11 @@ namespace APIBlox.AspNetCore.Types
             return qb;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance if the form of a query string.
+        ///     Returns a <see cref="T:System.String" /> that represents this instance if the form of a query string.
         /// </summary>
-        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
+        /// <returns>A <see cref="T:System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
             return BuildQuery().ToString();

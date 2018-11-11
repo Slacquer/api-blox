@@ -159,7 +159,7 @@ namespace APIBlox.AspNetCore
 
         private static FilteredPaginationQuery BuildFromQueryParams(IQueryCollection requestQuery)
         {
-            var map = PaginationQuery.PaginationMap;
+            var map = OrderedQuery.Map;
             var query = requestQuery.Keys.ToDictionary(k => k, v => requestQuery[v].FirstOrDefault());
 
             var tmp = new Dictionary<string, string>(query);
@@ -178,9 +178,9 @@ namespace APIBlox.AspNetCore
                 }
             }
 
-            var convertIncoming = JsonConvert.SerializeObject(tmp, Formatting.Indented, PaginationQuery.AliasesInSettings);
+            var convertIncoming = JsonConvert.SerializeObject(tmp, Formatting.Indented, OrderedQuery.AliasesInSettings);
 
-            var pagedQuery = JsonConvert.DeserializeObject<FilteredPaginationQuery>(convertIncoming, PaginationQuery.AliasesInSettings);
+            var pagedQuery = JsonConvert.DeserializeObject<FilteredPaginationQuery>(convertIncoming, OrderedQuery.AliasesInSettings);
 
             return pagedQuery;
         }

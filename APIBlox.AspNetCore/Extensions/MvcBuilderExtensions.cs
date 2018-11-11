@@ -447,7 +447,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.Remove(existing);
 
             services.AddScoped<IJsonBitsContractResolver>(sp =>
-                new AliasContractResolver(PaginationQuery.PaginationMap)
+                new AliasContractResolver(OrderedQuery.Map)
             );
 
             services.AddTransient<IPaginationMetadataBuilder, PaginationMetadataBuilder>(s =>

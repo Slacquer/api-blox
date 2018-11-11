@@ -1,4 +1,15 @@
-_November 8th, 2018_  **v1.0.86**  
+_November 10th, 2018_  **v1.0.87**  
+- OrderedQuery,  
+...Added this for times when pagination and filtering are unnecessary....  
+
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+_November 10th, 2018_  **v1.0.86**  
 - Pagination,  
 ...When results are less than the specified max, we will no longer pass 
 anything for next and previous....  

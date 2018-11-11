@@ -23,20 +23,16 @@ namespace APIBlox.AspNetCore.Types
         internal FilteredPaginationQuery(FilteredPaginationQuery query)
             : base(query)
         {
-            PaginationMap.TryAdd("OrderBy", new[] { "$OrderBy" });
-            PaginationMap.TryAdd("Filter", new[] { "$Where", "Where", "$Filter" });
-            PaginationMap.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
+            Map.TryAdd("Filter", new[] { "$Where", "Where", "$Filter" });
+            Map.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
 
             Select = query.Select;
-            OrderBy = query.OrderBy;
+            
             Filter = query.Filter;
 
             if (!query.FilterAlias.IsEmptyNullOrWhiteSpace())
                 FilterAlias = query.FilterAlias;
-
-            if (!query.OrderByAlias.IsEmptyNullOrWhiteSpace())
-                OrderByAlias = query.OrderByAlias;
-
+            
             if (!query.SelectAlias.IsEmptyNullOrWhiteSpace())
                 SelectAlias = query.SelectAlias;
         }
@@ -50,19 +46,7 @@ namespace APIBlox.AspNetCore.Types
 
         [JsonProperty]
         internal string FilterAlias { get; set; } = "$filter";
-
-
-        /// <summary>
-        ///     Gets or sets the order by.
-        /// </summary>
-        /// <value>The order by.</value>
-        [FromQuery(Name = "orderBy")]
-        public string OrderBy { get; set; }
-
-        [JsonProperty]
-        internal string OrderByAlias { get; set; } = "$orderBy";
-
-
+        
         /// <summary>
         ///     Gets or sets the select.
         /// </summary>
@@ -82,10 +66,7 @@ namespace APIBlox.AspNetCore.Types
         protected override QueryBuilder BuildQuery()
         {
             var qb = base.BuildQuery();
-
-            if (!OrderBy.IsEmptyNullOrWhiteSpace())
-                qb.Add(OrderByAlias.ToCamelCase(), OrderBy);
-
+            
             if (!Filter.IsEmptyNullOrWhiteSpace())
                 qb.Add(FilterAlias.ToCamelCase(), Filter);
 
