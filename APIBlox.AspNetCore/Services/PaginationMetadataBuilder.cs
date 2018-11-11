@@ -51,7 +51,8 @@ namespace APIBlox.AspNetCore
         private PaginationMetadata BuildResponseFromQuery(FilteredPaginationQuery requestQuery, int resultCount, string baseUrl)
         {
             // If resultCount is 0 or empty then we are just going to display the structure.
-            if (resultCount == 0)
+            // If resultCount is less than the max, no need to have anything either.
+            if (resultCount == 0 || resultCount < _defaultPageSize)
             {
                 return new PaginationMetadata
                 {
@@ -162,7 +163,7 @@ namespace APIBlox.AspNetCore
             var query = requestQuery.Keys.ToDictionary(k => k, v => requestQuery[v].FirstOrDefault());
 
             var tmp = new Dictionary<string, string>(query);
-            
+
             foreach (var kvp in query)
             {
                 if (map.ContainsKey(kvp.Key))
@@ -170,13 +171,13 @@ namespace APIBlox.AspNetCore
 
                 foreach (var kvps in map)
                 {
-                    if (kvps.Value.Any(s=> s.EqualsEx(kvp.Key)))
+                    if (kvps.Value.Any(s => s.EqualsEx(kvp.Key)))
                     {
                         tmp.Add($"{kvps.Key}Alias", kvp.Key);
                     }
                 }
             }
-            
+
             var convertIncoming = JsonConvert.SerializeObject(tmp, Formatting.Indented, PaginationQuery.AliasesInSettings);
 
             var pagedQuery = JsonConvert.DeserializeObject<FilteredPaginationQuery>(convertIncoming, PaginationQuery.AliasesInSettings);

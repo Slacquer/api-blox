@@ -1,4 +1,17 @@
 
+_November 8th, 2018_  **v1.0.83**  
+- Pagination,  
+...When results are less than the specified max, we will no longer pass 
+anything for next and previous....  
+
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _November 8th, 2018_  **v1.0.82**  
 - RequestErrorObject,  
 ...Added/changed a few of the extension methods...  
