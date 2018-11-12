@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
+﻿using APIBlox.AspNetCore.Contracts;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
+    /// <inheritdoc cref="OrderedQuery" />
     /// <summary>
     ///     Class PaginationQuery.
     /// </summary>
-    public class PaginationQuery : OrderedQuery
+    public class PaginationQuery : OrderedQuery, IPaginationQuery
     {
         /// <inheritdoc />
         /// <summary>
@@ -14,11 +16,12 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         public PaginationQuery()
         {
-            Map.TryAdd("Skip", new[] {"$Skip", "Offset", "$Offset"});
-            Map.TryAdd("Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"});
-            Map.TryAdd("RunningCount", new[] {"$Rc", "Rc", "Count", "$Count", "$RunningCount"});
+            Map.TryAdd("Skip", new[] { "$Skip", "Offset", "$Offset" });
+            Map.TryAdd("Top", new[] { "$Top", "Limit", "$Limit", "Take", "$Take" });
+            Map.TryAdd("RunningCount", new[] { "$Rc", "Rc", "Count", "$Count", "$RunningCount" });
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the running count.
         /// </summary>
@@ -26,6 +29,7 @@ namespace APIBlox.AspNetCore.Types
         [FromQuery(Name = "runningCount")]
         public int? RunningCount { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the skip.
         /// </summary>
@@ -33,6 +37,7 @@ namespace APIBlox.AspNetCore.Types
         [FromQuery(Name = "skip")]
         public int? Skip { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the top.
         /// </summary>

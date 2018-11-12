@@ -1,14 +1,16 @@
-﻿using APIBlox.NetCore.Extensions;
+﻿using APIBlox.AspNetCore.Contracts;
+using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
+    /// <inheritdoc cref="OrderedQuery" />
     /// <summary>
     ///     Class FilteredQuery.
     /// </summary>
-    /// <seealso cref="APIBlox.AspNetCore.Types.OrderedQuery" />
-    public class FilteredQuery : OrderedQuery
+    /// <seealso cref="T:APIBlox.AspNetCore.Types.OrderedQuery" />
+    public class FilteredQuery : OrderedQuery, IFilteredQuery
     {
         /// <inheritdoc />
         /// <summary>
@@ -16,10 +18,11 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         public FilteredQuery()
         {
-            Map.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
-            Map.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
+            Map.TryAdd("Filter", new[] { "$Where", "Where", "$Filter" });
+            Map.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the filter.
         /// </summary>
@@ -27,6 +30,7 @@ namespace APIBlox.AspNetCore.Types
         [FromQuery(Name = "filter")]
         public string Filter { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the select.
         /// </summary>

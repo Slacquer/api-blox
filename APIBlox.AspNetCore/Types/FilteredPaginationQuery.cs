@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -6,12 +7,12 @@ using Newtonsoft.Json;
 
 namespace APIBlox.AspNetCore.Types
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="PaginationQuery" />
     /// <summary>
     ///     Class FilteredPaginationQuery.
     /// </summary>
     /// <seealso cref="T:APIBlox.AspNetCore.Types.PaginationQuery" />
-    public class FilteredPaginationQuery : PaginationQuery
+    public class FilteredPaginationQuery : PaginationQuery, IFilteredQuery
     {
 
         /// <inheritdoc />
@@ -24,6 +25,7 @@ namespace APIBlox.AspNetCore.Types
             Map.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the filter.
         /// </summary>
@@ -31,6 +33,7 @@ namespace APIBlox.AspNetCore.Types
         [FromQuery(Name = "filter")]
         public string Filter { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the select.
         /// </summary>

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -8,13 +9,14 @@ using Newtonsoft.Json;
 
 namespace APIBlox.AspNetCore.Types
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Class OrderedQuery.
     /// </summary>
-    public class OrderedQuery
+    public class OrderedQuery : IOrderedQuery
     {
         private PropertyInfo[] _props;
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="OrderedQuery" /> class.
         /// </summary>
@@ -36,13 +38,14 @@ namespace APIBlox.AspNetCore.Types
         [JsonIgnore]
         internal IDictionary<string, string> Undefined { get; set; } = new Dictionary<string, string>();
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the order by.
         /// </summary>
         /// <value>The order by.</value>
         [FromQuery(Name = "orderBy")]
         public string OrderBy { get; set; }
-        
+
         /// <summary>
         ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
