@@ -1,3 +1,21 @@
+_November 12th, 2018_  **v1.0.88**  
+- Pagination,  
+...Simplified, Simplified, Simplified.  Removed all alias output, 
+this was just overkill and was not being used in a practical sense, 
+unnecessarily overcomplicated the code.  Inputs can still be aliased, 
+but return property names will always be the same.  Also removed the json 
+bits for processing alias input...  
+
+- Examples,  
+...I have yet to continue with them but I did alter them for the changes 
+in the last few releases...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 10th, 2018_  **v1.0.87**  
 - OrderedQuery,  
 ...Added this for times when pagination and filtering are unnecessary....  

@@ -17,6 +17,21 @@ namespace APIBlox.NetCore.Extensions
         private static readonly List<MethodInfo> Extensions = new List<MethodInfo>();
 
         /// <summary>
+        ///     Sets the value of a nullable type.
+        /// </summary>
+        /// <param name="prop">The property.</param>
+        /// <param name="obj">The object instance.</param>
+        /// <param name="qp">The qp.</param>
+        public static void SetNullableValue(this PropertyInfo prop, object obj, object qp)
+        {
+            var t = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+
+            var safeValue = (qp == null) ? null : Convert.ChangeType(qp, t);
+
+            prop.SetValue(obj, safeValue, null);
+        }
+
+        /// <summary>
         ///     Find an extension method for a given type with a specific
         ///     name (case insensitive).  Optionally filter the result.
         /// </summary>

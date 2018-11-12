@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using APIBlox.AspNetCore;
-using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Attributes;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Filters;
-using APIBlox.AspNetCore.Types;
-using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Extensions;
-using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -115,11 +111,6 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     }
         ///     <para>Works independently of <see cref="EnsureResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
-        ///     <para>
-        ///         I wil change the current implementation of <see cref="IJsonBitsContractResolver"/>  To
-        ///         <see cref="AliasContractResolver"/> which inherits the
-        ///         <see cref="PopulateNonPublicSettersContractResolver"/>
-        ///     </para>
         /// </summary>
         /// <param name="builder">IMvcCoreBuilder</param>
         /// <param name="defaultPageSize">Default page size for pagination responses.</param>
@@ -148,11 +139,6 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     }
         ///     <para>Works independently of <see cref="EnsureResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
-        ///     <para>
-        ///         I wil change the current implementation of <see cref="IJsonBitsContractResolver"/>  To
-        ///         <see cref="AliasContractResolver"/> which inherits the
-        ///         <see cref="PopulateNonPublicSettersContractResolver"/>
-        ///     </para>
         /// </summary>
         /// <param name="builder">IMvcBuilder</param>
         /// <param name="defaultPageSize">Default page size for pagination responses.</param>
@@ -168,7 +154,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return builder;
         }
-        
+
         /// <summary>
         ///     This filter will ensure all results comply to a structure, defined by you in the callback.
         ///     Defaults to: {
@@ -440,18 +426,9 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!(defineResponseFunc is null))
                 InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
 
-            var existing = services.FirstOrDefault(s =>
-                s.ServiceType == typeof(IJsonBitsContractResolver));
-
-            if (!(existing is null))
-                services.Remove(existing);
-
-            services.AddScoped<IJsonBitsContractResolver>(sp =>
-                new AliasContractResolver(OrderedQuery.Map)
-            );
-
             services.AddTransient<IPaginationMetadataBuilder, PaginationMetadataBuilder>(s =>
-                new PaginationMetadataBuilder(defaultPageSize));
+                new PaginationMetadataBuilder(defaultPageSize)
+            );
 
             services.Configure<MvcOptions>(o =>
                 {

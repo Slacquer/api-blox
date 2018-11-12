@@ -1,11 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿#region -    Using Statements    -
+
+using System;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Extensions;
-using APIBlox.NetCore.Contracts;
-using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+
+#endregion
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -41,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.AddConvention<DynamicControllersRouteConvention>()
                 .AddConvention<DynamicControllerSubRouteConvention>()
                 .AddConvention<DynamicControllersConvertResponseTypeConvention>();
-                
+
             builder.ConfigureApplicationPartManager(setup =>
                 setup.FeatureProviders.TryAdd(new DynamicControllerFeatureProvider(configurations))
             );
@@ -87,37 +88,21 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         ///     Designed for usage with Dynamic controllers, and adds a command/query binder action filter.
-        ///     <para>I wil change the current implementation of <see cref="IJsonBitsContractResolver"/>  To <see cref="PopulateNonPublicSettersContractResolver"/> </para>
         /// </summary>
         /// <param name="builder">The mvc builder.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddPopulateGenericRequestObjectActionFilter(this IMvcBuilder builder)
         {
-            var existing = builder.Services.FirstOrDefault(s => s.ServiceType == typeof(IJsonBitsContractResolver));
-
-            if (!(existing is null))
-                builder.Services.Remove(existing);
-
-            builder.Services.AddScoped<IJsonBitsContractResolver, PopulateNonPublicSettersContractResolver>();
-
             return builder.AddFilter<PopulateGenericRequestObjectActionFilter>();
         }
 
         /// <summary>
         ///     Designed for usage with Dynamic controllers, and adds a command/query binder action filter.
-        ///     <para>I wil change the current implementation of <see cref="IJsonBitsContractResolver"/>  To <see cref="PopulateNonPublicSettersContractResolver"/> </para>
         /// </summary>
         /// <param name="builder">The mvc core builder.</param>
         /// <returns>IMvcCoreBuilder.</returns>
         public static IMvcCoreBuilder AddPopulateGenericRequestObjectActionFilter(this IMvcCoreBuilder builder)
         {
-            var existing = builder.Services.FirstOrDefault(s => s.ImplementationType == typeof(IJsonBitsContractResolver));
-
-            if (!(existing is null))
-                builder.Services.Remove(existing);
-
-            builder.Services.AddScoped<IJsonBitsContractResolver, PopulateNonPublicSettersContractResolver>();
-
             return builder.AddFilter<PopulateGenericRequestObjectActionFilter>();
         }
     }

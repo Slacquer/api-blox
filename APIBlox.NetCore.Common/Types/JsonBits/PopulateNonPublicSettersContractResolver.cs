@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using APIBlox.NetCore.Contracts;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -16,7 +15,7 @@ namespace APIBlox.NetCore.Types.JsonBits
     /// <inheritdoc cref="DefaultContractResolver" />
     /// <seealso cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver" />
     [DebuggerStepThrough]
-    public class PopulateNonPublicSettersContractResolver : DefaultContractResolver, IJsonBitsContractResolver
+    public class PopulateNonPublicSettersContractResolver : DefaultContractResolver
     {
         /// <inheritdoc />
         /// <summary>

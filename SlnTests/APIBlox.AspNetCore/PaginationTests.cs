@@ -46,33 +46,19 @@ namespace SlnTests.APIBlox.AspNetCore
         public void IncomingAliasTests()
         {
             var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?$top=2&$skip=5&rc=7");
+            ctx.HttpContext.Request.QueryString = new QueryString("?take=2&offSet=5&rc=7&$SORTBY=foo.bar");
 
             var builder = new PaginationMetadataBuilder(10);
             var ret = builder.Build(10, ctx);
 
             Assert.NotNull(ret.Previous);
             Assert.NotNull(ret.Next);
-            Assert.Contains("$skip=7", ret.Next);
-            Assert.Contains("$top=2", ret.Next);
-            Assert.Contains("rc=17", ret.Next);
+            Assert.Contains("skip=7", ret.Next);
+            Assert.Contains("top=2", ret.Next);
+            Assert.Contains("runningCount=17", ret.Next);
+            Assert.Contains("orderBy=foo.bar", ret.Next);
         }
         
-        [Fact]
-        public void IncomingAliasShouldBeReturnedAndBeCamelCased()
-        {
-            var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?Limit=1&PrOJEct=new{a=1}&CouNt=55&OFFSET=5");
-
-            var builder = new PaginationMetadataBuilder(10);
-            var ret = builder.Build(10, ctx);
-
-            Assert.Contains("limit", ret.Next);
-            Assert.Contains("prOJEct", ret.Next);
-            Assert.Contains("couNt", ret.Next);
-            Assert.Contains("oFFSET", ret.Next);
-        }
-
         [Fact]
         public void NoResultsPaginationShouldBeEmpty()
         {
@@ -100,7 +86,7 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.NotNull(ret.Next);
             Assert.Contains("skip=7", ret.Next);
             Assert.Contains("top=2", ret.Next);
-            Assert.Contains("rc=15", ret.Next);
+            Assert.Contains("runningCount=15", ret.Next);
         }
 
         [Fact]
@@ -129,7 +115,7 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.NotNull(ret.Next);
             Assert.Contains("skip=8", ret.Next);
             Assert.Contains("top=5", ret.Next);
-            Assert.Contains("rc=13", ret.Next);
+            Assert.Contains("runningCount=13", ret.Next);
         }
 
         [Fact]
@@ -143,9 +129,9 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Null(ret.Previous);
             Assert.NotNull(ret.Next);
-            Assert.Contains("$skip=10", ret.Next);
+            Assert.Contains("skip=10", ret.Next);
             Assert.Contains("top=10", ret.Next);
-            Assert.Contains("$runningCount=100", ret.Next);
+            Assert.Contains("runningCount=100", ret.Next);
         }
 
         [Fact]
@@ -180,9 +166,9 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.NotNull(ret);
             Assert.NotNull(ret.Next);
 
-            Assert.Contains("$top=100", ret.Next);
-            Assert.Contains("$skip=100", ret.Next);
-            Assert.Contains("$runningCount=100", ret.Next);
+            Assert.Contains("top=100", ret.Next);
+            Assert.Contains("skip=100", ret.Next);
+            Assert.Contains("runningCount=100", ret.Next);
 
             Assert.Null(ret.Previous);
 
@@ -193,9 +179,9 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.NotNull(ret);
             Assert.NotNull(ret.Next);
 
-            Assert.Contains("$top=10", ret.Next);
-            Assert.Contains("$skip=10", ret.Next);
-            Assert.Contains("$runningCount=10", ret.Next);
+            Assert.Contains("top=10", ret.Next);
+            Assert.Contains("skip=10", ret.Next);
+            Assert.Contains("runningCount=10", ret.Next);
 
             Assert.Null(ret.Previous);
         }
@@ -213,8 +199,8 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.NotNull(ret.Next);
 
             Assert.Contains("top=10", ret.Next);
-            Assert.Contains("$skip=100", ret.Next);
-            Assert.Contains("$runningCount=100", ret.Next);
+            Assert.Contains("skip=100", ret.Next);
+            Assert.Contains("runningCount=100", ret.Next);
 
             Assert.Contains("myExtraData=999", ret.Next);
 
@@ -274,7 +260,7 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.NotNull(ret.Next);
 
             Assert.Contains("top=100", ret.Next);
-            Assert.Contains("$skip=100", ret.Next);
+            Assert.Contains("skip=100", ret.Next);
             Assert.Contains("runningCount=100", ret.Next);
 
             Assert.Null(ret.Previous);

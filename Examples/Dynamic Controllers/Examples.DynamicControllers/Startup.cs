@@ -77,7 +77,8 @@ namespace Examples
                 .AddPopulateGenericRequestObjectActionFilter()
                 //
                 // Pagination
-                .AddEnsurePaginationResultActionFilter(100)
+                //.AddEnsurePaginationResultActionFilter(100)
+                .AddEnsureResponseResultActionFilter()
                 //
                 // Resource Validator.
                 .AddValidateResourceActionFilter()

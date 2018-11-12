@@ -22,7 +22,8 @@ namespace Examples.Controllers
         public ActionResult GetAll([FromRoute] TRequest request, CancellationToken cancellationToken)
         {
             // The action filter will fill some things in for us when we use
-            // the extension method .AddPopulateGenericRequestObjectActionFilter()
+            // the extension method .AddPopulateGenericRequestObjectActionFilter(), you only
+            // need to use this when the objects properties are not using FromQuery or FromRoute (which you should be).
 
             // keep in mind the route had the LikesCandy value (specified in our route template in config),
             // and APIBlox filled the TRequest for us, but it's worth noting that the TRequest
