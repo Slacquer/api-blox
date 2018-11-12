@@ -1,3 +1,13 @@
+_November 12th, 2018_  **v1.0.89**  
+- ServerFaultsMiddleware,  
+...When handled by soemthing else, the middleware was NOT setting response headers to problem result...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 12th, 2018_  **v1.0.88**  
 - Pagination,  
 ...Simplified, Simplified, Simplified.  Removed all alias output, 

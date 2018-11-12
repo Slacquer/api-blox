@@ -55,20 +55,17 @@ namespace APIBlox.AspNetCore
             {
                 string response;
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.Headers["Content-Type"] = "application/problem+json";
 
                 if (error.Error is HandledRequestException handled)
                 {
                     if (handled.RequestErrorObject.Status != null)
                         context.Response.StatusCode = handled.RequestErrorObject.Status.Value;
-                    
+
                     response = handled.RequestErrorObject.Serialize();
                 }
                 else
-                {
-                    context.Response.Headers["Content-Type"] = "application/problem+json";
-
                     response = BuildResponse(error.Error, context.Request.Path);
-                }
 
                 await context.Response.WriteAsync(response, context.RequestAborted).ConfigureAwait(false);
             }
