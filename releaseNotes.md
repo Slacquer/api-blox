@@ -6,6 +6,9 @@ unnecessarily overcomplicated the code.  Inputs can still be aliased,
 but return property names will always be the same.  Also removed the json 
 bits for processing alias input...  
 
+- FilteredQuery,  
+...Added another query...  
+
 - Examples,  
 ...I have yet to continue with them but I did alter them for the changes 
 in the last few releases...  
