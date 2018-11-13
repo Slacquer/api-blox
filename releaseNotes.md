@@ -1,3 +1,17 @@
+_November 12th, 2018_  **v1.0.91**  
+- ServerFaultsMiddleware,  
+...v1.0.90, inccorect, the problem was not the content-type, it was the fact we only wrote a 
+reponse as a string but didn't take into consideration anything else.  Therefore we are now 
+converting our errors to ObjectResults and writing those with the help of the 
+WriteResultExecutorAsync extension method.  This means we removed the 
+_AddApplicationJsonAsProblemResultContentType_ extension method...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 12th, 2018_  **v1.0.90**  
 - ServerFaultsMiddleware & ProblemResult,  
 ...Seems there may be an issue with Angular 5 and the application/problem+json content-type.  So 

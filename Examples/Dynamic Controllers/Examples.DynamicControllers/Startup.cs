@@ -55,6 +55,7 @@ namespace Examples
         {
             services
 #if UseAPIBlox
+                .AddServerFaults()
                 //
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)

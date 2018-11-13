@@ -123,7 +123,7 @@ namespace APIBlox.AspNetCore.Types.Errors
             }
 
             if (errors)
-                Properties.Add("Errors", Errors);
+                Properties.TryAdd("Errors", Errors);
 
             return base.GetDynamicMemberNames();
         }

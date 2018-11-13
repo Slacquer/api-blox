@@ -56,11 +56,10 @@ namespace Examples
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddApplicationJsonAsProblemResultContentType()
 #if UseAPIBlox
-
-            //
-            // Instead of having to manually add to service collection.
+                .AddServerFaults()
+                //
+                // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
                 //
                 //  Change what is returned to the user when an error occurs.
