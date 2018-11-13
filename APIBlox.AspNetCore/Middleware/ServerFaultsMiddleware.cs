@@ -55,7 +55,7 @@ namespace APIBlox.AspNetCore
             {
                 string response;
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                context.Response.Headers["Content-Type"] = "application/problem+json";
+                context.Response.Headers["Content-Type"] = InternalHelpers.ErrorResponseContentType;
 
                 if (error.Error is HandledRequestException handled)
                 {

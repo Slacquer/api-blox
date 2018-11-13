@@ -1,5 +1,6 @@
 ﻿using System;
 using APIBlox.AspNetCore;
+using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Types.Errors;
 
 // ReSharper disable once CheckNamespace
@@ -25,6 +26,19 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (!(alterAction is null))
                 InternalHelpers.AlterRequestErrorObjectAction = alterAction;
+
+            return services;
+        }
+
+        /// <summary>
+        ///     Forces the <see cref="ServerFaultsMiddleware"/> and the <see cref="ProblemResult"/> to set their
+        ///     content-type to application/json rather than application/problem+json.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddApplicationJsonAsProblemResultContentType(this IServiceCollection services)
+        {
+            InternalHelpers.ErrorResponseContentType = "application/json";
 
             return services;
         }

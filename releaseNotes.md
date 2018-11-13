@@ -1,3 +1,15 @@
+_November 12th, 2018_  **v1.0.90**  
+- ServerFaultsMiddleware & ProblemResult,  
+...Seems there may be an issue with Angular 5 and the application/problem+json content-type.  So 
+I have added the ability to force both the middleware and the actionresult to use application/json 
+when using the AddApplicationJsonAsProblemResultContentType extension method...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 12th, 2018_  **v1.0.89**  
 - ServerFaultsMiddleware,  
 ...When handled by soemthing else, the middleware was NOT setting response headers to problem result...  

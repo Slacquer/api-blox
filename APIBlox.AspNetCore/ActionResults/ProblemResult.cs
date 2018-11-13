@@ -38,7 +38,7 @@ namespace APIBlox.AspNetCore.ActionResults
             Error = error;
             StatusCode = Error.Status;
             ContentTypes.Clear();
-            ContentTypes.Add("application/problem+json");
+            ContentTypes.Add(InternalHelpers.ErrorResponseContentType);
         }
 
         /// <inheritdoc />

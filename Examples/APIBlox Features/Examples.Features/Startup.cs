@@ -56,6 +56,7 @@ namespace Examples
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddApplicationJsonAsProblemResultContentType()
 #if UseAPIBlox
 
             //
