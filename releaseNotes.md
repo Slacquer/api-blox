@@ -1,3 +1,13 @@
+_November 14th, 2018_  **v1.0.92**  
+- NetCore 2.1.5 & AspNetCore 2.1.6,  
+...Updated...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 12th, 2018_  **v1.0.91**  
 - ServerFaultsMiddleware,  
 ...v1.0.90, inccorect, the problem was not the content-type, it was the fact we only wrote a 
