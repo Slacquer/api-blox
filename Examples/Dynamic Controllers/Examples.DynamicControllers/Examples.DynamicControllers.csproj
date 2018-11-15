@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> 
+    <RuntimeFrameworkVersion>2.1.*</RuntimeFrameworkVersion> 
     <RootNamespace>Examples</RootNamespace> 
   </PropertyGroup>
 
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.*" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
   </ItemGroup>
