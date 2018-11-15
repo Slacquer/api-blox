@@ -1,3 +1,17 @@
+_November 15th, 2018_  **v1.0.94**  
+- Sln,  
+...Just a whole new level of dumb, why is versioning sucha pita.  I made the mistake of 
+upgrading to 2.1.6 and now nothing builds correctly in VSTS, when I finally get it to build 
+correctly in VSTS, then nothing works in Azure app services becausse 2.1.6 doesnt 
+exist.  Oh buy hey theres an extension update for 2.2, which is completely useless, 
+where is the support for 2.1.6?!?!...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 15th, 2018_  **v1.0.93**  
 - Sln,  
 ...Changing versions to use lowerbound...  
