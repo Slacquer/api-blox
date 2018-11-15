@@ -1,3 +1,13 @@
+_November 15th, 2018_  **v1.0.93**  
+- Sln,  
+...Changing versions to use lowerbound...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 14th, 2018_  **v1.0.92**  
 - NetCore 2.1.5 & AspNetCore 2.1.6,  
 ...Updated...  
