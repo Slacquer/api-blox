@@ -1,4 +1,4 @@
-_November 15th, 2018_  **v1.0.94**  
+_November 15th, 2018_  **v1.0.95**  
 - Sln,  
 ...Just a whole new level of dumb, why is versioning sucha pita.  I made the mistake of 
 upgrading to 2.1.6 and now nothing builds correctly in VSTS, when I finally get it to build 
