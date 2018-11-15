@@ -1,7 +1,5 @@
 <Project>
  <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.*</RuntimeFrameworkVersion>
     <Authors>Slacquer</Authors>
     <Company>Slacquers Building Blox</Company>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
