@@ -49,12 +49,10 @@ _**As of Visual Studio v15.8.7**_
  [General Features][4]    
  [Dynamic Controller(s)][5]  
 
-## Code
-
+<br>
 <br>
 
-
-#### Thanks for having a look :)
+## Thanks for having a look :)
 _My hope is that these packages may help someone other than myself_.  
 Thanks,    
 Slacquer -[email][2]
