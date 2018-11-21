@@ -1,5 +1,16 @@
 _November 15th, 2018_  **v1.0.95**  
 - Sln,  
+...Turned off explicit RuntimeFrameworkVersion in project files And explicity set 
+AspNetCoreApp to lowerbound 2.1.*...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+_November 15th, 2018_  **v1.0.95**  
+- Sln,  
 ...Just a whole new level of dumb, why is versioning sucha pita.  I made the mistake of 
 upgrading to 2.1.6 and now nothing builds correctly in VSTS, when I finally get it to build 
 correctly in VSTS, then nothing works in Azure app services becausse 2.1.6 doesnt 
