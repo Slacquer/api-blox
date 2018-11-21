@@ -1,8 +1,8 @@
 [1]: https://github.com/dotnet/sourcelink
 [2]: mailto:slacquer2018@gmail.com
 [3]: ./response-objects.md
-[4]: ./Examples/APIBlox%20%Features/Examples.Features
-[5]: ./Examples/Dynamic%20%Controllers/Examples.DynamicControllers
+[4]: https://github.com/Slacquer/api-blox/tree/master/Examples/APIBlox%20Features/Examples.Features
+[5]: https://github.com/Slacquer/api-blox/tree/master/Examples/Dynamic%20%Controllers/Examples.DynamicControllers
 [6]: ./releaseNotes.md
 
 [sdk]: https://www.microsoft.com/net/download
