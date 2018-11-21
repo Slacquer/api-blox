@@ -1,4 +1,4 @@
-_November 15th, 2018_  **v1.0.95**  
+_November 15th, 2018_  **v1.0.96**  
 - Sln,  
 ...Turned off explicit RuntimeFrameworkVersion in project files And explicity set 
 AspNetCoreApp to lowerbound 2.1.*...  
