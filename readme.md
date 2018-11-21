@@ -32,7 +32,7 @@ _November 21st, 2018_  **v1.0.96** _[release notes][6]_
 - All packages have [**SourceLink**][1] enabled.  In additon, the packages contain **xml comment** files.  
 **TIP** if you have never used the source link features then let me save you some trouble!  
 _**As of Visual Studio v15.8.7**_
-    1. Add https://nuget.smbsrc.net to **tools\options\debugging\symbols** and make sure its checked, you may want to filter out symbols but for now make sure **Load all modules, uness excluded** is selected.
+    1. Add https://nuget.smbsrc.net to **tools\options\debugging\symbols** and make sure its checked, you may want to filter out symbols but for now make sure **Load all modules, unless excluded** is selected.
     2. _UN-CHECK_ **tools\options\debugging\enable just my code**
     3. _CHECK_ **tools\options\debugging\enable source server support**
     4. _CHECK_ **tools\options\debugging\enable source link support**
