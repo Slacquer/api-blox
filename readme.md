@@ -41,7 +41,7 @@ _**As of Visual Studio v15.8.7**_
 - I love regions, most devs don't so I have removed them here to keep you happy :)
 - This document and the project(s) are a work in progress, feedback and changes would be appreciated but please be kind.
 - _Also see_ [_Response Object.docx_][3] for in-depth response information.
-- **I know the documentation is lacking, but I will get to at some point**, if you have questions or just need some help, my contact is at the bottom of this docuemnt.  
+- **I know the documentation is lacking, but I will get to at some point**, if you have questions or just need some help, my contact is at the bottom of this document.  
 
 <br>
 
