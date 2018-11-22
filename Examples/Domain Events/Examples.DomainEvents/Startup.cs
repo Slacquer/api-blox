@@ -41,12 +41,12 @@ namespace Examples
         public void ConfigureServices(IServiceCollection services)
         {
             services
+
                 //
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
-                
+                .AddDomainEventsDispatcher()
                 .AddMvc()
-                
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);

@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Examples.DomainEvents.csproj.DotSettings" />
     <None Remove="Examples.DomainEvents.xml" />
   </ItemGroup>
 
