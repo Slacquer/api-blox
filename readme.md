@@ -3,7 +3,8 @@
 [3]: ./response-objects.md
 [4]: https://github.com/Slacquer/api-blox/tree/master/Examples/APIBlox%20Features/Examples.Features
 [5]: https://github.com/Slacquer/api-blox/tree/master/Examples/Dynamic%20Controllers/Examples.DynamicControllers
-[6]: ./releaseNotes.md
+[cqrs]: https://github.com/Slacquer/api-blox/tree/master/Examples/CQRS/Examples.Cqrs
+[rn]: ./releaseNotes.md
 
 [sdk]: https://www.microsoft.com/net/download
 [logo]: ./logo-blue-large.png
@@ -11,10 +12,11 @@
 ![:)][logo]   
 # API Blox
 
-_November 21st, 2018_  **v1.0.96** _[release notes][6]_ 
+_November 21st, 2018_  **v1.0.96** _[release notes][rn]_ 
 
+<br>
 
-## Minimal Instructions
+## Packages
  Solution contains the following NuGet packages.  
 
 - APIBlox.AspNetCore  
@@ -25,7 +27,7 @@ _November 21st, 2018_  **v1.0.96** _[release notes][6]_
 - APIBlox.NetCore.Common  
 - APIBlox.NetCore.DomainEvents
 
-
+<br>
 
 ## Things to keep in mind  
  
@@ -46,10 +48,10 @@ _**As of Visual Studio v15.8.7**_
 <br>
 
 ## Examples
- [General Features][4]    
+ [APIBlox Features][4]  
+ [CQRS][cqrs]  
  [Dynamic Controller(s)][5]  
 
-<br>
 <br>
 
 ## Thanks for having a look :)

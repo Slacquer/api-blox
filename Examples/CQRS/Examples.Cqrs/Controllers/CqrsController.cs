@@ -9,18 +9,21 @@ namespace Examples.Controllers
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Very simple usage examples for our CQRS bits.  More real world usage can be found in the Clean Architecture example.
+    ///     Very simple usage examples for our CQRS bits.  More real world usage can be found in the Clean Architecture
+    ///     example.
     ///     <para>
-    ///         I think the big "Take away" from these examples is to realize just how easy it ends up being to test the handlers rather than controller code.  They are self contained small blocks of testable code. (or at least should be :)
+    ///         I think the big "Take away" from these examples is to realize just how easy it ends up being to test the
+    ///         handlers rather than controller code.  They are self contained small blocks of testable code. (or at least
+    ///         should/could be :)
     ///     </para>
     ///     <para>
-    ///         FYI: (my opinion anyways...) 
+    ///         FYI: (my opinion anyways...)
     ///     </para>
     ///     <para>
-    ///         Request Validation = "Anything that can be tested without the need for external components (IE: checking a db value)."
+    ///         Request Validation = "Anything that CAN be tested without the need for external sources (IE: checking a db value)."
     ///     </para>
     ///     <para>
-    ///         This clearly means that Domain Validation = "Anything that can't be tested without the need for external components (IE: checking a db value)."
+    ///         Domain Validation = "Anything that CAN NOT be tested without the need for external sources (IE: checking a db value)."
     ///     </para>
     /// </summary>
     /// <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
@@ -33,7 +36,7 @@ namespace Examples.Controllers
         private readonly ICommandHandler<ExampleRequestObject> _commandHandler;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CqrsController"/> class.
+        ///     Initializes a new instance of the <see cref="CqrsController" /> class.
         /// </summary>
         /// <param name="queryNoInputsHandler">The query no inputs handler.</param>
         /// <param name="queryInputsHandler">The query inputs handler.</param>
@@ -41,7 +44,8 @@ namespace Examples.Controllers
         public CqrsController(
             IQueryHandler<IEnumerable<string>> queryNoInputsHandler,
             IQueryHandler<int, int> queryInputsHandler,
-            ICommandHandler<ExampleRequestObject> commandHandler)
+            ICommandHandler<ExampleRequestObject> commandHandler
+        )
         {
             _queryNoInputsHandler = queryNoInputsHandler;
             _queryInputsHandler = queryInputsHandler;
@@ -55,9 +59,7 @@ namespace Examples.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
-            var result = await _queryNoInputsHandler.HandleAsync(CancellationToken.None);
-
-            return Ok(result);
+            return Ok(await _queryNoInputsHandler.HandleAsync(CancellationToken.None));
         }
 
         /// <summary>
@@ -67,13 +69,12 @@ namespace Examples.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var result = await _queryInputsHandler.HandleAsync(id, CancellationToken.None);
-
-            return Ok(result);
+            return Ok(await _queryInputsHandler.HandleAsync(id, CancellationToken.None));
         }
 
         /// <summary>
-        ///     An example of a command handler, that is also "wrapped" with a decorator (a great use case is being able to do some domain validation before letting the handler deal with it).
+        ///     An example of a command handler, that is also "wrapped" with a decorator (a great use case is being able to do some
+        ///     domain validation before letting the handler deal with it).
         /// </summary>
         /// <param name="requestResource">The request resource.</param>
         /// <returns>ActionResult.</returns>
