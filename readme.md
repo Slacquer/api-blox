@@ -4,6 +4,8 @@
 [4]: https://github.com/Slacquer/api-blox/tree/master/Examples/APIBlox%20Features/Examples.Features
 [5]: https://github.com/Slacquer/api-blox/tree/master/Examples/Dynamic%20Controllers/Examples.DynamicControllers
 [cqrs]: https://github.com/Slacquer/api-blox/tree/master/Examples/CQRS/Examples.Cqrs
+[events]: https://github.com/Slacquer/api-blox/tree/master/Examples/Domain%20Events/Examples.DomainEvents
+
 [rn]: ./releaseNotes.md
 
 [sdk]: https://www.microsoft.com/net/download
@@ -50,6 +52,7 @@ _**As of Visual Studio v15.8.7**_
 ## Examples
  [APIBlox Features][4]  
  [CQRS][cqrs]  
+ [Domain Events][events]  
  [Dynamic Controller(s)][5]  
 
 <br>
