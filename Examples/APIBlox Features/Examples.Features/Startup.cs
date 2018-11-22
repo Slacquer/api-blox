@@ -96,8 +96,8 @@ namespace Examples
                 .AddMvc()
 #if UseAPIBlox
 
-            //
-            // Handles cancellation token cancelled.
+                //
+                // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
                 //
                 // Automatically fill in request object(s) from query params and route data.

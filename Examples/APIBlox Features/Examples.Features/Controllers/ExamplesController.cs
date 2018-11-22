@@ -70,7 +70,7 @@ namespace Examples.Controllers
 #if UseAPIBlox
         public ActionResult GetProblemResultExample(CommonStatusCodes statusCode = CommonStatusCodes.Forbidden, string description = null)
         {
-            if (statusCode == CommonStatusCodes.Ok)
+            if (statusCode == CommonStatusCodes.Ok || statusCode == CommonStatusCodes.NoResults)
                 return Ok("Try one that isn't a success code :)");
 
             var errObject = new RequestErrorObject();

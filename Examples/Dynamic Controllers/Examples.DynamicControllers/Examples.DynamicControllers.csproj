@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> 
     <RootNamespace>Examples</RootNamespace> 
   </PropertyGroup>
 
@@ -29,9 +28,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\APIBlox.AspNetCore.CommandsQueriesControllersOhMy\APIBlox.AspNetCore.CommandsQueriesControllersOhMy.csproj" />
     <ProjectReference Include="..\..\..\ApiBlox.AspNetCore.DynamicControllers\APIBlox.AspNetCore.DynamicControllers.csproj" />
-    <ProjectReference Include="..\..\..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\..\ApiBlox.NetCore.Common\APIBlox.NetCore.Common.csproj" />
-    <ProjectReference Include="..\..\..\ApiBlox.NetCore\APIBlox.NetCore.csproj" />
   </ItemGroup>
 
 </Project>

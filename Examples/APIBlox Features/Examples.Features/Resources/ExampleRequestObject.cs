@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using APIBlox.AspNetCore.Types;
 
 namespace Examples.Resources
 {

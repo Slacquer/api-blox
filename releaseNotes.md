@@ -1,3 +1,16 @@
+_November 21st, 2018_  **v1.0.97**  
+- EnsureResponseResultActionFilter,  
+...Tests for IEnumberable but would fail on strings (treated them as an 
+array and shouldn't have)...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
+
 _November 15th, 2018_  **v1.0.96**  
 - Sln,  
 ...Turned off explicit RuntimeFrameworkVersion in project files And explicity set 

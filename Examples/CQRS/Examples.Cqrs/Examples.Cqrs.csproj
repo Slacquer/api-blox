@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Source\Repos\FKS\api-blox\Examples\APIBlox Features\Examples.Features\Examples.Features.xml</DocumentationFile>
+    <DocumentationFile>D:\Source\Repos\FKS\api-blox\Examples\CQRS\Examples.Cqrs\Examples.Cqrs.xml</DocumentationFile>
     <DefineConstants>TRACE;UseAPIBlox</DefineConstants>
   </PropertyGroup>
 
@@ -15,16 +15,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Examples.Features.xml" />
+    <None Remove="Examples.Cqrs.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.App" version="2.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ApiBlox.AspNetCore.CommandsAndQueries\APIBlox.AspNetCore.CommandsAndQueries.csproj" />
     <ProjectReference Include="..\..\..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
   </ItemGroup>
 
