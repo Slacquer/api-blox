@@ -13,7 +13,7 @@ namespace Examples
 {
     internal class Startup
     {
-        private const string SiteTitle = "APIBlox Example: CQRS";
+        private const string SiteTitle = "APIBlox Example: Domain Events";
         private const string Version = "v1";
         private readonly string[] _assemblyNames;
         private readonly string[] _assemblyPaths;
@@ -41,25 +41,12 @@ namespace Examples
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddServerFaults()
-
                 //
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
-
-                //
-                //  Some decorators, be sure to do AFTER injectable services have been established.
-                .AddCqrsDecorators(_loggerFactory)
+                
                 .AddMvc()
-
-                //
-                // Handles cancellation token cancelled.
-                .AddOperationCancelledExceptionFilter()
-
-                //
-                // Pagination
-                //.AddEnsurePaginationResultActionFilter(100)
-                .AddEnsureResponseResultActionFilter()
+                
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
@@ -67,10 +54,6 @@ namespace Examples
 
         public void Configure(IApplicationBuilder app)
         {
-            //
-            // Handle any and all server (500) errors with a defined structure.
-            app.UseServerFaults();
-            
             app.UseHsts();
 
             app.UseMvc();

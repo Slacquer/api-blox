@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Examples.DomainEvents</name>
+    </assembly>
+    <members>
+        <member name="T:Examples.Resources.ExampleRequestObject">
+            <summary>
+                Class ExampleRequestObject.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.ExampleRequestObject.SomeValue">
+            <summary>
+                Gets or sets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+    </members>
+</doc>
