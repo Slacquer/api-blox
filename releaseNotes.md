@@ -1,7 +1,10 @@
-_November 21st, 2018_  **v1.0.97**  
+_November 22nd, 2018_  **v1.0.97**  
 - EnsureResponseResultActionFilter,  
 ...Tests for IEnumberable but would fail on strings (treated them as an 
 array and shouldn't have)...  
+
+- Exampls,  
+...Added CQRS example...  
 
 Thanks,  
 _Slacquer_  

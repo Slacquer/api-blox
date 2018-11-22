@@ -47,13 +47,14 @@ namespace Examples
         {
             services
                 .AddServerFaults()
+
                 //
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
+
                 //
                 //  Some decorators, be sure to do AFTER injectable services have been established.
                 .AddCqrsDecorators(_loggerFactory)
-
                 .AddMvc()
 
                 //

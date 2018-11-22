@@ -1,5 +1,4 @@
-﻿
-namespace Examples.Resources
+﻿namespace Examples.Resources
 {
     /// <summary>
     ///     Class ExampleRequestObject.

@@ -20,10 +20,12 @@ namespace Examples.Controllers
     ///         FYI: (my opinion anyways...)
     ///     </para>
     ///     <para>
-    ///         Request Validation = "Anything that CAN be tested without the need for external sources (IE: checking a db value)."
+    ///         Request Validation = "Anything that CAN be tested without the need for external sources (IE: checking a db
+    ///         value)."
     ///     </para>
     ///     <para>
-    ///         Domain Validation = "Anything that CAN NOT be tested without the need for external sources (IE: checking a db value)."
+    ///         Domain Validation = "Anything that CAN NOT be tested without the need for external sources (IE: checking a db
+    ///         value)."
     ///     </para>
     /// </summary>
     /// <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
