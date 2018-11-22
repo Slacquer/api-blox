@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
@@ -10,28 +8,18 @@ using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 
-#endregion
-
 // ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore
 {
     internal class PaginationMetadataBuilder : IPaginationMetadataBuilder
     {
-        #region -    Fields    -
-
         private readonly int _defaultPageSize;
         private Dictionary<string, string> _queryParams;
-
-        #endregion
-
-        #region -    Constructors    -
 
         public PaginationMetadataBuilder(int defaultPageSize = 1000)
         {
             _defaultPageSize = defaultPageSize;
         }
-
-        #endregion
 
         public PaginationMetadata Build(int resultCount, ActionExecutingContext context)
         {

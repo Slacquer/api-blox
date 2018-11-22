@@ -97,7 +97,8 @@ namespace APIBlox.AspNetCore
             {
                 ret = BuildNonProdResponse(err, instance);
 
-                // We always want to log the full meal deal, however do not display it to user(s) when in production.
+                // We always want to log the full meal deal,
+                // however do not display it to user(s) when in production.
                 _log.LogCritical(ret.Serialize());
             }
             catch (Exception ex)
