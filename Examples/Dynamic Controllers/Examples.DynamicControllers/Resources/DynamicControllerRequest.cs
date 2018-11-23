@@ -3,17 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
-    public class DynamicControllerRequest
+    internal class DynamicControllerRequest
     {
-        [FromQuery(Name ="requiredValueMustBeThreeCharacters")]
+        [FromQuery(Name = "requiredValueMustBeThreeCharacters")]
         [Required]
         [StringLength(3, MinimumLength = 3, ErrorMessage = "Value must be exactly 3 characters long.")]
         public string RequiredValueMustBeThreeCharacters { get; set; }
 
-        [FromRoute(Name = "someId")] 
-        public int SomeId { get; private set; }
+        [FromRoute(Name = "someId")]
+        public int SomeId { get; set; }
 
-        [FromRoute(Name = "id")] 
-        public int Id { get; private set; }
+        [FromRoute(Name = "id")]
+        public int Id { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Examples.Resources
 {
-    public class DynamicControllerPostResponse : IResource<int>
+    internal class DynamicControllerPostResponse : IResource<int>
     {
         public int Id { get; set; }
 

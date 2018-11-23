@@ -15,7 +15,7 @@ namespace Examples.Resources
         /// </para>
         /// </summary>
         /// <value>The parent value id.</value>
-        public int ValueId { get; private set; }
+        public int ValueId { get; private set; } // We can either do this or add FromRoute/FromQuery explicitly.
 
         /// <summary>
         ///     Gets or sets the cool new value.  I am required, so if

@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var parentsRoutes = new[]
             {
                 // SIDE NOTE: route values are case sensitive in swashbuckle UI, the need to match whatever the property name is.
-                "api/dev-v0.0.1/resources/{SomeRouteValueWeNeed:int}/parents",
+                "api/dev-v0.0.1/resources/{someRouteValueWeNeed:int}/parents",
                 //
                 //  Comment out to make it more readable in the browser.
                 "api/qa-v1-alpha/resources/parents",
@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // Since children is a sub route, we use a relative url(s), and they are
             // built for us, so we only need one url.  With that being said, you COULD call
             // AddController instead of AddSubController, and it NOT be considered a sub route.
-            var childrenSubRoutes = new[] {"{ParentId:int}/children"};
+            var childrenSubRoutes = new[] {"{parentId:int}/children"};
 
             //
             //  Now technically we COULD use the same models over and over which would

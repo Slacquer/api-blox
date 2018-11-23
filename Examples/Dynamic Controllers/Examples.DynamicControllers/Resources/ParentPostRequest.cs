@@ -2,8 +2,7 @@
 
 namespace Examples.Resources
 {
-    
-    public class ParentPostRequest
+    internal class ParentPostRequest
     {
         public int Age { get; set; }
         

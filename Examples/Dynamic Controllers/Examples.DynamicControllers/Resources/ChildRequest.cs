@@ -7,7 +7,10 @@ namespace Examples.Resources
     /// <inheritdoc />
     internal class ChildRequest : FilteredQuery
     {
-        [FromRoute]
-        public int ParentId { get; private set; }
+        [FromRoute(Name = "parentId")]
+        public int ParentId { get; set; }
+
+        [FromRoute(Name = "someRouteValueWeNeed")]
+        public int SomeRouteValueWeNeed { get; set; }
     }
 }
