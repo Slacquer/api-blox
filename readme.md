@@ -14,7 +14,7 @@
 ![:)][logo]   
 # API Blox
 
-_November 21st, 2018_  **v1.0.96** _[release notes][rn]_ 
+_November 22nd, 2018_  **v1.0.97** _[release notes][rn]_ 
 
 <br>
 
