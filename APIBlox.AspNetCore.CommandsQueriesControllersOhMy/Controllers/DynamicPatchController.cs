@@ -19,11 +19,8 @@ namespace APIBlox.AspNetCore.Controllers
     [ApiController]
     public sealed class DynamicPatchController<TPatchRequest> : ControllerBase,
         IDynamicController<TPatchRequest>
-        where TPatchRequest : PatchRequest
     {
         private readonly IPatchCommandHandler<TPatchRequest, HandlerResponse> _patchHandler;
-
-        private readonly string _rn = typeof(TPatchRequest).Name;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicPatchController{TRequest}" /> class.
@@ -40,6 +37,7 @@ namespace APIBlox.AspNetCore.Controllers
         ///         Responses: 204, 401, 403, 404, 409
         ///     </para>
         /// </summary>
+        /// <param name="request">The request.</param>
         /// <param name="patch">The patch.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;IActionResult&gt;.</returns>
@@ -50,17 +48,12 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Patch(
+            [FromRoute] TPatchRequest request,
             JsonPatchDocument patch,
             CancellationToken cancellationToken
         )
         {
-            //  If a service does not support UPSERT, then a PATCH/PUT call against a resource that
-            //  does not exist MUST result in an HTTP "409 Conflict" error.
-            var req = (TPatchRequest) RouteData.Values[_rn];
-
-            req.Patch = patch;
-
-            var ret = await _patchHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
+            var ret = await _patchHandler.HandleAsync(request, patch, cancellationToken).ConfigureAwait(false);
 
             return ret.HasErrors
                 ? (IActionResult) new ProblemResult(ret.Error)

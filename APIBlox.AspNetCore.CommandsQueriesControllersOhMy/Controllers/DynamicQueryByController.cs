@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Contracts;
-using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,7 +51,7 @@ namespace APIBlox.AspNetCore.Controllers
         public async Task<IActionResult> Get([FromRoute] TRequest request, CancellationToken cancellationToken)
         {
             var ret = await _getByHandler.HandleAsync(request, cancellationToken).ConfigureAwait(false);
-            
+
             if (ret.HasErrors)
                 return new ProblemResult(ret.Error);
 

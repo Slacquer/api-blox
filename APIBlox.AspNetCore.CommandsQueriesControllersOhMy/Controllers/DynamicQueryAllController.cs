@@ -24,7 +24,7 @@ namespace APIBlox.AspNetCore.Controllers
         where TResponse : IResource<TId>
     {
         private readonly IQueryHandler<TRequest, HandlerResponse> _getAllHandler;
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicQueryAllController{TRequest, TResponse, TId}" /> class.
         /// </summary>

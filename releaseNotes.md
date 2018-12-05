@@ -1,3 +1,15 @@
+_December 5th, 2018_  **v1.0.98**  
+- Patch Controller(s),  
+...Up until now had not actually used them, they did not handle any request data 
+(other than a patch document) very well...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _November 22nd, 2018_  **v1.0.97**  
 - EnsureResponseResultActionFilter,  
 ...Tests for IEnumberable but would fail on strings (treated them as an 

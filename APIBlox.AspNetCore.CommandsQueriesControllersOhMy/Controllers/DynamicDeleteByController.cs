@@ -21,7 +21,7 @@ namespace APIBlox.AspNetCore.Controllers
         where TRequest : class
     {
         private readonly ICommandHandler<TRequest, HandlerResponse> _deleteByHandler;
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicDeleteByController{TRequest}" /> class.
         /// </summary>
@@ -50,7 +50,7 @@ namespace APIBlox.AspNetCore.Controllers
             var ret = await _deleteByHandler.HandleAsync(request, cancellationToken).ConfigureAwait(false);
 
             return ret.HasErrors
-                ? (IActionResult)new ProblemResult(ret.Error)
+                ? (IActionResult) new ProblemResult(ret.Error)
                 : NoContent();
         }
     }
