@@ -1,3 +1,15 @@
+_December 6th, 2018_  **v1.0.99**  
+- IDynamicController contract(s),  
+- DynamicQueryByController and DynamicQueryAllController,  
+...Turns out sometimes you don't need to return an ID with a response, IE an aggregate 
+response that has no id to speak of...  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _December 5th, 2018_  **v1.0.98**  
 - Patch Controller(s),  
 ...Up until now had not actually used them, they did not handle any request data 

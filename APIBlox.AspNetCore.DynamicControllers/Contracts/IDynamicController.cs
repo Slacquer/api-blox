@@ -12,6 +12,21 @@
     ///     Marker Interface IDynamicController
     ///     <para>
     ///         Use when your controller action returns a different result than the
+    ///         incoming request (IE: POST) and you want to enforce a pattern yet
+    ///         not enforce a response with and ID.  IE: aggregates.
+    ///     </para>
+    /// </summary>
+    /// <typeparam name="TRequest">The type of the t request.</typeparam>
+    /// <typeparam name="TResponse">The type of the t response.</typeparam>
+    public interface IDynamicController<in TRequest, in TResponse>
+        where TResponse : IResource
+    {
+    }
+
+    /// <summary>
+    ///     Marker Interface IDynamicController
+    ///     <para>
+    ///         Use when your controller action returns a different result than the
     ///         incoming request (IE: POST) and you want to enforce a pattern.
     ///     </para>
     /// </summary>
