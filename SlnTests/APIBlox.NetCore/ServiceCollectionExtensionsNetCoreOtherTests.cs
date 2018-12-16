@@ -21,9 +21,7 @@ namespace SlnTests.APIBlox.NetCore
         public ServiceCollectionExtensionsNetCoreOtherTests()
         {
             _loggerFactory = new LoggerFactory();
-
-            _loggerFactory.AddConsole();
-
+            
             var path = Path.GetTempPath();
             var root = Path.Combine(path, @"a\b\c\d\e\");
 

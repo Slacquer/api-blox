@@ -28,6 +28,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.AspNetCore.Commands
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlnTests", "SlnTests\SlnTests.csproj", "{C117940A-6B60-4369-A258-9AD9AF6B546D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{B3BA19E4-AA63-4BC2-8C54-D9EAA864198A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.Cqrs", "Examples\CQRS\Examples.Cqrs\Examples.Cqrs.csproj", "{3BB58B4A-C008-4FDB-B0F7-6E0162565C3C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.Features", "Examples\APIBlox Features\Examples.Features\Examples.Features.csproj", "{6D026369-299F-4EF5-A4D4-CFA79D6FDEF5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.DomainEvents", "Examples\Domain Events\Examples.DomainEvents\Examples.DomainEvents.csproj", "{8D517581-A458-4657-9509-FD7ED803243D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.DynamicControllers", "Examples\Dynamic Controllers\Examples.DynamicControllers\Examples.DynamicControllers.csproj", "{5A1614E7-5E44-4FB2-8F69-134469ADB1F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,9 +76,31 @@ Global
 		{C117940A-6B60-4369-A258-9AD9AF6B546D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C117940A-6B60-4369-A258-9AD9AF6B546D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C117940A-6B60-4369-A258-9AD9AF6B546D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BB58B4A-C008-4FDB-B0F7-6E0162565C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BB58B4A-C008-4FDB-B0F7-6E0162565C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BB58B4A-C008-4FDB-B0F7-6E0162565C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BB58B4A-C008-4FDB-B0F7-6E0162565C3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D026369-299F-4EF5-A4D4-CFA79D6FDEF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D026369-299F-4EF5-A4D4-CFA79D6FDEF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D026369-299F-4EF5-A4D4-CFA79D6FDEF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D026369-299F-4EF5-A4D4-CFA79D6FDEF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D517581-A458-4657-9509-FD7ED803243D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D517581-A458-4657-9509-FD7ED803243D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D517581-A458-4657-9509-FD7ED803243D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D517581-A458-4657-9509-FD7ED803243D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A1614E7-5E44-4FB2-8F69-134469ADB1F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A1614E7-5E44-4FB2-8F69-134469ADB1F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A1614E7-5E44-4FB2-8F69-134469ADB1F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A1614E7-5E44-4FB2-8F69-134469ADB1F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3BB58B4A-C008-4FDB-B0F7-6E0162565C3C} = {B3BA19E4-AA63-4BC2-8C54-D9EAA864198A}
+		{6D026369-299F-4EF5-A4D4-CFA79D6FDEF5} = {B3BA19E4-AA63-4BC2-8C54-D9EAA864198A}
+		{8D517581-A458-4657-9509-FD7ED803243D} = {B3BA19E4-AA63-4BC2-8C54-D9EAA864198A}
+		{5A1614E7-5E44-4FB2-8F69-134469ADB1F1} = {B3BA19E4-AA63-4BC2-8C54-D9EAA864198A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5ADD174-9558-4269-9EFE-B50D2A576768}
