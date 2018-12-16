@@ -53,18 +53,18 @@ namespace SlnTests.APIBlox.NetCore
             Assert.True(hasRelease);
         }
 
-        [Fact]
-        public void ShouldHavePathsFromSingleDoubleAsterisksOnlyBin()
-        {
-            var parser = PathParser.FindAllSubDirectories(_paths[3].Replace(@"\a", @"\**")).ToList();
+        //[Fact]
+        //public void ShouldHavePathsFromSingleDoubleAsterisksOnlyBin()
+        //{
+        //    var parser = PathParser.FindAllSubDirectories(_paths[3].Replace(@"\a", @"\**")).ToList();
 
-            Assert.NotNull(parser);
-            Assert.True(parser.Count > 0);
+        //    Assert.NotNull(parser);
+        //    Assert.True(parser.Count > 0);
 
-            var hasRelease = parser.Any(d => d.FullName.EndsWithEx("findme"));
+        //    var hasRelease = parser.Any(d => d.FullName.EndsWithEx("findme"));
 
-            Assert.True(hasRelease);
-        }
+        //    Assert.True(hasRelease);
+        //}
 
         [Fact]
         public void ShouldHaveSinglePathAsNoAsterisksWereProvided()

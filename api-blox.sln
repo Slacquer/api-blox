@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.NetCore.DomainEvent
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.AspNetCore.CommandsQueriesControllersOhMy", "APIBlox.AspNetCore.CommandsQueriesControllersOhMy\APIBlox.AspNetCore.CommandsQueriesControllersOhMy.csproj", "{D033F0DC-4EF0-4208-8F53-E9583CA88A81}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlnTests", "SlnTests\SlnTests.csproj", "{C117940A-6B60-4369-A258-9AD9AF6B546D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{D033F0DC-4EF0-4208-8F53-E9583CA88A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D033F0DC-4EF0-4208-8F53-E9583CA88A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D033F0DC-4EF0-4208-8F53-E9583CA88A81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C117940A-6B60-4369-A258-9AD9AF6B546D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C117940A-6B60-4369-A258-9AD9AF6B546D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C117940A-6B60-4369-A258-9AD9AF6B546D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C117940A-6B60-4369-A258-9AD9AF6B546D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
