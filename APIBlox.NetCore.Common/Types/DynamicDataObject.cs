@@ -32,7 +32,7 @@ namespace APIBlox.NetCore.Types
                 NullValueHandling = NullValueHandling.Ignore,
                 Formatting = Formatting.Indented
             };
-            settings.Converters.Add(new StringEnumConverter(false));
+            settings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy(), false));
             Settings = settings;
         }
 
