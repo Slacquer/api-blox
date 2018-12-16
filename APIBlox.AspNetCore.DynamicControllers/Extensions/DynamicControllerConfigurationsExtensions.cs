@@ -160,7 +160,6 @@ namespace Microsoft.Extensions.DependencyInjection
         ///         something like IEnumerable{MyType}, don't just use MyType.
         ///     </para>
         /// </typeparam>
-        /// <typeparam name="TId">The type of the t id</typeparam>
         /// <param name="configurations">The configurations instance.</param>
         /// <param name="routes">The routes.</param>
         /// <param name="controllers">The controllers.</param>

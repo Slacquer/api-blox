@@ -43,8 +43,6 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// <inheritdoc />
         public RequestErrorObject(string title, string detail, int? status, string instance)
         {
-            CreateLogger();
-
             Title = title;
             Detail = detail;
             Status = status;
@@ -130,8 +128,6 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// <returns>A sequence that contains dynamic member names.</returns>
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            CreateLogger();
-
             if (Title.IsEmptyNullOrWhiteSpace())
             {
                 var msg = $"RFC7807 states that {GetType().Name}" +
@@ -209,18 +205,6 @@ namespace APIBlox.AspNetCore.Types.Errors
                     $"An error has occured while invoking AddAlterRequestErrorObject.alterAction.  Ex: {ex.Message}"
                 );
             }
-        }
-
-        private void CreateLogger()
-        {
-            if (!(Logger is null))
-                return;
-
-            var factory = new LoggerFactory();
-
-            factory.AddConsole(true).AddDebug().AddEventSourceLogger();
-
-            Logger = factory.CreateLogger<RequestErrorObject>();
         }
     }
 }

@@ -37,8 +37,6 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// <param name="detail">The detail.</param>
         public DynamicErrorObject(string title, string detail)
         {
-            CreateLogger();
-
             Title = title;
             Detail = detail;
         }
@@ -128,16 +126,16 @@ namespace APIBlox.AspNetCore.Types.Errors
             return base.GetDynamicMemberNames();
         }
 
-        private void CreateLogger()
-        {
-            if (!(Logger is null))
-                return;
+        //private void CreateLogger()
+        //{
+        //    if (!(Logger is null))
+        //        return;
 
-            var factory = new LoggerFactory();
+        //    var factory = new LoggerFactory();
 
-            factory.AddConsole(true).AddDebug().AddEventSourceLogger();
+        //    factory.AddConsole(true).AddDebug().AddEventSourceLogger();
 
-            Logger = factory.CreateLogger<DynamicErrorObject>();
-        }
+        //    Logger = factory.CreateLogger<DynamicErrorObject>();
+        //}
     }
 }
