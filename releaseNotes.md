@@ -1,3 +1,12 @@
+_January 17th, 2019_  **v1.0.100**  
+- DotNetCore 2.2 Upgrade  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _December 6th, 2018_  **v1.0.99**  
 - IDynamicController contract(s),  
 - DynamicQueryByController and DynamicQueryAllController,  
