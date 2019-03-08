@@ -37,12 +37,12 @@ namespace APIBlox.NetCore
         /// <param name="events">The events.</param>
         /// <returns>Task.</returns>
         /// <inheritdoc />
-        public Task PublishEventsAsync<TDomainEvent>(params TDomainEvent[] events)
+        public async Task PublishEventsAsync<TDomainEvent>(params TDomainEvent[] events)
             where TDomainEvent : class, IDomainEvent
         {
             foreach (var ev in events)
             {
-                ExecuteHandlers(ev,
+                await ExecuteHandlers(ev,
                     async handlerTask =>
                     {
                         _log.LogInformation(() => $"Calling HandleEvent {handlerTask}");
@@ -51,8 +51,7 @@ namespace APIBlox.NetCore
                     }
                 );
             }
-
-            return Task.CompletedTask;
+            
         }
     }
 }

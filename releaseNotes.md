@@ -1,3 +1,13 @@
+_January 17th, 2019_  **v1.0.103**  
+- IDomainEventHandler, 
+- added async
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _January 17th, 2019_  **v1.0.102**  
 - IDomainEventHandler, 
 - added CancellationToken
