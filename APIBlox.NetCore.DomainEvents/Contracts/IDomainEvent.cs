@@ -9,10 +9,5 @@
     /// </summary>
     public interface IDomainEvent
     {
-        /// <summary>
-        ///     Gets the aggregate identifier.
-        /// </summary>
-        /// <value>The aggregate identifier.</value>
-        int AggregateId { get; }
     }
 }

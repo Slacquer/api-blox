@@ -1,3 +1,13 @@
+_January 17th, 2019_  **v1.0.101**  
+- DomainEvents, 
+- removed AggregateId from IDomainEvent
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _January 17th, 2019_  **v1.0.100**  
 - DotNetCore 2.2 Upgrade  
 

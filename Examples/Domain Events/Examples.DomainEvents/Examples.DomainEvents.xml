@@ -67,11 +67,6 @@
                 Some other domain specific event value needed for consumption.
             </param>
         </member>
-        <member name="P:Examples.EventBits.RequestObjectCreatedEvent.AggregateId">
-            <summary>
-                Gets the aggregate identifier.
-            </summary>
-        </member>
         <member name="P:Examples.EventBits.RequestObjectCreatedEvent.TheValueThatWasCreated">
             <summary>
                 Gets the value that was created.

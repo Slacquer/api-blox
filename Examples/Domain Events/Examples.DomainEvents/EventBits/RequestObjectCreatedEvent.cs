@@ -18,17 +18,10 @@ namespace Examples.EventBits
         /// </param>
         public RequestObjectCreatedEvent(int theValueThatWasCreated, string someOtherDomainSpecificEventValueNeededForConsumption)
         {
-            AggregateId = new Random().Next();
-
             TheValueThatWasCreated = theValueThatWasCreated;
             SomeOtherDomainSpecificEventValueNeededForConsumption = someOtherDomainSpecificEventValueNeededForConsumption;
         }
-
-        /// <summary>
-        ///     Gets the aggregate identifier.
-        /// </summary>
-        public int AggregateId { get; }
-
+        
         /// <summary>
         ///     Gets the value that was created.
         /// </summary>

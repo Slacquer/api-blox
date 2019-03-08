@@ -18,8 +18,7 @@ namespace Examples.EventBits
         public Task HandleEventAsync(RequestObjectCreatedEvent domainEvent)
         {
             _log.LogInformation(() =>
-                $"------------------\n\nHandling created event for AggregateId " +
-                $"{domainEvent.AggregateId}.  Its special value " +
+                "------------------\n\nHandling created event.  Its special value " +
                 $"is {domainEvent.SomeOtherDomainSpecificEventValueNeededForConsumption}, the " +
                 $"value that was used during request was {domainEvent.TheValueThatWasCreated}\n\n-------------\n\n"
             );
