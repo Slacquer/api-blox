@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Contracts;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ namespace Examples.EventBits
             _log = loggerFactory.CreateLogger<RequestObjectCreatedEventHandler>();
         }
 
-        public Task HandleEventAsync(RequestObjectCreatedEvent domainEvent)
+        public Task HandleEventAsync(RequestObjectCreatedEvent domainEvent, CancellationToken cancellationToken = default)
         {
             _log.LogInformation(() =>
                 "------------------\n\nHandling created event.  Its special value " +
@@ -28,5 +29,6 @@ namespace Examples.EventBits
 
             return Task.CompletedTask;
         }
+
     }
 }

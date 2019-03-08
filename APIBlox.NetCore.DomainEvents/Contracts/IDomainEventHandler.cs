@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace APIBlox.NetCore.Contracts
 {
@@ -10,10 +11,11 @@ namespace APIBlox.NetCore.Contracts
         where TDomainEvent : IDomainEvent
     {
         /// <summary>
-        ///     Handles the event.
+        /// Handles the event asynchronous.
         /// </summary>
-        /// <param name="domainEvent">The event.</param>
+        /// <param name="domainEvent">The domain event.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task HandleEventAsync(TDomainEvent domainEvent);
+        Task HandleEventAsync(TDomainEvent domainEvent, CancellationToken cancellationToken = default);
     }
 }
