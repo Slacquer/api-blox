@@ -1,4 +1,14 @@
-_January 17th, 2019_  **v1.0.103**  
+_March 8th, 2019_  **v1.0.103**  
+- PostController, 
+- ID equals failed when NOT an int, duh.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+_March 8th, 2019_  **v1.0.103**  
 - IDomainEventHandler, 
 - added async
 
@@ -8,7 +18,7 @@ _Slacquer_
 <br>
 <br>
 
-_January 17th, 2019_  **v1.0.102**  
+_March 8th, 2019_  **v1.0.102**  
 - IDomainEventHandler, 
 - added CancellationToken
 
@@ -18,7 +28,7 @@ _Slacquer_
 <br>
 <br>
 
-_January 17th, 2019_  **v1.0.101**  
+_March 8th, 2019_  **v1.0.101**  
 - DomainEvents, 
 - removed AggregateId from IDomainEvent
 

@@ -74,7 +74,7 @@ namespace APIBlox.AspNetCore.Controllers
 
             var id = FindId(ret.Result);
 
-            return id == -1
+            return Equals(id, -1)
                 ? (IActionResult) Ok(ret.Result)
                 : (IActionResult) CreatedAtRoute(new {id}, ret.Result);
         }
