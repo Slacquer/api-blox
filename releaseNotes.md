@@ -1,4 +1,4 @@
-_March 8th, 2019_  **v1.0.104**  
+_March 8th, 2019_  **v1.0.105**  
 - PostAcceptedController, 
 - When doing event sourcing for example, it would be common practice
 to not be able to set a location header (the ID created by some orchestration
