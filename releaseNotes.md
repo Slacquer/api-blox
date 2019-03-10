@@ -1,4 +1,17 @@
 _March 8th, 2019_  **v1.0.104**  
+- PostAcceptedController, 
+- When doing event sourcing for example, it would be common practice
+to not be able to set a location header (the ID created by some orchestration
+layer for a particular read model would be unknown to the command handler),
+therefore it would be necessary to return a Accepted http status (202).
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+_March 8th, 2019_  **v1.0.104**  
 - PostController, 
 - ID equals failed when NOT an int, duh.
 
