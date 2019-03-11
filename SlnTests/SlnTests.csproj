@@ -29,6 +29,7 @@
     <ProjectReference Include="..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
     <ProjectReference Include="..\ApiBlox.NetCore.Common\APIBlox.NetCore.Common.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.DomainEvents\APIBlox.NetCore.DomainEvents.csproj" />
+    <ProjectReference Include="..\APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj" />
     <ProjectReference Include="..\ApiBlox.NetCore\APIBlox.NetCore.csproj" />
   </ItemGroup>
 
