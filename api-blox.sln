@@ -42,6 +42,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.NetCore.EventStore2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIBlox.NetCore.EventStore", "APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj", "{C56E1526-6373-4470-82E1-8075376C0C86}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIBlox.NetCore.EventStore.CosmosDb", "APIBlox.NetCore.EventStore.CosmosDb\APIBlox.NetCore.EventStore.CosmosDb.csproj", "{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{C56E1526-6373-4470-82E1-8075376C0C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C56E1526-6373-4470-82E1-8075376C0C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C56E1526-6373-4470-82E1-8075376C0C86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

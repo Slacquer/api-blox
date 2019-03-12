@@ -10,14 +10,14 @@ using Newtonsoft.Json.Converters;
 
 namespace APIBlox.NetCore.Documents
 {
-    internal enum DocumentType
+    public enum DocumentType
     {
         Root = 1,
         Event,
         Snapshot
     }
 
-    internal abstract class DocumentBase
+    public abstract class DocumentBase
     {
         #region -    Fields    -
 

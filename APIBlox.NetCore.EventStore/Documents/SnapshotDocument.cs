@@ -4,7 +4,7 @@
 
 namespace APIBlox.NetCore.Documents
 {
-    internal class SnapshotDocument : DocumentBase
+    public class SnapshotDocument : DocumentBase
     {
         public override string Id => GenerateId(StreamId, Version);
 

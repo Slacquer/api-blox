@@ -1,6 +1,6 @@
 ﻿namespace APIBlox.NetCore.Documents
 {
-    internal class EventDocument : DocumentBase
+    public class EventDocument : DocumentBase
     {
         public override string Id => GenerateId(StreamId, Version);
 
