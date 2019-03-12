@@ -9,33 +9,41 @@ namespace APIBlox.NetCore.Documents
 {
 
 
-    public abstract class DocumentBase:IEventStoreDocument
+    public class EventStoreDocument : IEventStoreDocument
     {
         protected const char Separator = '-';
 
-        public abstract string Id { get; }
+        [JsonProperty(PropertyName = "id")]
+        public virtual string Id { get; }
 
+        [JsonProperty(PropertyName = "partitionBy")]
         public string PartitionBy { get; set; }
 
         [JsonProperty(PropertyName = "_etag")] public string ETag { get; set; }
 
-        [JsonProperty(PropertyName = "_ts")] 
+        [JsonProperty(PropertyName = "_ts")]
         public long TimeStamp { get; set; }
 
+        [JsonProperty(PropertyName = "metadataType")]
         public string MetadataType { get; set; }
 
+        [JsonProperty(PropertyName = "metadata")]
         public object Metadata { get; set; }
 
+        [JsonProperty(PropertyName = "documentType")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public abstract DocumentType DocumentType { get; }
+        public virtual DocumentType DocumentType { get; }
 
+        [JsonProperty(PropertyName = "streamId")]
         public string StreamId { get; set; }
 
+        [JsonProperty(PropertyName = "version")]
         public long Version { get; set; }
 
+        [JsonProperty(PropertyName = "sortOrder")]
         public decimal SortOrder => Version + GetOrderingFraction(DocumentType);
 
-        public static DocumentBase Parse(Document document, Func<object> initializeSnapshotObject, JsonSerializerSettings jsonSerializerSettings)
+        public static EventStoreDocument Parse(Document document, Func<object> initializeSnapshotObject, JsonSerializerSettings jsonSerializerSettings)
         {
             if (document == null)
                 throw new ArgumentNullException(nameof(document));
@@ -46,7 +54,7 @@ namespace APIBlox.NetCore.Documents
             var documentType = document.GetPropertyValue<DocumentType>(nameof(DocumentType).ToCamelCase());
             documentType = documentType == 0 ? document.GetPropertyValue<DocumentType>(nameof(DocumentType)) : documentType;
 
-            DocumentBase ret;
+            EventStoreDocument ret;
 
             switch (documentType)
             {

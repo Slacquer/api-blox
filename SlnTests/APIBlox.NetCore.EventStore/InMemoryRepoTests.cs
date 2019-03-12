@@ -22,7 +22,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
         [Fact]
         public async Task ShouldBeAbleToCreateAndGetASingleItem()
         {
-            var agg = new DummyAggregate();
+            var agg = new DummyAggregate { StreamId = "test-doc" };
 
             var options = new CosmosDbOptions
             {
@@ -43,7 +43,11 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
             var lst = new List<EventModel> { new EventModel("1"), new EventModel("2"), new EventModel("3") };
 
-            var result = await svc.WriteToEventStreamAsync(agg.AggregateId.ToString(), lst.ToArray());
+            await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
+
+            lst = new List<EventModel> { new EventModel("4") };
+
+            await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
 
             //Assert.NotNull(result);
             //Assert.True(result.Version == 1);
@@ -84,64 +88,9 @@ namespace SlnTests.APIBlox.NetCore.EventStore
     {
         public Guid AggregateId { get; } = Guid.NewGuid();
         public string Id { get; }
+
+        public string StreamId { get; set; }
         public long TimeStamp { get; }
     }
 
-    public class InMemoryRepo<T> : IEventStoreRepository<T>
-        where T : DocumentBase
-    {
-        private List<T> _items = new List<T>();
-
-        public Task<int> AddAsync(params T[] eventObject)
-        {
-            _items.AddRange(eventObject);
-
-            return Task.FromResult(eventObject.Length);
-        }
-
-        public Task<bool> DeleteAsync(Func<T, bool> predicate)
-        {
-            var rem = _items.Where(predicate).ToList();
-
-            if (!rem.Any())
-                return Task.FromResult(false);
-
-            _items = _items.Except(rem).ToList();
-
-            return Task.FromResult(true);
-        }
-
-        public Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate)
-        {
-            var rem = _items.Where(predicate).ToList();
-
-            if (!rem.Any())
-                return null;
-
-            return Task.FromResult<IEnumerable<T>>(rem);
-        }
-
-        public Task<T> GetByIdAsync(string id)
-        {
-            var existing = _items.FirstOrDefault(i => i.Id == id);
-
-            return Task.FromResult(existing);
-        }
-
-        public Task UpdateAsync(T eventObject)
-        {
-            for (int i = 0; i < _items.Count; i++)
-            {
-                var itm = _items[i];
-
-                if (itm.StreamId == eventObject.StreamId)
-                {
-                    _items[i] = eventObject;
-                    break;
-                }
-            }
-
-            return Task.CompletedTask;
-        }
-    }
 }

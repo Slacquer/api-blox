@@ -24,12 +24,12 @@ using Microsoft.Extensions.Options;
 namespace APIBlox.NetCore
 {
     [InjectableService(ServiceLifetime = ServiceLifetime.Singleton)]
-    internal class EventStoreService<TModel> : ReadOnlyEventStoreService<DocumentBase>, IEventStoreService<TModel>
+    internal class EventStoreService<TModel> : ReadOnlyEventStoreService<EventStoreDocument>, IEventStoreService<TModel>
         where TModel : class
     {
         #region -    Constructors    -
 
-        public EventStoreService(IEventStoreRepository<DocumentBase> repo)
+        public EventStoreService(IEventStoreRepository<EventStoreDocument> repo)
             : base(repo)
         {
         }
@@ -43,7 +43,7 @@ namespace APIBlox.NetCore
         //{
         //    if (streamId.IsEmptyNullOrWhiteSpace())
         //        throw new ArgumentException("A stream id is required.", nameof(streamId));
-            
+
         //    if (events is null || events.Length == 0)
         //        throw new ArgumentException("You must supply events.", nameof(events));
 
@@ -85,7 +85,7 @@ namespace APIBlox.NetCore
 
         //    return root.Version;
         //}
-        
+
         //public async Task DeleteEventStreamAsync(string streamId, CancellationToken cancellationToken = default)
         //{
         //    var key = MakeKey(streamId);
@@ -171,7 +171,7 @@ namespace APIBlox.NetCore
         //)
         //{
         //    var key = MakeKey(streamId);
-            
+
         //    var ret = await DbClient.ExecuteStoredProcedureAsync<int>(
         //        UriFactory.CreateStoredProcedureUri(DatabaseId, CollectionId, "bulkInsert"),
         //        new RequestOptions { EnableScriptLogging = true, PartitionKey = key },
@@ -184,25 +184,25 @@ namespace APIBlox.NetCore
         //    return ret;
         //}
 
-        //private static EventDocument BuildEventDoc(EventModel @event, string streamId, long streamVersion)
-        //{
-        //    var document = new EventDocument
-        //    {
-        //        PartitionBy = streamId,
-        //        StreamId = streamId,
-        //        Version = streamVersion,
-        //        EventType = @event.Data.GetType().AssemblyQualifiedName,
-        //        EventData = @event.Data
-        //    };
+        private static EventDocument BuildEventDoc(EventModel @event, string streamId, long streamVersion)
+        {
+            var document = new EventDocument
+            {
+                PartitionBy = streamId,
+                StreamId = streamId,
+                Version = streamVersion,
+                EventType = @event.Data.GetType().AssemblyQualifiedName,
+                EventData = @event.Data
+            };
 
-        //    if (@event.Metadata != null)
-        //    {
-        //        document.MetadataType = @event.Metadata.GetType().AssemblyQualifiedName;
-        //        document.Metadata = @event.Metadata;
-        //    }
+            if (@event.Metadata != null)
+            {
+                document.MetadataType = @event.Metadata.GetType().AssemblyQualifiedName;
+                document.Metadata = @event.Metadata;
+            }
 
-        //    return document;
-        //}
+            return document;
+        }
 
         //private static SnapshotDocument BuildSnapShotDoc(object snapshot, object metadata, long version, string streamId)
         //{
@@ -224,11 +224,53 @@ namespace APIBlox.NetCore
         //    return document;
         //}
 
-        public Task<long> WriteToEventStreamAsync(string streamId, EventModel[] events, long? expectedVersion = null, object metadata = null,
+        public async Task<long> WriteToEventStreamAsync(string streamId, EventModel[] events, long? expectedVersion = null, object metadata = null,
             CancellationToken cancellationToken = default
         )
         {
-            throw new NotImplementedException();
+            if (streamId.IsEmptyNullOrWhiteSpace())
+                throw new ArgumentException("A stream id is required.", nameof(streamId));
+
+            if (events is null || events.Length == 0)
+                throw new ArgumentException("You must supply events.", nameof(events));
+
+            RootDocument root;
+
+            if (expectedVersion.HasValue)
+            {
+                root = await ReadRootAsync(streamId, cancellationToken);
+
+                if (root.Version != expectedVersion)
+                    throw new DataConcurrencyException(
+                        $"Expected stream '{streamId}' to have version {expectedVersion.Value} but is {root.Version}."
+                    );
+            }
+            else
+            {
+                root = new RootDocument
+                {
+                    PartitionBy = streamId,
+                    StreamId = streamId
+                };
+            }
+
+            var curVersion = root.Version;
+            root.Version += (long)events.Length;
+
+            if (metadata != null)
+            {
+                root.Metadata = metadata;
+                root.MetadataType = metadata.GetType().AssemblyQualifiedName;
+            }
+
+            var docs = new List<EventStoreDocument> { root };
+
+            for (long i = 0; i < (long)events.Length; i++)
+                docs.Add(BuildEventDoc(events[i], streamId, ++curVersion));
+            
+            await Repository.AddAsync(cancellationToken, docs.ToArray());
+
+            return root.Version;
         }
 
         public Task DeleteEventStreamAsync(string streamId, CancellationToken cancellationToken = default)

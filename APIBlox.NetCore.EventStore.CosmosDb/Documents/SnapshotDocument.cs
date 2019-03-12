@@ -1,6 +1,6 @@
 ﻿namespace APIBlox.NetCore.Documents
 {
-    public class SnapshotDocument : DocumentBase
+    public class SnapshotDocument : EventStoreDocument
     {
         public override string Id => GenerateId(StreamId, Version);
 

@@ -8,6 +8,8 @@ namespace APIBlox.NetCore.Contracts
     {
         string Id { get; }
 
+        string StreamId { get; }
+
         long TimeStamp { get; }
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
@@ -12,12 +13,13 @@ using APIBlox.NetCore.Options;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Documents.Linq;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace APIBlox.NetCore
 {
-    internal class CosmosDbRepository<TModel> : IEventStoreRepository<DocumentBase>
+    internal class CosmosDbRepository<TModel> : IEventStoreRepository<EventStoreDocument>
     {
         private readonly string _bulkInsertFilePath;
         private readonly List<string> _uniqueKeys;
@@ -50,7 +52,7 @@ namespace APIBlox.NetCore
 
             if (!File.Exists(_bulkInsertFilePath))
                 throw new ArgumentException("Bulk insert file does not exist!", nameof(opt.BulkInsertFilePath));
-            
+
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync().Wait();
             CreateBulkInsertSprocIfNotExistsAsync().Wait();
@@ -140,14 +142,14 @@ namespace APIBlox.NetCore
 
             return query;
         }
-        
+
 
         protected Uri RootDocumentUri(string streamId)
         {
             return UriFactory.CreateDocumentUri(DatabaseId, CollectionId, RootDocument.GenerateId(streamId));
         }
 
-        
+
         //public Task RetrievePartitionsEvents(Func<IReadOnlyCollection<EventModel>, Task> callback, string partitionValue,
         //    CancellationToken cancellationToken = default
         //)
@@ -188,27 +190,67 @@ namespace APIBlox.NetCore
         //        callbackTask = callback(page.Select(x => DocumentBase.Parse(x, _jsonSerializerSettings)));
         //    }
         //}
-        public Task<int> AddAsync(params DocumentBase[] eventObject)
+
+
+        private FeedOptions MakeFeedOptions(string id)
+        {
+            return new FeedOptions { PartitionKey = new PartitionKey(id) };
+        }
+
+        public async Task<int> AddAsync(CancellationToken cancellationToken = default, params EventStoreDocument[] documents)
+        {
+            foreach (var doc in documents)
+            {
+                await DbClient.CreateDocumentAsync(DocCollectionUri, doc, new RequestOptions
+                {
+                    PartitionKey = new PartitionKey(doc.StreamId)
+                }, true, cancellationToken);
+            }
+
+            return documents.Length;
+        }
+
+        public async Task<EventStoreDocument> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+        {
+            var qry = DbClient.CreateDocumentQuery<EventStoreDocument>(DocCollectionUri)//, MakeFeedOptions(id))
+                .Where(d => d.Id == id).AsDocumentQuery();
+
+            while (qry.HasMoreResults)
+            {
+                var ret = await qry.ExecuteNextAsync<EventStoreDocument>(cancellationToken);
+
+                return ret.First();
+            }
+
+            return null;
+        }
+
+        public async Task<EventStoreDocument> GetByStreamIdAsync(string streamId, CancellationToken cancellationToken = default)
+        {
+            var qry = DbClient.CreateDocumentQuery<EventStoreDocument>(DocCollectionUri, MakeFeedOptions(streamId))
+                .Where(d => d.Id == streamId).AsDocumentQuery();
+
+            while (qry.HasMoreResults)
+            {
+                var ret = await qry.ExecuteNextAsync(cancellationToken);
+
+                return ret.First();
+            }
+
+            return null;
+        }
+
+        public Task<IEnumerable<EventStoreDocument>> GetAsync(Func<EventStoreDocument, bool> predicate, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<DocumentBase> GetByIdAsync(string id)
+        public Task UpdateAsync(EventStoreDocument eventObject, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<DocumentBase>> GetAsync(Func<DocumentBase, bool> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(DocumentBase eventObject)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAsync(Func<DocumentBase, bool> predicate)
+        public Task<bool> DeleteAsync(Func<EventStoreDocument, bool> predicate, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

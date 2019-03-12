@@ -31,18 +31,30 @@ namespace APIBlox.NetCore
     internal class ReadOnlyEventStoreService<TModel> : IReadOnlyEventStoreService<TModel>
         where TModel : class, IEventStoreDocument
     {
-        private readonly IEventStoreRepository<DocumentBase> _repo;
+        protected readonly IEventStoreRepository<EventStoreDocument> Repository;
 
         #region -    Constructors    -
 
-        public ReadOnlyEventStoreService(IEventStoreRepository<DocumentBase> repo)
+        public ReadOnlyEventStoreService(IEventStoreRepository<EventStoreDocument> repo)
         {
-            _repo = repo;
+            Repository = repo;
         }
 
         #endregion
 
-        
+        protected async Task<RootDocument> ReadRootAsync(string streamId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var root = await Repository.GetByStreamIdAsync(streamId, cancellationToken);
+
+                return root as RootDocument;
+            }
+            catch (DocumentClientException ex) when (ex.Error.Code == nameof(HttpStatusCode.NotFound))
+            {
+                throw new DataAccessException($"Stream '{streamId}' wasn't found");
+            }
+        }
 
         //public async Task<EventStreamModel> ReadEventStreamAsync(string streamId,
         //    long? fromVersion = null,
@@ -121,7 +133,7 @@ namespace APIBlox.NetCore
 
         //    return new EventStreamModel(streamId, rootDocument.Version, rootDocument.TimeStamp, metadata, events, snapshot);
         //}
-        
+
         //private async Task VersionCheckAsync(string streamId,
         //    long? expectedVersion, CancellationToken cancellationToken, FeedOptions feedOptions
         //)
@@ -143,7 +155,7 @@ namespace APIBlox.NetCore
         //        throw new DataConcurrencyException($"Provided version:{expectedVersion} for stream '{streamId}' does not exist!");
         //}
 
-        
+
 
         //protected async Task<RootDocument> ReadRootAsync(string streamId, CancellationToken cancellationToken = default)
         //{
