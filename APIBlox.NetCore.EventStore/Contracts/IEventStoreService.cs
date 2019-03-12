@@ -1,10 +1,6 @@
-﻿#region -    Using Statements    -
-
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Models;
-
-#endregion
 
 namespace APIBlox.NetCore.Contracts
 {
@@ -35,8 +31,8 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="metadata">The metadata.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;System.UInt64&gt;.</returns>
-        Task<ulong> WriteToEventStreamAsync(string streamId, EventModel[] events,
-            ulong? expectedVersion = null, object metadata = null,
+        Task<long> WriteToEventStreamAsync(string streamId, EventModel[] events,
+            long? expectedVersion = null, object metadata = null,
             CancellationToken cancellationToken = default
         );
 
@@ -58,7 +54,7 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="deleteOlderSnapshots">if set to <c>true</c> [delete older snapshots].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task CreateSnapshotAsync(string streamId, ulong expectedVersion, object snapshot,
+        Task CreateSnapshotAsync(string streamId, long expectedVersion, object snapshot,
             object metadata = null, bool deleteOlderSnapshots = false,
             CancellationToken cancellationToken = default
         );
@@ -70,7 +66,7 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="olderThanVersion">The older than version.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task DeleteSnapshotsAsync(string streamId, ulong olderThanVersion,
+        Task DeleteSnapshotsAsync(string streamId, long olderThanVersion,
             CancellationToken cancellationToken = default
         );
     }

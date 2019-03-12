@@ -1,12 +1,9 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
+using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.Azure.Documents;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-
-#endregion
 
 namespace APIBlox.NetCore.Documents
 {
@@ -17,13 +14,9 @@ namespace APIBlox.NetCore.Documents
         Snapshot
     }
 
-    public abstract class DocumentBase
+    public abstract class DocumentBase:IEventStoreDocument
     {
-        #region -    Fields    -
-
         protected const char Separator = '-';
-
-        #endregion
 
         public abstract string Id { get; }
 
@@ -31,7 +24,8 @@ namespace APIBlox.NetCore.Documents
 
         [JsonProperty(PropertyName = "_etag")] public string ETag { get; set; }
 
-        [JsonProperty(PropertyName = "_ts")] public ulong TimeStamp { get; set; }
+        [JsonProperty(PropertyName = "_ts")] 
+        public long TimeStamp { get; set; }
 
         public string MetadataType { get; set; }
 
@@ -42,7 +36,7 @@ namespace APIBlox.NetCore.Documents
 
         public string StreamId { get; set; }
 
-        public ulong Version { get; set; }
+        public long Version { get; set; }
 
         public decimal SortOrder => Version + GetOrderingFraction(DocumentType);
 

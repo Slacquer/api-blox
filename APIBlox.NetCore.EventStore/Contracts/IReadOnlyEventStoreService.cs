@@ -1,12 +1,8 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Models;
 using Newtonsoft.Json;
-
-#endregion
 
 namespace APIBlox.NetCore.Contracts
 {
@@ -41,7 +37,7 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="initializeSnapshotObject">The initialize snapshot object.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;EventStreamModel&gt;.</returns>
-        Task<EventStreamModel> ReadEventStreamAsync(string streamId, ulong? fromVersion = null,
+        Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
             bool includeEvents = false, Func<object> initializeSnapshotObject = null, CancellationToken cancellationToken = default
         );
 

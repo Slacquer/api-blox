@@ -68,7 +68,7 @@ namespace APIBlox.NetCore
         public JsonSerializerSettings JsonSettings { get; set; }
 
         public async Task<EventStreamModel> ReadEventStreamAsync(string streamId,
-            ulong? fromVersion = null,
+            long? fromVersion = null,
             bool includeEvents = false,
             Func<object> initializeSnapshotObject = null,
             CancellationToken cancellationToken = default
@@ -187,7 +187,7 @@ namespace APIBlox.NetCore
         //}
 
         private async Task VersionCheckAsync(string streamId,
-            ulong? expectedVersion, CancellationToken cancellationToken, FeedOptions feedOptions
+            long? expectedVersion, CancellationToken cancellationToken, FeedOptions feedOptions
         )
         {
             var root = await ReadRootAsync(streamId, cancellationToken);

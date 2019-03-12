@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-#endregion
-
-namespace APIBlox.NetCore.Documents
+﻿namespace APIBlox.NetCore.Documents
 {
     public class SnapshotDocument : DocumentBase
     {
@@ -14,7 +10,7 @@ namespace APIBlox.NetCore.Documents
 
         public object SnapshotData { get; set; }
 
-        public static string GenerateId(string streamId, ulong version)
+        public static string GenerateId(string streamId, long version)
         {
             return $"{streamId}{Separator}{version}{Separator}S";
         }

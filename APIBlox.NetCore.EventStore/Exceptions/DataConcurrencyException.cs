@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace APIBlox.NetCore.Exceptions
 {
@@ -13,8 +9,6 @@ namespace APIBlox.NetCore.Exceptions
     public class DataConcurrencyException : Exception
 
     {
-        #region -    Constructors    -
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.NetCore.Exceptions.DataConcurrencyException" /> class.
@@ -38,7 +32,5 @@ namespace APIBlox.NetCore.Exceptions
             : base(message, innerException)
         {
         }
-
-        #endregion
     }
 }

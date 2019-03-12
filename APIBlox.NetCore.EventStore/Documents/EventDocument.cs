@@ -10,7 +10,7 @@
 
         public object EventData { get; set; }
 
-        public static string GenerateId(string streamId, ulong version)
+        public static string GenerateId(string streamId, long version)
         {
             return $"{streamId}{Separator}{version}";
         }

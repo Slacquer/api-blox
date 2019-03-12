@@ -2,9 +2,7 @@
 {
     public class SnapshotModel
     {
-        #region -    Constructors    -
-
-        public SnapshotModel(object data, object metadata, ulong version, ulong timeStamp)
+        public SnapshotModel(object data, object metadata, long version, long timeStamp)
         {
             Data = data;
             Metadata = metadata;
@@ -12,12 +10,10 @@
             TimeStamp = timeStamp;
         }
 
-        #endregion
-
         public object Data { get; }
         public object Metadata { get; }
-        public ulong Version { get; }
+        public long Version { get; }
 
-        public ulong TimeStamp { get;  }
+        public long TimeStamp { get;  }
     }
 }

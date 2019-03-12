@@ -5,9 +5,7 @@ namespace APIBlox.NetCore.Models
     [DebuggerDisplay("Version:{Version}")]
     public class EventModel
     {
-        #region -    Constructors    -
-
-        public EventModel(object data, ulong version,  ulong timeStamp, object metadata)
+        public EventModel(object data, long version,  long timeStamp, object metadata)
         {
             Data = data;
             Metadata = metadata;
@@ -21,11 +19,9 @@ namespace APIBlox.NetCore.Models
             Metadata = metadata;
         }
 
-        #endregion
-
         public object Data { get; }
         public object Metadata { get; }
-        public ulong Version { get; }
-        public ulong TimeStamp { get; }
+        public long Version { get; }
+        public long TimeStamp { get; }
     }
 }

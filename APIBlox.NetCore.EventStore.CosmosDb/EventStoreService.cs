@@ -52,7 +52,7 @@ namespace APIBlox.NetCore
 
         #endregion
 
-        public async Task<ulong> WriteToEventStreamAsync(string streamId,  EventModel[] events, ulong? expectedVersion = null,
+        public async Task<long> WriteToEventStreamAsync(string streamId,  EventModel[] events, long? expectedVersion = null,
             object metadata = null,
             CancellationToken cancellationToken = default
         )
@@ -84,7 +84,7 @@ namespace APIBlox.NetCore
             }
 
             var curVersion = root.Version;
-            root.Version += (ulong)events.Length;
+            root.Version += (long)events.Length;
 
             if (metadata != null)
             {
@@ -94,7 +94,7 @@ namespace APIBlox.NetCore
 
             var docs = new List<DocumentBase> { root };
 
-            for (ulong i = 0; i < (ulong)events.Length; i++)
+            for (long i = 0; i < (long)events.Length; i++)
                 docs.Add(BuildEventDoc(events[i], streamId, ++curVersion));
 
             await BulkInsertEventsAsync(streamId, docs, cancellationToken);
@@ -123,7 +123,7 @@ namespace APIBlox.NetCore
             }
         }
 
-        public async Task CreateSnapshotAsync(string streamId, ulong expectedVersion, object snapshot,
+        public async Task CreateSnapshotAsync(string streamId, long expectedVersion, object snapshot,
             object metadata = null,
             bool deleteOlderSnapshots = false, CancellationToken cancellationToken = default
         )
@@ -149,7 +149,7 @@ namespace APIBlox.NetCore
                 await DeleteSnapshotsAsync(streamId, expectedVersion, cancellationToken);
         }
 
-        public async Task DeleteSnapshotsAsync(string streamId, ulong olderThanVersion,
+        public async Task DeleteSnapshotsAsync(string streamId, long olderThanVersion,
             CancellationToken cancellationToken = default
         )
         {
@@ -200,7 +200,7 @@ namespace APIBlox.NetCore
             return ret;
         }
 
-        private static EventDocument BuildEventDoc(EventModel @event, string streamId, ulong streamVersion)
+        private static EventDocument BuildEventDoc(EventModel @event, string streamId, long streamVersion)
         {
             var document = new EventDocument
             {
@@ -220,7 +220,7 @@ namespace APIBlox.NetCore
             return document;
         }
 
-        private static SnapshotDocument BuildSnapShotDoc(object snapshot, object metadata, ulong version, string streamId)
+        private static SnapshotDocument BuildSnapShotDoc(object snapshot, object metadata, long version, string streamId)
         {
             var document = new SnapshotDocument
             {

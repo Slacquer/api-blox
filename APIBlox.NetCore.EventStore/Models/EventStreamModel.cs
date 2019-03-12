@@ -2,9 +2,7 @@
 {
     public class EventStreamModel
     {
-        #region -    Constructors    -
-
-        public EventStreamModel(string streamId, ulong version, ulong timeStamp, object metadata, EventModel[] events = null, SnapshotModel snapshot = null)
+        public EventStreamModel(string streamId, long version, long timeStamp, object metadata, EventModel[] events = null, SnapshotModel snapshot = null)
         {
             StreamId = streamId;
             Version = version;
@@ -14,8 +12,6 @@
             TimeStamp = timeStamp;
         }
 
-        #endregion
-
         public EventModel[] Events { get; }
 
         public object Metadata { get; }
@@ -24,8 +20,8 @@
 
         public string StreamId { get; }
 
-        public ulong Version { get; }
+        public long Version { get; }
 
-        public ulong TimeStamp { get; }
+        public long TimeStamp { get; }
     }
 }

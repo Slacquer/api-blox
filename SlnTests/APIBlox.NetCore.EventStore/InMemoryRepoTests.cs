@@ -1,126 +1,127 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Linq.Expressions;
-//using System.Text;
-//using System.Threading.Tasks;
-//using APIBlox.NetCore;
-//using APIBlox.NetCore.Contracts;
-//using APIBlox.NetCore.Models;
-//using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+using APIBlox.NetCore;
+using APIBlox.NetCore.Contracts;
+using APIBlox.NetCore.Documents;
+using APIBlox.NetCore.Models;
+using Xunit;
 
-//namespace SlnTests.APIBlox.NetCore.EventStore
-//{
-//    public class InMemoryRepoTests
-//    {
-//        [Fact]
-//        public async Task ShouldBeAbleToCreateAndGetASingleItem()
-//        {
-//            var agg = new DummyAggregate();
-//            var repo = new InMemoryRepo<IEventStoreDocument>();
+namespace SlnTests.APIBlox.NetCore.EventStore
+{
+    public class InMemoryRepoTests
+    {
+        [Fact]
+        public async Task ShouldBeAbleToCreateAndGetASingleItem()
+        {
+            //var agg = new DummyAggregate();
+            //var repo = new InMemoryRepo<IEventStoreDocument>();
 
-//            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+            //IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
 
-//            var result = await svc.AddStreamAsync(agg.AggregateId.ToString());
+            //var result = await svc.AddStreamAsync(agg.AggregateId.ToString());
 
-//            Assert.NotNull(result);
-//            Assert.True(result.Version == 1);
-//            Assert.NotNull(result.StreamId);
-//            Assert.True(result.StreamId == agg.AggregateId.ToString());
-//            Assert.True(result.TimeStamp > 0);
-//            Assert.Null(result.Snapshot);
-//            Assert.Null(result.Events);
+            //Assert.NotNull(result);
+            //Assert.True(result.Version == 1);
+            //Assert.NotNull(result.StreamId);
+            //Assert.True(result.StreamId == agg.AggregateId.ToString());
+            //Assert.True(result.TimeStamp > 0);
+            //Assert.Null(result.Snapshot);
+            //Assert.Null(result.Events);
 
-//            var lst = new List<EventStoreEventDocument>();
-//            lst.Add(new EventModel("1"));
-//            lst.Add(new EventModel("2"));
-//            lst.Add(new EventModel("3"));
+            //var lst = new List<EventStoreEventDocument>();
+            //lst.Add(new EventModel("1"));
+            //lst.Add(new EventModel("2"));
+            //lst.Add(new EventModel("3"));
 
-//            var count = await svc.AddEventsToStreamAsync(result.StreamId, result.Version, lst.ToArray());
+            //var count = await svc.AddEventsToStreamAsync(result.StreamId, result.Version, lst.ToArray());
 
-//            Assert.True(count == 3);
-            
-//            result = await svc.GetEventStreamAsync(agg.AggregateId.ToString());
+            //Assert.True(count == 3);
 
-//            Assert.True(result.Version == 4);
+            //result = await svc.GetEventStreamAsync(agg.AggregateId.ToString());
 
-//            await svc.CreateSnapshotOfStreamAsync(result.StreamId, result.Version, new SnapshotModel("snapshot1"));
+            //Assert.True(result.Version == 4);
+
+            //await svc.CreateSnapshotOfStreamAsync(result.StreamId, result.Version, new SnapshotModel("snapshot1"));
 
 
 
-//            lst = new List<EventModel>();
-//            lst.Add(new EventModel("4"));
+            //lst = new List<EventModel>();
+            //lst.Add(new EventModel("4"));
 
-//            count = await svc.AddEventsToStreamAsync(result.StreamId, result.Version, lst.ToArray());
-            
-//            result = await svc.GetEventStreamAsync(agg.AggregateId.ToString());
+            //count = await svc.AddEventsToStreamAsync(result.StreamId, result.Version, lst.ToArray());
 
-//            Assert.True(result.Version == 5);
-//            Assert.NotNull(result.Snapshot);
+            //result = await svc.GetEventStreamAsync(agg.AggregateId.ToString());
 
-//        }
-//    }
+            //Assert.True(result.Version == 5);
+            //Assert.NotNull(result.Snapshot);
 
-//    public class DummyAggregate
-//    {
-//        public Guid AggregateId { get; } = Guid.NewGuid();
-//    }
+        }
+    }
 
-//    public class InMemoryRepo<T> : IEventStoreRepository<T>
-//        where T : class, IEventStoreDocument
-//    {
-//        private List<T> _items = new List<T>();
+    public class DummyAggregate
+    {
+        public Guid AggregateId { get; } = Guid.NewGuid();
+    }
 
-//        public Task<int> AddAsync(params T[] eventObject)
-//        {
-//            _items.AddRange(eventObject);
+    public class InMemoryRepo<T> : IEventStoreRepository<T>
+        where T : DocumentBase
+    {
+        private List<T> _items = new List<T>();
 
-//            return Task.FromResult(eventObject.Length);
-//        }
+        public Task<int> AddAsync(params T[] eventObject)
+        {
+            _items.AddRange(eventObject);
 
-//        public Task<bool> DeleteAsync(Func<T, bool> predicate)
-//        {
-//            var rem = _items.Where(predicate).ToList();
+            return Task.FromResult(eventObject.Length);
+        }
 
-//            if (!rem.Any())
-//                return Task.FromResult(false);
+        public Task<bool> DeleteAsync(Func<T, bool> predicate)
+        {
+            var rem = _items.Where(predicate).ToList();
 
-//            _items = _items.Except(rem).ToList();
+            if (!rem.Any())
+                return Task.FromResult(false);
 
-//            return Task.FromResult(true);
-//        }
+            _items = _items.Except(rem).ToList();
 
-//        public Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate)
-//        {
-//            var rem = _items.Where(predicate).ToList();
+            return Task.FromResult(true);
+        }
 
-//            if (!rem.Any())
-//                return null;
+        public Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate)
+        {
+            var rem = _items.Where(predicate).ToList();
 
-//            return Task.FromResult<IEnumerable<T>>(rem);
-//        }
+            if (!rem.Any())
+                return null;
 
-//        public Task<T> GetByIdAsync(string streamId)
-//        {
-//            var existing = _items.FirstOrDefault(i => i.StreamId == streamId);
+            return Task.FromResult<IEnumerable<T>>(rem);
+        }
 
-//            return Task.FromResult(existing);
-//        }
+        public Task<T> GetByIdAsync(string id)
+        {
+            var existing = _items.FirstOrDefault(i => i.Id == id);
 
-//        public Task UpdateAsync(T eventObject)
-//        {
-//            for (int i = 0; i < _items.Count; i++)
-//            {
-//                var itm = _items[i];
+            return Task.FromResult(existing);
+        }
 
-//                if (itm.StreamId == eventObject.StreamId)
-//                {
-//                    _items[i] = eventObject;
-//                    break;
-//                }
-//            }
+        public Task UpdateAsync(T eventObject)
+        {
+            for (int i = 0; i < _items.Count; i++)
+            {
+                var itm = _items[i];
 
-//            return Task.CompletedTask;
-//        }
-//    }
-//}
+                if (itm.StreamId == eventObject.StreamId)
+                {
+                    _items[i] = eventObject;
+                    break;
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+    }
+}
