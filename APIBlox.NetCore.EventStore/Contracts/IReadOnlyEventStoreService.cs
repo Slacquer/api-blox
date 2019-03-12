@@ -1,7 +1,6 @@
 ﻿#region -    Using Statements    -
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Models;
@@ -14,10 +13,10 @@ namespace APIBlox.NetCore.Contracts
     /// <summary>
     ///     Marker interface
     /// </summary>
-    /// <typeparam name="TAggregate">The type of the t aggregate.</typeparam>
+    /// <typeparam name="TModel">The type of the t aggregate.</typeparam>
     /// <seealso cref="IReadOnlyEventStoreService" />
-    public interface IReadOnlyEventStoreService<TAggregate> : IReadOnlyEventStoreService
-        where TAggregate : class
+    public interface IReadOnlyEventStoreService<TModel> : IReadOnlyEventStoreService
+        where TModel : class
     {
     }
 
@@ -37,13 +36,12 @@ namespace APIBlox.NetCore.Contracts
         ///     Reads the stream asynchronous.
         /// </summary>
         /// <param name="streamId">The stream identifier.</param>
-        /// <param name="partitionedByValue">The partitioned by value.</param>
         /// <param name="fromVersion">From version.</param>
         /// <param name="includeEvents">if set to <c>true</c> [include events].</param>
         /// <param name="initializeSnapshotObject">The initialize snapshot object.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;EventStreamModel&gt;.</returns>
-        Task<EventStreamModel> ReadStreamAsync(string streamId, string partitionedByValue, ulong? fromVersion = null,
+        Task<EventStreamModel> ReadEventStreamAsync(string streamId, ulong? fromVersion = null,
             bool includeEvents = false, Func<object> initializeSnapshotObject = null, CancellationToken cancellationToken = default
         );
 
@@ -54,13 +52,13 @@ namespace APIBlox.NetCore.Contracts
         ///// <param name="partitionedByValue">The partitioned by value.</param>
         ///// <param name="cancellation">The cancellation.</param>
         ///// <returns>Task&lt;EventStreamModel&gt;.</returns>
-        //Task<EventStreamModel> GetStreamRootAsync(string streamId, string partitionedByValue, CancellationToken cancellation = default);
+        //Task<EventStreamModel> GetEventStreamRootAsync(string streamId, string partitionedByValue, CancellationToken cancellation = default);
 
         ///// <summary>
         /////     Gets all partition key values asynchronous.
         ///// </summary>
         ///// <param name="cancellationToken">The cancellation token.</param>
         ///// <returns>Task&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
-        //Task<IEnumerable<string>> GetAllPartitionKeyValuesAsync(CancellationToken cancellationToken = default);
+        //Task<IEnumerable<string>> GetAllPartitionKeyValuesInCollectionAsync(CancellationToken cancellationToken = default);
     }
 }

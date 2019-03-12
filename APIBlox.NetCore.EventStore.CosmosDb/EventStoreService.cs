@@ -52,15 +52,14 @@ namespace APIBlox.NetCore
 
         #endregion
 
-        public async Task<ulong> WriteToStreamAsync(string streamId, string partitionedByValue, EventModel[] events, ulong? expectedVersion = null,
+        public async Task<ulong> WriteToEventStreamAsync(string streamId,  EventModel[] events, ulong? expectedVersion = null,
             object metadata = null,
             CancellationToken cancellationToken = default
         )
         {
             if (streamId.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentException("A stream id is required.", nameof(streamId));
-            if (partitionedByValue.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException("A partition by value is required.", nameof(streamId));
+            
             if (events is null || events.Length == 0)
                 throw new ArgumentException("You must supply events.", nameof(events));
 
@@ -68,7 +67,7 @@ namespace APIBlox.NetCore
 
             if (expectedVersion.HasValue)
             {
-                root = await ReadRootAsync(streamId, partitionedByValue, cancellationToken);
+                root = await ReadRootAsync(streamId, cancellationToken);
 
                 if (root.Version != expectedVersion)
                     throw new DataConcurrencyException(
@@ -79,7 +78,7 @@ namespace APIBlox.NetCore
             {
                 root = new RootDocument
                 {
-                    PartitionBy = partitionedByValue,
+                    PartitionBy = streamId,
                     StreamId = streamId
                 };
             }
@@ -96,16 +95,16 @@ namespace APIBlox.NetCore
             var docs = new List<DocumentBase> { root };
 
             for (ulong i = 0; i < (ulong)events.Length; i++)
-                docs.Add(BuildEventDoc(events[i], streamId, partitionedByValue, ++curVersion));
+                docs.Add(BuildEventDoc(events[i], streamId, ++curVersion));
 
-            await BulkInsertEventsAsync(streamId, partitionedByValue, docs, cancellationToken);
+            await BulkInsertEventsAsync(streamId, docs, cancellationToken);
 
             return root.Version;
         }
         
-        public async Task DeleteStreamAsync(string streamId, string partitionedByValue, CancellationToken cancellationToken = default)
+        public async Task DeleteEventStreamAsync(string streamId, CancellationToken cancellationToken = default)
         {
-            var key = MakeKey(partitionedByValue);
+            var key = MakeKey(streamId);
             var feedOptions = new FeedOptions { PartitionKey = key };
 
             var query = MakeCamelCase(DbClient.CreateDocumentQuery<DocumentBase>(DocCollectionUri, feedOptions)
@@ -124,20 +123,20 @@ namespace APIBlox.NetCore
             }
         }
 
-        public async Task CreateSnapshotAsync(string streamId, string partitionedByValue, ulong expectedVersion, object snapshot,
+        public async Task CreateSnapshotAsync(string streamId, ulong expectedVersion, object snapshot,
             object metadata = null,
             bool deleteOlderSnapshots = false, CancellationToken cancellationToken = default
         )
         {
-            var key = MakeKey(partitionedByValue);
-            var root = await ReadRootAsync(streamId, partitionedByValue, cancellationToken);
+            var key = MakeKey(streamId);
+            var root = await ReadRootAsync(streamId, cancellationToken);
 
             if (root.Version != expectedVersion)
                 throw new DataConcurrencyException(
                     $"Expected stream '{streamId}' to have version {expectedVersion} but is {root.Version}."
                 );
 
-            var document = BuildSnapShotDoc(snapshot, metadata, expectedVersion, streamId, partitionedByValue);
+            var document = BuildSnapShotDoc(snapshot, metadata, expectedVersion, streamId);
 
             await DbClient.UpsertDocumentAsync(DocCollectionUri,
                 document,
@@ -147,16 +146,16 @@ namespace APIBlox.NetCore
             );
 
             if (deleteOlderSnapshots)
-                await DeleteSnapshotsAsync(streamId, partitionedByValue, expectedVersion, cancellationToken);
+                await DeleteSnapshotsAsync(streamId, expectedVersion, cancellationToken);
         }
 
-        public async Task DeleteSnapshotsAsync(string streamId, string partitionedByValue, ulong olderThanVersion,
+        public async Task DeleteSnapshotsAsync(string streamId, ulong olderThanVersion,
             CancellationToken cancellationToken = default
         )
         {
-            await ReadRootAsync(streamId, partitionedByValue, cancellationToken);
+            await ReadRootAsync(streamId, cancellationToken);
 
-            var key = MakeKey(partitionedByValue);
+            var key = MakeKey(streamId);
             var feedOptions = new FeedOptions { PartitionKey = key };
 
             var query = MakeCamelCase(DbClient.CreateDocumentQuery<SnapshotDocument>(DocCollectionUri, feedOptions)
@@ -183,11 +182,11 @@ namespace APIBlox.NetCore
         }
 
 
-        private async Task<int> BulkInsertEventsAsync(string streamId, string partitionedByValue, List<DocumentBase> docs,
+        private async Task<int> BulkInsertEventsAsync(string streamId, List<DocumentBase> docs,
             CancellationToken cancellationToken = default
         )
         {
-            var key = MakeKey(partitionedByValue);
+            var key = MakeKey(streamId);
             
             var ret = await DbClient.ExecuteStoredProcedureAsync<int>(
                 UriFactory.CreateStoredProcedureUri(DatabaseId, CollectionId, "bulkInsert"),
@@ -201,11 +200,11 @@ namespace APIBlox.NetCore
             return ret;
         }
 
-        private static EventDocument BuildEventDoc(EventModel @event, string streamId, string partitionedByValue, ulong streamVersion)
+        private static EventDocument BuildEventDoc(EventModel @event, string streamId, ulong streamVersion)
         {
             var document = new EventDocument
             {
-                PartitionBy = partitionedByValue,
+                PartitionBy = streamId,
                 StreamId = streamId,
                 Version = streamVersion,
                 EventType = @event.Data.GetType().AssemblyQualifiedName,
@@ -221,11 +220,11 @@ namespace APIBlox.NetCore
             return document;
         }
 
-        private static SnapshotDocument BuildSnapShotDoc(object snapshot, object metadata, ulong version, string streamId, string partitionedByValue)
+        private static SnapshotDocument BuildSnapShotDoc(object snapshot, object metadata, ulong version, string streamId)
         {
             var document = new SnapshotDocument
             {
-                PartitionBy = partitionedByValue,
+                PartitionBy = streamId,
                 StreamId = streamId,
                 Version = version,
                 SnapshotType = snapshot.GetType().AssemblyQualifiedName,

@@ -67,7 +67,7 @@ namespace APIBlox.NetCore
 
         public JsonSerializerSettings JsonSettings { get; set; }
 
-        public async Task<EventStreamModel> ReadStreamAsync(string streamId, string partitionedByValue,
+        public async Task<EventStreamModel> ReadEventStreamAsync(string streamId,
             ulong? fromVersion = null,
             bool includeEvents = false,
             Func<object> initializeSnapshotObject = null,
@@ -77,7 +77,7 @@ namespace APIBlox.NetCore
             if (streamId == null)
                 throw new ArgumentNullException(nameof(streamId));
 
-            var key = MakeKey(partitionedByValue);
+            var key = MakeKey(streamId);
             var feedOptions = new FeedOptions
             {
                 PartitionKey = key,
@@ -85,7 +85,7 @@ namespace APIBlox.NetCore
             };
 
             if (fromVersion.HasValue && fromVersion > 0)
-                await VersionCheckAsync(streamId, partitionedByValue, fromVersion, cancellationToken, feedOptions);
+                await VersionCheckAsync(streamId, fromVersion, cancellationToken, feedOptions);
 
             var query = DbClient.CreateDocumentQuery<DocumentBase>(DocCollectionUri, feedOptions)
                 .Where(d => d.StreamId == streamId);
@@ -186,11 +186,11 @@ namespace APIBlox.NetCore
         //    return ret.OrderBy(s => s);
         //}
 
-        private async Task VersionCheckAsync(string streamId, string partitionedByValue,
+        private async Task VersionCheckAsync(string streamId,
             ulong? expectedVersion, CancellationToken cancellationToken, FeedOptions feedOptions
         )
         {
-            var root = await ReadRootAsync(streamId, partitionedByValue, cancellationToken);
+            var root = await ReadRootAsync(streamId, cancellationToken);
 
             // if for whatever reason, the incoming version is greater than what is stored then something is a miss...
             if (root.Version < expectedVersion)
@@ -212,11 +212,11 @@ namespace APIBlox.NetCore
             return UriFactory.CreateDocumentUri(DatabaseId, CollectionId, RootDocument.GenerateId(streamId));
         }
 
-        protected async Task<RootDocument> ReadRootAsync(string streamId, string partitionedByValue, CancellationToken cancellationToken = default)
+        protected async Task<RootDocument> ReadRootAsync(string streamId,  CancellationToken cancellationToken = default)
         {
             try
             {
-                var key = MakeKey(partitionedByValue);
+                var key = MakeKey(streamId);
 
                 return await DbClient.ReadDocumentAsync<RootDocument>(RootDocumentUri(streamId),
                     new RequestOptions
