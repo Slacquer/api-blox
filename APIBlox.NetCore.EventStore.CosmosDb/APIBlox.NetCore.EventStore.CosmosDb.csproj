@@ -39,4 +39,10 @@
     <ProjectReference Include="..\ApiBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="bulkInsert.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

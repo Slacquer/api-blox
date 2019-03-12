@@ -8,6 +8,11 @@ using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Models;
+using APIBlox.NetCore.Options;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Extensions.Options;
+using Moq;
 using Xunit;
 
 namespace SlnTests.APIBlox.NetCore.EventStore
@@ -17,12 +22,28 @@ namespace SlnTests.APIBlox.NetCore.EventStore
         [Fact]
         public async Task ShouldBeAbleToCreateAndGetASingleItem()
         {
-            //var agg = new DummyAggregate();
-            //var repo = new InMemoryRepo<IEventStoreDocument>();
+            var agg = new DummyAggregate();
 
-            //IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+            var options = new CosmosDbOptions
+            {
+                DatabaseId = "testDb",
+                Endpoint = "https://localhost:8081",
+                Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+                BulkInsertFilePath = @".\bulkInsert.js"
+            };
 
-            //var result = await svc.AddStreamAsync(agg.AggregateId.ToString());
+            options.Collections.Add("DummyAggregate", new Collection { Id = "dummy" });
+            var opt = Options.Create(options);
+
+            var c = new DocumentClient(new Uri(options.Endpoint), options.Key);
+
+            var repo = new CosmosDbRepository<DummyAggregate>(c, opt);
+
+            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+
+            var lst = new List<EventModel> { new EventModel("1"), new EventModel("2"), new EventModel("3") };
+
+            var result = await svc.WriteToEventStreamAsync(agg.AggregateId.ToString(), lst.ToArray());
 
             //Assert.NotNull(result);
             //Assert.True(result.Version == 1);
@@ -32,10 +53,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             //Assert.Null(result.Snapshot);
             //Assert.Null(result.Events);
 
-            //var lst = new List<EventStoreEventDocument>();
-            //lst.Add(new EventModel("1"));
-            //lst.Add(new EventModel("2"));
-            //lst.Add(new EventModel("3"));
+
 
             //var count = await svc.AddEventsToStreamAsync(result.StreamId, result.Version, lst.ToArray());
 
@@ -62,9 +80,11 @@ namespace SlnTests.APIBlox.NetCore.EventStore
         }
     }
 
-    public class DummyAggregate
+    public class DummyAggregate : IEventStoreDocument
     {
         public Guid AggregateId { get; } = Guid.NewGuid();
+        public string Id { get; }
+        public long TimeStamp { get; }
     }
 
     public class InMemoryRepo<T> : IEventStoreRepository<T>

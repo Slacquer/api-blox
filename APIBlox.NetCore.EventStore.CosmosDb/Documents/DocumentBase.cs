@@ -7,12 +7,7 @@ using Newtonsoft.Json.Converters;
 
 namespace APIBlox.NetCore.Documents
 {
-    public enum DocumentType
-    {
-        Root = 1,
-        Event,
-        Snapshot
-    }
+
 
     public abstract class DocumentBase:IEventStoreDocument
     {
