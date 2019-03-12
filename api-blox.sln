@@ -38,7 +38,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.DomainEvents", "Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.DynamicControllers", "Examples\Dynamic Controllers\Examples.DynamicControllers\Examples.DynamicControllers.csproj", "{5A1614E7-5E44-4FB2-8F69-134469ADB1F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIBlox.NetCore.EventStore", "APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj", "{C6E49B44-18D0-4082-9A1F-F0B36558EDE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.NetCore.EventStore2", "APIBlox.NetCore.EventStore2\APIBlox.NetCore.EventStore2.csproj", "{412D1E3C-D430-4B6C-95AF-047C4B631E15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIBlox.NetCore.EventStore", "APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj", "{C56E1526-6373-4470-82E1-8075376C0C86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,10 +96,14 @@ Global
 		{5A1614E7-5E44-4FB2-8F69-134469ADB1F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A1614E7-5E44-4FB2-8F69-134469ADB1F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A1614E7-5E44-4FB2-8F69-134469ADB1F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6E49B44-18D0-4082-9A1F-F0B36558EDE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6E49B44-18D0-4082-9A1F-F0B36558EDE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6E49B44-18D0-4082-9A1F-F0B36558EDE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6E49B44-18D0-4082-9A1F-F0B36558EDE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{412D1E3C-D430-4B6C-95AF-047C4B631E15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{412D1E3C-D430-4B6C-95AF-047C4B631E15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{412D1E3C-D430-4B6C-95AF-047C4B631E15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{412D1E3C-D430-4B6C-95AF-047C4B631E15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C56E1526-6373-4470-82E1-8075376C0C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C56E1526-6373-4470-82E1-8075376C0C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C56E1526-6373-4470-82E1-8075376C0C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C56E1526-6373-4470-82E1-8075376C0C86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

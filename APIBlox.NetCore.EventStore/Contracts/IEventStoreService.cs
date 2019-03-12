@@ -12,6 +12,8 @@ namespace APIBlox.NetCore.Contracts
     ///     Marker Interface
     /// </summary>
     /// <typeparam name="TAggregate">The type of the t aggregate.</typeparam>
+    /// <seealso cref="IReadOnlyEventStoreService{TAggregate}" />
+    /// <seealso cref="IEventStoreService" />
     public interface IEventStoreService<TAggregate> : IReadOnlyEventStoreService<TAggregate>, IEventStoreService
         where TAggregate : class
     {
@@ -20,19 +22,59 @@ namespace APIBlox.NetCore.Contracts
     /// <summary>
     ///     Interface IEventStoreService
     /// </summary>
+    /// <seealso cref="IReadOnlyEventStoreService{TAggregate}" />
+    /// <seealso cref="IEventStoreService" />
     public interface IEventStoreService : IReadOnlyEventStoreService
     {
-        Task<EventStreamModel> AddStreamAsync(string streamId, object metadata = null);
-
-        Task<int> AddEventsToStreamAsync(string streamId, long expectedVersion, EventModel[] events, CancellationToken cancellationToken = default
+        /// <summary>
+        ///     Writes to stream asynchronous.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
+        /// <param name="partitionedByValue">The partitioned by value.</param>
+        /// <param name="events">The events.</param>
+        /// <param name="expectedVersion">The expected version.</param>
+        /// <param name="metadata">The metadata.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;System.UInt64&gt;.</returns>
+        Task<ulong> WriteToStreamAsync(string streamId, string partitionedByValue, EventModel[] events,
+            ulong? expectedVersion = null, object metadata = null,
+            CancellationToken cancellationToken = default
         );
 
-        Task DeleteStreamByIdAsync(string streamId, CancellationToken cancellationToken = default);
+        /// <summary>
+        ///     Deletes the stream asynchronous.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
+        /// <param name="partitionedByValue">The partitioned by value.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task DeleteStreamAsync(string streamId, string partitionedByValue, CancellationToken cancellationToken = default);
 
-        Task CreateSnapshotOfStreamAsync(string streamId,long expectedVersion, SnapshotModel snapshot, bool deleteOlderSnapshots = false, CancellationToken cancellationToken = default
+        /// <summary>
+        ///     Creates the snapshot asynchronous.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
+        /// <param name="partitionedByValue">The partitioned by value.</param>
+        /// <param name="expectedVersion">The expected version.</param>
+        /// <param name="snapshot">The snapshot.</param>
+        /// <param name="metadata">The metadata.</param>
+        /// <param name="deleteOlderSnapshots">if set to <c>true</c> [delete older snapshots].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task CreateSnapshotAsync(string streamId, string partitionedByValue, ulong expectedVersion, object snapshot,
+            object metadata = null, bool deleteOlderSnapshots = false,
+            CancellationToken cancellationToken = default
         );
 
-        Task DeleteSnapshotsForStreamByIdAsync(string streamId, ulong olderThanVersion,
+        /// <summary>
+        ///     Deletes the snapshots asynchronous.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
+        /// <param name="partitionedByValue">The partitioned by value.</param>
+        /// <param name="olderThanVersion">The older than version.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        Task DeleteSnapshotsAsync(string streamId, string partitionedByValue, ulong olderThanVersion,
             CancellationToken cancellationToken = default
         );
     }

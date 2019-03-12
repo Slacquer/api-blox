@@ -33,9 +33,34 @@ namespace APIBlox.NetCore.Contracts
         /// <value>The json settings.</value>
         JsonSerializerSettings JsonSettings { get; set; }
 
-        
-        Task<EventStreamModel> GetEventStreamAsync(string streamId, long? fromVersion = null,
-            Func<object> initializeSnapshotObject = null, CancellationToken cancellationToken = default
+        /// <summary>
+        ///     Reads the stream asynchronous.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
+        /// <param name="partitionedByValue">The partitioned by value.</param>
+        /// <param name="fromVersion">From version.</param>
+        /// <param name="includeEvents">if set to <c>true</c> [include events].</param>
+        /// <param name="initializeSnapshotObject">The initialize snapshot object.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;EventStreamModel&gt;.</returns>
+        Task<EventStreamModel> ReadStreamAsync(string streamId, string partitionedByValue, ulong? fromVersion = null,
+            bool includeEvents = false, Func<object> initializeSnapshotObject = null, CancellationToken cancellationToken = default
         );
+
+        /// <summary>
+        ///     Gets the stream root asynchronous.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
+        /// <param name="partitionedByValue">The partitioned by value.</param>
+        /// <param name="cancellation">The cancellation.</param>
+        /// <returns>Task&lt;EventStreamModel&gt;.</returns>
+        Task<EventStreamModel> GetStreamRootAsync(string streamId, string partitionedByValue, CancellationToken cancellation = default);
+
+        /// <summary>
+        ///     Gets all partition key values asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
+        Task<IEnumerable<string>> GetAllPartitionKeyValuesAsync(CancellationToken cancellationToken = default);
     }
 }

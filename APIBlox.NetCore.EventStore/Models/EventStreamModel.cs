@@ -1,26 +1,31 @@
-﻿using APIBlox.NetCore.Models;
-
-namespace APIBlox.NetCore.Models
+﻿namespace APIBlox.NetCore.Models
 {
     public class EventStreamModel
     {
         #region -    Constructors    -
 
-        public EventStreamModel(string streamId, long version)
+        public EventStreamModel(string streamId, ulong version, ulong timeStamp, object metadata, EventModel[] events = null, SnapshotModel snapshot = null)
         {
             StreamId = streamId;
             Version = version;
+            Metadata = metadata;
+            Events = events;
+            Snapshot = snapshot;
+            TimeStamp = timeStamp;
         }
 
         #endregion
 
-        public EventModel[] Events { get; set; }
+        public EventModel[] Events { get; }
 
-        public SnapshotModel Snapshot { get; set; }
+        public object Metadata { get; }
 
-        public string StreamId { get; private set; }
+        public SnapshotModel Snapshot { get; }
 
-        public long Version { get; private set; }
-        public long TimeStamp { get; private set; }
+        public string StreamId { get; }
+
+        public ulong Version { get; }
+
+        public ulong TimeStamp { get; }
     }
 }

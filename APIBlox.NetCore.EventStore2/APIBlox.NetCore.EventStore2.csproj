@@ -7,11 +7,11 @@
    
     <Description>Simple data backing agnostic event store.  SourceLink is enabled.</Description> 
     
-    <AssemblyName>APIBlox.NetCore.EventStore</AssemblyName>
+    <AssemblyName>APIBlox.NetCore.EventStore2</AssemblyName>
    
-    <Product>APIBlox.NetCore.EventStore</Product>
+    <Product>APIBlox.NetCore.EventStore2</Product>
 
-    <PackageId>APIBlox.NetCore.EventStore</PackageId>
+    <PackageId>APIBlox.NetCore.EventStore2</PackageId>
 
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -27,11 +27,6 @@
   <ItemGroup>
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.2.2" />
-    <PackageReference Include="System.Interactive.Async" Version="3.2.0" />
   </ItemGroup>
 
   <ItemGroup>
