@@ -145,46 +145,46 @@ namespace APIBlox.NetCore
             return new EventStreamModel(streamId, rootDocument.Version, rootDocument.TimeStamp, metadata, events, snapshot);
         }
 
-        public async Task<EventStreamModel> GetStreamRootAsync(string streamId, string partitionedByValue, CancellationToken cancellationToken = default)
-        {
-            if (streamId == null)
-                throw new ArgumentNullException(nameof(streamId));
+        //public async Task<EventStreamModel> GetStreamRootAsync(string streamId, string partitionedByValue, CancellationToken cancellationToken = default)
+        //{
+        //    if (streamId == null)
+        //        throw new ArgumentNullException(nameof(streamId));
 
-            var key = MakeKey(partitionedByValue);
-            var feedOptions = new FeedOptions
-            {
-                PartitionKey = key,
-                EnableCrossPartitionQuery = true
-            };
+        //    var key = MakeKey(partitionedByValue);
+        //    var feedOptions = new FeedOptions
+        //    {
+        //        PartitionKey = key,
+        //        EnableCrossPartitionQuery = true
+        //    };
 
-            var existing = (await MakeCamelCase(DbClient.CreateDocumentQuery<RootDocument>(DocCollectionUri, feedOptions)
-                .Where(d => d.StreamId == streamId && d.DocumentType == DocumentType.Root), DocCollectionUri, feedOptions)
-                .AsDocumentQuery()
-                .ExecuteNextAsync<RootDocument>(cancellationToken)).FirstOrDefault();
+        //    var existing = (await MakeCamelCase(DbClient.CreateDocumentQuery<RootDocument>(DocCollectionUri, feedOptions)
+        //        .Where(d => d.StreamId == streamId && d.DocumentType == DocumentType.Root), DocCollectionUri, feedOptions)
+        //        .AsDocumentQuery()
+        //        .ExecuteNextAsync<RootDocument>(cancellationToken)).FirstOrDefault();
 
-            return existing is null ? null : new EventStreamModel(streamId, existing.Version, existing.TimeStamp, existing.Metadata);
-        }
+        //    return existing is null ? null : new EventStreamModel(streamId, existing.Version, existing.TimeStamp, existing.Metadata);
+        //}
 
-        public async Task<IEnumerable<string>> GetAllPartitionKeyValuesAsync(CancellationToken cancellationToken = default)
-        {
-            var feedOptions = new FeedOptions
-            {
-                EnableCrossPartitionQuery = true
-            };
+        //public async Task<IEnumerable<string>> GetAllPartitionKeyValuesAsync(CancellationToken cancellationToken = default)
+        //{
+        //    var feedOptions = new FeedOptions
+        //    {
+        //        EnableCrossPartitionQuery = true
+        //    };
 
-            var ret = new List<string>();
+        //    var ret = new List<string>();
 
-            var qry = DbClient.CreateDocumentQuery<RootDocument>(DocCollectionUri, new SqlQuerySpec("SELECT DISTINCT c.partitionBy FROM c WHERE c.documentType='Root'"), feedOptions)
-                .AsDocumentQuery();
+        //    var qry = DbClient.CreateDocumentQuery<RootDocument>(DocCollectionUri, new SqlQuerySpec("SELECT DISTINCT c.partitionBy FROM c WHERE c.documentType='Root'"), feedOptions)
+        //        .AsDocumentQuery();
 
-            while (qry.HasMoreResults)
-            {
-                foreach (var p in await qry.ExecuteNextAsync<RootDocument>(cancellationToken))
-                    ret.Add(p.PartitionBy);
-            }
+        //    while (qry.HasMoreResults)
+        //    {
+        //        foreach (var p in await qry.ExecuteNextAsync<RootDocument>(cancellationToken))
+        //            ret.Add(p.PartitionBy);
+        //    }
 
-            return ret.OrderBy(s => s);
-        }
+        //    return ret.OrderBy(s => s);
+        //}
 
         private async Task VersionCheckAsync(string streamId, string partitionedByValue,
             ulong? expectedVersion, CancellationToken cancellationToken, FeedOptions feedOptions
