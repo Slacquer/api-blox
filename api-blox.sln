@@ -40,9 +40,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Examples.DynamicControllers
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.NetCore.EventStore2", "APIBlox.NetCore.EventStore2\APIBlox.NetCore.EventStore2.csproj", "{412D1E3C-D430-4B6C-95AF-047C4B631E15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIBlox.NetCore.EventStore", "APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj", "{C56E1526-6373-4470-82E1-8075376C0C86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.NetCore.EventStore", "APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj", "{C56E1526-6373-4470-82E1-8075376C0C86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIBlox.NetCore.EventStore.CosmosDb", "APIBlox.NetCore.EventStore.CosmosDb\APIBlox.NetCore.EventStore.CosmosDb.csproj", "{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.NetCore.EventStore.CosmosDb", "APIBlox.NetCore.EventStore.CosmosDb\APIBlox.NetCore.EventStore.CosmosDb.csproj", "{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIBlox.NetCore.EventStore.MongoDb", "APIBlox.NetCore.EventStore.MongoDb\APIBlox.NetCore.EventStore.MongoDb.csproj", "{0876203C-F23D-4483-91B1-7B8C820876E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,6 +112,10 @@ Global
 		{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8CD57F0-BB63-4DC8-8787-BD3BC2041433}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0876203C-F23D-4483-91B1-7B8C820876E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0876203C-F23D-4483-91B1-7B8C820876E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0876203C-F23D-4483-91B1-7B8C820876E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0876203C-F23D-4483-91B1-7B8C820876E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
