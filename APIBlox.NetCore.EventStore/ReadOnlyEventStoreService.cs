@@ -8,7 +8,6 @@ using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Models;
-using Microsoft.Azure.Documents;
 
 namespace APIBlox.NetCore
 {
@@ -72,10 +71,10 @@ namespace APIBlox.NetCore
                 metadata = rootDoc.Metadata;
 
             var events = docs.OfType<EventDocument>()
-                .Select(Deserialize).Reverse()
+                .Select(BuildEventDocument).Reverse()
                 .ToArray();
 
-            var snapshot = fromVersion is null ? docs.OfType<SnapshotDocument>().Select(Deserialize).FirstOrDefault() : null;
+            var snapshot = fromVersion is null ? docs.OfType<SnapshotDocument>().Select(BuildSnapshotDocument).FirstOrDefault() : null;
 
             return new EventStreamModel
             {
@@ -103,7 +102,7 @@ namespace APIBlox.NetCore
         }
 
 
-        private static EventModel Deserialize(EventDocument document)
+        private static EventModel BuildEventDocument(EventDocument document)
         {
             object metadata = null;
 
@@ -118,7 +117,7 @@ namespace APIBlox.NetCore
             return new EventModel { Data = body, Version = document.Version, TimeStamp = document.TimeStamp, Metadata = metadata };
         }
 
-        private static SnapshotModel Deserialize(SnapshotDocument document)
+        private static SnapshotModel BuildSnapshotDocument(SnapshotDocument document)
         {
             object metadata = null;
 

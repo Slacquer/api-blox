@@ -1,4 +1,4 @@
-﻿namespace APIBlox.NetCore
+﻿namespace APIBlox.NetCore.Documents
 {
     /// <summary>
     ///     Enum DocumentType

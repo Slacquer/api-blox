@@ -1,5 +1,6 @@
 ﻿#region -    Using Statements    -
 
+using APIBlox.NetCore.Documents;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
