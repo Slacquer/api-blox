@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.Documents;
 using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.Contracts
@@ -14,6 +13,12 @@ namespace APIBlox.NetCore.Contracts
     public interface IEventStoreRepository
     {
         /// <summary>
+        ///     Gets or sets the json settings.
+        /// </summary>
+        /// <value>The json settings.</value>
+        JsonSerializerSettings JsonSettings { get; set; }
+
+        /// <summary>
         ///     Adds the asynchronous.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -21,24 +26,6 @@ namespace APIBlox.NetCore.Contracts
         /// <returns>Task&lt;System.Int32&gt;.</returns>
         Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
             where TDocument : IEventStoreDocument;
-
-        ///// <summary>
-        /////     Gets the by identifier asynchronous.
-        ///// </summary>
-        ///// <param name="id">The identifier.</param>
-        ///// <param name="cancellationToken">The cancellation token.</param>
-        ///// <returns>Task&lt;TDocument&gt;.</returns>
-        //Task<TDocument> GetByIdAsync<TDocument>(string id, CancellationToken cancellationToken = default)
-        //    where TDocument : IEventStoreDocument;
-
-        ///// <summary>
-        /////     Gets the by stream identifier asynchronous.
-        ///// </summary>
-        ///// <param name="streamId">The identifier.</param>
-        ///// <param name="cancellationToken">The cancellation token.</param>
-        ///// <returns>Task&lt;TDocument&gt;.</returns>
-        //Task<TDocument> GetByStreamIdAsync<TDocument>(string streamId, CancellationToken cancellationToken = default)
-        //    where TDocument : IEventStoreDocument;
 
         /// <summary>
         ///     Gets the asynchronous.
@@ -60,39 +47,12 @@ namespace APIBlox.NetCore.Contracts
         Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
             where TDocument : IEventStoreDocument;
 
-
-        ///// <summary>
-        ///// Deletes the by identifier asynchronous.
-        ///// </summary>
-        ///// <typeparam name="TDocument">The type of the t document.</typeparam>
-        ///// <param name="id">The identifier.</param>
-        ///// <param name="cancellationToken">The cancellation token.</param>
-        ///// <returns>Task&lt;TDocument&gt;.</returns>
-        //Task<TDocument> DeleteByIdAsync<TDocument>(string id, CancellationToken cancellationToken = default)
-        //    where TDocument : IEventStoreDocument;
-
-        ///// <summary>
-        ///// Deletes the by stream identifier asynchronous.
-        ///// </summary>
-        ///// <typeparam name="TDocument">The type of the t document.</typeparam>
-        ///// <param name="streamId">The stream identifier.</param>
-        ///// <param name="cancellationToken">The cancellation token.</param>
-        ///// <returns>Task&lt;TDocument&gt;.</returns>
-        //Task<TDocument> DeleteByStreamIdAsync<TDocument>(string streamId, CancellationToken cancellationToken = default)
-        //    where TDocument : IEventStoreDocument;
-
         /// <summary>
         ///     Deletes the asynchronous.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        Task<bool> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Gets or sets the json settings.
-        /// </summary>
-        /// <value>The json settings.</value>
-        JsonSerializerSettings JsonSettings { get; set; }
+        /// <returns>Task&lt;System.Int32&gt;.</returns>
+        Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default);
     }
 }

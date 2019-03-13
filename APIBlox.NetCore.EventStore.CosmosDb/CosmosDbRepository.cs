@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
@@ -25,19 +22,11 @@ namespace APIBlox.NetCore
 {
     internal class CosmosDbRepository<TModel> : IEventStoreRepository
     {
-        //private readonly string _bulkInsertFilePath;
         private readonly List<string> _uniqueKeys;
-
-        protected IDocumentClient DbClient { get; }
-
-        protected string CollectionId { get; }
-
-        protected string DatabaseId { get; }
-
-        protected Uri DocCollectionUri { get; }
-
-        public JsonSerializerSettings JsonSettings { get; set; }
-
+        private readonly IDocumentClient _client;
+        private readonly string _collectionId;
+        private readonly string _databaseId;
+        private readonly Uri _docCollectionUri;
 
         public CosmosDbRepository(IDocumentClient client, IOptions<CosmosDbOptions> options)
         {
@@ -46,46 +35,146 @@ namespace APIBlox.NetCore
 
             _uniqueKeys = col.UniqueKeys.ToList();
 
-            CollectionId = col.Id ?? throw new ArgumentNullException(nameof(col.Id));
-            DbClient = client ?? throw new ArgumentNullException(nameof(client));
-            DatabaseId = opt.DatabaseId ?? throw new ArgumentNullException(nameof(opt.DatabaseId));
-            DocCollectionUri = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
+            _collectionId = col.Id ?? throw new ArgumentNullException(nameof(col.Id));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _databaseId = opt.DatabaseId ?? throw new ArgumentNullException(nameof(opt.DatabaseId));
+            _docCollectionUri = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
 
             JsonSettings = new CamelCaseSettings();
 
-            JsonSettings.Converters.Add(new StringEnumConverter
-            {
-                //CamelCaseText = true
-            }
-            );
-
-            //_bulkInsertFilePath = opt.BulkInsertFilePath;
-
-            //if (!File.Exists(_bulkInsertFilePath))
-            //    throw new ArgumentException("Bulk insert file does not exist!", nameof(opt.BulkInsertFilePath));
+            JsonSettings.Converters.Add(new StringEnumConverter());
 
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync().Wait();
-            //CreateBulkInsertSprocIfNotExistsAsync().Wait();
+        }
+
+        public JsonSerializerSettings JsonSettings { get; set; }
+
+        public async Task<int> AddAsync<TDocument>(TDocument[] documents, 
+            CancellationToken cancellationToken = default)
+            where TDocument : IEventStoreDocument
+        {
+            foreach (var doc in documents)
+            {
+                await _client.CreateDocumentAsync(_docCollectionUri,
+                    doc,
+                    new RequestOptions
+                    {
+                        PartitionKey = new PartitionKey(doc.StreamId)
+                    },
+                    true,
+                    cancellationToken
+                );
+            }
+
+            return documents.Length;
+        }
+
+        public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate,
+            CancellationToken cancellationToken = default
+        )
+        {
+            try
+            {
+                var qry = _client.CreateDocumentQuery<IEventStoreDocument>(_docCollectionUri,
+                        new FeedOptions {EnableCrossPartitionQuery = true}
+                    )
+                    .Where(predicate)
+                    .OrderByDescending(d => d.SortOrder)
+                    .AsDocumentQuery();
+
+                var lst = new List<TResult>();
+
+                while (qry.HasMoreResults)
+                {
+                    var ret = await qry.ExecuteNextAsync<TResult>(cancellationToken);
+                    lst.AddRange(ret.ToList());
+                }
+
+                return lst;
+            }
+            catch (DocumentClientException e)
+            {
+                if (e.StatusCode == HttpStatusCode.Conflict)
+                    throw new DocumentConcurrencyException(e.Message);
+
+                throw;
+            }
+        }
+
+        public async Task UpdateAsync<TDocument>(TDocument document, 
+            CancellationToken cancellationToken = default)
+            where TDocument : IEventStoreDocument
+        {
+            try
+            {
+                await _client.ReplaceDocumentAsync(RootDocumentUri(document.StreamId),
+                    document,
+                    new RequestOptions
+                    {
+                        PartitionKey = new PartitionKey(document.StreamId)
+                    },
+                    cancellationToken
+                );
+            }
+            catch (DocumentClientException e)
+            {
+                if (e.StatusCode == HttpStatusCode.NotFound)
+                    throw new DocumentNotFoundException($"Document with stream id '{document.StreamId}' not found!");
+
+                throw;
+            }
+        }
+
+        public async Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate, 
+            CancellationToken cancellationToken = default)
+        {
+            var count = 0;
+
+            try
+            {
+                var docs = await GetAsync<EventStoreDocument>(predicate, cancellationToken);
+
+                foreach (var doc in docs)
+                {
+                    await _client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(_databaseId, _collectionId, doc.Id),
+                        new RequestOptions
+                        {
+                            PartitionKey = new PartitionKey(doc.StreamId)
+                        },
+                        cancellationToken
+                    );
+                    count++;
+                }
+            }
+            catch (DocumentClientException e)
+            {
+                if (e.StatusCode == HttpStatusCode.NotFound)
+                    throw new DocumentNotFoundException(e.Message);
+
+                throw;
+            }
+
+            return count;
         }
 
 
         private async Task CreateDatabaseIfNotExistsAsync()
         {
-            var exists = await DbClient.CreateDatabaseQuery()
-                .Where(d => d.Id == DatabaseId)
+            var exists = await _client.CreateDatabaseQuery()
+                .Where(d => d.Id == _databaseId)
                 .ToAsyncEnumerable().Any();
 
             if (exists)
                 return;
 
-            await DbClient.CreateDatabaseAsync(new Database { Id = DatabaseId });
+            await _client.CreateDatabaseAsync(new Database {Id = _databaseId});
         }
 
         private async Task CreateCollectionIfNotExistsAsync()
         {
-            var exists = await DbClient.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(DatabaseId))
-                .Where(d => d.Id == CollectionId)
+            var exists = await _client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(_databaseId))
+                .Where(d => d.Id == _collectionId)
                 .ToAsyncEnumerable().Any();
 
             if (exists)
@@ -93,7 +182,7 @@ namespace APIBlox.NetCore
 
             var documentCollection = new DocumentCollection
             {
-                Id = CollectionId
+                Id = _collectionId
             };
             documentCollection.PartitionKey.Paths.Add("/streamId");
 
@@ -107,59 +196,33 @@ namespace APIBlox.NetCore
                 documentCollection.UniqueKeyPolicy.UniqueKeys.Add(uniqueKey);
             }
 
-            await DbClient.CreateDocumentCollectionAsync(
-                UriFactory.CreateDatabaseUri(DatabaseId),
+            await _client.CreateDocumentCollectionAsync(
+                UriFactory.CreateDatabaseUri(_databaseId),
                 documentCollection,
-                new RequestOptions { OfferThroughput = 1000 }
+                new RequestOptions {OfferThroughput = 1000}
             );
         }
+        
+        private Uri RootDocumentUri(string streamId)
+        {
+            return UriFactory.CreateDocumentUri(_databaseId, _collectionId, RootDocument.GenerateId(streamId));
+        }
 
-        //private async Task CreateBulkInsertSprocIfNotExistsAsync()
+        
+        //protected IQueryable<T> MakeCamelCase<T>(IQueryable<T> query, Uri collUri, FeedOptions opts)
         //{
-        //    var exists = await DbClient.CreateStoredProcedureQuery(DocCollectionUri)
-        //        .ToAsyncEnumerable()
-        //        .Any(q => q.Id == "bulkInsert");
+        //    if (query.Expression.NodeType == System.Linq.Expressions.ExpressionType.Constant)
+        //        return query;
 
-        //    if (exists)
-        //        return;
+        //    dynamic sqlQueryObject = JsonConvert.DeserializeObject(query.ToString());
+        //    string sql = sqlQueryObject.query;
+        //    // Regex is actually a private member w/ Compiled flag set to avoid overhead.  Not that it really matters,
+        //    // the guts of MS.DocumentDB.Core use uncached reflection with abandon
+        //    sql = new Regex("\\[\"(.+?)\"\\]").Replace(sql, match => $"[\"{match.Groups[1].Value.ToCamelCase()}\"]");
+        //    query = DbClient.CreateDocumentQuery<T>(collUri, sql, opts);
 
-        //    var sProc = File.ReadAllText(_bulkInsertFilePath);
-
-        //    var spDef = new StoredProcedure
-        //    {
-        //        Id = "bulkInsert",
-        //        Body = sProc
-        //    };
-
-        //    await DbClient.CreateStoredProcedureAsync(DocCollectionUri, spDef);
+        //    return query;
         //}
-
-        //
-        // In a nutshell, apparently the linq provider does not honor camelCase serialization.
-        // So rather than having to put json attributes on all properties we use this for now...
-        //
-        // See https://github.com/Azure/azure-cosmosdb-dotnet/issues/317 ... this code is a ridiculously brittle kludge that works for now
-        protected IQueryable<T> MakeCamelCase<T>(IQueryable<T> query, Uri collUri, FeedOptions opts)
-        {
-            if (query.Expression.NodeType == System.Linq.Expressions.ExpressionType.Constant)
-                return query;
-
-            dynamic sqlQueryObject = JsonConvert.DeserializeObject(query.ToString());
-            string sql = sqlQueryObject.query;
-            // Regex is actually a private member w/ Compiled flag set to avoid overhead.  Not that it really matters,
-            // the guts of MS.DocumentDB.Core use uncached reflection with abandon
-            sql = new Regex("\\[\"(.+?)\"\\]").Replace(sql, match => $"[\"{match.Groups[1].Value.ToCamelCase()}\"]");
-            query = DbClient.CreateDocumentQuery<T>(collUri, sql, opts);
-
-            return query;
-        }
-
-
-        protected Uri RootDocumentUri(string streamId)
-        {
-            return UriFactory.CreateDocumentUri(DatabaseId, CollectionId, RootDocument.GenerateId(streamId));
-        }
-
 
         //public Task RetrievePartitionsEvents(Func<IReadOnlyCollection<EventModel>, Task> callback, string partitionValue,
         //    CancellationToken cancellationToken = default
@@ -201,139 +264,5 @@ namespace APIBlox.NetCore
         //        callbackTask = callback(page.Select(x => DocumentBase.Parse(x, _jsonSerializerSettings)));
         //    }
         //}
-
-
-        private FeedOptions MakeFeedOptions(string id)
-        {
-            return new FeedOptions { PartitionKey = new PartitionKey(id) };
-        }
-
-
-
-        //public async Task<EventStoreDocument> GetByIdAsync(string id, CancellationToken cancellationToken = default)
-        //{
-        //    var qry = DbClient.CreateDocumentQuery<EventStoreDocument>(DocCollectionUri)//, MakeFeedOptions(id))
-        //        .Where(d => d.Id == id).AsDocumentQuery();
-
-        //    while (qry.HasMoreResults)
-        //    {
-        //        var ret = await qry.ExecuteNextAsync<EventStoreDocument>(cancellationToken);
-
-        //        return ret.First();
-        //    }
-
-        //    return null;
-        //}
-
-        //public async Task<EventStoreDocument> GetByStreamIdAsync(string streamId, CancellationToken cancellationToken = default)
-        //{
-        //    var qry = DbClient.CreateDocumentQuery<EventStoreDocument>(DocCollectionUri, MakeFeedOptions(streamId))
-        //        .Where(d => d.Id == streamId).AsDocumentQuery();
-
-        //    while (qry.HasMoreResults)
-        //    {
-        //        var ret = await qry.ExecuteNextAsync(cancellationToken);
-
-        //        return ret.First();
-        //    }
-
-        //    return null;
-        //}
-
-        public async Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
-            where TDocument : IEventStoreDocument
-        {
-            foreach (var doc in documents)
-            {
-                await DbClient.CreateDocumentAsync(DocCollectionUri, doc, new RequestOptions
-                {
-                    PartitionKey = new PartitionKey(doc.StreamId)
-                }, true, cancellationToken);
-            }
-
-            return documents.Length;
-        }
-
-        public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var qry = DbClient.CreateDocumentQuery<IEventStoreDocument>(DocCollectionUri,
-                        new FeedOptions { EnableCrossPartitionQuery = true }
-                    )
-                    .Where(predicate)
-                    .OrderByDescending(d => d.SortOrder)
-                    .AsDocumentQuery();
-
-                var lst = new List<TResult>();
-
-                while (qry.HasMoreResults)
-                {
-                    var ret = await qry.ExecuteNextAsync<TResult>(cancellationToken);
-                    lst.AddRange(ret.ToList());
-                }
-
-                return lst;
-            }
-            catch (DocumentClientException e)
-            {
-                if (e.StatusCode == HttpStatusCode.Conflict)
-                    throw new DocumentConcurrencyException(e.Message);
-
-                throw;
-            }
-        }
-
-        public async Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
-            where TDocument : IEventStoreDocument
-        {
-            try
-            {
-                await DbClient.ReplaceDocumentAsync(RootDocumentUri(document.StreamId),
-                    document,
-                    new RequestOptions
-                    {
-                        PartitionKey = new PartitionKey(document.StreamId)
-                    },
-                    cancellationToken
-                );
-            }
-            catch (DocumentClientException e)
-            {
-                if (e.StatusCode == HttpStatusCode.NotFound)
-                    throw new DocumentNotFoundException($"Document with stream id '{document.StreamId}' not found!");
-
-                throw;
-            }
-        }
-
-        public async Task<bool> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var docs = await GetAsync<EventStoreDocument>(predicate, cancellationToken);
-
-                foreach (var doc in docs)
-                {
-                    await DbClient.DeleteDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, doc.Id),
-                        new RequestOptions
-                        {
-                            PartitionKey = new PartitionKey(doc.StreamId),
-
-                        },
-                        cancellationToken
-                    );
-                }
-            }
-            catch (DocumentClientException e)
-            {
-                if (e.StatusCode == HttpStatusCode.NotFound)
-                    throw new DocumentNotFoundException(e.Message);
-
-                throw;
-            }
-
-            return true;
-        }
     }
 }
