@@ -3,24 +3,19 @@ using System.Linq;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Extensions;
-using Microsoft.Azure.Documents;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 namespace APIBlox.NetCore.Documents
 {
-
-
     public class EventStoreDocument : IEventStoreDocument
     {
         protected const char Separator = '-';
 
         [JsonProperty(PropertyName = "id")]
         public virtual string Id { get; set; }
-
-        //[JsonProperty(PropertyName = "partitionBy")]
-        //public string PartitionBy { get; set; }
-
+        
         [JsonProperty(PropertyName = "_etag")]
         public string ETag { get; set; }
 
@@ -33,8 +28,8 @@ namespace APIBlox.NetCore.Documents
         [JsonProperty(PropertyName = "metadata")]
         public object Metadata { get; set; }
 
-        // [JsonProperty(PropertyName = "documentType")]
-        // [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty(PropertyName = "documentType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public virtual DocumentType DocumentType { get; set; }
 
         [JsonProperty(PropertyName = "streamId")]
@@ -96,7 +91,7 @@ namespace APIBlox.NetCore.Documents
 
         private static DocumentType? FindDocumentType(string result)
         {
-            var jo = JObject.FromObject(result);
+            var jo = JObject.Parse(result);
             var type = jo.DescendantsAndSelf().OfType<JProperty>().FirstOrDefault(t => t.Name.EqualsEx("documentType"));
             
             return type is null 

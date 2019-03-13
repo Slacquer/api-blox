@@ -99,7 +99,7 @@ namespace APIBlox.NetCore
             if (ret is null)
                 throw new DataAccessException($"Stream '{streamId}' wasn't found");
 
-            return (RootDocument)EventStoreDocument.Parse(ret.ToString(), Repository.JsonSettings);
+            return ret;//(RootDocument)EventStoreDocument.Parse(ret.ToString(), Repository.JsonSettings);
         }
 
 
