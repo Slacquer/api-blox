@@ -12,7 +12,6 @@ namespace APIBlox.NetCore.Contracts
     ///     Interface IEventStoreRepository
     /// </summary>
     public interface IEventStoreRepository
-
     {
         /// <summary>
         ///     Adds the asynchronous.
@@ -42,14 +41,15 @@ namespace APIBlox.NetCore.Contracts
         //    where TDocument : IEventStoreDocument;
 
         /// <summary>
-        /// Gets the asynchronous.
+        ///     Gets the asynchronous.
         /// </summary>
-        /// <typeparam name="TDocument">The type of the t document.</typeparam>
+        /// <typeparam name="TResult">The type of the t result.</typeparam>
         /// <param name="predicate">The predicate.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;IEnumerable&lt;Document&gt;&gt;.</returns>
-        Task<IEnumerable<Document>> GetAsync<TDocument>(Expression<Func<TDocument, bool>> predicate, CancellationToken cancellationToken = default)
-            where TDocument : IEventStoreDocument;
+        /// <returns>Task&lt;IEnumerable&lt;TResult&gt;&gt;.</returns>
+        Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         ///     Updates the asynchronous.
@@ -87,9 +87,12 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="predicate">The predicate.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        Task<bool> DeleteAsync<TDocument>(Expression<Func<TDocument, bool>> predicate, CancellationToken cancellationToken = default)
-            where TDocument : IEventStoreDocument;
+        Task<bool> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default);
 
+        /// <summary>
+        /// Gets or sets the json settings.
+        /// </summary>
+        /// <value>The json settings.</value>
         JsonSerializerSettings JsonSettings { get; set; }
     }
 }

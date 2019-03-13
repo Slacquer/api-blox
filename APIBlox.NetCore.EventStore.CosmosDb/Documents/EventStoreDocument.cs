@@ -19,7 +19,8 @@ namespace APIBlox.NetCore.Documents
         [JsonProperty(PropertyName = "partitionBy")]
         public string PartitionBy { get; set; }
 
-        [JsonProperty(PropertyName = "_etag")] public string ETag { get; set; }
+        [JsonProperty(PropertyName = "_etag")] 
+        public string ETag { get; set; }
 
         [JsonProperty(PropertyName = "_ts")]
         public long TimeStamp { get; set; }
@@ -30,8 +31,8 @@ namespace APIBlox.NetCore.Documents
         [JsonProperty(PropertyName = "metadata")]
         public object Metadata { get; set; }
 
-        [JsonProperty(PropertyName = "documentType")]
-        [JsonConverter(typeof(StringEnumConverter))]
+       // [JsonProperty(PropertyName = "documentType")]
+       // [JsonConverter(typeof(StringEnumConverter))]
         public virtual DocumentType DocumentType { get; set;}
 
         [JsonProperty(PropertyName = "streamId")]

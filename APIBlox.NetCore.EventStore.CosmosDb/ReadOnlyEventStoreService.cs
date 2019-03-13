@@ -45,19 +45,15 @@ namespace APIBlox.NetCore
 
         protected async Task<RootDocument> ReadRootAsync(string streamId, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var ret = (await Repository.GetAsync<RootDocument>(
-                    d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
-                    cancellationToken
-                )).FirstOrDefault();
+            var ret = (await Repository.GetAsync<Document>(
+                d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
+                cancellationToken
+            )).FirstOrDefault();
 
-                return (RootDocument) EventStoreDocument.Parse(ret, null, Repository.JsonSettings);
-            }
-            catch (DocumentClientException ex) when (ex.Error.Code == nameof(HttpStatusCode.NotFound))
-            {
+            if (ret is null)
                 throw new DataAccessException($"Stream '{streamId}' wasn't found");
-            }
+
+            return (RootDocument)EventStoreDocument.Parse(ret, null, Repository.JsonSettings);
         }
 
         //public async Task<EventStreamModel> ReadEventStreamAsync(string streamId,
@@ -204,35 +200,35 @@ namespace APIBlox.NetCore
         //    return new PartitionKey(partitionedByValue);
         //}
 
-        //private static EventModel Deserialize(EventDocument document)
-        //{
-        //    object metadata = null;
+        private static EventModel Deserialize(EventDocument document)
+        {
+            object metadata = null;
 
-        //    if (!string.IsNullOrEmpty(document.MetadataType))
-        //        metadata = document.Metadata;
+            if (!string.IsNullOrEmpty(document.MetadataType))
+                metadata = document.Metadata;
 
-        //    object body = null;
+            object body = null;
 
-        //    if (!string.IsNullOrEmpty(document.EventType))
-        //        body = document.EventData;
+            if (!string.IsNullOrEmpty(document.EventType))
+                body = document.EventData;
 
-        //    return new EventModel(body, document.Version, document.TimeStamp, metadata);
-        //}
+            return new EventModel(body, document.Version, document.TimeStamp, metadata);
+        }
 
-        //private static SnapshotModel Deserialize(SnapshotDocument document)
-        //{
-        //    object metadata = null;
+        private static SnapshotModel Deserialize(SnapshotDocument document)
+        {
+            object metadata = null;
 
-        //    if (!string.IsNullOrEmpty(document.MetadataType))
-        //        metadata = document.Metadata;
+            if (!string.IsNullOrEmpty(document.MetadataType))
+                metadata = document.Metadata;
 
-        //    return new SnapshotModel(document.SnapshotData,
-        //        metadata,
-        //        document.Version,
-        //        document.TimeStamp
-        //    );
-        //}
-        
+            return new SnapshotModel(document.SnapshotData,
+                metadata,
+                document.Version,
+                document.TimeStamp
+            );
+        }
+
         public async Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null, bool includeEvents = false, Func<object> initializeSnapshotObject = null,
             CancellationToken cancellationToken = default
         )
@@ -243,50 +239,49 @@ namespace APIBlox.NetCore
             if (fromVersion.HasValue && fromVersion > 0)
                 await VersionCheckAsync(streamId, fromVersion, cancellationToken);
 
-            Expression<Func<EventStoreDocument, bool>> predicate = e =>
+            Expression<Func<IEventStoreDocument, bool>> predicate = e =>
                 fromVersion.HasValue ? e.StreamId == streamId && e.Version >= fromVersion : e.StreamId == streamId;
 
-            var results = (await Repository.GetAsync(predicate, cancellationToken))
-                //.OrderBy(d => d.SortOrder)
-                .ToList();
+            var results = (await Repository.GetAsync<Document>(predicate, cancellationToken)).ToList();
 
             if (results.Count == 0)
                 return null;
 
-            //var rootDocument = results.OfType<RootDocument>().FirstOrDefault(d => d.DocumentType == DocumentType.Root);
-
-            //if (rootDocument is null)
-            //    return null;
-
-            //object metadata = null;
-
-            //if (!string.IsNullOrEmpty(rootDocument.MetadataType))
-            //    metadata = rootDocument.Metadata;
-
-            var events = new List<EventModel>();
+            var docs = new List<EventStoreDocument>();
 
             foreach (var document in results)
             {
                 var doc = EventStoreDocument.Parse(document, initializeSnapshotObject, Repository.JsonSettings);
 
-                //events.Add(doc as EventDocument);
+                docs.Add(doc);
 
                 if (doc is RootDocument && !includeEvents)
                     break;
 
-                if (!(doc is SnapshotDocument) || !(fromVersion is null))
-                    continue;
-
-                break;
+                if (doc is SnapshotDocument && fromVersion is null)
+                    break;
             }
 
-            var snapshot = fromVersion is null ? results.Cast<SnapshotModel>().FirstOrDefault() : null;
+            if (docs.Count == 0)
+                return null;
+            
+            var rootDoc = docs.FirstOrDefault(d => d.DocumentType == DocumentType.Root);
 
-            //var ret = new EventStreamModel(streamId, rootDocument.Version, rootDocument.TimeStamp, metadata, events.ToArray(), snapshot);
+            if (rootDoc is null)
+                return null;
 
-            return null;
+            object metadata = null;
 
-            //return ret;
+            if (!string.IsNullOrEmpty(rootDoc.MetadataType))
+                metadata = rootDoc.Metadata;
+
+            var events = docs.OfType<EventDocument>()
+                .Select(Deserialize).Reverse()
+                .ToArray();
+
+            var snapshot = fromVersion is null ? docs.OfType<SnapshotDocument>().Select(Deserialize).FirstOrDefault() : null;
+
+            return new EventStreamModel(streamId, rootDoc.Version, rootDoc.TimeStamp, metadata, events.ToArray(), snapshot);
         }
 
         private async Task VersionCheckAsync(string streamId,
@@ -297,7 +292,7 @@ namespace APIBlox.NetCore
 
             // if for whatever reason, the incoming version is greater than what is stored then something is a miss...
             if (root.Version < expectedVersion)
-                throw new DataConcurrencyException(
+                throw new DocumentConcurrencyException(
                     $"Provided version:{expectedVersion} for stream '{streamId}' is greater than the event source version:{root.Version}!"
                 );
         }

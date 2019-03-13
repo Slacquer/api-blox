@@ -51,6 +51,8 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
             var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 
+            await svc.DeleteEventStreamAsync(agg.StreamId);
+
             //Assert.NotNull(result);
             //Assert.True(result.Version == 1);
             //Assert.NotNull(result.StreamId);
@@ -86,13 +88,15 @@ namespace SlnTests.APIBlox.NetCore.EventStore
         }
     }
 
-    public class DummyAggregate : IEventStoreDocument
+    public class DummyAggregate //: IEventStoreDocument
     {
         public Guid AggregateId { get; } = Guid.NewGuid();
-        public string Id { get; }
 
+
+        public string SomeValue { get; set; }
+
+        // I SHOULD NOT BE HERE!
         public string StreamId { get; set; }
-        public long TimeStamp { get; }
     }
 
 }

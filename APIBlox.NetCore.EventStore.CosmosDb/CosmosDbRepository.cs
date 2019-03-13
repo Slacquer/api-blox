@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
+using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Options;
 using APIBlox.NetCore.Types.JsonBits;
@@ -36,6 +38,7 @@ namespace APIBlox.NetCore
 
         public JsonSerializerSettings JsonSettings { get; set; }
 
+
         public CosmosDbRepository(IDocumentClient client, IOptions<CosmosDbOptions> options)
         {
             var opt = options.Value;
@@ -51,9 +54,9 @@ namespace APIBlox.NetCore
             JsonSettings = new CamelCaseSettings();
 
             JsonSettings.Converters.Add(new StringEnumConverter
-                {
-                    //CamelCaseText = true
-                }
+            {
+                //CamelCaseText = true
+            }
             );
 
             //_bulkInsertFilePath = opt.BulkInsertFilePath;
@@ -207,35 +210,35 @@ namespace APIBlox.NetCore
 
 
 
-        public async Task<EventStoreDocument> GetByIdAsync(string id, CancellationToken cancellationToken = default)
-        {
-            var qry = DbClient.CreateDocumentQuery<EventStoreDocument>(DocCollectionUri)//, MakeFeedOptions(id))
-                .Where(d => d.Id == id).AsDocumentQuery();
+        //public async Task<EventStoreDocument> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+        //{
+        //    var qry = DbClient.CreateDocumentQuery<EventStoreDocument>(DocCollectionUri)//, MakeFeedOptions(id))
+        //        .Where(d => d.Id == id).AsDocumentQuery();
 
-            while (qry.HasMoreResults)
-            {
-                var ret = await qry.ExecuteNextAsync<EventStoreDocument>(cancellationToken);
+        //    while (qry.HasMoreResults)
+        //    {
+        //        var ret = await qry.ExecuteNextAsync<EventStoreDocument>(cancellationToken);
 
-                return ret.First();
-            }
+        //        return ret.First();
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        public async Task<EventStoreDocument> GetByStreamIdAsync(string streamId, CancellationToken cancellationToken = default)
-        {
-            var qry = DbClient.CreateDocumentQuery<EventStoreDocument>(DocCollectionUri, MakeFeedOptions(streamId))
-                .Where(d => d.Id == streamId).AsDocumentQuery();
+        //public async Task<EventStoreDocument> GetByStreamIdAsync(string streamId, CancellationToken cancellationToken = default)
+        //{
+        //    var qry = DbClient.CreateDocumentQuery<EventStoreDocument>(DocCollectionUri, MakeFeedOptions(streamId))
+        //        .Where(d => d.Id == streamId).AsDocumentQuery();
 
-            while (qry.HasMoreResults)
-            {
-                var ret = await qry.ExecuteNextAsync(cancellationToken);
+        //    while (qry.HasMoreResults)
+        //    {
+        //        var ret = await qry.ExecuteNextAsync(cancellationToken);
 
-                return ret.First();
-            }
+        //        return ret.First();
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
             where TDocument : IEventStoreDocument
@@ -251,32 +254,86 @@ namespace APIBlox.NetCore
             return documents.Length;
         }
 
-        public async Task<IEnumerable<Document>> GetAsync<TDocument>(Expression<Func<TDocument, bool>> predicate, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var qry = DbClient.CreateDocumentQuery<IEventStoreDocument>(DocCollectionUri,
+                        new FeedOptions { EnableCrossPartitionQuery = true }
+                    )
+                    .Where(predicate)
+                    .OrderByDescending(d => d.SortOrder)
+                    .AsDocumentQuery();
+
+                var lst = new List<TResult>();
+
+                while (qry.HasMoreResults)
+                {
+                    var ret = await qry.ExecuteNextAsync<TResult>(cancellationToken);
+                    lst.AddRange(ret.ToList());
+                }
+
+                return lst;
+            }
+            catch (DocumentClientException e)
+            {
+                if (e.StatusCode == HttpStatusCode.Conflict)
+                    throw new DocumentConcurrencyException(e.Message);
+
+                throw;
+            }
+        }
+
+        public async Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
             where TDocument : IEventStoreDocument
         {
-            var qry = DbClient.CreateDocumentQuery<TDocument>(DocCollectionUri, new FeedOptions{ EnableCrossPartitionQuery=true })
-                .Where(predicate).AsDocumentQuery();
-
-            var lst = new List<Document>();
-            while (qry.HasMoreResults)
+            try
             {
-                var ret = await qry.ExecuteNextAsync<Document>(cancellationToken);
-                lst.AddRange(ret.ToList());
+                await DbClient.ReplaceDocumentAsync(RootDocumentUri(document.StreamId),
+                    document,
+                    new RequestOptions
+                    {
+                        PartitionKey = new PartitionKey(document.StreamId)
+                    },
+                    cancellationToken
+                );
+            }
+            catch (DocumentClientException e)
+            {
+                if (e.StatusCode == HttpStatusCode.NotFound)
+                    throw new DocumentNotFoundException($"Document with stream id '{document.StreamId}' not found!");
+
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var docs = await GetAsync<EventStoreDocument>(predicate, cancellationToken);
+
+                foreach (var doc in docs)
+                {
+                    await DbClient.DeleteDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, doc.Id),
+                        new RequestOptions
+                        {
+                            PartitionKey = new PartitionKey(doc.StreamId),
+
+                        },
+                        cancellationToken
+                    );
+                }
+            }
+            catch (DocumentClientException e)
+            {
+                if (e.StatusCode == HttpStatusCode.NotFound)
+                    throw new DocumentNotFoundException(e.Message);
+
+                throw;
             }
 
-            return lst;
-        }
-
-        public Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
-            where TDocument : IEventStoreDocument
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAsync<TDocument>(Expression<Func<TDocument, bool>> predicate, CancellationToken cancellationToken = default)
-            where TDocument : IEventStoreDocument
-        {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

@@ -234,15 +234,16 @@ namespace APIBlox.NetCore
             if (events is null || events.Length == 0)
                 throw new ArgumentException("You must supply events.", nameof(events));
 
+            var updating = expectedVersion.HasValue;
             RootDocument root;
             var docs = new List<EventStoreDocument>();
 
-            if (expectedVersion.HasValue)
+            if (updating)
             {
                 root = await ReadRootAsync(streamId, cancellationToken);
 
                 if (root.Version != expectedVersion)
-                    throw new DataConcurrencyException(
+                    throw new DocumentConcurrencyException(
                         $"Expected stream '{streamId}' to have version {expectedVersion.Value} but is {root.Version}."
                     );
             }
@@ -271,12 +272,15 @@ namespace APIBlox.NetCore
 
             await Repository.AddAsync(docs.ToArray(), cancellationToken);
 
+            if (updating)
+                await Repository.UpdateAsync(root, cancellationToken);
+
             return root.Version;
         }
 
-        public Task DeleteEventStreamAsync(string streamId, CancellationToken cancellationToken = default)
+        public async Task DeleteEventStreamAsync(string streamId, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            await Repository.DeleteAsync(d => d.StreamId == streamId, cancellationToken);
         }
 
         public Task CreateSnapshotAsync(string streamId, long expectedVersion, object snapshot, object metadata = null, bool deleteOlderSnapshots = false,
