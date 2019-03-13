@@ -2,15 +2,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Models;
-using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.Contracts
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Marker interface
     /// </summary>
     /// <typeparam name="TModel">The type of the t aggregate.</typeparam>
-    /// <seealso cref="IReadOnlyEventStoreService" />
+    /// <seealso cref="T:APIBlox.NetCore.Contracts.IReadOnlyEventStoreService" />
     public interface IReadOnlyEventStoreService<TModel> : IReadOnlyEventStoreService
         where TModel : class
     {
@@ -34,21 +34,5 @@ namespace APIBlox.NetCore.Contracts
         Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
             bool includeEvents = false, Func<object> initializeSnapshotObject = null, CancellationToken cancellationToken = default
         );
-
-        ///// <summary>
-        /////     Gets the stream root asynchronous.
-        ///// </summary>
-        ///// <param name="streamId">The stream identifier.</param>
-        ///// <param name="partitionedByValue">The partitioned by value.</param>
-        ///// <param name="cancellation">The cancellation.</param>
-        ///// <returns>Task&lt;EventStreamModel&gt;.</returns>
-        //Task<EventStreamModel> GetEventStreamRootAsync(string streamId, string partitionedByValue, CancellationToken cancellation = default);
-
-        ///// <summary>
-        /////     Gets all partition key values asynchronous.
-        ///// </summary>
-        ///// <param name="cancellationToken">The cancellation token.</param>
-        ///// <returns>Task&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
-        //Task<IEnumerable<string>> GetAllPartitionKeyValuesInCollectionAsync(CancellationToken cancellationToken = default);
     }
 }
