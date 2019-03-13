@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using APIBlox.NetCore.Contracts;
+using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Extensions;
 using Microsoft.Azure.Documents;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace APIBlox.NetCore.Documents
 {
@@ -43,44 +46,45 @@ namespace APIBlox.NetCore.Documents
         [JsonProperty(PropertyName = "sortOrder")]
         public decimal SortOrder => Version + GetOrderingFraction(DocumentType);
 
-        public static EventStoreDocument Parse(Document document, JsonSerializerSettings jsonSerializerSettings)
+        public static EventStoreDocument Parse(string jsonDocument, JsonSerializerSettings jsonSerializerSettings)
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
+            if (jsonDocument == null)
+                throw new ArgumentNullException(nameof(jsonDocument));
 
             if (jsonSerializerSettings == null)
                 throw new ArgumentNullException(nameof(jsonSerializerSettings));
 
-            var documentType = document.GetPropertyValue<DocumentType>(nameof(DocumentType).ToCamelCase());
-            documentType = documentType == 0 ? document.GetPropertyValue<DocumentType>(nameof(DocumentType)) : documentType;
+            var documentType = FindDocumentType(jsonDocument);
+
+            if (!documentType.HasValue)
+                throw new DocumentMalformedException($"jsonDocument does not appear to have an {nameof(DocumentType)} value!");
 
             EventStoreDocument ret;
 
             switch (documentType)
             {
                 case DocumentType.Root:
-                    ret = JsonConvert.DeserializeObject<RootDocument>(document.ToString(), jsonSerializerSettings);
+                    ret = JsonConvert.DeserializeObject<RootDocument>(jsonDocument, jsonSerializerSettings);
                     break;
 
                 case DocumentType.Snapshot:
 
-                    var ss = JsonConvert.DeserializeObject<SnapshotDocument>(document.ToString(), jsonSerializerSettings);
+                    var ss = JsonConvert.DeserializeObject<SnapshotDocument>(jsonDocument, jsonSerializerSettings);
                     ss.SnapshotData = JsonConvert.DeserializeObject(ss.SnapshotData.ToString(), Type.GetType(ss.SnapshotType), jsonSerializerSettings);
-
-
+                    
                     ret = ss;
 
                     break;
 
                 case DocumentType.Event:
-                    var ev = JsonConvert.DeserializeObject<EventDocument>(document.ToString(), jsonSerializerSettings);
+                    var ev = JsonConvert.DeserializeObject<EventDocument>(jsonDocument, jsonSerializerSettings);
                     ev.EventData = JsonConvert.DeserializeObject(ev.EventData.ToString(), Type.GetType(ev.EventType), jsonSerializerSettings);
                     ret = ev;
                     break;
 
                 default:
                     throw new NotSupportedException(
-                        $"Cannot parse document of type '{document.GetType().AssemblyQualifiedName}' with DocumentType '{document}'."
+                        $"Cannot parse document of type '{jsonDocument.GetType().AssemblyQualifiedName}' with DocumentType '{jsonDocument}'."
                     );
             }
 
@@ -88,6 +92,16 @@ namespace APIBlox.NetCore.Documents
                 ret.Metadata = JsonConvert.DeserializeObject(ret.Metadata.ToString(), Type.GetType(ret.MetadataType), jsonSerializerSettings);
 
             return ret;
+        }
+
+        private static DocumentType? FindDocumentType(string result)
+        {
+            var jo = JObject.FromObject(result);
+            var type = jo.DescendantsAndSelf().OfType<JProperty>().FirstOrDefault(t => t.Name.EqualsEx("documentType"));
+            
+            return type is null 
+                ? (DocumentType?) null 
+                : (DocumentType)Enum.Parse(typeof(DocumentType), type.Value.ToString());
         }
 
         private static decimal GetOrderingFraction(DocumentType documentType)

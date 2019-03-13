@@ -28,7 +28,7 @@ namespace APIBlox.NetCore.Contracts
             where TDocument : IEventStoreDocument;
 
         /// <summary>
-        ///     Gets the asynchronous.
+        ///     Gets the stored document asynchronously.
         /// </summary>
         /// <typeparam name="TResult">The type of the t result.</typeparam>
         /// <param name="predicate">The predicate.</param>
@@ -36,7 +36,7 @@ namespace APIBlox.NetCore.Contracts
         /// <returns>Task&lt;IEnumerable&lt;TResult&gt;&gt;.</returns>
         Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
-        );
+        )where TResult : class;
 
         /// <summary>
         ///     Updates the asynchronous.

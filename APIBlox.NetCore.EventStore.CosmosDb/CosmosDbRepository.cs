@@ -72,12 +72,14 @@ namespace APIBlox.NetCore
 
         public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
-        )
+        ) where TResult : class
         {
+            var isString = typeof(TResult) == typeof(string);
+
             try
             {
                 var qry = _client.CreateDocumentQuery<IEventStoreDocument>(_docCollectionUri,
-                        new FeedOptions {EnableCrossPartitionQuery = true}
+                        new FeedOptions { EnableCrossPartitionQuery = true }
                     )
                     .Where(predicate)
                     .OrderByDescending(d => d.SortOrder)
@@ -87,8 +89,16 @@ namespace APIBlox.NetCore
 
                 while (qry.HasMoreResults)
                 {
-                    var ret = await qry.ExecuteNextAsync<TResult>(cancellationToken);
-                    lst.AddRange(ret.ToList());
+                    var ret = await qry.ExecuteNextAsync<Document>(cancellationToken);
+
+                    foreach (var document in ret)
+                    {
+                        var result = isString
+                            ? document.ToString() as TResult
+                            : JsonConvert.DeserializeObject<TResult>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings);
+
+                        lst.Add(result);
+                    }
                 }
 
                 return lst;
@@ -166,7 +176,7 @@ namespace APIBlox.NetCore
             tmp.Converters.Add(new StringEnumConverter());
 
             JsonSettings =
-                (JsonSerializerSettings) client.GetType()
+                (JsonSerializerSettings)client.GetType()
                     .GetField("serializerSettings",
                         BindingFlags.GetField
                         | BindingFlags.Instance | BindingFlags.NonPublic
@@ -183,7 +193,7 @@ namespace APIBlox.NetCore
             if (exists)
                 return;
 
-            await _client.CreateDatabaseAsync(new Database {Id = _databaseId});
+            await _client.CreateDatabaseAsync(new Database { Id = _databaseId });
         }
 
         private async Task CreateCollectionIfNotExistsAsync()
@@ -214,7 +224,7 @@ namespace APIBlox.NetCore
             await _client.CreateDocumentCollectionAsync(
                 UriFactory.CreateDatabaseUri(_databaseId),
                 documentCollection,
-                new RequestOptions {OfferThroughput = 1000}
+                new RequestOptions { OfferThroughput = 1000 }
             );
         }
 

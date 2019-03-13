@@ -38,7 +38,7 @@ namespace APIBlox.NetCore
                     ? e.StreamId == streamId && e.Version >= fromVersion
                     : e.StreamId == streamId;
 
-            var results = (await Repository.GetAsync<Document>(predicate, cancellationToken)).ToList();
+            var results = (await Repository.GetAsync<string>(predicate, cancellationToken)).ToList();
 
             if (results.Count == 0)
                 return null;
@@ -91,7 +91,7 @@ namespace APIBlox.NetCore
         protected async Task<RootDocument> ReadRootAsync(string streamId,
             CancellationToken cancellationToken = default)
         {
-            var ret = (await Repository.GetAsync<Document>(
+            var ret = (await Repository.GetAsync<RootDocument>(
                 d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
                 cancellationToken
             )).FirstOrDefault();
@@ -99,7 +99,7 @@ namespace APIBlox.NetCore
             if (ret is null)
                 throw new DataAccessException($"Stream '{streamId}' wasn't found");
 
-            return (RootDocument)EventStoreDocument.Parse(ret, Repository.JsonSettings);
+            return (RootDocument)EventStoreDocument.Parse(ret.ToString(), Repository.JsonSettings);
         }
 
 
