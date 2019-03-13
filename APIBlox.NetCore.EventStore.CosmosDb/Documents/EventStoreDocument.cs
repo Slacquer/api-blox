@@ -16,8 +16,8 @@ namespace APIBlox.NetCore.Documents
         [JsonProperty(PropertyName = "id")]
         public virtual string Id { get; set;}
 
-        [JsonProperty(PropertyName = "partitionBy")]
-        public string PartitionBy { get; set; }
+        //[JsonProperty(PropertyName = "partitionBy")]
+        //public string PartitionBy { get; set; }
 
         [JsonProperty(PropertyName = "_etag")] 
         public string ETag { get; set; }

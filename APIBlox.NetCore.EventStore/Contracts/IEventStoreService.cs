@@ -50,12 +50,11 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="streamId">The stream identifier.</param>
         /// <param name="expectedVersion">The expected version.</param>
         /// <param name="snapshot">The snapshot.</param>
-        /// <param name="metadata">The metadata.</param>
         /// <param name="deleteOlderSnapshots">if set to <c>true</c> [delete older snapshots].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task CreateSnapshotAsync(string streamId, long expectedVersion, object snapshot,
-            object metadata = null, bool deleteOlderSnapshots = false,
+        Task CreateSnapshotAsync(string streamId, long expectedVersion,
+            SnapshotModel snapshot, bool deleteOlderSnapshots = false,
             CancellationToken cancellationToken = default
         );
 

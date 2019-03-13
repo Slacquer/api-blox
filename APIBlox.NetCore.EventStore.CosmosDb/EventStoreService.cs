@@ -188,7 +188,6 @@ namespace APIBlox.NetCore
         {
             var document = new EventDocument
             {
-                PartitionBy = streamId,
                 StreamId = streamId,
                 Version = streamVersion,
                 EventType = @event.Data.GetType().AssemblyQualifiedName,
@@ -204,25 +203,24 @@ namespace APIBlox.NetCore
             return document;
         }
 
-        //private static SnapshotDocument BuildSnapShotDoc(object snapshot, object metadata, long version, string streamId)
-        //{
-        //    var document = new SnapshotDocument
-        //    {
-        //        PartitionBy = streamId,
-        //        StreamId = streamId,
-        //        Version = version,
-        //        SnapshotType = snapshot.GetType().AssemblyQualifiedName,
-        //        SnapshotData = snapshot
-        //    };
+        private static SnapshotDocument BuildSnapShotDoc(string streamId, SnapshotModel snapshot, long version)
+        {
+            var document = new SnapshotDocument
+            {
+                StreamId = streamId,
+                Version = version,
+                SnapshotType = snapshot.GetType().AssemblyQualifiedName,
+                SnapshotData = snapshot
+            };
 
-        //    if (metadata != null)
-        //    {
-        //        document.Metadata = metadata;
-        //        document.MetadataType = metadata.GetType().AssemblyQualifiedName;
-        //    }
+            if (snapshot.Metadata != null)
+            {
+                document.Metadata = snapshot.Metadata;
+                document.MetadataType = snapshot.Metadata.GetType().AssemblyQualifiedName;
+            }
 
-        //    return document;
-        //}
+            return document;
+        }
 
         public async Task<long> WriteToEventStreamAsync(string streamId, EventModel[] events, long? expectedVersion = null, object metadata = null,
             CancellationToken cancellationToken = default
@@ -251,7 +249,7 @@ namespace APIBlox.NetCore
             {
                 root = new RootDocument
                 {
-                    PartitionBy = streamId,
+                    //PartitionBy = streamId,
                     StreamId = streamId
                 };
 
@@ -266,7 +264,7 @@ namespace APIBlox.NetCore
                 root.Metadata = metadata;
                 root.MetadataType = metadata.GetType().AssemblyQualifiedName;
             }
-            
+
             for (long i = 0; i < events.Length; i++)
                 docs.Add(BuildEventDoc(events[i], streamId, ++curVersion));
 
@@ -275,7 +273,7 @@ namespace APIBlox.NetCore
             if (updating)
                 await Repository.UpdateAsync(root, cancellationToken);
 
-            return root.Version;
+            return events.Length;
         }
 
         public async Task DeleteEventStreamAsync(string streamId, CancellationToken cancellationToken = default)
@@ -283,16 +281,26 @@ namespace APIBlox.NetCore
             await Repository.DeleteAsync(d => d.StreamId == streamId, cancellationToken);
         }
 
-        public Task CreateSnapshotAsync(string streamId, long expectedVersion, object snapshot, object metadata = null, bool deleteOlderSnapshots = false,
+        public async Task CreateSnapshotAsync(string streamId, long expectedVersion, SnapshotModel snapshot, bool deleteOlderSnapshots = false,
             CancellationToken cancellationToken = default
         )
         {
-            throw new NotImplementedException();
+            var doc = BuildSnapShotDoc(streamId, snapshot, expectedVersion);
+
+            await Repository.AddAsync(new[] { doc }, cancellationToken);
+
+            if (deleteOlderSnapshots)
+                await DeleteSnapshotsAsync(streamId, expectedVersion, cancellationToken);
         }
 
-        public Task DeleteSnapshotsAsync(string streamId, long olderThanVersion, CancellationToken cancellationToken = default)
+        public async Task DeleteSnapshotsAsync(string streamId, long olderThanVersion, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            await Repository.DeleteAsync(d =>
+                    d.StreamId == streamId
+                    && d.DocumentType == DocumentType.Snapshot
+                    && d.Version < olderThanVersion,
+                cancellationToken
+            );
         }
     }
 }

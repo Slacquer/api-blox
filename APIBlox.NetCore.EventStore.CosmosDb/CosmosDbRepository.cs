@@ -95,7 +95,7 @@ namespace APIBlox.NetCore
             {
                 Id = CollectionId
             };
-            documentCollection.PartitionKey.Paths.Add("/partitionBy");
+            documentCollection.PartitionKey.Paths.Add("/streamId");
 
             if (_uniqueKeys.Any())
             {

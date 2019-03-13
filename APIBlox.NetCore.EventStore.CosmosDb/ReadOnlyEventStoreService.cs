@@ -212,7 +212,7 @@ namespace APIBlox.NetCore
             if (!string.IsNullOrEmpty(document.EventType))
                 body = document.EventData;
 
-            return new EventModel(body, document.Version, document.TimeStamp, metadata);
+            return new EventModel { Data = body, Version = document.Version, TimeStamp = document.TimeStamp, Metadata = metadata };
         }
 
         private static SnapshotModel Deserialize(SnapshotDocument document)
@@ -222,11 +222,13 @@ namespace APIBlox.NetCore
             if (!string.IsNullOrEmpty(document.MetadataType))
                 metadata = document.Metadata;
 
-            return new SnapshotModel(document.SnapshotData,
-                metadata,
-                document.Version,
-                document.TimeStamp
-            );
+            return new SnapshotModel
+            {
+                Data = document.SnapshotData,
+                Metadata = metadata,
+                Version = document.Version,
+                TimeStamp = document.TimeStamp
+            };
         }
 
         public async Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null, bool includeEvents = false, Func<object> initializeSnapshotObject = null,
@@ -264,7 +266,7 @@ namespace APIBlox.NetCore
 
             if (docs.Count == 0)
                 return null;
-            
+
             var rootDoc = docs.FirstOrDefault(d => d.DocumentType == DocumentType.Root);
 
             if (rootDoc is null)
@@ -281,7 +283,15 @@ namespace APIBlox.NetCore
 
             var snapshot = fromVersion is null ? docs.OfType<SnapshotDocument>().Select(Deserialize).FirstOrDefault() : null;
 
-            return new EventStreamModel(streamId, rootDoc.Version, rootDoc.TimeStamp, metadata, events.ToArray(), snapshot);
+            return new EventStreamModel
+            {
+                StreamId = streamId,
+                Version = rootDoc.Version,
+                TimeStamp = rootDoc.TimeStamp,
+                Metadata = metadata,
+                Events = events.ToArray(),
+                Snapshot = snapshot
+            };
         }
 
         private async Task VersionCheckAsync(string streamId,

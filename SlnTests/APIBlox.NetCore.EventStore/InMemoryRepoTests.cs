@@ -40,51 +40,42 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
             IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
 
-            var lst = new List<EventModel> { new EventModel("1"), new EventModel("2"), new EventModel("3") };
+            var lst = new List<EventModel> { new EventModel { Data = "1" }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
 
             await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
 
-            lst = new List<EventModel> { new EventModel("4") };
+            lst = new List<EventModel> { new EventModel { Data = "4" } };
 
             await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
 
-
             var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 
+            Assert.NotNull(result);
+            Assert.True(result.Version == 4);
+            Assert.NotNull(result.StreamId);
+            Assert.True(result.StreamId == agg.StreamId);
+            Assert.True(result.TimeStamp > 0);
+            Assert.Null(result.Snapshot);
+            Assert.NotNull(result.Events);
+
+            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = "snapshot1" });
+
+            lst = new List<EventModel> { new EventModel { Data = "5" } };
+
+            var count = await svc.WriteToEventStreamAsync(result.StreamId, lst.ToArray(), result.Version);
+
+            Assert.True(count == 1);
+
+            result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+
+            Assert.True(result.Version == 5);
+            Assert.True(result.Events.Length == 1);
+            Assert.NotNull(result.Snapshot);
+
+            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = "snapshot12" }, deleteOlderSnapshots: true);
+
+
             await svc.DeleteEventStreamAsync(agg.StreamId);
-
-            //Assert.NotNull(result);
-            //Assert.True(result.Version == 1);
-            //Assert.NotNull(result.StreamId);
-            //Assert.True(result.StreamId == agg.AggregateId.ToString());
-            //Assert.True(result.TimeStamp > 0);
-            //Assert.Null(result.Snapshot);
-            //Assert.Null(result.Events);
-
-
-
-            //var count = await svc.AddEventsToStreamAsync(result.StreamId, result.Version, lst.ToArray());
-
-            //Assert.True(count == 3);
-
-            //result = await svc.GetEventStreamAsync(agg.AggregateId.ToString());
-
-            //Assert.True(result.Version == 4);
-
-            //await svc.CreateSnapshotOfStreamAsync(result.StreamId, result.Version, new SnapshotModel("snapshot1"));
-
-
-
-            //lst = new List<EventModel>();
-            //lst.Add(new EventModel("4"));
-
-            //count = await svc.AddEventsToStreamAsync(result.StreamId, result.Version, lst.ToArray());
-
-            //result = await svc.GetEventStreamAsync(agg.AggregateId.ToString());
-
-            //Assert.True(result.Version == 5);
-            //Assert.NotNull(result.Snapshot);
-
         }
     }
 
