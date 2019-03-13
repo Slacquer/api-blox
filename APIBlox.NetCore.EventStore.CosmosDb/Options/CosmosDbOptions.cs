@@ -10,8 +10,6 @@ namespace APIBlox.NetCore.Options
 
         public string DatabaseId { get; set; }
 
-        public string BulkInsertFilePath { get; set; }
-
         public Dictionary<string, Collection> Collections { get; set; } = new Dictionary<string, Collection>();
     }
 }

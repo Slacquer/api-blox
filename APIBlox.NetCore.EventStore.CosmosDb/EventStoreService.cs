@@ -29,7 +29,7 @@ namespace APIBlox.NetCore
     {
         #region -    Constructors    -
 
-        public EventStoreService(IEventStoreRepository<EventStoreDocument> repo)
+        public EventStoreService(IEventStoreRepository repo)
             : base(repo)
         {
         }
@@ -235,6 +235,7 @@ namespace APIBlox.NetCore
                 throw new ArgumentException("You must supply events.", nameof(events));
 
             RootDocument root;
+            var docs = new List<EventStoreDocument>();
 
             if (expectedVersion.HasValue)
             {
@@ -252,23 +253,23 @@ namespace APIBlox.NetCore
                     PartitionBy = streamId,
                     StreamId = streamId
                 };
+
+                docs.Add(root);
             }
 
             var curVersion = root.Version;
-            root.Version += (long)events.Length;
+            root.Version += events.Length;
 
             if (metadata != null)
             {
                 root.Metadata = metadata;
                 root.MetadataType = metadata.GetType().AssemblyQualifiedName;
             }
-
-            var docs = new List<EventStoreDocument> { root };
-
-            for (long i = 0; i < (long)events.Length; i++)
-                docs.Add(BuildEventDoc(events[i], streamId, ++curVersion));
             
-            await Repository.AddAsync(cancellationToken, docs.ToArray());
+            for (long i = 0; i < events.Length; i++)
+                docs.Add(BuildEventDoc(events[i], streamId, ++curVersion));
+
+            await Repository.AddAsync(docs.ToArray(), cancellationToken);
 
             return root.Version;
         }

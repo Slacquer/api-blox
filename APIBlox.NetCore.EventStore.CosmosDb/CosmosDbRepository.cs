@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -16,12 +17,13 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace APIBlox.NetCore
 {
-    internal class CosmosDbRepository<TModel> : IEventStoreRepository<EventStoreDocument>
+    internal class CosmosDbRepository<TModel> : IEventStoreRepository
     {
-        private readonly string _bulkInsertFilePath;
+        //private readonly string _bulkInsertFilePath;
         private readonly List<string> _uniqueKeys;
 
         protected IDocumentClient DbClient { get; }
@@ -48,14 +50,20 @@ namespace APIBlox.NetCore
 
             JsonSettings = new CamelCaseSettings();
 
-            _bulkInsertFilePath = opt.BulkInsertFilePath;
+            JsonSettings.Converters.Add(new StringEnumConverter
+                {
+                    //CamelCaseText = true
+                }
+            );
 
-            if (!File.Exists(_bulkInsertFilePath))
-                throw new ArgumentException("Bulk insert file does not exist!", nameof(opt.BulkInsertFilePath));
+            //_bulkInsertFilePath = opt.BulkInsertFilePath;
+
+            //if (!File.Exists(_bulkInsertFilePath))
+            //    throw new ArgumentException("Bulk insert file does not exist!", nameof(opt.BulkInsertFilePath));
 
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync().Wait();
-            CreateBulkInsertSprocIfNotExistsAsync().Wait();
+            //CreateBulkInsertSprocIfNotExistsAsync().Wait();
         }
 
 
@@ -103,25 +111,25 @@ namespace APIBlox.NetCore
             );
         }
 
-        private async Task CreateBulkInsertSprocIfNotExistsAsync()
-        {
-            var exists = await DbClient.CreateStoredProcedureQuery(DocCollectionUri)
-                .ToAsyncEnumerable()
-                .Any(q => q.Id == "bulkInsert");
+        //private async Task CreateBulkInsertSprocIfNotExistsAsync()
+        //{
+        //    var exists = await DbClient.CreateStoredProcedureQuery(DocCollectionUri)
+        //        .ToAsyncEnumerable()
+        //        .Any(q => q.Id == "bulkInsert");
 
-            if (exists)
-                return;
+        //    if (exists)
+        //        return;
 
-            var sProc = File.ReadAllText(_bulkInsertFilePath);
+        //    var sProc = File.ReadAllText(_bulkInsertFilePath);
 
-            var spDef = new StoredProcedure
-            {
-                Id = "bulkInsert",
-                Body = sProc
-            };
+        //    var spDef = new StoredProcedure
+        //    {
+        //        Id = "bulkInsert",
+        //        Body = sProc
+        //    };
 
-            await DbClient.CreateStoredProcedureAsync(DocCollectionUri, spDef);
-        }
+        //    await DbClient.CreateStoredProcedureAsync(DocCollectionUri, spDef);
+        //}
 
         //
         // In a nutshell, apparently the linq provider does not honor camelCase serialization.
@@ -197,18 +205,7 @@ namespace APIBlox.NetCore
             return new FeedOptions { PartitionKey = new PartitionKey(id) };
         }
 
-        public async Task<int> AddAsync(CancellationToken cancellationToken = default, params EventStoreDocument[] documents)
-        {
-            foreach (var doc in documents)
-            {
-                await DbClient.CreateDocumentAsync(DocCollectionUri, doc, new RequestOptions
-                {
-                    PartitionKey = new PartitionKey(doc.StreamId)
-                }, true, cancellationToken);
-            }
 
-            return documents.Length;
-        }
 
         public async Task<EventStoreDocument> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
@@ -240,17 +237,44 @@ namespace APIBlox.NetCore
             return null;
         }
 
-        public Task<IEnumerable<EventStoreDocument>> GetAsync(Func<EventStoreDocument, bool> predicate, CancellationToken cancellationToken = default)
+        public async Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
+            where TDocument : IEventStoreDocument
+        {
+            foreach (var doc in documents)
+            {
+                await DbClient.CreateDocumentAsync(DocCollectionUri, doc, new RequestOptions
+                {
+                    PartitionKey = new PartitionKey(doc.StreamId)
+                }, true, cancellationToken);
+            }
+
+            return documents.Length;
+        }
+
+        public async Task<IEnumerable<Document>> GetAsync<TDocument>(Expression<Func<TDocument, bool>> predicate, CancellationToken cancellationToken = default)
+            where TDocument : IEventStoreDocument
+        {
+            var qry = DbClient.CreateDocumentQuery<TDocument>(DocCollectionUri, new FeedOptions{ EnableCrossPartitionQuery=true })
+                .Where(predicate).AsDocumentQuery();
+
+            var lst = new List<Document>();
+            while (qry.HasMoreResults)
+            {
+                var ret = await qry.ExecuteNextAsync<Document>(cancellationToken);
+                lst.AddRange(ret.ToList());
+            }
+
+            return lst;
+        }
+
+        public Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
+            where TDocument : IEventStoreDocument
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(EventStoreDocument eventObject, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAsync(Func<EventStoreDocument, bool> predicate, CancellationToken cancellationToken = default)
+        public Task<bool> DeleteAsync<TDocument>(Expression<Func<TDocument, bool>> predicate, CancellationToken cancellationToken = default)
+            where TDocument : IEventStoreDocument
         {
             throw new NotImplementedException();
         }

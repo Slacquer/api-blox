@@ -23,12 +23,6 @@ namespace APIBlox.NetCore.Contracts
     public interface IReadOnlyEventStoreService
     {
         /// <summary>
-        ///     Gets or sets the json settings.
-        /// </summary>
-        /// <value>The json settings.</value>
-        JsonSerializerSettings JsonSettings { get; set; }
-
-        /// <summary>
         ///     Reads the stream asynchronous.
         /// </summary>
         /// <param name="streamId">The stream identifier.</param>

@@ -14,7 +14,7 @@ namespace APIBlox.NetCore.Documents
         protected const char Separator = '-';
 
         [JsonProperty(PropertyName = "id")]
-        public virtual string Id { get; }
+        public virtual string Id { get; set;}
 
         [JsonProperty(PropertyName = "partitionBy")]
         public string PartitionBy { get; set; }
@@ -32,7 +32,7 @@ namespace APIBlox.NetCore.Documents
 
         [JsonProperty(PropertyName = "documentType")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public virtual DocumentType DocumentType { get; }
+        public virtual DocumentType DocumentType { get; set;}
 
         [JsonProperty(PropertyName = "streamId")]
         public string StreamId { get; set; }
@@ -50,12 +50,12 @@ namespace APIBlox.NetCore.Documents
 
             if (jsonSerializerSettings == null)
                 throw new ArgumentNullException(nameof(jsonSerializerSettings));
-
+            
             var documentType = document.GetPropertyValue<DocumentType>(nameof(DocumentType).ToCamelCase());
             documentType = documentType == 0 ? document.GetPropertyValue<DocumentType>(nameof(DocumentType)) : documentType;
 
             EventStoreDocument ret;
-
+            
             switch (documentType)
             {
                 case DocumentType.Root:
@@ -63,13 +63,13 @@ namespace APIBlox.NetCore.Documents
                     break;
 
                 case DocumentType.Snapshot:
-
+                    
                     var ss = JsonConvert.DeserializeObject<SnapshotDocument>(document.ToString(), jsonSerializerSettings);
 
                     if (initializeSnapshotObject is null)
                     {
-                        ss.SnapshotData =
-                            JsonConvert.DeserializeObject(ss.SnapshotData.ToString(), Type.GetType(ss.SnapshotType), jsonSerializerSettings);
+                        
+                        ss.SnapshotData = JsonConvert.DeserializeObject(ss.SnapshotData.ToString(), Type.GetType(ss.SnapshotType), jsonSerializerSettings);
                     }
                     else
                     {

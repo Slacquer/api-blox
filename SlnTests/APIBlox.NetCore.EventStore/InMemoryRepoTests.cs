@@ -28,8 +28,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             {
                 DatabaseId = "testDb",
                 Endpoint = "https://localhost:8081",
-                Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
-                BulkInsertFilePath = @".\bulkInsert.js"
+                Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
             };
 
             options.Collections.Add("DummyAggregate", new Collection { Id = "dummy" });
@@ -48,6 +47,9 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             lst = new List<EventModel> { new EventModel("4") };
 
             await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
+
+
+            var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 
             //Assert.NotNull(result);
             //Assert.True(result.Version == 1);

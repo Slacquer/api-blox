@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -31,11 +32,11 @@ namespace APIBlox.NetCore
     internal class ReadOnlyEventStoreService<TModel> : IReadOnlyEventStoreService<TModel>
         where TModel : class, IEventStoreDocument
     {
-        protected readonly IEventStoreRepository<EventStoreDocument> Repository;
+        protected readonly IEventStoreRepository Repository;
 
         #region -    Constructors    -
 
-        public ReadOnlyEventStoreService(IEventStoreRepository<EventStoreDocument> repo)
+        public ReadOnlyEventStoreService(IEventStoreRepository repo)
         {
             Repository = repo;
         }
@@ -46,9 +47,12 @@ namespace APIBlox.NetCore
         {
             try
             {
-                var root = await Repository.GetByStreamIdAsync(streamId, cancellationToken);
+                var ret = (await Repository.GetAsync<RootDocument>(
+                    d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
+                    cancellationToken
+                )).FirstOrDefault();
 
-                return root as RootDocument;
+                return (RootDocument) EventStoreDocument.Parse(ret, null, Repository.JsonSettings);
             }
             catch (DocumentClientException ex) when (ex.Error.Code == nameof(HttpStatusCode.NotFound))
             {
@@ -228,14 +232,74 @@ namespace APIBlox.NetCore
         //        document.TimeStamp
         //    );
         //}
-
-        public JsonSerializerSettings JsonSettings { get; set; }
-
-        public Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null, bool includeEvents = false, Func<object> initializeSnapshotObject = null,
+        
+        public async Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null, bool includeEvents = false, Func<object> initializeSnapshotObject = null,
             CancellationToken cancellationToken = default
         )
         {
-            throw new NotImplementedException();
+            if (streamId == null)
+                throw new ArgumentNullException(nameof(streamId));
+
+            if (fromVersion.HasValue && fromVersion > 0)
+                await VersionCheckAsync(streamId, fromVersion, cancellationToken);
+
+            Expression<Func<EventStoreDocument, bool>> predicate = e =>
+                fromVersion.HasValue ? e.StreamId == streamId && e.Version >= fromVersion : e.StreamId == streamId;
+
+            var results = (await Repository.GetAsync(predicate, cancellationToken))
+                //.OrderBy(d => d.SortOrder)
+                .ToList();
+
+            if (results.Count == 0)
+                return null;
+
+            //var rootDocument = results.OfType<RootDocument>().FirstOrDefault(d => d.DocumentType == DocumentType.Root);
+
+            //if (rootDocument is null)
+            //    return null;
+
+            //object metadata = null;
+
+            //if (!string.IsNullOrEmpty(rootDocument.MetadataType))
+            //    metadata = rootDocument.Metadata;
+
+            var events = new List<EventModel>();
+
+            foreach (var document in results)
+            {
+                var doc = EventStoreDocument.Parse(document, initializeSnapshotObject, Repository.JsonSettings);
+
+                //events.Add(doc as EventDocument);
+
+                if (doc is RootDocument && !includeEvents)
+                    break;
+
+                if (!(doc is SnapshotDocument) || !(fromVersion is null))
+                    continue;
+
+                break;
+            }
+
+            var snapshot = fromVersion is null ? results.Cast<SnapshotModel>().FirstOrDefault() : null;
+
+            //var ret = new EventStreamModel(streamId, rootDocument.Version, rootDocument.TimeStamp, metadata, events.ToArray(), snapshot);
+
+            return null;
+
+            //return ret;
+        }
+
+        private async Task VersionCheckAsync(string streamId,
+            long? expectedVersion, CancellationToken cancellationToken
+        )
+        {
+            var root = await ReadRootAsync(streamId, cancellationToken);
+
+            // if for whatever reason, the incoming version is greater than what is stored then something is a miss...
+            if (root.Version < expectedVersion)
+                throw new DataConcurrencyException(
+                    $"Provided version:{expectedVersion} for stream '{streamId}' is greater than the event source version:{root.Version}!"
+                );
         }
     }
 }
