@@ -172,16 +172,17 @@ namespace APIBlox.NetCore
 
         private void SetJsonSettings(IDocumentClient client)
         {
+            if (!(JsonSettings is null))
+                return;
+
             var tmp = new CamelCaseSettings();
             tmp.Converters.Add(new StringEnumConverter());
 
-            JsonSettings =
-                (JsonSerializerSettings)client.GetType()
-                    .GetField("serializerSettings",
-                        BindingFlags.GetField
-                        | BindingFlags.Instance | BindingFlags.NonPublic
-                    ).GetValue(client)
-                ?? tmp;
+            JsonSettings = (JsonSerializerSettings)client.GetType().GetField("serializerSettings",
+                               BindingFlags.GetField
+                               | BindingFlags.Instance | BindingFlags.NonPublic
+                           ).GetValue(client)
+                           ?? tmp;
         }
 
         private async Task CreateDatabaseIfNotExistsAsync()

@@ -42,11 +42,14 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
             var lst = new List<EventModel> { new EventModel { Data = "1" }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
 
-            await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
+            var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
+
+            Assert.NotNull(eventStoreDoc);
 
             lst = new List<EventModel> { new EventModel { Data = "4" } };
 
-            await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
+            eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
+            Assert.NotNull(eventStoreDoc);
 
             var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 
@@ -62,9 +65,8 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
             lst = new List<EventModel> { new EventModel { Data = "5" } };
 
-            var count = await svc.WriteToEventStreamAsync(result.StreamId, lst.ToArray(), result.Version);
-
-            Assert.True(count == 1);
+            eventStoreDoc = await svc.WriteToEventStreamAsync(result.StreamId, lst.ToArray(), result.Version);
+            Assert.NotNull(eventStoreDoc);
 
             result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 

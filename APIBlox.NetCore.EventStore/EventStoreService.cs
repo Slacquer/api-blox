@@ -18,7 +18,7 @@ namespace APIBlox.NetCore
         {
         }
 
-        public async Task<long> WriteToEventStreamAsync(string streamId, EventModel[] events, 
+        public async Task<IEventStoreDocument> WriteToEventStreamAsync(string streamId, EventModel[] events, 
             long? expectedVersion = null, object metadata = null,
             CancellationToken cancellationToken = default
         )
@@ -69,7 +69,7 @@ namespace APIBlox.NetCore
             if (updating)
                 await Repository.UpdateAsync(root, cancellationToken);
 
-            return events.Length;
+            return root;
         }
 
         public async Task DeleteEventStreamAsync(string streamId, 
@@ -130,8 +130,8 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = version,
-                SnapshotType = snapshot.GetType().AssemblyQualifiedName,
-                SnapshotData = snapshot
+                SnapshotType = snapshot.Data.GetType().AssemblyQualifiedName,
+                SnapshotData = snapshot.Data
             };
 
             if (snapshot.Metadata != null)

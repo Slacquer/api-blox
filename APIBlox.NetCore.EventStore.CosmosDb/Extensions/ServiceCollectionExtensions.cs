@@ -2,6 +2,9 @@
 using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Options;
+using APIBlox.NetCore.Types.JsonBits;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 
 // ReSharper disable once CheckNamespace
@@ -28,7 +31,9 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var config = configuration.GetSection(configSection);
 
-            if (config is null)
+            var es = config.Get<CosmosDbOptions>();
+
+            if (es is null)
                 throw new ArgumentException(
                     $"In order to use the {nameof(CosmosDbOptions)} you " +
                     $"will need to have an {configSection} configuration entry."
@@ -36,7 +41,23 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.Configure<CosmosDbOptions>(config);
 
-            return services.AddScoped<IEventStoreRepository, CosmosDbRepository<TModel>>();
+            services.AddSingleton<IDocumentClient>(x => new DocumentClient(new Uri(es.Endpoint), es.Key));
+
+            services.AddScoped<IEventStoreRepository, CosmosDbRepository<TModel>>(x =>
+            {
+                var opt = Options.Options.Create(es);
+                var ret = new CosmosDbRepository<TModel>(x.GetRequiredService<IDocumentClient>(), opt)
+                {
+                    JsonSettings = new CamelCaseSettings
+                    {
+                        ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
+                    }
+                };
+
+                return ret;
+            });
+
+            return services;
         }
     }
 }

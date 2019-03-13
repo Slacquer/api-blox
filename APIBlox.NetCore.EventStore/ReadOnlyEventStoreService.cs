@@ -12,7 +12,7 @@ using APIBlox.NetCore.Models;
 namespace APIBlox.NetCore
 {
     internal class ReadOnlyEventStoreService<TModel> : IReadOnlyEventStoreService<TModel>
-        where TModel : class, IEventStoreDocument
+        where TModel : class
     {
         protected readonly IEventStoreRepository Repository;
 
@@ -108,13 +108,14 @@ namespace APIBlox.NetCore
 
             if (!string.IsNullOrEmpty(document.MetadataType))
                 metadata = document.Metadata;
-
-            object body = null;
-
-            if (!string.IsNullOrEmpty(document.EventType))
-                body = document.EventData;
-
-            return new EventModel { Data = body, Version = document.Version, TimeStamp = document.TimeStamp, Metadata = metadata };
+            
+            return new EventModel
+            {
+                Data = document.EventData, 
+                Version = document.Version, 
+                TimeStamp = document.TimeStamp,
+                Metadata = metadata
+            };
         }
 
         private static SnapshotModel BuildSnapshotDocument(SnapshotDocument document)
@@ -123,7 +124,7 @@ namespace APIBlox.NetCore
 
             if (!string.IsNullOrEmpty(document.MetadataType))
                 metadata = document.Metadata;
-
+            
             return new SnapshotModel
             {
                 Data = document.SnapshotData,

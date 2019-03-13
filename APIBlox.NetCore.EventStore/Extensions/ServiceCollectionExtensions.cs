@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddReadOnlyEventStoreService<TModel>(this IServiceCollection services)
             where TModel : class
         {
-            return services.AddScoped<IReadOnlyEventStoreService<TModel>, EventStoreService<TModel>>();
+            return services.AddScoped<IReadOnlyEventStoreService<TModel>, ReadOnlyEventStoreService<TModel>>();
         }
     }
 }
