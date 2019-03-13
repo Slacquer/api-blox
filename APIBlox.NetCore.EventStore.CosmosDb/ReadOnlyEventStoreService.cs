@@ -24,7 +24,6 @@ namespace APIBlox.NetCore
 
         public async Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
             bool includeEvents = false,
-            Func<object> initializeSnapshotObject = null,
             CancellationToken cancellationToken = default
         )
         {
@@ -48,7 +47,7 @@ namespace APIBlox.NetCore
 
             foreach (var document in results)
             {
-                var doc = EventStoreDocument.Parse(document, initializeSnapshotObject, Repository.JsonSettings);
+                var doc = EventStoreDocument.Parse(document, Repository.JsonSettings);
 
                 docs.Add(doc);
 
@@ -100,7 +99,7 @@ namespace APIBlox.NetCore
             if (ret is null)
                 throw new DataAccessException($"Stream '{streamId}' wasn't found");
 
-            return (RootDocument)EventStoreDocument.Parse(ret, null, Repository.JsonSettings);
+            return (RootDocument)EventStoreDocument.Parse(ret, Repository.JsonSettings);
         }
 
 

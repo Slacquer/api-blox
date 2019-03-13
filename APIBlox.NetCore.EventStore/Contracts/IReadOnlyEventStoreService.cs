@@ -28,11 +28,10 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="streamId">The stream identifier.</param>
         /// <param name="fromVersion">From version.</param>
         /// <param name="includeEvents">if set to <c>true</c> [include events].</param>
-        /// <param name="initializeSnapshotObject">The initialize snapshot object.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;EventStreamModel&gt;.</returns>
         Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
-            bool includeEvents = false, Func<object> initializeSnapshotObject = null, CancellationToken cancellationToken = default
+            bool includeEvents = false, CancellationToken cancellationToken = default
         );
     }
 }

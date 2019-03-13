@@ -3,7 +3,6 @@ using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.Azure.Documents;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace APIBlox.NetCore.Documents
 {
@@ -14,12 +13,12 @@ namespace APIBlox.NetCore.Documents
         protected const char Separator = '-';
 
         [JsonProperty(PropertyName = "id")]
-        public virtual string Id { get; set;}
+        public virtual string Id { get; set; }
 
         //[JsonProperty(PropertyName = "partitionBy")]
         //public string PartitionBy { get; set; }
 
-        [JsonProperty(PropertyName = "_etag")] 
+        [JsonProperty(PropertyName = "_etag")]
         public string ETag { get; set; }
 
         [JsonProperty(PropertyName = "_ts")]
@@ -31,9 +30,9 @@ namespace APIBlox.NetCore.Documents
         [JsonProperty(PropertyName = "metadata")]
         public object Metadata { get; set; }
 
-       // [JsonProperty(PropertyName = "documentType")]
-       // [JsonConverter(typeof(StringEnumConverter))]
-        public virtual DocumentType DocumentType { get; set;}
+        // [JsonProperty(PropertyName = "documentType")]
+        // [JsonConverter(typeof(StringEnumConverter))]
+        public virtual DocumentType DocumentType { get; set; }
 
         [JsonProperty(PropertyName = "streamId")]
         public string StreamId { get; set; }
@@ -44,19 +43,19 @@ namespace APIBlox.NetCore.Documents
         [JsonProperty(PropertyName = "sortOrder")]
         public decimal SortOrder => Version + GetOrderingFraction(DocumentType);
 
-        public static EventStoreDocument Parse(Document document, Func<object> initializeSnapshotObject, JsonSerializerSettings jsonSerializerSettings)
+        public static EventStoreDocument Parse(Document document, JsonSerializerSettings jsonSerializerSettings)
         {
             if (document == null)
                 throw new ArgumentNullException(nameof(document));
 
             if (jsonSerializerSettings == null)
                 throw new ArgumentNullException(nameof(jsonSerializerSettings));
-            
+
             var documentType = document.GetPropertyValue<DocumentType>(nameof(DocumentType).ToCamelCase());
             documentType = documentType == 0 ? document.GetPropertyValue<DocumentType>(nameof(DocumentType)) : documentType;
 
             EventStoreDocument ret;
-            
+
             switch (documentType)
             {
                 case DocumentType.Root:
@@ -64,22 +63,10 @@ namespace APIBlox.NetCore.Documents
                     break;
 
                 case DocumentType.Snapshot:
-                    
+
                     var ss = JsonConvert.DeserializeObject<SnapshotDocument>(document.ToString(), jsonSerializerSettings);
+                    ss.SnapshotData = JsonConvert.DeserializeObject(ss.SnapshotData.ToString(), Type.GetType(ss.SnapshotType), jsonSerializerSettings);
 
-                    if (initializeSnapshotObject is null)
-                    {
-                        
-                        ss.SnapshotData = JsonConvert.DeserializeObject(ss.SnapshotData.ToString(), Type.GetType(ss.SnapshotType), jsonSerializerSettings);
-                    }
-                    else
-                    {
-                        var obj = initializeSnapshotObject();
-
-                        JsonConvert.PopulateObject(ss.SnapshotData.ToString(), obj, jsonSerializerSettings);
-
-                        ss.SnapshotData = obj;
-                    }
 
                     ret = ss;
 

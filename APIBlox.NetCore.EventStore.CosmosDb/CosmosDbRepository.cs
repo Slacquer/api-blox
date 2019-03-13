@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
@@ -22,11 +23,11 @@ namespace APIBlox.NetCore
 {
     internal class CosmosDbRepository<TModel> : IEventStoreRepository
     {
-        private readonly List<string> _uniqueKeys;
         private readonly IDocumentClient _client;
         private readonly string _collectionId;
         private readonly string _databaseId;
         private readonly Uri _docCollectionUri;
+        private readonly List<string> _uniqueKeys;
 
         public CosmosDbRepository(IDocumentClient client, IOptions<CosmosDbOptions> options)
         {
@@ -40,9 +41,7 @@ namespace APIBlox.NetCore
             _databaseId = opt.DatabaseId ?? throw new ArgumentNullException(nameof(opt.DatabaseId));
             _docCollectionUri = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
 
-            JsonSettings = new CamelCaseSettings();
-
-            JsonSettings.Converters.Add(new StringEnumConverter());
+            SetJsonSettings(client);
 
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync().Wait();
@@ -50,8 +49,9 @@ namespace APIBlox.NetCore
 
         public JsonSerializerSettings JsonSettings { get; set; }
 
-        public async Task<int> AddAsync<TDocument>(TDocument[] documents, 
-            CancellationToken cancellationToken = default)
+        public async Task<int> AddAsync<TDocument>(TDocument[] documents,
+            CancellationToken cancellationToken = default
+        )
             where TDocument : IEventStoreDocument
         {
             foreach (var doc in documents)
@@ -102,8 +102,9 @@ namespace APIBlox.NetCore
             }
         }
 
-        public async Task UpdateAsync<TDocument>(TDocument document, 
-            CancellationToken cancellationToken = default)
+        public async Task UpdateAsync<TDocument>(TDocument document,
+            CancellationToken cancellationToken = default
+        )
             where TDocument : IEventStoreDocument
         {
             try
@@ -126,8 +127,9 @@ namespace APIBlox.NetCore
             }
         }
 
-        public async Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate, 
-            CancellationToken cancellationToken = default)
+        public async Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate,
+            CancellationToken cancellationToken = default
+        )
         {
             var count = 0;
 
@@ -158,6 +160,19 @@ namespace APIBlox.NetCore
             return count;
         }
 
+        private void SetJsonSettings(IDocumentClient client)
+        {
+            var tmp = new CamelCaseSettings();
+            tmp.Converters.Add(new StringEnumConverter());
+
+            JsonSettings =
+                (JsonSerializerSettings) client.GetType()
+                    .GetField("serializerSettings",
+                        BindingFlags.GetField
+                        | BindingFlags.Instance | BindingFlags.NonPublic
+                    ).GetValue(client)
+                ?? tmp;
+        }
 
         private async Task CreateDatabaseIfNotExistsAsync()
         {
@@ -202,13 +217,12 @@ namespace APIBlox.NetCore
                 new RequestOptions {OfferThroughput = 1000}
             );
         }
-        
+
         private Uri RootDocumentUri(string streamId)
         {
             return UriFactory.CreateDocumentUri(_databaseId, _collectionId, RootDocument.GenerateId(streamId));
         }
 
-        
         //protected IQueryable<T> MakeCamelCase<T>(IQueryable<T> query, Uri collUri, FeedOptions opts)
         //{
         //    if (query.Expression.NodeType == System.Linq.Expressions.ExpressionType.Constant)
