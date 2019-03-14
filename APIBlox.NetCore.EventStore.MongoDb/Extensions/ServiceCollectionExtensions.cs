@@ -5,6 +5,7 @@ using APIBlox.NetCore.EventStore.MongoDb;
 using APIBlox.NetCore.EventStore.MongoDb.Options;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -20,11 +21,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TModel">The type of the t model.</typeparam>
         /// <param name="services">The services.</param>
         /// <param name="configuration">The configuration.</param>
+        /// <param name="serializerSettings">The serializer settings.</param>
         /// <param name="configSection">The configuration section.</param>
         /// <returns>IServiceCollection.</returns>
         /// <exception cref="ArgumentException">In order to use the {nameof(MongoDbOptions)} you " +
         ///                     $"will need to have an {configSection}</exception>
-        public static IServiceCollection AddMongoDbRepository<TModel>(this IServiceCollection services, IConfiguration configuration, string configSection = "CosmosDbOptions")
+        public static IServiceCollection AddMongoDbRepository<TModel>(this IServiceCollection services, IConfiguration configuration, JsonSerializerSettings serializerSettings = null, string configSection = "CosmosDbOptions")
             where TModel : class
         {
             var config = configuration.GetSection(configSection);
@@ -45,7 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 var ret = new MongoDbRepository<TModel>(x.GetRequiredService<CollectionContext>())
                 {
-                    JsonSettings = new CamelCaseSettings
+                    JsonSettings = serializerSettings ?? new CamelCaseSettings
                     {
                         ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
                     }
