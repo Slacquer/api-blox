@@ -14,12 +14,13 @@ namespace APIBlox.NetCore
     internal class ReadOnlyEventStoreService<TModel> : IReadOnlyEventStoreService<TModel>
         where TModel : class
     {
-        protected readonly IEventStoreRepository Repository;
+        protected readonly IEventStoreRepository<TModel> Repository;
 
-        public ReadOnlyEventStoreService(IEventStoreRepository repo)
+        public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repo)
         {
             Repository = repo;
         }
+        
 
         public async Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
             bool includeEvents = false,

@@ -27,10 +27,15 @@ namespace Examples
             services
                 .AddServerFaults()
                 .AddEventStoreService<MyAggregate>()
-                .AddCosmosDbRepository<MyAggregate>(_config)
-                .AddMongoDbRepository<MyAggregate>(_config)
+                .AddEventStoreService<AnotherAggregate>()
 
-                
+                .AddCosmosDbRepository<MyAggregate>(_config)
+                .AddCosmosDbRepository<AnotherAggregate>(_config)
+
+                //.AddMongoDbRepository<MyAggregate>(_config)
+                //.AddMongoDbRepository<AnotherAggregate>(_config)
+
+
                 ;
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

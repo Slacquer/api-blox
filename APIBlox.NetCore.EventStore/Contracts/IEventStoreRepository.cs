@@ -11,7 +11,8 @@ namespace APIBlox.NetCore.Contracts
     /// <summary>
     ///     Interface IEventStoreRepository
     /// </summary>
-    public interface IEventStoreRepository
+    public interface IEventStoreRepository<TModel>
+        where TModel : class
     {
         /// <summary>
         ///     Gets or sets the json settings.

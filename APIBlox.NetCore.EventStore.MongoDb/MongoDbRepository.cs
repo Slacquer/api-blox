@@ -13,7 +13,8 @@ using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.EventStore
 {
-    internal class MongoDbRepository<TModel> : IEventStoreRepository
+    internal class MongoDbRepository<TModel> : IEventStoreRepository<TModel>
+        where TModel : class
     {
         private readonly string _colName;
         private readonly CollectionContext _context;

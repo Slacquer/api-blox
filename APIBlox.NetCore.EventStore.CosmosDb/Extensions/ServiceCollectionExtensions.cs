@@ -16,8 +16,6 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceCollectionExtensionsCosmosDb
     {
-
-
         /// <summary>
         ///     Adds the cosmos database repository for use with the <see cref="IEventStoreService"/>.
         /// </summary>
@@ -29,7 +27,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IServiceCollection.</returns>
         /// <exception cref="ArgumentException">In order to use the {nameof(CosmosDbOptions)} you " +
         ///                     $"will need to have an {configSection}</exception>
-        public static IServiceCollection AddCosmosDbRepository<TModel>(this IServiceCollection services, IConfiguration configuration, JsonSerializerSettings serializerSettings = null, string configSection = "CosmosDbOptions")
+        public static IServiceCollection AddCosmosDbRepository<TModel>(this IServiceCollection services, IConfiguration configuration,
+            JsonSerializerSettings serializerSettings = null, string configSection = "CosmosDbOptions")
             where TModel : class
         {
             var config = configuration.GetSection(configSection);
@@ -47,14 +46,14 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IDocumentClient>(x => new DocumentClient(new Uri(es.Endpoint), es.Key));
 
             var settings = serializerSettings;
-            services.AddScoped<IEventStoreRepository, CosmosDbRepository<TModel>>(x =>
+            services.AddScoped<IEventStoreRepository<TModel>, CosmosDbRepository<TModel>>(x =>
             {
                 var opt = Options.Options.Create(es);
                 var ret = new CosmosDbRepository<TModel>(x.GetRequiredService<IDocumentClient>(),
-                    settings ?? new CamelCaseSettings(),
+                    settings ?? new CamelCaseSettings { ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver() },
                     opt
                 );
-                
+
                 return ret;
             });
 

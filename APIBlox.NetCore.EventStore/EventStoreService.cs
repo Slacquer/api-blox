@@ -11,10 +11,10 @@ using APIBlox.NetCore.Models;
 
 namespace APIBlox.NetCore
 {
-    internal class EventStoreService<TModel> : ReadOnlyEventStoreService<EventStoreDocument>, IEventStoreService<TModel>
+    internal class EventStoreService<TModel> : ReadOnlyEventStoreService<TModel>, IEventStoreService<TModel>
         where TModel : class
     {
-        public EventStoreService(IEventStoreRepository repo)
+        public EventStoreService(IEventStoreRepository<TModel> repo)
             : base(repo)
         {
         }

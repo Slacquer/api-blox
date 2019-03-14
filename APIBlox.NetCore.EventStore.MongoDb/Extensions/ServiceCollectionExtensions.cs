@@ -46,7 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return new CollectionContext(es.CnnString, es.DatabaseId);
             });
 
-            services.AddScoped<IEventStoreRepository, MongoDbRepository<TModel>>(x =>
+            services.AddScoped<IEventStoreRepository<TModel>, MongoDbRepository<TModel>>(x =>
             {
                 var ret = new MongoDbRepository<TModel>(x.GetRequiredService<CollectionContext>(),
                     serializerSettings ?? new CamelCaseSettings()

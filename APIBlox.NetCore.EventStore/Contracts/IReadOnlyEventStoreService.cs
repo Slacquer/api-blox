@@ -5,22 +5,12 @@ using APIBlox.NetCore.Models;
 
 namespace APIBlox.NetCore.Contracts
 {
-    /// <inheritdoc />
-    /// <summary>
-    ///     Marker interface
-    /// </summary>
-    /// <typeparam name="TModel">The type of the t aggregate.</typeparam>
-    /// <seealso cref="T:APIBlox.NetCore.Contracts.IReadOnlyEventStoreService" />
-    public interface IReadOnlyEventStoreService<TModel> : IReadOnlyEventStoreService
-        where TModel : class
-    {
-    }
-
     /// <summary>
     ///     Interface IReadOnlyEventStoreService
     /// </summary>
-    /// <seealso cref="IReadOnlyEventStoreService" />
-    public interface IReadOnlyEventStoreService
+    /// <typeparam name="TModel">The type of the t model.</typeparam>
+    public interface IReadOnlyEventStoreService<TModel>
+        where TModel : class
     {
         /// <summary>
         ///     Reads the stream asynchronous.

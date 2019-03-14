@@ -18,7 +18,8 @@ using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.EventStore
 {
-    internal class CosmosDbRepository<TModel> : IEventStoreRepository
+    internal class CosmosDbRepository<TModel> : IEventStoreRepository<TModel>
+        where TModel : class
     {
         private readonly IDocumentClient _client;
         private readonly string _collectionId;
@@ -41,7 +42,7 @@ namespace APIBlox.NetCore.EventStore
             JsonSettings = settings ?? throw new ArgumentNullException(nameof(settings));
 
             CreateDatabaseIfNotExistsAsync().Wait();
-            CreateCollectionIfNotExistsAsync(colValue.UniqueKeys.ToList(),colValue.OfferThroughput).Wait();
+            CreateCollectionIfNotExistsAsync(colValue.UniqueKeys.ToList(), colValue.OfferThroughput).Wait();
         }
 
         public JsonSerializerSettings JsonSettings { get; set; }
@@ -73,6 +74,7 @@ namespace APIBlox.NetCore.EventStore
             where TResult : class
         {
             var isString = typeof(TResult) == typeof(string);
+            var isEsd = typeof(TResult) == typeof(EventStoreDocument);
 
             try
             {
@@ -87,13 +89,16 @@ namespace APIBlox.NetCore.EventStore
 
                 while (qry.HasMoreResults)
                 {
-                    var ret = await qry.ExecuteNextAsync<Document>(cancellationToken);
+                    var ret = await qry.ExecuteNextAsync<TResult>(cancellationToken);
 
                     foreach (var document in ret)
                     {
                         var result = isString
                             ? document.ToString() as TResult
                             : JsonConvert.DeserializeObject<TResult>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings);
+
+                        if (isEsd && result is EventStoreDocument ev && !(ev.Data is null))
+                            ev.Data = JsonConvert.DeserializeObject(ev.Data.ToString(), Type.GetType(ev.DataType), JsonSettings);
 
                         lst.Add(result);
                     }
