@@ -83,7 +83,7 @@ namespace APIBlox.NetCore.EventStore.MongoDb
 
                 lst.Add(result);
             }
-
+//http://blog.i3arnon.com/2015/12/16/async-linq-to-objects-over-mongodb/
             return Task.FromResult( lst.AsEnumerable());
         }
 
