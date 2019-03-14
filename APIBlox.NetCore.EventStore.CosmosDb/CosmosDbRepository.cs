@@ -97,7 +97,7 @@ namespace APIBlox.NetCore.EventStore
                             ? document.ToString() as TResult
                             : JsonConvert.DeserializeObject<TResult>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings);
 
-                        if (isEsd && result is EventStoreDocument ev && !(ev.Data is null))
+                        if (isEsd && result is EventStoreDocument ev && !(ev.Data is null) && ev.Data.GetType() != typeof(string))
                             ev.Data = JsonConvert.DeserializeObject(ev.Data.ToString(), Type.GetType(ev.DataType), JsonSettings);
 
                         lst.Add(result);
