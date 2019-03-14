@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
+using APIBlox.NetCore.EventStore.Options;
 using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Extensions;
-using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
-namespace APIBlox.NetCore.EventStore.CosmosDb
+namespace APIBlox.NetCore.EventStore
 {
     internal class CosmosDbRepository<TModel> : IEventStoreRepository
     {
@@ -26,23 +24,24 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
         private readonly string _collectionId;
         private readonly string _databaseId;
         private readonly Uri _docCollectionUri;
-        private readonly List<string> _uniqueKeys;
 
         public CosmosDbRepository(IDocumentClient client, JsonSerializerSettings settings, IOptions<CosmosDbOptions> options)
         {
             var opt = options.Value;
-            var col = opt.Collections.First(c => c.Key.EqualsEx(typeof(TModel).Name)).Value;
+            var col = opt.CollectionProperties.FirstOrDefault(c => c.Key.EqualsEx(typeof(TModel).Name)).Value;
 
-            _uniqueKeys = col.UniqueKeys.ToList();
+            var colValue = col ?? throw new ArgumentNullException(nameof(IOptions<CosmosDbOptions>),
+                               $"CollectionProperty value for '{typeof(TModel).Name}' was not found!"
+                           );
 
-            _collectionId = col.Id ?? throw new ArgumentNullException(nameof(col.Id));
+            _collectionId = typeof(TModel).Name;
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _databaseId = opt.DatabaseId ?? throw new ArgumentNullException(nameof(opt.DatabaseId));
             _docCollectionUri = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
             JsonSettings = settings ?? throw new ArgumentNullException(nameof(settings));
 
             CreateDatabaseIfNotExistsAsync().Wait();
-            CreateCollectionIfNotExistsAsync().Wait();
+            CreateCollectionIfNotExistsAsync(colValue.UniqueKeys.ToList(),colValue.OfferThroughput).Wait();
         }
 
         public JsonSerializerSettings JsonSettings { get; set; }
@@ -78,7 +77,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             try
             {
                 var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
-                        new FeedOptions {EnableCrossPartitionQuery = true}
+                        new FeedOptions { EnableCrossPartitionQuery = true }
                     )
                     .Where(predicate)
                     .OrderByDescending(d => d.SortOrder)
@@ -118,7 +117,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
         {
             try
             {
-                await _client.ReplaceDocumentAsync(RootDocumentUri(document.StreamId),
+                await _client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(_databaseId, _collectionId, document.StreamId),
                     document,
                     new RequestOptions
                     {
@@ -169,20 +168,6 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             return count;
         }
 
-        //private void SetJsonSettings(IDocumentClient client)
-        //{
-        //    if (!(JsonSettings is null))
-        //        return;
-
-        //    var tmp = new CamelCaseSettings();
-        //    tmp.Converters.Add(new StringEnumConverter());
-
-        //    JsonSettings = (JsonSerializerSettings) client.GetType().GetField("serializerSettings",
-        //                       BindingFlags.GetField
-        //                       | BindingFlags.Instance | BindingFlags.NonPublic
-        //                   ).GetValue(client)
-        //                   ?? tmp;
-        //}
 
         private async Task CreateDatabaseIfNotExistsAsync()
         {
@@ -193,10 +178,10 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             if (exists)
                 return;
 
-            await _client.CreateDatabaseAsync(new Database {Id = _databaseId});
+            await _client.CreateDatabaseAsync(new Database { Id = _databaseId });
         }
 
-        private async Task CreateCollectionIfNotExistsAsync()
+        private async Task CreateCollectionIfNotExistsAsync(IReadOnlyCollection<string> keys, int offerThroughput)
         {
             var exists = await _client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(_databaseId))
                 .Where(d => d.Id == _collectionId)
@@ -211,11 +196,11 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             };
             documentCollection.PartitionKey.Paths.Add("/streamId");
 
-            if (_uniqueKeys.Any())
+            if (keys.Any())
             {
                 var uniqueKey = new UniqueKey();
 
-                foreach (var key in _uniqueKeys)
+                foreach (var key in keys)
                     uniqueKey.Paths.Add(key);
 
                 documentCollection.UniqueKeyPolicy.UniqueKeys.Add(uniqueKey);
@@ -224,69 +209,8 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             await _client.CreateDocumentCollectionAsync(
                 UriFactory.CreateDatabaseUri(_databaseId),
                 documentCollection,
-                new RequestOptions {OfferThroughput = 1000}
+                new RequestOptions { OfferThroughput = offerThroughput }
             );
         }
-
-        private Uri RootDocumentUri(string streamId)
-        {
-            return UriFactory.CreateDocumentUri(_databaseId, _collectionId, RootDocument.GenerateId(streamId));
-        }
-
-        //protected IQueryable<T> MakeCamelCase<T>(IQueryable<T> query, Uri collUri, FeedOptions opts)
-        //{
-        //    if (query.Expression.NodeType == System.Linq.Expressions.ExpressionType.Constant)
-        //        return query;
-
-        //    dynamic sqlQueryObject = JsonConvert.DeserializeObject(query.ToString());
-        //    string sql = sqlQueryObject.query;
-        //    // Regex is actually a private member w/ Compiled flag set to avoid overhead.  Not that it really matters,
-        //    // the guts of MS.DocumentDB.Core use uncached reflection with abandon
-        //    sql = new Regex("\\[\"(.+?)\"\\]").Replace(sql, match => $"[\"{match.Groups[1].Value.ToCamelCase()}\"]");
-        //    query = DbClient.CreateDocumentQuery<T>(collUri, sql, opts);
-
-        //    return query;
-        //}
-
-        //public Task RetrievePartitionsEvents(Func<IReadOnlyCollection<EventModel>, Task> callback, string partitionValue,
-        //    CancellationToken cancellationToken = default
-        //)
-        //{
-        //    return LoadChangeFeed(documents => callback(documents.OfType<EventDocument>().Select(Deserialize).ToList()),
-        //        partitionValue,
-        //        cancellationToken
-        //    );
-        //}
-
-        //private async Task LoadChangeFeed(Func<IEnumerable<DocumentBase>, Task> callback,
-        //    string partitionedByValue,
-        //    CancellationToken cancellationToken = default
-        //)
-        //{
-        //    var key = MakeKey(partitionedByValue);
-        //    var changeFeed = _client.CreateDocumentChangeFeedQuery(_docCollectionUri,
-        //        new ChangeFeedOptions
-        //        {
-        //            // PartitionKeyRangeId = pkRange.Id,
-        //            PartitionKey = key,
-
-        //            // RequestContinuation = token,
-        //            StartFromBeginning = true,
-        //            MaxItemCount = -1
-        //        }
-        //    );
-
-        //    Task callbackTask = null;
-
-        //    while (changeFeed.HasMoreResults)
-        //    {
-        //        var page = await changeFeed.ExecuteNextAsync<Document>(cancellationToken);
-
-        //        if (callbackTask != null)
-        //            await callbackTask;
-
-        //        callbackTask = callback(page.Select(x => DocumentBase.Parse(x, _jsonSerializerSettings)));
-        //    }
-        //}
     }
 }

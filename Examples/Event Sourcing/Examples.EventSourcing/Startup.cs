@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using APIBlox.NetCore.Documents;
+using Examples.Events;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson.Serialization;
 
 namespace Examples
 {
@@ -24,11 +27,18 @@ namespace Examples
         {
             services
                 .AddServerFaults()
-                .AddEventStoreService<MyAggregate>().AddCosmosDbRepository<MyAggregate>(_config);
+                .AddEventStoreService<MyAggregate>()
+                .AddMongoDbRepository<MyAggregate>(_config)
+                //.AddCosmosDbRepository<MyAggregate>(_config)
+                ;
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
+
+            BsonClassMap.RegisterClassMap<MyAggregate>();
+            BsonClassMap.RegisterClassMap<SomeValueAdded>();
+            BsonClassMap.RegisterClassMap<SomeValueChanged>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

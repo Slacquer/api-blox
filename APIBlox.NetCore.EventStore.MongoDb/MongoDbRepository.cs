@@ -6,35 +6,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
-using APIBlox.NetCore.Types.JsonBits;
+using APIBlox.NetCore.Extensions;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
-namespace APIBlox.NetCore.EventStore.MongoDb
+namespace APIBlox.NetCore.EventStore
 {
     internal class MongoDbRepository<TModel> : IEventStoreRepository
     {
         private readonly string _colName;
         private readonly CollectionContext _context;
 
-        public MongoDbRepository(CollectionContext context)
+        public MongoDbRepository(CollectionContext context, JsonSerializerSettings serializerSettings)
         {
             _context = context;
 
             _colName = typeof(TModel).Name;
-
-            BsonClassMap.RegisterClassMap<EventStoreDocument>(c =>
-                {
-                    c.AutoMap();
-
-                    c.MapProperty(p => p.Id).SetElementName("_id");
-                    c.MapProperty(p => p.SortOrder);
-                }
-            );
-
-            SetJsonSettings();
+            
+            JsonSettings = serializerSettings ?? throw new ArgumentNullException(nameof(serializerSettings));
         }
 
         public JsonSerializerSettings JsonSettings { get; set; }
@@ -94,17 +84,6 @@ namespace APIBlox.NetCore.EventStore.MongoDb
                 .DeleteManyAsync(predicate, null, cancellationToken);
 
             return (int) ret.DeletedCount;
-        }
-
-        private void SetJsonSettings()
-        {
-            if (!(JsonSettings is null))
-                return;
-
-            var tmp = new CamelCaseSettings();
-            tmp.Converters.Add(new StringEnumConverter());
-
-            JsonSettings = tmp;
         }
     }
 }

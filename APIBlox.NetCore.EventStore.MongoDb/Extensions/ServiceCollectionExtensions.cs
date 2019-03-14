@@ -1,8 +1,7 @@
 ﻿using System;
-using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
-using APIBlox.NetCore.EventStore.MongoDb;
-using APIBlox.NetCore.EventStore.MongoDb.Options;
+using APIBlox.NetCore.EventStore;
+using APIBlox.NetCore.EventStore.Options;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -26,32 +25,32 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IServiceCollection.</returns>
         /// <exception cref="ArgumentException">In order to use the {nameof(MongoDbOptions)} you " +
         ///                     $"will need to have an {configSection}</exception>
-        public static IServiceCollection AddMongoDbRepository<TModel>(this IServiceCollection services, IConfiguration configuration, JsonSerializerSettings serializerSettings = null, string configSection = "CosmosDbOptions")
+        public static IServiceCollection AddMongoDbRepository<TModel>(this IServiceCollection services, IConfiguration configuration, 
+            JsonSerializerSettings serializerSettings = null, string configSection = "MongoDbOptions")
             where TModel : class
         {
             var config = configuration.GetSection(configSection);
-
-            var es = config.Get<MongoDbOptions>();
-
-            if (es is null)
-                throw new ArgumentException(
-                    $"In order to use the {nameof(MongoDbOptions)} you " +
-                    $"will need to have an {configSection} configuration entry."
-                );
-
+            
             services.Configure<MongoDbOptions>(config);
 
-            services.AddSingleton(x => new CollectionContext(Options.Options.Create(es)));
+            services.AddSingleton(x =>
+            {
+                var es = config.Get<MongoDbOptions>();
+
+                if (es is null)
+                    throw new ArgumentException(
+                        $"In order to use the {nameof(MongoDbOptions)} you " +
+                        $"will need to have an {configSection} configuration entry."
+                    );
+
+                return new CollectionContext(es.CnnString, es.DatabaseId);
+            });
 
             services.AddScoped<IEventStoreRepository, MongoDbRepository<TModel>>(x =>
             {
-                var ret = new MongoDbRepository<TModel>(x.GetRequiredService<CollectionContext>())
-                {
-                    JsonSettings = serializerSettings ?? new CamelCaseSettings
-                    {
-                        ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
-                    }
-                };
+                var ret = new MongoDbRepository<TModel>(x.GetRequiredService<CollectionContext>(),
+                    serializerSettings ?? new CamelCaseSettings()
+                );
 
                 return ret;
             });

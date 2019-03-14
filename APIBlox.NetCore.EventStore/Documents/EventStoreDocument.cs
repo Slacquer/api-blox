@@ -1,106 +1,83 @@
 ﻿using System;
-using System.Linq;
-using APIBlox.NetCore.Contracts;
-using APIBlox.NetCore.Exceptions;
-using APIBlox.NetCore.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 
 namespace APIBlox.NetCore.Documents
 {
-
-    public class EventStoreDocument 
+    /// <summary>
+    ///     Class EventStoreDocument.
+    /// </summary>
+    public class EventStoreDocument
     {
+        /// <summary>
+        ///     The separator
+        /// </summary>
         protected const char Separator = '-';
 
+        /// <summary>
+        ///     Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
         [JsonProperty(PropertyName = "id")]
         public virtual string Id { get; set; }
-        
+
+        /// <summary>
+        ///     Gets or sets the type of the metadata.
+        /// </summary>
+        /// <value>The type of the metadata.</value>
         [JsonProperty(PropertyName = "metadataType")]
         public string MetadataType { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the metadata.
+        /// </summary>
+        /// <value>The metadata.</value>
         [JsonProperty(PropertyName = "metadata")]
         public object Metadata { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the type of the document.
+        /// </summary>
+        /// <value>The type of the document.</value>
         [JsonProperty(PropertyName = "documentType")]
         [JsonConverter(typeof(StringEnumConverter))]
         public virtual DocumentType DocumentType { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the stream identifier.
+        /// </summary>
+        /// <value>The stream identifier.</value>
         [JsonProperty(PropertyName = "streamId")]
         public string StreamId { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the version.
+        /// </summary>
+        /// <value>The version.</value>
         [JsonProperty(PropertyName = "version")]
         public long Version { get; set; }
 
+        /// <summary>
+        ///     Gets the sort order.
+        /// </summary>
+        /// <value>The sort order.</value>
         [JsonProperty(PropertyName = "sortOrder")]
         public decimal SortOrder => Version + GetOrderingFraction(DocumentType);
 
+        /// <summary>
+        ///     Gets or sets the type of the data.
+        /// </summary>
+        /// <value>The type of the data.</value>
         [JsonProperty(PropertyName = "dataType")]
         public string DataType { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the data.
+        /// </summary>
+        /// <value>The data.</value>
         [JsonProperty(PropertyName = "data")]
         public object Data { get; set; }
 
-        //public static EventStoreDocument Parse(string jsonDocument, JsonSerializerSettings jsonSerializerSettings)
-        //{
-        //    if (jsonDocument == null)
-        //        throw new ArgumentNullException(nameof(jsonDocument));
-
-        //    if (jsonSerializerSettings == null)
-        //        throw new ArgumentNullException(nameof(jsonSerializerSettings));
-
-        //    var documentType = FindDocumentType(jsonDocument);
-
-        //    if (!documentType.HasValue)
-        //        throw new DocumentMalformedException($"jsonDocument does not appear to have an {nameof(DocumentType)} value!");
-
-        //    EventStoreDocument ret;
-
-        //    switch (documentType)
-        //    {
-        //        case DocumentType.Root:
-        //            ret = JsonConvert.DeserializeObject<RootDocument>(jsonDocument, jsonSerializerSettings);
-        //            break;
-
-        //        case DocumentType.Snapshot:
-        //            var ss = JsonConvert.DeserializeObject<SnapshotDocument>(jsonDocument, jsonSerializerSettings);
-        //            ss.Data = DeserializeData(ss.Data, ss.DataType, jsonSerializerSettings);
-        //            ret = ss;
-        //            break;
-
-        //        case DocumentType.Event:
-        //            var ev = JsonConvert.DeserializeObject<EventDocument>(jsonDocument, jsonSerializerSettings);
-        //            ev.Data = DeserializeData(ev.Data, ev.DataType, jsonSerializerSettings);
-        //            ret = ev;
-        //            break;
-
-        //        default:
-        //            throw new NotSupportedException(
-        //                $"Cannot parse document of type '{jsonDocument.GetType().AssemblyQualifiedName}' with DocumentType '{jsonDocument}'."
-        //            );
-        //    }
-
-        //    if (!(ret.Metadata is null))
-        //        ret.Metadata = JsonConvert.DeserializeObject(ret.Metadata.ToString(), Type.GetType(ret.MetadataType), jsonSerializerSettings);
-
-        //    return ret;
-        //}
-
-        //private static object DeserializeData(object data, string dataType, JsonSerializerSettings jsonSerializerSettings)
-        //{
-        //    return data is string ? data : JsonConvert.DeserializeObject(data.ToString(), Type.GetType(dataType), jsonSerializerSettings);
-        //}
-
-        //private static DocumentType? FindDocumentType(string result)
-        //{
-        //    var jo = JObject.Parse(result);
-        //    var type = jo.DescendantsAndSelf().OfType<JProperty>().FirstOrDefault(t => t.Name.EqualsEx("documentType"));
-
-        //    return type is null
-        //        ? (DocumentType?)null
-        //        : (DocumentType)Enum.Parse(typeof(DocumentType), type.Value.ToString());
-        //}
 
         private static decimal GetOrderingFraction(DocumentType documentType)
         {

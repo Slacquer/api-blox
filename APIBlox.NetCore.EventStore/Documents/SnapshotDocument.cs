@@ -1,14 +1,9 @@
 ﻿namespace APIBlox.NetCore.Documents
 {
-    public class SnapshotDocument : EventStoreDocument
+    internal class SnapshotDocument : EventStoreDocument
     {
-        public override string Id => GenerateId(StreamId, Version);
+        public override string Id => $"{StreamId}{Separator}{Version}{Separator}S";
 
         public override DocumentType DocumentType => DocumentType.Snapshot;
-        
-        public static string GenerateId(string streamId, long version)
-        {
-            return $"{streamId}{Separator}{version}{Separator}S";
-        }
     }
 }

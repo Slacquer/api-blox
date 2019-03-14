@@ -91,7 +91,7 @@ namespace APIBlox.NetCore
             CancellationToken cancellationToken = default
         )
         {
-            var doc = BuildSnapShotDoc(streamId, snapshot, expectedVersion);
+            var doc = BuildSnapShotDoc(streamId, snapshot, expectedVersion) as EventStoreDocument;
 
             await Repository.AddAsync(new[] { doc }, cancellationToken);
 

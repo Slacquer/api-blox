@@ -68,6 +68,7 @@ namespace APIBlox.NetCore
                 StreamId = streamId,
                 Version = rootDoc.Version,
                 Metadata = metadata,
+                MetadataType = rootDoc.MetadataType,
                 Events = events.ToArray(),
                 Snapshot = snapshot
             };
@@ -98,6 +99,7 @@ namespace APIBlox.NetCore
             return new EventModel
             {
                 Data = document.Data,
+                DataType = document.DataType,
                 Version = document.Version,
                 Metadata = metadata
             };
@@ -113,7 +115,9 @@ namespace APIBlox.NetCore
             return new SnapshotModel
             {
                 Data = document.Data,
+                DataType = document.DataType,
                 Metadata = metadata,
+                MetadataType = document.MetadataType,
                 Version = document.Version
             };
         }

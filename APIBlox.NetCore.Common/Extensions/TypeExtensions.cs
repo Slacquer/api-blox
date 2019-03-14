@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.Extensions
 {
@@ -122,6 +123,27 @@ namespace APIBlox.NetCore.Extensions
         public static bool IsOpenGeneric(this Type type)
         {
             return type.GetTypeInfo().IsGenericTypeDefinition;
+        }
+
+        /// <summary>
+        ///     Gets all json property name values for a type that is using the <see cref="JsonPropertyAttribute"/>.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Dictionary&lt;PropertyInfo, System.String&gt;.</returns>
+        public static Dictionary<PropertyInfo, string> JsonPropertyNames(this Type type)
+        {
+            var props = type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            var lst = new Dictionary<PropertyInfo,string>();
+            foreach (var pi in props)
+            {
+                if (!(pi.GetCustomAttributes(typeof(JsonPropertyAttribute), false).FirstOrDefault() is JsonPropertyAttribute att))
+                    continue;
+
+                lst.Add(pi, att.PropertyName);
+            }
+
+            return lst;
         }
 
         private static bool IsAssignableToGenericTypeDefinition(

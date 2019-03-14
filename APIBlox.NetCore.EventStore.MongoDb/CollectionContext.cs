@@ -1,29 +1,61 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using APIBlox.NetCore.EventStore.MongoDb.Options;
-using Microsoft.Extensions.Options;
+using System.Linq;
+using APIBlox.NetCore.Documents;
+using APIBlox.NetCore.Extensions;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
-namespace APIBlox.NetCore.EventStore.MongoDb
+namespace APIBlox.NetCore.EventStore
 {
     internal class CollectionContext
     {
         private readonly IMongoDatabase _database;
 
-        public CollectionContext(IOptions<MongoDbOptions> options)
+        public CollectionContext(string cnnStr, string databaseId)
         {
-            var opts = options.Value;
-            
-            var client = new MongoClient(opts.ConnectionString);
+            var client = new MongoClient(cnnStr);
 
-            _database = client.GetDatabase(opts.DatabaseId);
+            _database = client.GetDatabase(databaseId);
+
+            BuildEventStoreDocumentMaps();
         }
 
         public IMongoCollection<TDocument> Collection<TDocument>(string colName)
         {
-            return  _database.GetCollection<TDocument>(colName);
+            return _database.GetCollection<TDocument>(colName);
         }
-        
+
+        private static void BuildEventStoreDocumentMaps()
+        {
+            var props = typeof(EventStoreDocument).JsonPropertyNames();
+
+            BsonClassMap.RegisterClassMap<EventStoreDocument>(c =>
+                {
+                    c.AutoMap();
+
+                    c.MapIdMember(p => p.Id);
+
+                    c.SetIsRootClass(true);
+
+                    c.MapMember(m => m.DocumentType).SetSerializer(new EnumSerializer<DocumentType>(BsonType.String));
+
+                    foreach (var (key, value) in props.Where(p => p.Value != "id"))
+                        c.MapProperty(key.Name).SetElementName(value);
+                }
+            );
+
+            // Other documents are internal, so we will add them manually.
+            var mapAble = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                .Where(x => typeof(EventStoreDocument).IsAssignableFrom(x)
+                            && !x.IsInterface 
+                            && !x.IsAbstract 
+                            && x.Name != nameof(EventStoreDocument)
+                );
+
+            foreach (var type in mapAble)
+                BsonClassMap.RegisterClassMap(new BsonClassMap(type));
+        }
     }
 }
