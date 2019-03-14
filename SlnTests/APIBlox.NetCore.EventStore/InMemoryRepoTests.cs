@@ -77,7 +77,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             Assert.True(result.Events.Length == 1);
             Assert.NotNull(result.Snapshot);
 
-            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = "snapshot12" }, deleteOlderSnapshots: true);
+            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = "snapshot2" }, deleteOlderSnapshots: true);
 
 
             await svc.DeleteEventStreamAsync(agg.StreamId);
@@ -103,11 +103,47 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
             IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
 
-            //var lst = new List<EventModel> { new EventModel { Data = "1" }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
+            var lst = new List<EventModel> { new EventModel { Data = "1" }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
 
-            //var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
+            var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
+            
+            Assert.NotNull(eventStoreDoc);
 
-            var foo = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+
+
+            lst = new List<EventModel> { new EventModel { Data = "4" } };
+
+            eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
+            Assert.NotNull(eventStoreDoc);
+
+            var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+
+
+            Assert.NotNull(result);
+            Assert.True(result.Version == 4);
+            Assert.NotNull(result.StreamId);
+            Assert.True(result.StreamId == agg.StreamId);
+            Assert.True(result.TimeStamp > 0);
+            Assert.Null(result.Snapshot);
+            Assert.NotNull(result.Events);
+
+            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = "snapshot1" });
+
+            lst = new List<EventModel> { new EventModel { Data = "5" } };
+
+            eventStoreDoc = await svc.WriteToEventStreamAsync(result.StreamId, lst.ToArray(), result.Version);
+            Assert.NotNull(eventStoreDoc);
+
+            result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+
+            Assert.True(result.Version == 5);
+            Assert.True(result.Events.Length == 1);
+            Assert.NotNull(result.Snapshot);
+
+            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = "snapshot2" }, deleteOlderSnapshots: true);
+
+
+            await svc.DeleteEventStreamAsync(agg.StreamId);
         }
     }
 

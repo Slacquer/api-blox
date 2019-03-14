@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
@@ -18,7 +19,7 @@ namespace APIBlox.NetCore
         {
         }
 
-        public async Task<IEventStoreDocument> WriteToEventStreamAsync(string streamId, EventModel[] events, 
+        public async Task<EventStreamModel> WriteToEventStreamAsync(string streamId, EventModel[] events,
             long? expectedVersion = null, object metadata = null,
             CancellationToken cancellationToken = default
         )
@@ -68,30 +69,37 @@ namespace APIBlox.NetCore
 
             if (updating)
                 await Repository.UpdateAsync(root, cancellationToken);
-
-            return root;
+            
+            return new EventStreamModel
+            {
+                StreamId = streamId,
+                Version = root.Version,
+                TimeStamp = root.TimeStamp,
+                Metadata = metadata,
+                Events = events.ToArray()
+            };
         }
 
-        public async Task DeleteEventStreamAsync(string streamId, 
+        public async Task DeleteEventStreamAsync(string streamId,
             CancellationToken cancellationToken = default)
         {
             await Repository.DeleteAsync(d => d.StreamId == streamId, cancellationToken);
         }
 
-        public async Task CreateSnapshotAsync(string streamId, long expectedVersion, 
+        public async Task CreateSnapshotAsync(string streamId, long expectedVersion,
             SnapshotModel snapshot, bool deleteOlderSnapshots = false,
             CancellationToken cancellationToken = default
         )
         {
             var doc = BuildSnapShotDoc(streamId, snapshot, expectedVersion);
 
-            await Repository.AddAsync(new[] {doc}, cancellationToken);
+            await Repository.AddAsync(new[] { doc }, cancellationToken);
 
             if (deleteOlderSnapshots)
                 await DeleteSnapshotsAsync(streamId, expectedVersion, cancellationToken);
         }
 
-        public async Task DeleteSnapshotsAsync(string streamId, long olderThanVersion, 
+        public async Task DeleteSnapshotsAsync(string streamId, long olderThanVersion,
             CancellationToken cancellationToken = default)
         {
             await Repository.DeleteAsync(d =>
@@ -103,7 +111,7 @@ namespace APIBlox.NetCore
         }
 
 
-        private static EventDocument BuildEventDoc(EventModel @event, string streamId, 
+        private static EventDocument BuildEventDoc(EventModel @event, string streamId,
             long streamVersion)
         {
             var document = new EventDocument
@@ -123,7 +131,7 @@ namespace APIBlox.NetCore
             return document;
         }
 
-        private static SnapshotDocument BuildSnapShotDoc(string streamId, SnapshotModel snapshot, 
+        private static SnapshotDocument BuildSnapShotDoc(string streamId, SnapshotModel snapshot,
             long version)
         {
             var document = new SnapshotDocument

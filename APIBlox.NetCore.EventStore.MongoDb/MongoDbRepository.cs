@@ -31,9 +31,17 @@ namespace APIBlox.NetCore.EventStore.MongoDb
 
             _colName = typeof(TModel).Name;
 
+            BsonClassMap.RegisterClassMap<EventStoreDocument>();
+            //c =>
+            //{
+            //    c.AutoMap();
+            //    c.MapProperty(p => p.Id).SetElementName("_id");
+            //});
             BsonClassMap.RegisterClassMap<RootDocument>();
             BsonClassMap.RegisterClassMap<SnapshotDocument>();
             BsonClassMap.RegisterClassMap<EventDocument>();
+
+
 
             SetJsonSettings();
         }
@@ -46,58 +54,52 @@ namespace APIBlox.NetCore.EventStore.MongoDb
             var tmp = new CamelCaseSettings();
             tmp.Converters.Add(new StringEnumConverter());
 
-            JsonSettings =  tmp;
+            JsonSettings = tmp;
         }
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
             CancellationToken cancellationToken = default)
             where TDocument : IEventStoreDocument
         {
-           await _context.Collection<TDocument>(_colName).InsertManyAsync(documents,null, cancellationToken);
+            await _context.Collection<TDocument>(_colName).InsertManyAsync(documents, null, cancellationToken);
 
-           return documents.Length;
+            return documents.Length;
         }
 
-        public  Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate,
+        public Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default)
             where TResult : class
         {
-            var qry = _context.Collection<IEventStoreDocument>(_colName).AsQueryable();
-
-            var ret = qry.Where(predicate.Compile());
-
-            //var ret = await _context.Collection<IEventStoreDocument>(_colName).Find(predicate).ToListAsync(cancellationToken);
-
-            //var ret = await _context.Collection<IEventStoreDocument>(_colName).Find(predicate).ToListAsync(cancellationToken);
-            //var ret = await _context.Collection<IEventStoreDocument>(_colName).FindAsync(predicate, null, cancellationToken);
+            var ret = _context.Collection<IEventStoreDocument>(_colName)
+                .AsQueryable().Where(predicate.Compile());
 
             var isString = typeof(TResult) == typeof(string);
 
-            var lst = new List<TResult>();
+            var lst = ret.Select(document => isString
+                ? JsonConvert.SerializeObject(document, JsonSettings) as TResult
+                : JsonConvert.DeserializeObject<TResult>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings)
+            ).ToList();
 
-            foreach (var document in ret) //await ret.ToListAsync(cancellationToken))
-            {
-                var result = isString
-                    ? JsonConvert.SerializeObject(document, JsonSettings) as TResult
-                    : JsonConvert.DeserializeObject<TResult>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings);
-
-                lst.Add(result);
-            }
-//http://blog.i3arnon.com/2015/12/16/async-linq-to-objects-over-mongodb/
-            return Task.FromResult( lst.AsEnumerable());
+            //http://blog.i3arnon.com/2015/12/16/async-linq-to-objects-over-mongodb/
+            return Task.FromResult(lst.AsEnumerable());
         }
 
-        public Task UpdateAsync<TDocument>(TDocument document,
+        public async Task UpdateAsync<TDocument>(TDocument document,
             CancellationToken cancellationToken = default)
             where TDocument : IEventStoreDocument
         {
-            throw new NotImplementedException();
+            await _context.Collection<EventStoreDocument>(_colName)
+                .ReplaceOneAsync(i => i.Id == document.Id, document as EventStoreDocument, null, cancellationToken);
         }
 
-        public Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate,
+        public async Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            
+            var ret = await _context.Collection<EventStoreDocument>(_colName)
+                .DeleteManyAsync(predicate, null, cancellationToken);
+
+            return (int)ret.DeletedCount;
         }
     }
 }

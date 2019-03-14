@@ -33,7 +33,7 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="metadata">The metadata.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;System.UInt64&gt;.</returns>
-        Task<IEventStoreDocument> WriteToEventStreamAsync(string streamId, EventModel[] events,
+        Task<EventStreamModel> WriteToEventStreamAsync(string streamId, EventModel[] events,
             long? expectedVersion = null, object metadata = null,
             CancellationToken cancellationToken = default
         );
