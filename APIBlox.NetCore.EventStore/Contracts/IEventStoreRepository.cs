@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using APIBlox.NetCore.Documents;
 using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.Contracts
@@ -25,7 +26,7 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="documents">The documents.</param>
         /// <returns>Task&lt;System.Int32&gt;.</returns>
         Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
-            where TDocument : IEventStoreDocument;
+            where TDocument : EventStoreDocument;
 
         /// <summary>
         ///     Gets the stored document asynchronously.
@@ -34,7 +35,7 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="predicate">The predicate.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;IEnumerable&lt;TResult&gt;&gt;.</returns>
-        Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate,
+        Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )where TResult : class;
 
@@ -45,7 +46,7 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
-            where TDocument : IEventStoreDocument;
+            where TDocument : EventStoreDocument;
 
         /// <summary>
         ///     Deletes the asynchronous.
@@ -53,6 +54,6 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="predicate">The predicate.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;System.Int32&gt;.</returns>
-        Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default);
+        Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default);
     }
 }

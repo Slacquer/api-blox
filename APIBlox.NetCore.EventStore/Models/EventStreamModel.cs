@@ -12,6 +12,6 @@
 
         public long Version { get; set;}
 
-        public long TimeStamp { get; set;}
+        //public long TimeStamp { get; set;}
     }
 }

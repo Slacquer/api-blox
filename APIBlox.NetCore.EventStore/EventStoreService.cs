@@ -74,7 +74,7 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = root.Version,
-                TimeStamp = root.TimeStamp,
+                //TimeStamp = root.TimeStamp,
                 Metadata = metadata,
                 Events = events.ToArray()
             };
@@ -118,8 +118,8 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = streamVersion,
-                EventType = @event.Data.GetType().AssemblyQualifiedName,
-                EventData = @event.Data
+                DataType = @event.Data.GetType().AssemblyQualifiedName,
+                Data = @event.Data
             };
 
             if (@event.Metadata != null)
@@ -138,8 +138,8 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = version,
-                SnapshotType = snapshot.Data.GetType().AssemblyQualifiedName,
-                SnapshotData = snapshot.Data
+                DataType = snapshot.Data.GetType().AssemblyQualifiedName,
+                Data = snapshot.Data
             };
 
             if (snapshot.Metadata != null)

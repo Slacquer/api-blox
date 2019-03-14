@@ -32,55 +32,41 @@ namespace APIBlox.NetCore
             //if (fromVersion.HasValue && fromVersion > 0)
             //    await VersionCheckAsync(streamId, fromVersion, cancellationToken);
 
-            Expression<Func<IEventStoreDocument, bool>> predicate = e =>
-                fromVersion.HasValue && fromVersion > 0
-                    ? e.StreamId == streamId && e.Version >= fromVersion
-                    : e.StreamId == streamId;
+            Expression<Func<EventStoreDocument, bool>> predicate = e => e.StreamId == streamId;
 
-            var results = (await Repository.GetAsync<string>(predicate, cancellationToken)).ToList();
+            if (fromVersion.HasValue && fromVersion > 0)
+                predicate = e => e.StreamId == streamId && e.Version >= fromVersion;
+
+            var results = (await Repository.GetAsync<EventStoreDocument>(predicate, cancellationToken))
+                .OrderByDescending(d => d.DocumentType == DocumentType.Root)
+                .ThenByDescending(d => d.DocumentType == DocumentType.Snapshot)
+
+                .ThenBy(d => d.SortOrder)
+                .ToList();
 
             if (results.Count == 0)
                 return null;
 
-            var docs = new List<EventStoreDocument>();
-
-            foreach (var document in results)
-            {
-                var doc = EventStoreDocument.Parse(document, Repository.JsonSettings);
-
-                docs.Add(doc);
-
-                if (doc is RootDocument && !includeEvents)
-                    break;
-
-                if (doc is SnapshotDocument && fromVersion is null)
-                    break;
-            }
-
-            if (docs.Count == 0)
-                return null;
-
-            var rootDoc = docs.FirstOrDefault(d => d.DocumentType == DocumentType.Root);
-
-            if (rootDoc is null)
-                return null;
+            var rootDoc = results.First();
 
             object metadata = null;
 
             if (!string.IsNullOrEmpty(rootDoc.MetadataType))
                 metadata = rootDoc.Metadata;
 
-            var events = docs.OfType<EventDocument>()
-                .Select(BuildEventDocument).Reverse()
-                .ToArray();
+            var snapshot = fromVersion is null ? results
+                .OrderByDescending(d => d.SortOrder)
+                .Where(d => d.DocumentType == DocumentType.Snapshot)
+                .Select(BuildSnapshotModel).FirstOrDefault() : null;
 
-            var snapshot = fromVersion is null ? docs.OfType<SnapshotDocument>().Select(BuildSnapshotDocument).FirstOrDefault() : null;
+            var events = results.Where(d => d.DocumentType == DocumentType.Event && (d.Version > snapshot?.Version || snapshot is null))
+                .Select(BuildEventModel)
+                .ToArray();
 
             return new EventStreamModel
             {
                 StreamId = streamId,
                 Version = rootDoc.Version,
-                TimeStamp = rootDoc.TimeStamp,
                 Metadata = metadata,
                 Events = events.ToArray(),
                 Snapshot = snapshot
@@ -98,39 +84,37 @@ namespace APIBlox.NetCore
             if (ret is null)
                 throw new DataAccessException($"Stream '{streamId}' wasn't found");
 
-            return ret;//(RootDocument)EventStoreDocument.Parse(ret.ToString(), Repository.JsonSettings);
+            return ret;
         }
 
 
-        private static EventModel BuildEventDocument(EventDocument document)
+        private static EventModel BuildEventModel(EventStoreDocument document)
         {
             object metadata = null;
 
             if (!string.IsNullOrEmpty(document.MetadataType))
                 metadata = document.Metadata;
-            
+
             return new EventModel
             {
-                Data = document.EventData, 
-                Version = document.Version, 
-                TimeStamp = document.TimeStamp,
+                Data = document.Data,
+                Version = document.Version,
                 Metadata = metadata
             };
         }
 
-        private static SnapshotModel BuildSnapshotDocument(SnapshotDocument document)
+        private static SnapshotModel BuildSnapshotModel(EventStoreDocument document)
         {
             object metadata = null;
 
             if (!string.IsNullOrEmpty(document.MetadataType))
                 metadata = document.Metadata;
-            
+
             return new SnapshotModel
             {
-                Data = document.SnapshotData,
+                Data = document.Data,
                 Metadata = metadata,
-                Version = document.Version,
-                TimeStamp = document.TimeStamp
+                Version = document.Version
             };
         }
 

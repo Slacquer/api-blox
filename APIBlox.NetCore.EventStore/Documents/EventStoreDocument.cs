@@ -9,20 +9,14 @@ using Newtonsoft.Json.Linq;
 
 namespace APIBlox.NetCore.Documents
 {
-    
-    public class EventStoreDocument : IEventStoreDocument
+
+    public class EventStoreDocument 
     {
         protected const char Separator = '-';
-        
+
         [JsonProperty(PropertyName = "id")]
         public virtual string Id { get; set; }
         
-        [JsonProperty(PropertyName = "_etag")]
-        public string ETag { get; set; }
-
-        [JsonProperty(PropertyName = "_ts")]
-        public long TimeStamp { get; set; }
-
         [JsonProperty(PropertyName = "metadataType")]
         public string MetadataType { get; set; }
 
@@ -42,63 +36,71 @@ namespace APIBlox.NetCore.Documents
         [JsonProperty(PropertyName = "sortOrder")]
         public decimal SortOrder => Version + GetOrderingFraction(DocumentType);
 
-        public static EventStoreDocument Parse(string jsonDocument, JsonSerializerSettings jsonSerializerSettings)
-        {
-            if (jsonDocument == null)
-                throw new ArgumentNullException(nameof(jsonDocument));
+        [JsonProperty(PropertyName = "dataType")]
+        public string DataType { get; set; }
 
-            if (jsonSerializerSettings == null)
-                throw new ArgumentNullException(nameof(jsonSerializerSettings));
+        [JsonProperty(PropertyName = "data")]
+        public object Data { get; set; }
 
-            var documentType = FindDocumentType(jsonDocument);
+        //public static EventStoreDocument Parse(string jsonDocument, JsonSerializerSettings jsonSerializerSettings)
+        //{
+        //    if (jsonDocument == null)
+        //        throw new ArgumentNullException(nameof(jsonDocument));
 
-            if (!documentType.HasValue)
-                throw new DocumentMalformedException($"jsonDocument does not appear to have an {nameof(DocumentType)} value!");
+        //    if (jsonSerializerSettings == null)
+        //        throw new ArgumentNullException(nameof(jsonSerializerSettings));
 
-            EventStoreDocument ret;
+        //    var documentType = FindDocumentType(jsonDocument);
 
-            switch (documentType)
-            {
-                case DocumentType.Root:
-                    ret = JsonConvert.DeserializeObject<RootDocument>(jsonDocument, jsonSerializerSettings);
-                    break;
+        //    if (!documentType.HasValue)
+        //        throw new DocumentMalformedException($"jsonDocument does not appear to have an {nameof(DocumentType)} value!");
 
-                case DocumentType.Snapshot:
+        //    EventStoreDocument ret;
 
-                    var ss = JsonConvert.DeserializeObject<SnapshotDocument>(jsonDocument, jsonSerializerSettings);
-                    ss.SnapshotData = JsonConvert.DeserializeObject(ss.SnapshotData.ToString(), Type.GetType(ss.SnapshotType), jsonSerializerSettings);
-                    
-                    ret = ss;
+        //    switch (documentType)
+        //    {
+        //        case DocumentType.Root:
+        //            ret = JsonConvert.DeserializeObject<RootDocument>(jsonDocument, jsonSerializerSettings);
+        //            break;
 
-                    break;
+        //        case DocumentType.Snapshot:
+        //            var ss = JsonConvert.DeserializeObject<SnapshotDocument>(jsonDocument, jsonSerializerSettings);
+        //            ss.Data = DeserializeData(ss.Data, ss.DataType, jsonSerializerSettings);
+        //            ret = ss;
+        //            break;
 
-                case DocumentType.Event:
-                    var ev = JsonConvert.DeserializeObject<EventDocument>(jsonDocument, jsonSerializerSettings);
-                    ev.EventData = JsonConvert.DeserializeObject(ev.EventData.ToString(), Type.GetType(ev.EventType), jsonSerializerSettings);
-                    ret = ev;
-                    break;
+        //        case DocumentType.Event:
+        //            var ev = JsonConvert.DeserializeObject<EventDocument>(jsonDocument, jsonSerializerSettings);
+        //            ev.Data = DeserializeData(ev.Data, ev.DataType, jsonSerializerSettings);
+        //            ret = ev;
+        //            break;
 
-                default:
-                    throw new NotSupportedException(
-                        $"Cannot parse document of type '{jsonDocument.GetType().AssemblyQualifiedName}' with DocumentType '{jsonDocument}'."
-                    );
-            }
+        //        default:
+        //            throw new NotSupportedException(
+        //                $"Cannot parse document of type '{jsonDocument.GetType().AssemblyQualifiedName}' with DocumentType '{jsonDocument}'."
+        //            );
+        //    }
 
-            if (!(ret.Metadata is null))
-                ret.Metadata = JsonConvert.DeserializeObject(ret.Metadata.ToString(), Type.GetType(ret.MetadataType), jsonSerializerSettings);
+        //    if (!(ret.Metadata is null))
+        //        ret.Metadata = JsonConvert.DeserializeObject(ret.Metadata.ToString(), Type.GetType(ret.MetadataType), jsonSerializerSettings);
 
-            return ret;
-        }
+        //    return ret;
+        //}
 
-        private static DocumentType? FindDocumentType(string result)
-        {
-            var jo = JObject.Parse(result);
-            var type = jo.DescendantsAndSelf().OfType<JProperty>().FirstOrDefault(t => t.Name.EqualsEx("documentType"));
-            
-            return type is null 
-                ? (DocumentType?) null 
-                : (DocumentType)Enum.Parse(typeof(DocumentType), type.Value.ToString());
-        }
+        //private static object DeserializeData(object data, string dataType, JsonSerializerSettings jsonSerializerSettings)
+        //{
+        //    return data is string ? data : JsonConvert.DeserializeObject(data.ToString(), Type.GetType(dataType), jsonSerializerSettings);
+        //}
+
+        //private static DocumentType? FindDocumentType(string result)
+        //{
+        //    var jo = JObject.Parse(result);
+        //    var type = jo.DescendantsAndSelf().OfType<JProperty>().FirstOrDefault(t => t.Name.EqualsEx("documentType"));
+
+        //    return type is null
+        //        ? (DocumentType?)null
+        //        : (DocumentType)Enum.Parse(typeof(DocumentType), type.Value.ToString());
+        //}
 
         private static decimal GetOrderingFraction(DocumentType documentType)
         {

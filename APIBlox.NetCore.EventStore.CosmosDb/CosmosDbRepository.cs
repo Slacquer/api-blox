@@ -51,7 +51,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
             CancellationToken cancellationToken = default
         )
-            where TDocument : IEventStoreDocument
+            where TDocument : EventStoreDocument
         {
             foreach (var doc in documents)
             {
@@ -69,16 +69,17 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             return documents.Length;
         }
 
-        public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<IEventStoreDocument, bool>> predicate,
+        public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
-        ) where TResult : class
+        )
+            where TResult : class
         {
             var isString = typeof(TResult) == typeof(string);
 
             try
             {
-                var qry = _client.CreateDocumentQuery<IEventStoreDocument>(_docCollectionUri,
-                        new FeedOptions { EnableCrossPartitionQuery = true }
+                var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
+                        new FeedOptions {EnableCrossPartitionQuery = true}
                     )
                     .Where(predicate)
                     .OrderByDescending(d => d.SortOrder)
@@ -114,7 +115,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
         public async Task UpdateAsync<TDocument>(TDocument document,
             CancellationToken cancellationToken = default
         )
-            where TDocument : IEventStoreDocument
+            where TDocument : EventStoreDocument
         {
             try
             {
@@ -136,7 +137,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             }
         }
 
-        public async Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate,
+        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
         {
@@ -177,7 +178,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             var tmp = new CamelCaseSettings();
             tmp.Converters.Add(new StringEnumConverter());
 
-            JsonSettings = (JsonSerializerSettings)client.GetType().GetField("serializerSettings",
+            JsonSettings = (JsonSerializerSettings) client.GetType().GetField("serializerSettings",
                                BindingFlags.GetField
                                | BindingFlags.Instance | BindingFlags.NonPublic
                            ).GetValue(client)
@@ -193,7 +194,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             if (exists)
                 return;
 
-            await _client.CreateDatabaseAsync(new Database { Id = _databaseId });
+            await _client.CreateDatabaseAsync(new Database {Id = _databaseId});
         }
 
         private async Task CreateCollectionIfNotExistsAsync()
@@ -224,7 +225,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             await _client.CreateDocumentCollectionAsync(
                 UriFactory.CreateDatabaseUri(_databaseId),
                 documentCollection,
-                new RequestOptions { OfferThroughput = 1000 }
+                new RequestOptions {OfferThroughput = 1000}
             );
         }
 
