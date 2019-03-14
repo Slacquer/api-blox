@@ -23,6 +23,6 @@ namespace APIBlox.NetCore.EventStore.Options
         ///     Gets or sets the collection properties.
         /// </summary>
         /// <value>The collection properties.</value>
-        public Dictionary<string, CollectionProperties> CollectionProperties { get; set; } = new Dictionary<string, CollectionProperties>();
+        public Dictionary<string, MongoDbCollectionProperties> CollectionProperties { get; set; } = new Dictionary<string, MongoDbCollectionProperties>();
     }
 }

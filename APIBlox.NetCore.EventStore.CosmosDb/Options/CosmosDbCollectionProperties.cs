@@ -3,7 +3,7 @@
     /// <summary>
     ///     Class CollectionProperties.
     /// </summary>
-    public class CollectionProperties
+    public class CosmosDbCollectionProperties
     {
         /// <summary>
         ///     Gets or sets the unique keys.

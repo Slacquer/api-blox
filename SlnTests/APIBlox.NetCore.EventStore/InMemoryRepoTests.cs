@@ -25,7 +25,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
                 Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
             };
 
-            //options.Collections.Add("DummyAggregate", new Collection { Id = "dummy" });
+            options.CollectionProperties.Add("DummyAggregate", new CosmosDbCollectionProperties { });
             var opt = Options.Create(options);
 
             var c = new DocumentClient(new Uri(options.Endpoint), options.Key);
@@ -150,7 +150,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             Assert.True(result.Snapshot.Data.Equals("snapshot2"));
         }
     }
-
+    
     public class DummyAggregate 
     {
         public Guid AggregateId { get; } = Guid.NewGuid();

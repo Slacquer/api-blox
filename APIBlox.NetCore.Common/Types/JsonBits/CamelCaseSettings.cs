@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-
-#endregion
 
 namespace APIBlox.NetCore.Types.JsonBits
 {
@@ -14,8 +10,6 @@ namespace APIBlox.NetCore.Types.JsonBits
     /// </summary>
     public class CamelCaseSettings : JsonSerializerSettings
     {
-        #region -    Constructors    -
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="CamelCaseSettings" /> class.
         /// </summary>
@@ -23,7 +17,5 @@ namespace APIBlox.NetCore.Types.JsonBits
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
-
-        #endregion
     }
 }

@@ -1,5 +1,4 @@
-﻿using APIBlox.NetCore.Documents;
-using Examples.Events;
+﻿using Examples.Events;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,8 +27,10 @@ namespace Examples
             services
                 .AddServerFaults()
                 .AddEventStoreService<MyAggregate>()
+                .AddCosmosDbRepository<MyAggregate>(_config)
                 .AddMongoDbRepository<MyAggregate>(_config)
-                //.AddCosmosDbRepository<MyAggregate>(_config)
+
+                
                 ;
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
