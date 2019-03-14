@@ -11,10 +11,13 @@ using APIBlox.NetCore.EventStore.CosmosDb;
 using APIBlox.NetCore.EventStore.MongoDb;
 using APIBlox.NetCore.EventStore.MongoDb.Options;
 using APIBlox.NetCore.Models;
+using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Options;
 using Moq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Xunit;
 using Collection = APIBlox.NetCore.EventStore.CosmosDb.Collection;
 
@@ -26,7 +29,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
         public async Task CosmosDbFullTest()
         {
             var svc = GetCosmosbBackedEventStoreService();
-            
+
             var agg = new DummyAggregate { StreamId = "test-doc" };
 
             await svc.DeleteEventStreamAsync(agg.StreamId);
@@ -36,7 +39,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
 
             Assert.NotNull(eventStoreDoc);
-            
+
             lst = new List<EventModel> { new EventModel { Data = "4" } };
 
             eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
@@ -89,8 +92,8 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
             var c = new DocumentClient(new Uri(options.Endpoint), options.Key);
 
-            var repo = new CosmosDbRepository<DummyAggregate>(c, opt);
-
+            var repo = new CosmosDbRepository<DummyAggregate>(c, new CamelCaseSettings(), opt);
+            
             IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
 
             return svc;
@@ -103,7 +106,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
 
             var agg = new DummyAggregate { StreamId = "test-doc" };
-           
+
             await svc.DeleteEventStreamAsync(agg.StreamId);
 
             var lst = new List<EventModel> { new EventModel { Data = "1" }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
@@ -111,13 +114,13 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
 
             Assert.NotNull(eventStoreDoc);
-            
+
             lst = new List<EventModel> { new EventModel { Data = "4" } };
 
             eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
             Assert.NotNull(eventStoreDoc);
 
-           var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+            var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 
 
             Assert.NotNull(result);

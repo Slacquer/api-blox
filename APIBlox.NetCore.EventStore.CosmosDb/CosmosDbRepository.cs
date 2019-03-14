@@ -28,7 +28,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
         private readonly Uri _docCollectionUri;
         private readonly List<string> _uniqueKeys;
 
-        public CosmosDbRepository(IDocumentClient client, IOptions<CosmosDbOptions> options)
+        public CosmosDbRepository(IDocumentClient client, JsonSerializerSettings settings, IOptions<CosmosDbOptions> options)
         {
             var opt = options.Value;
             var col = opt.Collections.First(c => c.Key.EqualsEx(typeof(TModel).Name)).Value;
@@ -39,8 +39,7 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _databaseId = opt.DatabaseId ?? throw new ArgumentNullException(nameof(opt.DatabaseId));
             _docCollectionUri = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
-
-            SetJsonSettings(client);
+            JsonSettings = settings ?? throw new ArgumentNullException(nameof(settings));
 
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync().Wait();
@@ -170,20 +169,20 @@ namespace APIBlox.NetCore.EventStore.CosmosDb
             return count;
         }
 
-        private void SetJsonSettings(IDocumentClient client)
-        {
-            if (!(JsonSettings is null))
-                return;
+        //private void SetJsonSettings(IDocumentClient client)
+        //{
+        //    if (!(JsonSettings is null))
+        //        return;
 
-            var tmp = new CamelCaseSettings();
-            tmp.Converters.Add(new StringEnumConverter());
+        //    var tmp = new CamelCaseSettings();
+        //    tmp.Converters.Add(new StringEnumConverter());
 
-            JsonSettings = (JsonSerializerSettings) client.GetType().GetField("serializerSettings",
-                               BindingFlags.GetField
-                               | BindingFlags.Instance | BindingFlags.NonPublic
-                           ).GetValue(client)
-                           ?? tmp;
-        }
+        //    JsonSettings = (JsonSerializerSettings) client.GetType().GetField("serializerSettings",
+        //                       BindingFlags.GetField
+        //                       | BindingFlags.Instance | BindingFlags.NonPublic
+        //                   ).GetValue(client)
+        //                   ?? tmp;
+        //}
 
         private async Task CreateDatabaseIfNotExistsAsync()
         {

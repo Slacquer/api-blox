@@ -50,14 +50,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEventStoreRepository, CosmosDbRepository<TModel>>(x =>
             {
                 var opt = Options.Options.Create(es);
-                var ret = new CosmosDbRepository<TModel>(x.GetRequiredService<IDocumentClient>(), opt)
-                {
-                    JsonSettings = settings ?? new CamelCaseSettings
-                    {
-                        ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
-                    }
-                };
-
+                var ret = new CosmosDbRepository<TModel>(x.GetRequiredService<IDocumentClient>(),
+                    settings ?? new CamelCaseSettings(),
+                    opt
+                );
+                
                 return ret;
             });
 
