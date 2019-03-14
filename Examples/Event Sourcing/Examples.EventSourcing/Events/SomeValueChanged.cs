@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Examples.Events
 {
-    public class SomeValueChanged 
+    internal class SomeValueChanged
     {
-        public SomeValueChanged(Guid aggregateId,  string someValue)
+        public SomeValueChanged(Guid aggregateId, string someValue)
         {
             AggregateId = aggregateId;
             SomeValue = someValue;
         }
-        
 
         public string SomeValue { get; }
 

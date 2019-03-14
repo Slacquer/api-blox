@@ -118,7 +118,7 @@ namespace Examples
                 // Custom tokens, example has version
                 .AddRouteTokensConvention(_configuration, _environment, "ExampleTokens")
 #endif
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
         }

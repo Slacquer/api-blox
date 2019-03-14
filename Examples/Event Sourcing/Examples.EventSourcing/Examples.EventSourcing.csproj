@@ -30,5 +30,8 @@
     <ProjectReference Include="..\..\..\APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
+  </ItemGroup>
 
 </Project>

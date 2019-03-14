@@ -12,15 +12,22 @@ using Newtonsoft.Json;
 
 namespace Examples
 {
+    /// <summary>
+    ///     Class MyAggregate.
+    /// </summary>
     public class MyAggregate
     {
         private readonly IEventStoreService<MyAggregate> _es;
 
-        private EventStreamModel _myEventStream;
-
         private readonly string _streamId;
         private readonly IDictionary<Type, MethodInfo> _whenMethods;
+        private EventStreamModel _myEventStream;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MyAggregate" /> class.
+        /// </summary>
+        /// <param name="eventStoreService">The event store service.</param>
+        /// <param name="streamId">The stream identifier.</param>
         public MyAggregate(IEventStoreService<MyAggregate> eventStoreService, string streamId)
         {
             _es = eventStoreService;
@@ -33,14 +40,32 @@ namespace Examples
             _streamId = streamId;
         }
 
+        /// <summary>
+        ///     Gets the domain events.
+        /// </summary>
+        /// <value>The domain events.</value>
         [JsonIgnore]
         public List<object> DomainEvents { get; } = new List<object>();
 
+        /// <summary>
+        ///     Gets the aggregate identifier.
+        /// </summary>
+        /// <value>The aggregate identifier.</value>
         public Guid AggregateId { get; private set; }
 
+        /// <summary>
+        ///     Gets some value.
+        /// </summary>
+        /// <value>Some value.</value>
         public string SomeValue { get; private set; }
 
-
+        /// <summary>
+        ///     Adds some value.
+        /// </summary>
+        /// <param name="someValue">Some value.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="DataAccessException">Aggregate with stream id {_streamId}</exception>
         public async Task AddSomeValue(string someValue, CancellationToken cancellationToken)
         {
             await Build(cancellationToken);
@@ -58,6 +83,13 @@ namespace Examples
             DomainEvents.Add(new SomeValueAdded(AggregateId, SomeValue));
         }
 
+        /// <summary>
+        ///     Updates some value.
+        /// </summary>
+        /// <param name="someValue">Some value.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="DataAccessException">Aggregate with stream id {_streamId}</exception>
         public async Task UpdateSomeValue(string someValue, CancellationToken cancellationToken)
         {
             await Build(cancellationToken);
@@ -71,6 +103,11 @@ namespace Examples
             DomainEvents.Add(new SomeValueChanged(AggregateId, SomeValue));
         }
 
+        /// <summary>
+        ///     publish changes as an asynchronous operation.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
         public async Task PublishChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = await _es.WriteToEventStreamAsync(_streamId,
@@ -87,6 +124,11 @@ namespace Examples
                 );
         }
 
+        /// <summary>
+        ///     Builds the specified cancellation token.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
         public async Task Build(CancellationToken cancellationToken = default)
         {
             if (!(_myEventStream is null))
@@ -99,7 +141,7 @@ namespace Examples
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (MyAggregate)_myEventStream.Snapshot.Data;
+                var data = (MyAggregate) _myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;
@@ -107,7 +149,6 @@ namespace Examples
 
             ApplyPreviousEvents(_myEventStream.Events);
         }
-
 
         private void When(SomeValueAdded e)
         {

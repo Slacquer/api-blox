@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Examples.EventSourcing</name>
+    </assembly>
+    <members>
+        <member name="T:Examples.Controllers.EventSourcingController">
+            <inheritdoc />
+            <summary>
+                Class EventSourcingController.
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+    </members>
+</doc>
