@@ -10,7 +10,6 @@ using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Extensions;
-using APIBlox.NetCore.Options;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
@@ -19,7 +18,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace APIBlox.NetCore
+namespace APIBlox.NetCore.EventStore.CosmosDb
 {
     internal class CosmosDbRepository<TModel> : IEventStoreRepository
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
-using APIBlox.NetCore.Options;
+using APIBlox.NetCore.EventStore.CosmosDb;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;

@@ -9,10 +9,11 @@ using Newtonsoft.Json.Linq;
 
 namespace APIBlox.NetCore.Documents
 {
+    
     public class EventStoreDocument : IEventStoreDocument
     {
         protected const char Separator = '-';
-
+        
         [JsonProperty(PropertyName = "id")]
         public virtual string Id { get; set; }
         

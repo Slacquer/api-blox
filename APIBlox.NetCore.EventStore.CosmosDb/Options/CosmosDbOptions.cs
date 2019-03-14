@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace APIBlox.NetCore.Options
+namespace APIBlox.NetCore.EventStore.CosmosDb
 {
     public class CosmosDbOptions
     {

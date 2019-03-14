@@ -1,4 +1,4 @@
-﻿namespace APIBlox.NetCore.EventStore.CosmosDb
+﻿namespace APIBlox.NetCore.EventStore.MongoDb.Options
 {
     public class Collection
     {

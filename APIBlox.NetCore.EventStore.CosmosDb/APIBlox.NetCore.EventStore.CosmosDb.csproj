@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     
-    <RootNamespace>APIBlox.NetCore</RootNamespace>
+    <RootNamespace>APIBlox.NetCore.EventStore.CosmosDb</RootNamespace>
    
     <Description>CosmosDB backing for APIBlox.NetCore.EventStore.  SourceLink is enabled.</Description> 
     

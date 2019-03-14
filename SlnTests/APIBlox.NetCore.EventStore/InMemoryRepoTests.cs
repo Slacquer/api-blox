@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
+using APIBlox.NetCore.EventStore.CosmosDb;
+using APIBlox.NetCore.EventStore.MongoDb;
+using APIBlox.NetCore.EventStore.MongoDb.Options;
 using APIBlox.NetCore.Models;
-using APIBlox.NetCore.Options;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
+using Collection = APIBlox.NetCore.EventStore.CosmosDb.Collection;
 
 namespace SlnTests.APIBlox.NetCore.EventStore
 {
@@ -78,6 +81,33 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
 
             await svc.DeleteEventStreamAsync(agg.StreamId);
+        }
+
+        [Fact]
+        public async Task ShouldBeAbleToAddToMongoDb()
+        {
+            var agg = new DummyAggregate { StreamId = "test-doc" };
+
+            var options = new MongoDbOptions
+            {
+                DatabaseId = "testDb",
+                ConnectionString = "mongodb://localhost:27017"
+            };
+
+            //options.Collections.Add("DummyAggregate", new Collection { Id = "dummy" });
+            var opt = Options.Create(options);
+
+
+            var ctx = new CollectionContext(opt);
+            var repo = new MongoDbRepository<DummyAggregate>(ctx);
+
+            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+
+            //var lst = new List<EventModel> { new EventModel { Data = "1" }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
+
+            //var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
+
+            var foo = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
         }
     }
 
