@@ -61,6 +61,7 @@ namespace Examples
                 //
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
+                
                 //
                 //  Change what is returned to the user when an error occurs.
                 .AddAlterRequestErrorObject(err =>

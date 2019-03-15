@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson.Serialization;
 
 namespace Examples
@@ -14,10 +15,14 @@ namespace Examples
 
         private const string Version = "v1";
         private readonly IConfiguration _config;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly IHostingEnvironment _environment;
 
-        public Startup(IConfiguration config)
+        public Startup(IConfiguration config, ILoggerFactory loggerFactory,IHostingEnvironment environment)
         {
             _config = config;
+            _loggerFactory = loggerFactory;
+            _environment = environment;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -33,10 +38,7 @@ namespace Examples
                 //.AddCosmosDbRepository<AnotherAggregate>(_config)
 
                 //.AddMongoDbRepository<MyAggregate>(_config)
-                .AddMongoDbRepository<AnotherAggregate>(_config)
-
-
-                ;
+                .AddMongoDbRepository<AnotherAggregate>(_config);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

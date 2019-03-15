@@ -86,7 +86,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     $"No types decorated with {nameof(InjectableServiceAttribute)} could be found using" +
                     $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
                     "If this is intentional, please remove the " +
-                    $"{nameof(AddInjectableServices)} entry."
+                    $"{nameof(AddInjectableServices)} entry.\n\n"
                 );
                 return services;
             }
@@ -97,6 +97,45 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
+        /// <summary>
+        ///     Adds injectable services by finding all classes decorated with
+        ///     <see cref="InjectableServiceAttribute" /> that are referenced in the AppDomain.
+        ///     <para>
+        ///         This only applies to NON-NESTED interfaces.
+        ///     </para>
+        ///     <para>
+        ///         Be sure to add me as close to the beginning of the service collection chain as possible.
+        ///     </para>
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddReferencedInjectableServices(
+            this IServiceCollection services, ILoggerFactory loggerFactory
+        )
+        {
+            CreateLog(loggerFactory);
+
+            FillWorkingAssemblyTypes(true, false);
+
+            var injectable = WorkingAssemblyTypes.Where(kvp => !kvp.Key).ToList();
+
+            if (!injectable.Any())
+            {
+                _log.LogError(() =>
+                    $"No types decorated with {nameof(InjectableServiceAttribute)} could be found.  " +
+                    "If this is intentional, please remove the " +
+                    $"{nameof(AddReferencedInjectableServices)} entry.\n\n"
+                );
+                return services;
+            }
+
+            foreach (var kvp in injectable)
+                services.RegisterServiceType(kvp.Value);
+
+            return services;
+        }
+        
         /// <summary>
         ///     Adds Startup like configurations that implement <see cref="IDependencyInvertedConfiguration" />
         ///     and calls <see cref="IDependencyInvertedConfiguration.Configure" /> for
@@ -141,11 +180,56 @@ namespace Microsoft.Extensions.DependencyInjection
                     $"{nameof(IDependencyInvertedConfiguration)} could be found using" +
                     $" provided pattern(s) for {nameof(assemblyNamesLike)} and {nameof(assemblyPaths)}.  " +
                     "If this is intentional, please remove the " +
-                    $"{nameof(AddInvertedDependentsAndConfigureServices)} entry."
+                    $"{nameof(AddInvertedDependentsAndConfigureServices)} entry.\n\n"
                 );
                 return services;
             }
 
+            foreach (var kvp in inverted)
+                ConfigureInverted(kvp.Value, services, configuration, loggerFactory, environment);
+
+            return services;
+        }
+
+                /// <summary>
+        ///     Adds Startup like configurations that implement <see cref="IDependencyInvertedConfiguration" />
+        ///     and calls <see cref="IDependencyInvertedConfiguration.Configure" /> for classes
+        ///     that are referenced in the AppDomain
+        ///     <para>
+        ///         Be sure to add me as close to the beginning of the service collection chain as possible.
+        ///     </para>
+        /// </summary>
+        /// <param name="services">IServiceCollection</param>
+        /// <param name="loggerFactory">ILoggerFactory</param>
+        /// <param name="environment">
+        ///     Name of running environment, we are not Passing IHostingEnvironment
+        ///     as this is a AspNetCore thing, my understanding is that eventually the GenericHostBuilder will likely
+        ///     expose the environment, and we can use it rather than a string.
+        /// </param>
+        /// <param name="configuration">IConfiguration</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddReferencedInvertedDependentsAndConfigureServices(
+            this IServiceCollection services, IConfiguration configuration,
+            ILoggerFactory loggerFactory, string environment
+        )
+        {
+            CreateLog(loggerFactory);
+
+            FillWorkingAssemblyTypes(false, true);
+
+            var inverted = WorkingAssemblyTypes.Where(kvp => kvp.Key).ToList();
+            
+            if (!inverted.Any())
+            {
+                _log.LogError(() =>
+                    "No types that implement " +
+                    $"{nameof(IDependencyInvertedConfiguration)} could be found.  " +
+                    "If this is intentional, please remove the " +
+                    $"{nameof(AddReferencedInvertedDependentsAndConfigureServices)} entry.\n\n"
+                );
+                return services;
+            }
+            
             foreach (var kvp in inverted)
                 ConfigureInverted(kvp.Value, services, configuration, loggerFactory, environment);
 
@@ -316,6 +400,36 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             return ret;
+        }
+
+        private static void FillWorkingAssemblyTypes(bool injectable, bool inverted)
+        {
+            var tmp = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()
+                .Where(x =>
+                    !x.GetTypeInfo().IsAbstract && injectable &&
+                    x.GetCustomAttributes<InjectableServiceAttribute>().Any()
+                    || inverted && x.GetInterfaces().Any(t =>
+                        typeof(IDependencyInvertedConfiguration).IsAssignableTo(t)
+                    )
+                )
+                .Select(t => new KeyValuePair<bool, Type>(
+                        typeof(IDependencyInvertedConfiguration).IsAssignableTo(t),
+                        t
+                    )
+                )
+            ).Except(WorkingAssemblyTypes);
+
+            _log.LogInformation(() =>
+                string.Format(injectable
+                        ? "\nReferenced {1} list:\n{0}\n\n"
+                        : "\nReferenced {2} list:\n{0}\n\n",
+                    string.Join(",\n", tmp.Select(k => k.Value).ToList()),
+                    nameof(InjectableServiceAttribute),
+                    nameof(IDependencyInvertedConfiguration)
+                )
+            );
+
+            WorkingAssemblyTypes.AddRange(tmp);
         }
 
         private static void RegisterServiceType(
