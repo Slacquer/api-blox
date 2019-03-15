@@ -191,6 +191,19 @@ namespace APIBlox.NetCore.EventStore
             };
             documentCollection.PartitionKey.Paths.Add("/streamId");
 
+            var p = new IncludedPath {Path = "/"};
+            var rng = Index.Range(DataType.String);
+
+            documentCollection.IndexingPolicy.IncludedPaths.Add(p);
+
+            p = new IncludedPath {Path = "/streamId/?"};
+            p.Indexes.Add(rng);
+            documentCollection.IndexingPolicy.IncludedPaths.Add(p);
+
+            p = new IncludedPath {Path = "/documentType/?"};
+            p.Indexes.Add(rng);
+            documentCollection.IndexingPolicy.IncludedPaths.Add(p);
+
             if (keys.Any())
             {
                 var uniqueKey = new UniqueKey();

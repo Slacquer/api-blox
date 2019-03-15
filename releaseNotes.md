@@ -1,6 +1,8 @@
 _March ?th, 2019_  **v1.0.???**  
 - MongoDb, 
 - Added indexing to configuration options.
+- SosmosDb
+- Added indexes for streamId and documentType by default.
 
 Thanks,  
 _Slacquer_  
