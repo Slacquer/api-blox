@@ -1,3 +1,18 @@
+_March ?th, 2019_  **v1.0.106**  
+- Event Sourcing!, 
+- Created an backend agnostic event sourcing library.  So far I have 
+CosmosDb and MongoDb repositories that can be used.
+Sadly, I have not had the patience to deal with MOCKing the repositories, so the unit tests actually talk to MongoDB and CosmosDB (locally)
+- Injectable and InvertedConfiguration extension methods:  
+ 2 new methods that will only dig through the current AppDomain.  
+IE: _"I'm too lazy to really follow the rules so lets just add references to the net core API application!"_
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 8th, 2019_  **v1.0.105**  
 - PostAcceptedController, 
 - When doing event sourcing for example, it would be common practice
