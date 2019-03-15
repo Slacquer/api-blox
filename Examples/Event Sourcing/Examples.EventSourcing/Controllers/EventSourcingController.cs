@@ -45,7 +45,7 @@ namespace Examples.Controllers
             await agg.Build(true);
             await ang.Build(true);
 
-            return Ok(new {Aggregate = agg, AnotherAggregate = ang});
+            return Ok(new { Aggregate = agg, AnotherAggregate = ang });
         }
 
         /// <summary>
@@ -91,6 +91,24 @@ namespace Examples.Controllers
             await ang.PublishChangesAsync(cancellationToken);
 
             return Accepted();
+        }
+        
+        /// <summary>
+        ///     Deletes the specified first name.
+        /// </summary>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;ActionResult&gt;.</returns>
+        [HttpDelete("{firstName}")]
+        public async Task<ActionResult> Delete(string firstName, CancellationToken cancellationToken)
+        {
+            var agg = new MyAggregate(_es, firstName);
+            var a2 = new AnotherAggregate(_es2, firstName);
+
+            await agg.DeleteMe(cancellationToken);
+            await a2.DeleteMe(cancellationToken);
+
+            return NoContent();
         }
 
         private static string Reverse(string str)

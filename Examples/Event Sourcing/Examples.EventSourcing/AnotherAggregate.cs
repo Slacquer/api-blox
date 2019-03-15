@@ -122,6 +122,16 @@ namespace Examples
         }
 
         /// <summary>
+        ///     Deletes me.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public async Task DeleteMe(CancellationToken cancellationToken)
+        {
+            await _es.DeleteEventStreamAsync(_streamId, cancellationToken);
+        }
+
+        /// <summary>
         /// Builds the specified fail not found.
         /// </summary>
         /// <param name="failNotFound">if set to <c>true</c> [fail not found].</param>

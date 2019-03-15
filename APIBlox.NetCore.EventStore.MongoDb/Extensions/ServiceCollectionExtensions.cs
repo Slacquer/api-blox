@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         $"will need to have an {configSection} configuration entry."
                     );
 
-                return new CollectionContext(es.CnnString, es.DatabaseId);
+                return new CollectionContext(es);
             });
 
             services.AddScoped<IEventStoreRepository<TModel>, MongoDbRepository<TModel>>(x =>

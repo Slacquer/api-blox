@@ -1,4 +1,14 @@
-_March ?th, 2019_  **v1.0.106**  
+_March ?th, 2019_  **v1.0.???**  
+- MongoDb, 
+- Added indexing to configuration options.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+_March 15th, 2019_  **v1.0.106**  
 - Event Sourcing!, 
 - Created an backend agnostic event sourcing library.  So far I have 
 CosmosDb and MongoDb repositories that can be used.

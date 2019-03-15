@@ -76,43 +76,33 @@ namespace APIBlox.NetCore.EventStore
             var isString = typeof(TResult) == typeof(string);
             var isEsd = typeof(TResult) == typeof(EventStoreDocument);
 
-            try
+            var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
+                    new FeedOptions { EnableCrossPartitionQuery = true }
+                )
+                .Where(predicate)
+                .OrderByDescending(d => d.SortOrder)
+                .AsDocumentQuery();
+
+            var lst = new List<TResult>();
+
+            while (qry.HasMoreResults)
             {
-                var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
-                        new FeedOptions { EnableCrossPartitionQuery = true }
-                    )
-                    .Where(predicate)
-                    .OrderByDescending(d => d.SortOrder)
-                    .AsDocumentQuery();
+                var ret = await qry.ExecuteNextAsync<TResult>(cancellationToken);
 
-                var lst = new List<TResult>();
-
-                while (qry.HasMoreResults)
+                foreach (var document in ret)
                 {
-                    var ret = await qry.ExecuteNextAsync<TResult>(cancellationToken);
+                    var result = isString
+                        ? document.ToString() as TResult
+                        : JsonConvert.DeserializeObject<TResult>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings);
 
-                    foreach (var document in ret)
-                    {
-                        var result = isString
-                            ? document.ToString() as TResult
-                            : JsonConvert.DeserializeObject<TResult>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings);
+                    if (isEsd && result is EventStoreDocument ev && !(ev.Data is null) && ev.Data.GetType() != typeof(string))
+                        ev.Data = JsonConvert.DeserializeObject(ev.Data.ToString(), Type.GetType(ev.DataType), JsonSettings);
 
-                        if (isEsd && result is EventStoreDocument ev && !(ev.Data is null) && ev.Data.GetType() != typeof(string))
-                            ev.Data = JsonConvert.DeserializeObject(ev.Data.ToString(), Type.GetType(ev.DataType), JsonSettings);
-
-                        lst.Add(result);
-                    }
+                    lst.Add(result);
                 }
-
-                return lst;
             }
-            catch (DocumentClientException e)
-            {
-                if (e.StatusCode == HttpStatusCode.Conflict)
-                    throw new DocumentConcurrencyException(e.Message);
-
-                throw;
-            }
+            
+            return lst;
         }
 
         public async Task UpdateAsync<TDocument>(TDocument document,

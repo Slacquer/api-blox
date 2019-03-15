@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading.Tasks;
 using APIBlox.NetCore.Documents;
+using APIBlox.NetCore.EventStore.Options;
 using APIBlox.NetCore.Extensions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -12,20 +15,65 @@ namespace APIBlox.NetCore.EventStore
     internal class CollectionContext
     {
         private readonly IMongoDatabase _database;
+        private readonly ConcurrentBag<string> _createdIndexes = new ConcurrentBag<string>();
+        private readonly MongoDbOptions _options;
 
-        public CollectionContext(string cnnStr, string databaseId)
+        public CollectionContext(MongoDbOptions options)
         {
-            var client = new MongoClient(cnnStr);
+            _options = ValidateOptions(options);
 
-            _database = client.GetDatabase(databaseId);
+            var client = new MongoClient(_options.CnnString);
+
+            _database = client.GetDatabase(_options.DatabaseId);
 
             BuildEventStoreDocumentMaps();
         }
 
-        public IMongoCollection<TDocument> Collection<TDocument>(string colName)
+        private void IndexCheck<TDocument>(IMongoCollection<TDocument> collection)
+            where TDocument : EventStoreDocument
         {
-            var ret =  _database.GetCollection<TDocument>(colName);
-            
+            var cn = collection.CollectionNamespace.CollectionName;
+
+            if (_createdIndexes.Contains(cn))
+                return;
+
+            Task.Run(async () =>
+           {
+                var config = _options.CollectionProperties.FirstOrDefault(k => k.Key == cn).Value;
+               if (config.Indexes is null || !config.Indexes.Any())
+                   return;
+               
+               var lst = _options.CollectionProperties.FirstOrDefault(k => k.Key == cn).Value.Indexes
+                   .Select(index => new CreateIndexModel<TDocument>(index))
+                   .ToList();
+
+               await collection.Indexes.CreateManyAsync(lst);
+
+               _createdIndexes.Add(cn);
+           }).Wait();
+        }
+
+        private MongoDbOptions ValidateOptions(MongoDbOptions options)
+        {
+            if (options is null)
+                throw new ArgumentNullException(nameof(options));
+
+            if (options.CnnString.IsEmptyNullOrWhiteSpace())
+                throw new ArgumentNullException(nameof(options.CnnString));
+
+            if (options.DatabaseId.IsEmptyNullOrWhiteSpace())
+                throw new ArgumentNullException(nameof(options.DatabaseId));
+
+            return options;
+        }
+
+        public IMongoCollection<TDocument> Collection<TDocument>(string colName)
+            where TDocument : EventStoreDocument
+        {
+            var ret = _database.GetCollection<TDocument>(colName);
+
+            IndexCheck(ret);
+
             return ret;
         }
 
@@ -51,8 +99,8 @@ namespace APIBlox.NetCore.EventStore
             // Other documents are internal, so we will add them manually.
             var mapAble = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
                 .Where(x => typeof(EventStoreDocument).IsAssignableFrom(x)
-                            && !x.IsInterface 
-                            && !x.IsAbstract 
+                            && !x.IsInterface
+                            && !x.IsAbstract
                             && x.Name != nameof(EventStoreDocument)
                 );
 

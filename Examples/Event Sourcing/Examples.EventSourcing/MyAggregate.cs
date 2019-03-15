@@ -157,6 +157,16 @@ namespace Examples
             ApplyPreviousEvents(_myEventStream.Events);
         }
 
+        /// <summary>
+        ///     Deletes me.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public async Task DeleteMe(CancellationToken cancellationToken)
+        {
+            await _es.DeleteEventStreamAsync(_streamId, cancellationToken);
+        }
+
         private void When(SomeValueAdded e)
         {
             SomeValue = e.SomeValue;
