@@ -4,12 +4,179 @@
         <name>Examples.EventSourcing</name>
     </assembly>
     <members>
+        <member name="M:Examples.AnotherAggregate.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.AnotherAggregate},System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.AnotherAggregate" /> class.
+            </summary>
+            <param name="eventStoreService">The event store service.</param>
+            <param name="streamId">The stream identifier.</param>
+        </member>
+        <member name="P:Examples.AnotherAggregate.DomainEvents">
+            <summary>
+                Gets the domain events.
+            </summary>
+            <value>The domain events.</value>
+        </member>
+        <member name="P:Examples.AnotherAggregate.AggregateId">
+            <summary>
+                Gets the aggregate identifier.
+            </summary>
+            <value>The aggregate identifier.</value>
+        </member>
+        <member name="P:Examples.AnotherAggregate.SomeValue">
+            <summary>
+                Gets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+        <member name="M:Examples.AnotherAggregate.AddSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Adds some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.AnotherAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Updates some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.AnotherAggregate.PublishChangesAsync(System.Threading.CancellationToken)">
+            <summary>
+                publish changes as an asynchronous operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Examples.AnotherAggregate.Build(System.Threading.CancellationToken)">
+            <summary>
+                Builds the specified cancellation token.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
         <member name="T:Examples.Controllers.EventSourcingController">
-            <inheritdoc />
             <summary>
                 Class EventSourcingController.
             </summary>
             <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+            <inheritdoc />
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.MyAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.AnotherAggregate})">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingController" /> class.
+            </summary>
+            <param name="eventStoreService">The event store service.</param>
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController.Get(System.String)">
+            <summary>
+                Gets the specified first name.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <returns>Task&lt;ActionResult&gt;.</returns>
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController.Post(Examples.Resources.MyAggregateResource,System.Threading.CancellationToken)">
+            <summary>
+                Posts the specified resource.
+            </summary>
+            <param name="resource">The resource.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task&lt;ActionResult&gt;.</returns>
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController.Put(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+                Puts the specified first name.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task&lt;ActionResult&gt;.</returns>
+        </member>
+        <member name="T:Examples.MyAggregate">
+            <summary>
+                Class MyAggregate.
+            </summary>
+        </member>
+        <member name="M:Examples.MyAggregate.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.MyAggregate},System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.MyAggregate" /> class.
+            </summary>
+            <param name="eventStoreService">The event store service.</param>
+            <param name="streamId">The stream identifier.</param>
+        </member>
+        <member name="P:Examples.MyAggregate.DomainEvents">
+            <summary>
+                Gets the domain events.
+            </summary>
+            <value>The domain events.</value>
+        </member>
+        <member name="P:Examples.MyAggregate.AggregateId">
+            <summary>
+                Gets the aggregate identifier.
+            </summary>
+            <value>The aggregate identifier.</value>
+        </member>
+        <member name="P:Examples.MyAggregate.SomeValue">
+            <summary>
+                Gets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+        <member name="M:Examples.MyAggregate.AddSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Adds some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.MyAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Updates some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.MyAggregate.PublishChangesAsync(System.Threading.CancellationToken)">
+            <summary>
+                publish changes as an asynchronous operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Examples.MyAggregate.Build(System.Threading.CancellationToken)">
+            <summary>
+                Builds the specified cancellation token.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="T:Examples.Resources.MyAggregateResource">
+            <summary>
+                Class MyAggregateResource.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.MyAggregateResource.FirstName">
+            <summary>
+                Gets or sets the first name.
+            </summary>
+            <value>The first name.</value>
+        </member>
+        <member name="P:Examples.Resources.MyAggregateResource.SomeValue">
+            <summary>
+                Gets or sets some value.
+            </summary>
+            <value>Some value.</value>
         </member>
     </members>
 </doc>

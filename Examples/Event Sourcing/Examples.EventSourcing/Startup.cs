@@ -30,10 +30,10 @@ namespace Examples
                 .AddEventStoreService<AnotherAggregate>()
 
                 .AddCosmosDbRepository<MyAggregate>(_config)
-                .AddCosmosDbRepository<AnotherAggregate>(_config)
+                //.AddCosmosDbRepository<AnotherAggregate>(_config)
 
                 //.AddMongoDbRepository<MyAggregate>(_config)
-                //.AddMongoDbRepository<AnotherAggregate>(_config)
+                .AddMongoDbRepository<AnotherAggregate>(_config)
 
 
                 ;
@@ -43,6 +43,7 @@ namespace Examples
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
 
             BsonClassMap.RegisterClassMap<MyAggregate>();
+            BsonClassMap.RegisterClassMap<AnotherAggregate>();
             BsonClassMap.RegisterClassMap<SomeValueAdded>();
             BsonClassMap.RegisterClassMap<SomeValueChanged>();
         }

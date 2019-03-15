@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using Examples.Resources;
@@ -63,7 +64,7 @@ namespace Examples.Controllers
 
             var ang = new AnotherAggregate(_es2, resource.FirstName);
 
-            await ang.AddSomeValue(resource.SomeValue, cancellationToken);
+            await ang.AddSomeValue(Reverse(resource.SomeValue), cancellationToken);
             await ang.PublishChangesAsync(cancellationToken);
 
             return Accepted();
@@ -87,10 +88,15 @@ namespace Examples.Controllers
 
             var ang = new AnotherAggregate(_es2, firstName);
 
-            await ang.UpdateSomeValue(someValue, cancellationToken);
+            await ang.UpdateSomeValue(Reverse(someValue), cancellationToken);
             await ang.PublishChangesAsync(cancellationToken);
 
             return Accepted();
+        }
+
+        private static string Reverse(string str)
+        {
+            return string.Join("", str.Reverse());
         }
     }
 }
