@@ -35,6 +35,10 @@ namespace APIBlox.NetCore.EventStore
         )
             where TDocument : EventStoreDocument
         {
+            //var notificationLogBuilder = Builders<TDocument>.IndexKeys;
+            //var indexModel = new CreateIndexModel<TDocument>(notificationLogBuilder.Ascending(x => x.StreamId));
+            //await _context.Collection<TDocument>(_colName).Indexes.CreateOneAsync(indexModel, cancellationToken: cancellationToken).ConfigureAwait(false);
+
             await _context.Collection<TDocument>(_colName).InsertManyAsync(
                 documents,
                 new InsertManyOptions {IsOrdered = true},

@@ -65,7 +65,7 @@ namespace Examples
         /// <exception cref="DataAccessException">Aggregate with stream id {_streamId}</exception>
         public async Task AddSomeValue(string someValue, CancellationToken cancellationToken)
         {
-            await Build(cancellationToken);
+            await Build(false, cancellationToken);
 
             if (!(_myEventStream is null))
                 throw new DataAccessException($"Another Aggregate with stream id {_streamId} already exists!");
@@ -89,7 +89,7 @@ namespace Examples
         /// <exception cref="DataAccessException">Aggregate with stream id {_streamId}</exception>
         public async Task UpdateSomeValue(string someValue, CancellationToken cancellationToken)
         {
-            await Build(cancellationToken);
+            await Build(false, cancellationToken);
 
             if (_myEventStream is null)
                 throw new DataAccessException($"Another Aggregate with stream id {_streamId} not found!");
@@ -113,7 +113,7 @@ namespace Examples
                 cancellationToken: cancellationToken
             );
 
-            if (result.Version % 2 == 0)
+            if (result.Version % 10 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
                     new SnapshotModel {Data = this},
@@ -122,11 +122,13 @@ namespace Examples
         }
 
         /// <summary>
-        ///     Builds the specified cancellation token.
+        /// Builds the specified fail not found.
         /// </summary>
+        /// <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public async Task Build(CancellationToken cancellationToken = default)
+        /// <exception cref="DocumentNotFoundException">StreamId {_streamId}</exception>
+        public async Task Build(bool failNotFound = false, CancellationToken cancellationToken = default)
         {
             if (!(_myEventStream is null))
                 return;
@@ -134,11 +136,16 @@ namespace Examples
             _myEventStream = await _es.ReadEventStreamAsync(_streamId, includeEvents: true, cancellationToken: cancellationToken);
 
             if (_myEventStream is null)
+            {
+                if (failNotFound)
+                    throw new DocumentNotFoundException($"StreamId {_streamId} not found");
+
                 return;
+            }
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (AnotherAggregate) _myEventStream.Snapshot.Data;
+                var data = (AnotherAggregate)_myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;

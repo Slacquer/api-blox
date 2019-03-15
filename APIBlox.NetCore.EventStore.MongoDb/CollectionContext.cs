@@ -24,7 +24,9 @@ namespace APIBlox.NetCore.EventStore
 
         public IMongoCollection<TDocument> Collection<TDocument>(string colName)
         {
-            return _database.GetCollection<TDocument>(colName);
+            var ret =  _database.GetCollection<TDocument>(colName);
+            
+            return ret;
         }
 
         private static void BuildEventStoreDocumentMaps()

@@ -24,6 +24,7 @@ namespace Examples.Controllers
         ///     Initializes a new instance of the <see cref="EventSourcingController" /> class.
         /// </summary>
         /// <param name="eventStoreService">The event store service.</param>
+        /// <param name="eventStoreService2">The event store service2.</param>
         public EventSourcingController(IEventStoreService<MyAggregate> eventStoreService, IEventStoreService<AnotherAggregate> eventStoreService2)
         {
             _es = eventStoreService;
@@ -41,10 +42,10 @@ namespace Examples.Controllers
             var agg = new MyAggregate(_es, firstName);
             var ang = new AnotherAggregate(_es2, firstName);
 
-            await agg.Build();
-            await ang.Build();
+            await agg.Build(true);
+            await ang.Build(true);
 
-            return Ok(new { Aggregate = agg, AnotherAggregate = ang });
+            return Ok(new {Aggregate = agg, AnotherAggregate = ang});
         }
 
         /// <summary>
@@ -60,7 +61,6 @@ namespace Examples.Controllers
 
             await agg.AddSomeValue(resource.SomeValue, cancellationToken);
             await agg.PublishChangesAsync(cancellationToken);
-
 
             var ang = new AnotherAggregate(_es2, resource.FirstName);
 
@@ -84,7 +84,6 @@ namespace Examples.Controllers
 
             await agg.UpdateSomeValue(someValue, cancellationToken);
             await agg.PublishChangesAsync(cancellationToken);
-
 
             var ang = new AnotherAggregate(_es2, firstName);
 

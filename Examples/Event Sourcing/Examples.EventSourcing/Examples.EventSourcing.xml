@@ -54,12 +54,14 @@
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
         </member>
-        <member name="M:Examples.AnotherAggregate.Build(System.Threading.CancellationToken)">
+        <member name="M:Examples.AnotherAggregate.Build(System.Boolean,System.Threading.CancellationToken)">
             <summary>
-                Builds the specified cancellation token.
+            Builds the specified fail not found.
             </summary>
+            <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.DocumentNotFoundException">StreamId {_streamId}</exception>
         </member>
         <member name="T:Examples.Controllers.EventSourcingController">
             <summary>
@@ -74,6 +76,7 @@
                 Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingController" /> class.
             </summary>
             <param name="eventStoreService">The event store service.</param>
+            <param name="eventStoreService2">The event store service2.</param>
         </member>
         <member name="M:Examples.Controllers.EventSourcingController.Get(System.String)">
             <summary>
@@ -154,12 +157,14 @@
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
         </member>
-        <member name="M:Examples.MyAggregate.Build(System.Threading.CancellationToken)">
+        <member name="M:Examples.MyAggregate.Build(System.Boolean,System.Threading.CancellationToken)">
             <summary>
-                Builds the specified cancellation token.
+            Builds the specified fail not found.
             </summary>
+            <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.DocumentNotFoundException">StreamId {_streamId}</exception>
         </member>
         <member name="T:Examples.Resources.MyAggregateResource">
             <summary>

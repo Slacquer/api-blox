@@ -68,7 +68,7 @@ namespace Examples
         /// <exception cref="DataAccessException">Aggregate with stream id {_streamId}</exception>
         public async Task AddSomeValue(string someValue, CancellationToken cancellationToken)
         {
-            await Build(cancellationToken);
+            await Build(false, cancellationToken);
 
             if (!(_myEventStream is null))
                 throw new DataAccessException($"Aggregate with stream id {_streamId} already exists!");
@@ -92,7 +92,7 @@ namespace Examples
         /// <exception cref="DataAccessException">Aggregate with stream id {_streamId}</exception>
         public async Task UpdateSomeValue(string someValue, CancellationToken cancellationToken)
         {
-            await Build(cancellationToken);
+            await Build(false, cancellationToken);
 
             if (_myEventStream is null)
                 throw new DataAccessException($"Aggregate with stream id {_streamId} not found!");
@@ -111,25 +111,27 @@ namespace Examples
         public async Task PublishChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = await _es.WriteToEventStreamAsync(_streamId,
-                DomainEvents.Select(e => new EventModel {Data = e}).ToArray(),
-                _myEventStream.Version > 0 ? _myEventStream.Version : (long?) null,
+                DomainEvents.Select(e => new EventModel { Data = e }).ToArray(),
+                _myEventStream.Version > 0 ? _myEventStream.Version : (long?)null,
                 cancellationToken: cancellationToken
             );
 
             if (result.Version % 2 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
-                    new SnapshotModel {Data = this},
+                    new SnapshotModel { Data = this },
                     cancellationToken: cancellationToken
                 );
         }
 
         /// <summary>
-        ///     Builds the specified cancellation token.
+        /// Builds the specified fail not found.
         /// </summary>
+        /// <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public async Task Build(CancellationToken cancellationToken = default)
+        /// <exception cref="DocumentNotFoundException">StreamId {_streamId}</exception>
+        public async Task Build(bool failNotFound = false, CancellationToken cancellationToken = default)
         {
             if (!(_myEventStream is null))
                 return;
@@ -137,11 +139,16 @@ namespace Examples
             _myEventStream = await _es.ReadEventStreamAsync(_streamId, includeEvents: true, cancellationToken: cancellationToken);
 
             if (_myEventStream is null)
+            {
+                if (failNotFound)
+                    throw new DocumentNotFoundException($"StreamId {_streamId} not found");
+
                 return;
+            }
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (MyAggregate) _myEventStream.Snapshot.Data;
+                var data = (MyAggregate)_myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;
@@ -178,7 +185,7 @@ namespace Examples
                 throw new InvalidOperationException(s);
             }
 
-            info.Invoke(this, new[] {@event});
+            info.Invoke(this, new[] { @event });
         }
     }
 }
