@@ -1,9 +1,9 @@
 ﻿namespace APIBlox.NetCore.Options
 {
     /// <summary>
-    ///     Class MongoDbCollectionProperties.
+    ///     Class RavenDbCollectionProperties.
     /// </summary>
-    public class MongoDbCollectionProperties
+    public class RavenDbCollectionProperties
     {
         /// <summary>
         ///     Gets or sets the indexes.

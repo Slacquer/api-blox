@@ -74,7 +74,6 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = root.Version,
-                //TimeStamp = root.TimeStamp,
                 Metadata = metadata,
                 Events = events.ToArray()
             };

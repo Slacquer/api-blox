@@ -12,23 +12,20 @@ using Newtonsoft.Json;
 
 namespace Examples
 {
-    /// <summary>
-    ///     Class MyAggregate.
-    /// </summary>
-    public class MyAggregate
+    public class MongoAggregate 
     {
-        private readonly IEventStoreService<MyAggregate> _es;
+        private readonly IEventStoreService<MongoAggregate> _es;
 
         private readonly string _streamId;
         private readonly IDictionary<Type, MethodInfo> _whenMethods;
         private EventStreamModel _myEventStream;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MyAggregate" /> class.
+        ///     Initializes a new instance of the <see cref="MongoAggregate" /> class.
         /// </summary>
         /// <param name="eventStoreService">The event store service.</param>
         /// <param name="streamId">The stream identifier.</param>
-        public MyAggregate(IEventStoreService<MyAggregate> eventStoreService, string streamId)
+        public MongoAggregate(IEventStoreService<MongoAggregate> eventStoreService, string streamId)
         {
             _es = eventStoreService;
 
@@ -71,7 +68,7 @@ namespace Examples
             await Build(false, cancellationToken);
 
             if (!(_myEventStream is null))
-                throw new DataAccessException($"Aggregate with stream id {_streamId} already exists!");
+                throw new DataAccessException($"Another Aggregate with stream id {_streamId} already exists!");
 
             _myEventStream = new EventStreamModel();
 
@@ -95,7 +92,7 @@ namespace Examples
             await Build(false, cancellationToken);
 
             if (_myEventStream is null)
-                throw new DataAccessException($"Aggregate with stream id {_streamId} not found!");
+                throw new DataAccessException($"Another Aggregate with stream id {_streamId} not found!");
 
             // Validate and such
             SomeValue = someValue;
@@ -116,12 +113,22 @@ namespace Examples
                 cancellationToken: cancellationToken
             );
 
-            if (result.Version % 2 == 0)
+            if (result.Version % 10 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
                     new SnapshotModel { Data = this },
                     cancellationToken: cancellationToken
                 );
+        }
+
+        /// <summary>
+        ///     Deletes me.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public async Task DeleteMe(CancellationToken cancellationToken)
+        {
+            await _es.DeleteEventStreamAsync(_streamId, cancellationToken);
         }
 
         /// <summary>
@@ -148,23 +155,13 @@ namespace Examples
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (MyAggregate)_myEventStream.Snapshot.Data;
+                var data = (MongoAggregate)_myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;
             }
 
             ApplyPreviousEvents(_myEventStream.Events);
-        }
-
-        /// <summary>
-        ///     Deletes me.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        public async Task DeleteMe(CancellationToken cancellationToken)
-        {
-            await _es.DeleteEventStreamAsync(_streamId, cancellationToken);
         }
 
         private void When(SomeValueAdded e)
@@ -195,7 +192,7 @@ namespace Examples
                 throw new InvalidOperationException(s);
             }
 
-            info.Invoke(this, new[] { @event });
+            info.Invoke(this, new[] {@event});
         }
     }
 }

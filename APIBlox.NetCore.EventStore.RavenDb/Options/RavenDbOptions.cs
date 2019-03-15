@@ -3,16 +3,10 @@
 namespace APIBlox.NetCore.Options
 {
     /// <summary>
-    ///     Class MongoDbOptions.
+    ///     Class RavenDbOptions.
     /// </summary>
-    public class MongoDbOptions
+    public class RavenDbOptions
     {
-        /// <summary>
-        ///     Gets or sets the connection string.
-        /// </summary>
-        /// <value>The connection string.</value>
-        public string CnnString { get; set; }
-
         /// <summary>
         ///     Gets or sets the database identifier.
         /// </summary>
@@ -23,6 +17,12 @@ namespace APIBlox.NetCore.Options
         ///     Gets or sets the collection properties.
         /// </summary>
         /// <value>The collection properties.</value>
-        public Dictionary<string, MongoDbCollectionProperties> CollectionProperties { get; set; } = new Dictionary<string, MongoDbCollectionProperties>();
+        public Dictionary<string, RavenDbCollectionProperties> CollectionProperties { get; set; } = new Dictionary<string, RavenDbCollectionProperties>();
+
+        /// <summary>
+        ///     Gets or sets the urls.
+        /// </summary>
+        /// <value>The urls.</value>
+        public string[] Urls { get; set; }
     }
 }

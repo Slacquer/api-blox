@@ -17,18 +17,25 @@ namespace Examples.Controllers
     [ApiController]
     public class EventSourcingController : ControllerBase
     {
-        private readonly IEventStoreService<MyAggregate> _es;
-        private readonly IEventStoreService<AnotherAggregate> _es2;
+        private readonly IEventStoreService<CosmosAggregate> _cosmosSvc;
+        private readonly IEventStoreService<MongoAggregate> _mongoSvc;
+        private readonly IEventStoreService<RavenAggregate> _ravenSvc;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EventSourcingController" /> class.
+        ///     Initializes a new instance of the <see cref="EventSourcingController"/> class.
         /// </summary>
-        /// <param name="eventStoreService">The event store service.</param>
-        /// <param name="eventStoreService2">The event store service2.</param>
-        public EventSourcingController(IEventStoreService<MyAggregate> eventStoreService, IEventStoreService<AnotherAggregate> eventStoreService2)
+        /// <param name="cosmosSvc">The cosmos SVC.</param>
+        /// <param name="mongoSvc">The mongo SVC.</param>
+        /// <param name="ravenSvc">The raven SVC.</param>
+        public EventSourcingController(
+            IEventStoreService<CosmosAggregate> cosmosSvc,
+            IEventStoreService<MongoAggregate> mongoSvc,
+            IEventStoreService<RavenAggregate> ravenSvc
+        )
         {
-            _es = eventStoreService;
-            _es2 = eventStoreService2;
+            _cosmosSvc = cosmosSvc;
+            _mongoSvc = mongoSvc;
+            _ravenSvc = ravenSvc;
         }
 
         /// <summary>
@@ -39,13 +46,17 @@ namespace Examples.Controllers
         [HttpGet]
         public async Task<ActionResult> Get(string firstName)
         {
-            var agg = new MyAggregate(_es, firstName);
-            var ang = new AnotherAggregate(_es2, firstName);
+            var c = new CosmosAggregate(_cosmosSvc, firstName);
+            var m = new MongoAggregate(_mongoSvc, firstName);
+            var r = new RavenAggregate(_ravenSvc, Reverse(firstName));
 
-            await agg.Build(true);
-            await ang.Build(true);
+            await Task.WhenAll(
+                c.Build(true),
+                m.Build(true),
+                r.Build(true)
+            );
 
-            return Ok(new { Aggregate = agg, AnotherAggregate = ang });
+            return Ok(new { CosmosAggregate = c,MongoAggregate = m, RavenAggregate = r });
         }
 
         /// <summary>
@@ -55,17 +66,23 @@ namespace Examples.Controllers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;ActionResult&gt;.</returns>
         [HttpPost]
-        public async Task<ActionResult> Post(MyAggregateResource resource, CancellationToken cancellationToken)
+        public async Task<ActionResult> Post(AggregateResource resource, CancellationToken cancellationToken)
         {
-            var agg = new MyAggregate(_es, resource.FirstName);
+            var c = new CosmosAggregate(_cosmosSvc, resource.FirstName);
+            var m = new MongoAggregate(_mongoSvc, resource.FirstName);
+            var r = new RavenAggregate(_ravenSvc, Reverse(resource.FirstName));
 
-            await agg.AddSomeValue(resource.SomeValue, cancellationToken);
-            await agg.PublishChangesAsync(cancellationToken);
+            await Task.WhenAll(
+                c.AddSomeValue(resource.SomeValue, cancellationToken),
+                m.AddSomeValue(resource.SomeValue, cancellationToken),
+                r.AddSomeValue(Reverse(resource.SomeValue), cancellationToken)
+            );
 
-            var ang = new AnotherAggregate(_es2, resource.FirstName);
-
-            await ang.AddSomeValue(Reverse(resource.SomeValue), cancellationToken);
-            await ang.PublishChangesAsync(cancellationToken);
+            await Task.WhenAll(
+                c.PublishChangesAsync(cancellationToken),
+                m.PublishChangesAsync(cancellationToken),
+                r.PublishChangesAsync(cancellationToken)
+            );
 
             return Accepted();
         }
@@ -80,19 +97,25 @@ namespace Examples.Controllers
         [HttpPut("{firstName}")]
         public async Task<ActionResult> Put(string firstName, [FromBody] string someValue, CancellationToken cancellationToken)
         {
-            var agg = new MyAggregate(_es, firstName);
+            var c = new CosmosAggregate(_cosmosSvc, firstName);
+            var m = new MongoAggregate(_mongoSvc, firstName);
+            var r = new RavenAggregate(_ravenSvc, Reverse(firstName));
 
-            await agg.UpdateSomeValue(someValue, cancellationToken);
-            await agg.PublishChangesAsync(cancellationToken);
+            await Task.WhenAll(
+                c.UpdateSomeValue(someValue, cancellationToken),
+                m.UpdateSomeValue(someValue, cancellationToken),
+                r.UpdateSomeValue(Reverse(someValue), cancellationToken)
+            );
 
-            var ang = new AnotherAggregate(_es2, firstName);
-
-            await ang.UpdateSomeValue(Reverse(someValue), cancellationToken);
-            await ang.PublishChangesAsync(cancellationToken);
+            await Task.WhenAll(
+                c.PublishChangesAsync(cancellationToken),
+                m.PublishChangesAsync(cancellationToken),
+                r.PublishChangesAsync(cancellationToken)
+            );
 
             return Accepted();
         }
-        
+
         /// <summary>
         ///     Deletes the specified first name.
         /// </summary>
@@ -102,11 +125,15 @@ namespace Examples.Controllers
         [HttpDelete("{firstName}")]
         public async Task<ActionResult> Delete(string firstName, CancellationToken cancellationToken)
         {
-            var agg = new MyAggregate(_es, firstName);
-            var a2 = new AnotherAggregate(_es2, firstName);
+            var c = new CosmosAggregate(_cosmosSvc, firstName);
+            var m = new MongoAggregate(_mongoSvc, firstName);
+            var r = new RavenAggregate(_ravenSvc, Reverse(firstName));
 
-            await agg.DeleteMe(cancellationToken);
-            await a2.DeleteMe(cancellationToken);
+            await Task.WhenAll(
+                c.DeleteMe(cancellationToken),
+                m.DeleteMe(cancellationToken),
+                r.DeleteMe(cancellationToken)
+            );
 
             return NoContent();
         }

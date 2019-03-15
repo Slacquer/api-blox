@@ -6,12 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
-using APIBlox.NetCore.Extensions;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 
-namespace APIBlox.NetCore.EventStore
+namespace APIBlox.NetCore
 {
     internal class MongoDbRepository<TModel> : IEventStoreRepository<TModel>
         where TModel : class

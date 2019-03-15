@@ -3,19 +3,19 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Documents;
-using APIBlox.NetCore.EventStore.Options;
 using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
-namespace APIBlox.NetCore.EventStore
+namespace APIBlox.NetCore
 {
     internal class CollectionContext
     {
-        private readonly IMongoDatabase _database;
         private readonly ConcurrentBag<string> _createdIndexes = new ConcurrentBag<string>();
+        private readonly IMongoDatabase _database;
         private readonly MongoDbOptions _options;
 
         public CollectionContext(MongoDbOptions options)
@@ -29,6 +29,16 @@ namespace APIBlox.NetCore.EventStore
             BuildEventStoreDocumentMaps();
         }
 
+        public IMongoCollection<TDocument> Collection<TDocument>(string colName)
+            where TDocument : EventStoreDocument
+        {
+            var ret = _database.GetCollection<TDocument>(colName);
+
+            IndexCheck(ret);
+
+            return ret;
+        }
+
         private void IndexCheck<TDocument>(IMongoCollection<TDocument> collection)
             where TDocument : EventStoreDocument
         {
@@ -38,19 +48,20 @@ namespace APIBlox.NetCore.EventStore
                 return;
 
             Task.Run(async () =>
-           {
-                var config = _options.CollectionProperties.FirstOrDefault(k => k.Key == cn).Value;
-               if (config.Indexes is null || !config.Indexes.Any())
-                   return;
-               
-               var lst = _options.CollectionProperties.FirstOrDefault(k => k.Key == cn).Value.Indexes
-                   .Select(index => new CreateIndexModel<TDocument>(index))
-                   .ToList();
+                {
+                    var config = _options.CollectionProperties.FirstOrDefault(k => k.Key == cn).Value;
+                    if (config.Indexes is null || !config.Indexes.Any())
+                        return;
 
-               await collection.Indexes.CreateManyAsync(lst);
+                    var lst = _options.CollectionProperties.FirstOrDefault(k => k.Key == cn).Value.Indexes
+                        .Select(index => new CreateIndexModel<TDocument>(index))
+                        .ToList();
 
-               _createdIndexes.Add(cn);
-           }).Wait();
+                    await collection.Indexes.CreateManyAsync(lst);
+
+                    _createdIndexes.Add(cn);
+                }
+            ).Wait();
         }
 
         private MongoDbOptions ValidateOptions(MongoDbOptions options)
@@ -65,16 +76,6 @@ namespace APIBlox.NetCore.EventStore
                 throw new ArgumentNullException(nameof(options.DatabaseId));
 
             return options;
-        }
-
-        public IMongoCollection<TDocument> Collection<TDocument>(string colName)
-            where TDocument : EventStoreDocument
-        {
-            var ret = _database.GetCollection<TDocument>(colName);
-
-            IndexCheck(ret);
-
-            return ret;
         }
 
         private static void BuildEventStoreDocumentMaps()

@@ -1,9 +1,9 @@
 ﻿namespace Examples.Resources
 {
     /// <summary>
-    ///     Class MyAggregateResource.
+    ///     Class AggregateResource.
     /// </summary>
-    public class MyAggregateResource
+    public class AggregateResource
     {
         /// <summary>
         ///     Gets or sets the first name.

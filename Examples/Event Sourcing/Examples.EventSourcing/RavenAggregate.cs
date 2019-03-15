@@ -12,20 +12,20 @@ using Newtonsoft.Json;
 
 namespace Examples
 {
-    public class AnotherAggregate 
+    public class RavenAggregate 
     {
-        private readonly IEventStoreService<AnotherAggregate> _es;
+        private readonly IEventStoreService<RavenAggregate> _es;
 
         private readonly string _streamId;
         private readonly IDictionary<Type, MethodInfo> _whenMethods;
         private EventStreamModel _myEventStream;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AnotherAggregate" /> class.
+        ///     Initializes a new instance of the <see cref="RavenAggregate" /> class.
         /// </summary>
         /// <param name="eventStoreService">The event store service.</param>
         /// <param name="streamId">The stream identifier.</param>
-        public AnotherAggregate(IEventStoreService<AnotherAggregate> eventStoreService, string streamId)
+        public RavenAggregate(IEventStoreService<RavenAggregate> eventStoreService, string streamId)
         {
             _es = eventStoreService;
 
@@ -108,15 +108,15 @@ namespace Examples
         public async Task PublishChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = await _es.WriteToEventStreamAsync(_streamId,
-                DomainEvents.Select(e => new EventModel {Data = e}).ToArray(),
-                _myEventStream.Version > 0 ? _myEventStream.Version : (long?) null,
+                DomainEvents.Select(e => new EventModel { Data = e }).ToArray(),
+                _myEventStream.Version > 0 ? _myEventStream.Version : (long?)null,
                 cancellationToken: cancellationToken
             );
 
-            if (result.Version % 10 == 0)
+            if (result.Version % 5 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
-                    new SnapshotModel {Data = this},
+                    new SnapshotModel { Data = this },
                     cancellationToken: cancellationToken
                 );
         }
@@ -155,7 +155,7 @@ namespace Examples
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (AnotherAggregate)_myEventStream.Snapshot.Data;
+                var data = (RavenAggregate)_myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;

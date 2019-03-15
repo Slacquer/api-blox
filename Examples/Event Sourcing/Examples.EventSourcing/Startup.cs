@@ -1,4 +1,5 @@
-﻿using Examples.Events;
+﻿using APIBlox.NetCore.Extensions;
+using Examples.Events;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace Examples
         private readonly ILoggerFactory _loggerFactory;
         private readonly IHostingEnvironment _environment;
 
-        public Startup(IConfiguration config, ILoggerFactory loggerFactory,IHostingEnvironment environment)
+        public Startup(IConfiguration config, ILoggerFactory loggerFactory, IHostingEnvironment environment)
         {
             _config = config;
             _loggerFactory = loggerFactory;
@@ -31,21 +32,21 @@ namespace Examples
         {
             services
                 .AddServerFaults()
-                .AddEventStoreService<MyAggregate>()
-                .AddEventStoreService<AnotherAggregate>()
 
-                .AddCosmosDbRepository<MyAggregate>(_config)
-                //.AddCosmosDbRepository<AnotherAggregate>(_config)
+                .AddEventStoreService<CosmosAggregate>()
+                .AddCosmosDbRepository<CosmosAggregate>(_config)
 
-                //.AddMongoDbRepository<MyAggregate>(_config)
-                .AddMongoDbRepository<AnotherAggregate>(_config);
+                .AddEventStoreService<MongoAggregate>()
+                .AddMongoDbRepository<MongoAggregate>(_config)
+
+                .AddEventStoreService<RavenAggregate>()
+                .AddRavenDbRepository<RavenAggregate>(_config);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
-
-            BsonClassMap.RegisterClassMap<MyAggregate>();
-            BsonClassMap.RegisterClassMap<AnotherAggregate>();
+            
+            BsonClassMap.RegisterClassMap<MongoAggregate>();
             BsonClassMap.RegisterClassMap<SomeValueAdded>();
             BsonClassMap.RegisterClassMap<SomeValueChanged>();
         }
@@ -56,7 +57,7 @@ namespace Examples
             //
             // Handle any and all server (500) errors with a defined structure.
             app.UseServerFaults();
-
+            
             app.UseMvc();
 
             app.UseSwaggerExampleFeatures(SiteTitle, Version);

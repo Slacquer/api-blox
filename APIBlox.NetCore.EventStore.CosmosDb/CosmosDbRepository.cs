@@ -7,16 +7,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
-using APIBlox.NetCore.EventStore.Options;
 using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Options;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace APIBlox.NetCore.EventStore
+namespace APIBlox.NetCore
 {
     internal class CosmosDbRepository<TModel> : IEventStoreRepository<TModel>
         where TModel : class
@@ -52,17 +52,24 @@ namespace APIBlox.NetCore.EventStore
         )
             where TDocument : EventStoreDocument
         {
-            foreach (var doc in documents)
+            try
             {
-                await _client.CreateDocumentAsync(_docCollectionUri,
-                    doc,
-                    new RequestOptions
-                    {
-                        PartitionKey = new PartitionKey(doc.StreamId)
-                    },
-                    true,
-                    cancellationToken
-                );
+                foreach (var doc in documents)
+                {
+                    await _client.CreateDocumentAsync(_docCollectionUri,
+                        doc,
+                        new RequestOptions
+                        {
+                            PartitionKey = new PartitionKey(doc.StreamId)
+                        },
+                        true,
+                        cancellationToken
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
             }
 
             return documents.Length;

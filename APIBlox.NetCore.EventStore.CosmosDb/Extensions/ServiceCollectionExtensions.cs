@@ -1,15 +1,15 @@
 ﻿using System;
 using APIBlox.NetCore.Contracts;
-using APIBlox.NetCore.EventStore;
-using APIBlox.NetCore.EventStore.Options;
+using APIBlox.NetCore.Options;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.DependencyInjection
+namespace APIBlox.NetCore.Extensions
 {
     /// <summary>
     ///     Class ServiceCollectionExtensions.
@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensionsCosmosDb
     {
         /// <summary>
-        ///     Adds the cosmos database repository for use with the <see cref="IEventStoreService"/>.
+        ///     Adds the cosmos database repository for use with the <see cref="IEventStoreService{TModel}"/>.
         /// </summary>
         /// <typeparam name="TModel">The type of the t model.</typeparam>
         /// <param name="services">The services.</param>
@@ -48,7 +48,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var settings = serializerSettings;
             services.AddScoped<IEventStoreRepository<TModel>, CosmosDbRepository<TModel>>(x =>
             {
-                var opt = Options.Options.Create(es);
+                var opt = Microsoft.Extensions.Options.Options.Create(es);
                 var ret = new CosmosDbRepository<TModel>(x.GetRequiredService<IDocumentClient>(),
                     settings ?? new CamelCaseSettings { ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver() },
                     opt

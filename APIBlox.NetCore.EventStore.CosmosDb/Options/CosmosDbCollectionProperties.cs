@@ -1,4 +1,4 @@
-﻿namespace APIBlox.NetCore.EventStore.Options
+﻿namespace APIBlox.NetCore.Options
 {
     /// <summary>
     ///     Class CollectionProperties.
