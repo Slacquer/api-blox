@@ -41,7 +41,6 @@ namespace APIBlox.NetCore
             var results = (await Repository.GetAsync<EventStoreDocument>(predicate, cancellationToken))
                 .OrderByDescending(d => d.DocumentType == DocumentType.Root)
                 .ThenByDescending(d => d.DocumentType == DocumentType.Snapshot)
-
                 .ThenBy(d => d.SortOrder)
                 .ToList();
 
