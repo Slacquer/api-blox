@@ -22,11 +22,11 @@ namespace APIBlox.NetCore
             _context = context;
 
             _colName = typeof(TModel).Name;
-            
+
             JsonSettings = serializerSettings ?? throw new ArgumentNullException(nameof(serializerSettings));
         }
 
-        public JsonSerializerSettings JsonSettings { get; set; }
+        public JsonSerializerSettings JsonSettings { get; }
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
             CancellationToken cancellationToken = default
@@ -35,7 +35,7 @@ namespace APIBlox.NetCore
         {
             await _context.Collection<TDocument>(_colName).InsertManyAsync(
                 documents,
-                new InsertManyOptions {IsOrdered = true},
+                new InsertManyOptions { IsOrdered = true },
                 cancellationToken
             );
 
@@ -45,21 +45,13 @@ namespace APIBlox.NetCore
         public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TResult : class
+            where TResult : EventStoreDocument
         {
-            var ret = await _context.Collection<EventStoreDocument>(_colName).Find(predicate).ToListAsync(cancellationToken);
+            var ret = await _context.Collection<EventStoreDocument>(_colName)
+                .Find(predicate)
+                .ToListAsync(cancellationToken);
 
-            if (typeof(TResult) == typeof(EventStoreDocument))
-                return (IEnumerable<TResult>) ret;
-
-            var isString = typeof(TResult) == typeof(string);
-
-            var lst = ret.Select(document => isString
-                ? JsonConvert.SerializeObject(document, JsonSettings) as TResult
-                : JsonConvert.DeserializeObject<TResult>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings)
-            ).ToList();
-
-            return lst;
+            return ret.OfType<TResult>();
         }
 
         public async Task UpdateAsync<TDocument>(TDocument document,
@@ -70,7 +62,7 @@ namespace APIBlox.NetCore
             await _context.Collection<EventStoreDocument>(_colName).ReplaceOneAsync(
                 i => i.Id == document.Id,
                 document,
-                new UpdateOptions {IsUpsert = false},
+                new UpdateOptions { IsUpsert = false },
                 cancellationToken
             );
         }
@@ -82,7 +74,7 @@ namespace APIBlox.NetCore
             var ret = await _context.Collection<EventStoreDocument>(_colName)
                 .DeleteManyAsync(predicate, null, cancellationToken);
 
-            return (int) ret.DeletedCount;
+            return (int)ret.DeletedCount;
         }
     }
 }

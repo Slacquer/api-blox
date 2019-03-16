@@ -101,17 +101,23 @@ namespace Examples.Controllers
             var m = new MongoAggregate(_mongoSvc, firstName);
             var r = new RavenAggregate(_ravenSvc, Reverse(firstName));
 
-            await Task.WhenAll(
-                c.UpdateSomeValue(someValue, cancellationToken),
-                m.UpdateSomeValue(someValue, cancellationToken),
-                r.UpdateSomeValue(Reverse(someValue), cancellationToken)
-            );
+            for (int i = 0; i < 1; i++)
+            {
+                await Task.WhenAll(
+                    c.UpdateSomeValue(someValue + i, cancellationToken),
+                    m.UpdateSomeValue(someValue + i, cancellationToken),
+                    r.UpdateSomeValue(Reverse(someValue), cancellationToken)
+                );
+
+                System.Threading.Thread.Sleep(100);
+            }
 
             await Task.WhenAll(
                 c.PublishChangesAsync(cancellationToken),
                 m.PublishChangesAsync(cancellationToken),
                 r.PublishChangesAsync(cancellationToken)
             );
+            
 
             return Accepted();
         }

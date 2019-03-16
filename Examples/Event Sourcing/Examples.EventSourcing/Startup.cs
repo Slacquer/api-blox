@@ -40,7 +40,9 @@ namespace Examples
                 .AddMongoDbRepository<MongoAggregate>(_config)
 
                 .AddEventStoreService<RavenAggregate>()
-                .AddRavenDbRepository<RavenAggregate>(_config);
+                .AddRavenDbRepository<RavenAggregate>(_config)
+
+                ;
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

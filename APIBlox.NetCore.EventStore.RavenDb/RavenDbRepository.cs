@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Raven.Client.Documents.Linq;
 
 namespace APIBlox.NetCore
@@ -25,7 +26,7 @@ namespace APIBlox.NetCore
             _colName = typeof(TModel).Name;
         }
 
-        public JsonSerializerSettings JsonSettings { get; set; }
+        public JsonSerializerSettings JsonSettings { get; }
 
         public Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
@@ -44,33 +45,16 @@ namespace APIBlox.NetCore
         public Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TResult : class
+            where TResult : EventStoreDocument
         {
-            List<TResult> ret;
-
             using (var session = _context.Store(_colName).OpenSession())
             {
-                var lst = session.Query<EventStoreDocument>(null, _colName)
+                var ret = session.Query<EventStoreDocument>(null, _colName)
                     .Where(predicate)
-                    .ToList();
+                    .OfType<TResult>().ToList();
 
-                if (typeof(TResult) == typeof(EventStoreDocument))
-                {
-                    ret = (List<TResult>) lst.Cast<TResult>();
-                }
-                else
-                {
-                    ret = new List<TResult>();
-
-                    foreach (var doc in lst)
-                    {
-                        if (doc is TResult item)
-                            ret.Add(item);
-                    }
-                }
+                return Task.FromResult<IEnumerable<TResult>>(ret);
             }
-
-            return Task.FromResult<IEnumerable<TResult>>(ret);
         }
 
         public Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
@@ -95,15 +79,15 @@ namespace APIBlox.NetCore
 
             using (var session = _context.Store(_colName).OpenSession())
             {
-                var streamIds = session.Query<EventStoreDocument>(null, _colName)
+                var ids = session.Query<EventStoreDocument>(null, _colName)
                     .Where(predicate)
-                    .Select(x => x.StreamId)
+                    .Select(x => x.Id)
                     .ToList();
 
-                ret = streamIds.Count;
+                ret = ids.Count;
 
-                foreach (var streamId in streamIds)
-                    session.Delete(streamId);
+                foreach (var id in ids)
+                    session.Delete(id);
 
                 session.SaveChanges();
             }

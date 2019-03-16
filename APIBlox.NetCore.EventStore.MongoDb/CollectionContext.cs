@@ -42,6 +42,9 @@ namespace APIBlox.NetCore
         private void IndexCheck<TDocument>(IMongoCollection<TDocument> collection)
             where TDocument : EventStoreDocument
         {
+            if(_options.CollectionProperties is null || !_options.CollectionProperties.Any())
+                return;
+
             var cn = collection.CollectionNamespace.CollectionName;
 
             if (_createdIndexes.Contains(cn))
@@ -49,8 +52,9 @@ namespace APIBlox.NetCore
 
             Task.Run(async () =>
                 {
-                    var config = _options.CollectionProperties.FirstOrDefault(k => k.Key == cn).Value;
-                    if (config.Indexes is null || !config.Indexes.Any())
+                    var props = _options.CollectionProperties.FirstOrDefault(k => k.Key == cn).Value;
+
+                    if (props.Indexes is null || !props.Indexes.Any())
                         return;
 
                     var lst = _options.CollectionProperties.FirstOrDefault(k => k.Key == cn).Value.Indexes

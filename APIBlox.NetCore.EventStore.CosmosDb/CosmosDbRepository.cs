@@ -15,6 +15,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace APIBlox.NetCore
 {
@@ -45,7 +46,7 @@ namespace APIBlox.NetCore
             CreateCollectionIfNotExistsAsync(colValue.UniqueKeys.ToList(), colValue.OfferThroughput).Wait();
         }
 
-        public JsonSerializerSettings JsonSettings { get; set; }
+        public JsonSerializerSettings JsonSettings { get; }
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
             CancellationToken cancellationToken = default
@@ -78,11 +79,8 @@ namespace APIBlox.NetCore
         public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TResult : class
+            where TResult : EventStoreDocument
         {
-            var isString = typeof(TResult) == typeof(string);
-            var isEsd = typeof(TResult) == typeof(EventStoreDocument);
-
             var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
                     new FeedOptions { EnableCrossPartitionQuery = true }
                 )
@@ -98,17 +96,16 @@ namespace APIBlox.NetCore
 
                 foreach (var document in ret)
                 {
-                    var result = isString
-                        ? document.ToString() as TResult
-                        : JsonConvert.DeserializeObject<TResult>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings);
+                    if (!(document.Data is null))
+                    {
+                        if (!(document.Data is ValueType) && !(document.Data is string))
+                            document.Data = ((JObject)document.Data).ToObject(Type.GetType(document.DataType));
 
-                    if (isEsd && result is EventStoreDocument ev && !(ev.Data is null) && ev.Data.GetType() != typeof(string))
-                        ev.Data = JsonConvert.DeserializeObject(ev.Data.ToString(), Type.GetType(ev.DataType), JsonSettings);
-
-                    lst.Add(result);
+                    }
+                    lst.Add(document);
                 }
             }
-            
+
             return lst;
         }
 
@@ -196,18 +193,18 @@ namespace APIBlox.NetCore
             {
                 Id = _collectionId
             };
-            documentCollection.PartitionKey.Paths.Add("/streamId");
+            documentCollection.PartitionKey.Paths.Add("/StreamId");
 
-            var p = new IncludedPath {Path = "/"};
+            var p = new IncludedPath { Path = "/" };
             var rng = Index.Range(DataType.String);
 
             documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
-            p = new IncludedPath {Path = "/streamId/?"};
+            p = new IncludedPath { Path = "/StreamId/?" };
             p.Indexes.Add(rng);
             documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
-            p = new IncludedPath {Path = "/documentType/?"};
+            p = new IncludedPath { Path = "/DocumentType/?" };
             p.Indexes.Add(rng);
             documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 

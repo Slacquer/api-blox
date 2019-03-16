@@ -25,21 +25,21 @@ namespace APIBlox.NetCore.Documents
         ///     Gets or sets the type of the metadata.
         /// </summary>
         /// <value>The type of the metadata.</value>
-        [JsonProperty(PropertyName = "metadataType")]
+        //[JsonProperty(PropertyName = "metadataType")]
         public string MetadataType { get; set; }
 
         /// <summary>
         ///     Gets or sets the metadata.
         /// </summary>
         /// <value>The metadata.</value>
-        [JsonProperty(PropertyName = "metadata")]
+        //[JsonProperty(PropertyName = "metadata")]
         public object Metadata { get; set; }
 
         /// <summary>
         ///     Gets or sets the type of the document.
         /// </summary>
         /// <value>The type of the document.</value>
-        [JsonProperty(PropertyName = "documentType")]
+        //[JsonProperty(PropertyName = "documentType")]
         [JsonConverter(typeof(StringEnumConverter))]
         public virtual DocumentType DocumentType { get; set; }
 
@@ -47,35 +47,35 @@ namespace APIBlox.NetCore.Documents
         ///     Gets or sets the stream identifier.
         /// </summary>
         /// <value>The stream identifier.</value>
-        [JsonProperty(PropertyName = "streamId")]
+        //[JsonProperty(PropertyName = "streamId")]
         public string StreamId { get; set; }
 
         /// <summary>
         ///     Gets or sets the version.
         /// </summary>
         /// <value>The version.</value>
-        [JsonProperty(PropertyName = "version")]
+        //[JsonProperty(PropertyName = "version")]
         public long Version { get; set; }
 
         /// <summary>
         ///     Gets the sort order.
         /// </summary>
         /// <value>The sort order.</value>
-        [JsonProperty(PropertyName = "sortOrder")]
+        //[JsonProperty(PropertyName = "sortOrder")]
         public decimal SortOrder => Version + GetOrderingFraction(DocumentType);
 
         /// <summary>
         ///     Gets or sets the type of the data.
         /// </summary>
         /// <value>The type of the data.</value>
-        [JsonProperty(PropertyName = "dataType")]
+        //[JsonProperty(PropertyName = "dataType")]
         public string DataType { get; set; }
 
         /// <summary>
         ///     Gets or sets the data.
         /// </summary>
         /// <value>The data.</value>
-        [JsonProperty(PropertyName = "data")]
+        //[JsonProperty(PropertyName = "data")]
         public object Data { get; set; }
 
 

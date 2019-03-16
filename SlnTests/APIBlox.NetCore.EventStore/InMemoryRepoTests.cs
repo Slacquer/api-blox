@@ -1,163 +1,177 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Threading.Tasks;
-//using APIBlox.NetCore;
-//using APIBlox.NetCore.Contracts;
-//using APIBlox.NetCore.EventStore;
-//using APIBlox.NetCore.EventStore.Options;
-//using APIBlox.NetCore.Models;
-//using APIBlox.NetCore.Types.JsonBits;
-//using Microsoft.Azure.Documents.Client;
-//using Microsoft.Extensions.Options;
-//using Newtonsoft.Json;
-//using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using APIBlox.NetCore;
+using APIBlox.NetCore.Contracts;
+using APIBlox.NetCore.Models;
+using APIBlox.NetCore.Options;
+using APIBlox.NetCore.Types.JsonBits;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Extensions.Options;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
+using Xunit;
 
-//namespace SlnTests.APIBlox.NetCore.EventStore
-//{
-//    public class InMemoryRepoTests
-//    {
-//        private static IEventStoreService<DummyAggregate> GetCosmosbBackedEventStoreService()
-//        {
-//            var options = new CosmosDbOptions
-//            {
-//                DatabaseId = "testDb",
-//                Endpoint = "https://localhost:8081",
-//                Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
-//            };
+namespace SlnTests.APIBlox.NetCore.EventStore
+{
+    public class InMemoryRepoTests
+    {
+        private static IEventStoreService<DummyAggregate> GetCosmosbBackedEventStoreService()
+        {
+            var options = new CosmosDbOptions
+            {
+                DatabaseId = "testDb",
+                Endpoint = "https://localhost:8081",
+                Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
+            };
 
-//            options.CollectionProperties.Add("DummyAggregate", new CosmosDbCollectionProperties { });
-//            var opt = Options.Create(options);
+            options.CollectionProperties.Add("DummyAggregate", new CosmosDbCollectionProperties { });
+            var opt = Options.Create(options);
 
-//            var c = new DocumentClient(new Uri(options.Endpoint), options.Key);
+            var c = new DocumentClient(new Uri(options.Endpoint), options.Key);
 
-//            var repo = new CosmosDbRepository<DummyAggregate>(c, new CamelCaseSettings(), opt);
+            var repo = new CosmosDbRepository<DummyAggregate>(c, new CamelCaseSettings(), opt);
 
-//            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
 
-//            return svc;
-//        }
+            return svc;
+        }
 
-//        private static IEventStoreService<DummyAggregate> GetMongoDbBackedEventStoreService()
-//        {
-//            var ctx = new CollectionContext("mongodb://localhost:27017","testDb");
-//            var repo = new MongoDbRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
+        private static IEventStoreService<DummyAggregate> GetMongoDbBackedEventStoreService()
+        {
+            BsonClassMap.RegisterClassMap<DummyAggregate>();
+            BsonClassMap.RegisterClassMap<Child>();
 
-//            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
-//            return svc;
-//        }
+            var ctx = new CollectionContext(new MongoDbOptions { CnnString = "mongodb://localhost:27017", DatabaseId = "testDb" });
+            var repo = new MongoDbRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
 
-//        [Fact]
-//        public async Task CosmosDbFullTest()
-//        {
-//            var svc = GetCosmosbBackedEventStoreService();
+            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+            
+            return svc;
+        }
 
-//            var agg = new DummyAggregate {StreamId = "test-doc"};
+        private static IEventStoreService<DummyAggregate> GetRavenDbBackedEventStoreService()
+        {
+            var ctx = new StoreContext(new RavenDbOptions { DatabaseId = "testDb", Urls = new[] { "http://127.0.0.1:8080" } });
+            var repo = new RavenDbRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
 
-//            await svc.DeleteEventStreamAsync(agg.StreamId);
+            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+            return svc;
+        }
 
-//            var lst = new List<EventModel> {new EventModel {Data = "1"}, new EventModel {Data = "2"}, new EventModel {Data = "3"}};
+        [Fact]
+        public async Task CosmosDbFullTest()
+        {
+            var svc = GetCosmosbBackedEventStoreService();
 
-//            var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
+            await RunCommon(svc);
+        }
 
-//            Assert.NotNull(eventStoreDoc);
+        [Fact]
+        public async Task MongoDbFullTest()
+        {
+            var svc = GetMongoDbBackedEventStoreService();
 
-//            lst = new List<EventModel> {new EventModel {Data = "4"}};
+            await RunCommon(svc);
+        }
 
-//            eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
-//            Assert.NotNull(eventStoreDoc);
+        [Fact]
+        public async Task RavenDbFullTest()
+        {
+            var svc = GetRavenDbBackedEventStoreService();
 
-//            var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+            await RunCommon(svc);
+        }
 
-//            Assert.NotNull(result);
-//            Assert.True(result.Version == 4);
-//            Assert.NotNull(result.StreamId);
-//            Assert.True(result.StreamId == agg.StreamId);
-//            Assert.Null(result.Snapshot);
-//            Assert.NotNull(result.Events);
+        private async Task RunCommon(IEventStoreService<DummyAggregate> svc)
+        {
+            var agg = new DummyAggregate { StreamId = "test-doc" };
 
-//            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel {Data = "snapshot1"});
+            await svc.DeleteEventStreamAsync(agg.StreamId);
 
-//            lst = new List<EventModel> {new EventModel {Data = "5"}};
+            var lst = new List<EventModel> { new EventModel { Data = "1" }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
 
-//            eventStoreDoc = await svc.WriteToEventStreamAsync(result.StreamId, lst.ToArray(), result.Version);
-//            Assert.NotNull(eventStoreDoc);
+            var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
 
-//            result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+            Assert.NotNull(eventStoreDoc);
 
-//            Assert.True(result.Version == 5);
-//            Assert.True(result.Events.Length == 1);
-//            Assert.NotNull(result.Snapshot);
+            lst = new List<EventModel> { new EventModel { Data = "4" } };
 
-//            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel {Data = "snapshot2"}, true);
+            eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
+            Assert.NotNull(eventStoreDoc);
 
-//            result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+            var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 
-//            Assert.True(result.Version == 5);
-//            Assert.True(result.Events.Length == 0);
-//            Assert.NotNull(result.Snapshot);
-//            Assert.True(result.Snapshot.Data.Equals("snapshot2"));
-//        }
+            Assert.NotNull(result);
+            Assert.True(result.Version == 4);
+            Assert.NotNull(result.StreamId);
+            Assert.True(result.StreamId == agg.StreamId);
+            Assert.Null(result.Snapshot);
+            Assert.NotNull(result.Events);
+            
+            agg.Children = new List<Child>
+            {
+                new Child{ Foo="aaa", Bar=123},
+                new Child{ Foo="bbb", Bar=456},
+                new Child{ Foo="ccc", Bar=789},
+            };
+            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = agg });
 
-//        [Fact]
-//        public async Task MongoDbFullTest()
-//        {
-//            var svc = GetMongoDbBackedEventStoreService();
+            lst = new List<EventModel> { new EventModel { Data = "5" } };
 
-//            var agg = new DummyAggregate {StreamId = "test-doc"};
+            eventStoreDoc = await svc.WriteToEventStreamAsync(result.StreamId, lst.ToArray(), result.Version);
+            Assert.NotNull(eventStoreDoc);
 
-//            await svc.DeleteEventStreamAsync(agg.StreamId);
+            result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 
-//            var lst = new List<EventModel> {new EventModel {Data = "1"}, new EventModel {Data = "2"}, new EventModel {Data = "3"}};
+            Assert.True(result.Version == 5);
+            Assert.True(result.Events.Length == 1,$"length is {result.Events.Length}");
+            Assert.NotNull(result.Snapshot);
+            Assert.NotNull(result.Snapshot.Data as DummyAggregate);
 
-//            var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
+            var data = (DummyAggregate)result.Snapshot.Data;
+            Assert.True(((List<Child>)data.Children)[0].Structure.Num1 == 44);
 
-//            Assert.NotNull(eventStoreDoc);
+            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = "snapshot2" }, true);
 
-//            lst = new List<EventModel> {new EventModel {Data = "4"}};
+            result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 
-//            eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
-//            Assert.NotNull(eventStoreDoc);
+            Assert.True(result.Version == 5);
+            Assert.True(result.Events.Length == 0);
+            Assert.NotNull(result.Snapshot);
+            Assert.True(result.Snapshot.Data.Equals("snapshot2"));
+        }
+    }
 
-//            var result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+    public class DummyAggregate
+    {
+        public Guid AggregateId { get; } = Guid.NewGuid();
 
-//            Assert.NotNull(result);
-//            Assert.True(result.Version == 4);
-//            Assert.NotNull(result.StreamId);
-//            Assert.True(result.StreamId == agg.StreamId);
-//            Assert.Null(result.Snapshot);
-//            Assert.NotNull(result.Events);
+        public string SomeValue { get; set; }
 
-//            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel {Data = "snapshot1"});
+        // I SHOULD NOT BE HERE!
+        public string StreamId { get; set; }
 
-//            lst = new List<EventModel> {new EventModel {Data = "5"}};
+        public IEnumerable<Child> Children { get; set; }
+    }
 
-//            eventStoreDoc = await svc.WriteToEventStreamAsync(result.StreamId, lst.ToArray(), result.Version);
-//            Assert.NotNull(eventStoreDoc);
 
-//            result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
+    public class Child
+    {
+        public string Foo { get; set; }
 
-//            Assert.True(result.Version == 5);
-//            Assert.True(result.Events.Length == 1);
-//            Assert.NotNull(result.Snapshot);
+        [JsonProperty(PropertyName = "fubar")]
+        public int Bar { get; set; }
 
-//            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel {Data = "snapshot2"}, false);
+        [BsonIgnore]
+        public MySstruct Structure { get; set; } = new MySstruct { Num1 = 44, Num2 = 12313 };
+    }
 
-//            result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
-
-//            Assert.True(result.Version == 5);
-//            Assert.True(result.Events.Length == 0);
-//            Assert.NotNull(result.Snapshot);
-//            Assert.True(result.Snapshot.Data.Equals("snapshot2"));
-//        }
-//    }
-    
-//    public class DummyAggregate 
-//    {
-//        public Guid AggregateId { get; } = Guid.NewGuid();
-
-//        public string SomeValue { get; set; }
-
-//        // I SHOULD NOT BE HERE!
-//        public string StreamId { get; set; }
-//    }
-//}
+    public struct MySstruct
+    {
+        public int Num1 { get; set; }
+        public double Num2 { get; set; }
+    }
+}

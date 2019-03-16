@@ -47,7 +47,7 @@ namespace APIBlox.NetCore
             if (results.Count == 0)
                 return null;
 
-            var rootDoc = results.First();
+            var rootDoc = results.First(d=> d.DocumentType== DocumentType.Root);
 
             object metadata = null;
 
@@ -59,7 +59,10 @@ namespace APIBlox.NetCore
                 .Where(d => d.DocumentType == DocumentType.Snapshot)
                 .Select(BuildSnapshotModel).FirstOrDefault() : null;
 
-            var events = results.Where(d => d.DocumentType == DocumentType.Event && (d.Version > snapshot?.Version || snapshot is null))
+            var events = results.Where(d =>
+                    d.DocumentType == DocumentType.Event
+                    && (d.Version > snapshot?.Version || snapshot is null)
+                )
                 .Select(BuildEventModel)
                 .ToArray();
 

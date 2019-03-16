@@ -18,7 +18,7 @@ namespace APIBlox.NetCore.Contracts
         ///     Gets or sets the json settings.
         /// </summary>
         /// <value>The json settings.</value>
-        JsonSerializerSettings JsonSettings { get; set; }
+        JsonSerializerSettings JsonSettings { get; }
 
         /// <summary>
         ///     Adds the asynchronous.
@@ -38,7 +38,7 @@ namespace APIBlox.NetCore.Contracts
         /// <returns>Task&lt;IEnumerable&lt;TResult&gt;&gt;.</returns>
         Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
-        )where TResult : class;
+        )where TResult : EventStoreDocument;
 
         /// <summary>
         ///     Updates the asynchronous.
