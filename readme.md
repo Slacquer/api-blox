@@ -14,7 +14,7 @@
 ![:)][logo]   
 # API Blox
 
-_January 17th, 2019_  **v1.0.100** _[release notes][rn]_ 
+_March 16th, 2019_  **v1.0.107** _[release notes][rn]_ 
 
 <br>
 
@@ -28,6 +28,10 @@ _January 17th, 2019_  **v1.0.100** _[release notes][rn]_
 - APIBlox.NetCore  
 - APIBlox.NetCore.Common  
 - APIBlox.NetCore.DomainEvents
+- APIBlox.NetCore.EventStore
+- APIBlox.NetCore.EventStore.CosmosDb
+- APIBlox.NetCore.EventStore.MongoDb
+- APIBlox.NetCore.EventStore.RavenDb
 
 <br>
 
