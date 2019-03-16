@@ -1,17 +1,32 @@
 ﻿namespace APIBlox.NetCore.Models
 {
+    /// <summary>
+    ///     Class EventStreamModel.
+    /// </summary>
     public class EventStreamModel
     {
-        public EventModel[] Events { get; set;}
+        /// <summary>
+        ///     Gets or sets the events.
+        /// </summary>
+        /// <value>The events.</value>
+        public EventModel[] Events { get; set; }
 
-        public string MetadataType { get; set; }
+        /// <summary>
+        ///     Gets or sets the snapshot.
+        /// </summary>
+        /// <value>The snapshot.</value>
+        public SnapshotModel Snapshot { get; set; }
 
-        public object Metadata { get; set;}
+        /// <summary>
+        ///     Gets or sets the stream identifier.
+        /// </summary>
+        /// <value>The stream identifier.</value>
+        public string StreamId { get; set; }
 
-        public SnapshotModel Snapshot { get; set;}
-
-        public string StreamId { get; set;}
-
-        public long Version { get; set;}
+        /// <summary>
+        ///     Gets or sets the version.
+        /// </summary>
+        /// <value>The version.</value>
+        public long Version { get; set; }
     }
 }

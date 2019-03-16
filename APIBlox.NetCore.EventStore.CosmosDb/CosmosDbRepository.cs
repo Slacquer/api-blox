@@ -46,7 +46,9 @@ namespace APIBlox.NetCore
             CreateCollectionIfNotExistsAsync(colValue.UniqueKeys.ToList(), colValue.OfferThroughput).Wait();
         }
 
+
         public JsonSerializerSettings JsonSettings { get; }
+
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
             CancellationToken cancellationToken = default
@@ -76,10 +78,10 @@ namespace APIBlox.NetCore
             return documents.Length;
         }
 
-        public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TResult : EventStoreDocument
+            where TResultDocument : EventStoreDocument
         {
             var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
                     new FeedOptions { EnableCrossPartitionQuery = true }
@@ -88,11 +90,11 @@ namespace APIBlox.NetCore
                 .OrderByDescending(d => d.SortOrder)
                 .AsDocumentQuery();
 
-            var lst = new List<TResult>();
+            var lst = new List<TResultDocument>();
 
             while (qry.HasMoreResults)
             {
-                var ret = await qry.ExecuteNextAsync<TResult>(cancellationToken);
+                var ret = await qry.ExecuteNextAsync<TResultDocument>(cancellationToken);
 
                 foreach (var document in ret)
                 {

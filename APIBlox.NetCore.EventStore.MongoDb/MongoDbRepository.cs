@@ -26,7 +26,9 @@ namespace APIBlox.NetCore
             JsonSettings = serializerSettings ?? throw new ArgumentNullException(nameof(serializerSettings));
         }
 
+
         public JsonSerializerSettings JsonSettings { get; }
+
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
             CancellationToken cancellationToken = default
@@ -42,16 +44,16 @@ namespace APIBlox.NetCore
             return documents.Length;
         }
 
-        public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TResult : EventStoreDocument
+            where TResultDocument : EventStoreDocument
         {
             var ret = await _context.Collection<EventStoreDocument>(_colName)
                 .Find(predicate)
                 .ToListAsync(cancellationToken);
 
-            return ret.OfType<TResult>();
+            return ret.OfType<TResultDocument>();
         }
 
         public async Task UpdateAsync<TDocument>(TDocument document,

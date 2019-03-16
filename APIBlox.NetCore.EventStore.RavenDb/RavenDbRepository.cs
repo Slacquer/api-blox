@@ -43,18 +43,18 @@ namespace APIBlox.NetCore
             return documents.Length;
         }
 
-        public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TResult : EventStoreDocument
+            where TResultDocument : EventStoreDocument
         {
-            IEnumerable<TResult> ret;
+            IEnumerable<TResultDocument> ret;
 
             using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
             {
                 ret = await session.Query<EventStoreDocument>(null, _colName)
                     .Where(predicate)
-                    .OfType<TResult>()
+                    .OfType<TResultDocument>()
                     .ToListAsync(token: cancellationToken);
             }
 
@@ -96,24 +96,5 @@ namespace APIBlox.NetCore
 
             return ret;
         }
-
-        //private async Task Session(Action<IAsyncDocumentSession> callback, bool saveChanges = false, CancellationToken cancellation = default)
-        //{
-        //    using (var session = _context.Store(_colName).OpenAsyncSession(
-        //        new SessionOptions
-        //        {
-        //            NoCaching = true
-        //        }
-        //    ))
-        //    {
-        //        callback(session);
-
-        //        if (saveChanges)
-        //            await session.SaveChangesAsync(cancellation);
-
-        //        // there is a race condition going on somewhere!
-        //        //System.Threading.Thread.Sleep(500);
-        //    }
-        //}
     }
 }

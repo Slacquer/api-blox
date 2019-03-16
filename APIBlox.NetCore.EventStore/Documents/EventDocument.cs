@@ -2,7 +2,7 @@
 {
     internal class EventDocument : EventStoreDocument
     {
-        public override string Id => $"{StreamId}{Separator}{Version}";
+        public override string Id => $"{StreamId}-{Version}";
 
         public override DocumentType DocumentType => DocumentType.Event;
     }

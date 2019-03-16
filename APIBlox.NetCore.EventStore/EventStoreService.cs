@@ -55,13 +55,7 @@ namespace APIBlox.NetCore
 
             var curVersion = root.Version;
             root.Version += events.Length;
-
-            if (metadata != null)
-            {
-                root.Metadata = metadata;
-                root.MetadataType = metadata.GetType().AssemblyQualifiedName;
-            }
-
+            
             for (long i = 0; i < events.Length; i++)
                 docs.Add(BuildEventDoc(events[i], streamId, ++curVersion));
 
@@ -74,7 +68,6 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = root.Version,
-                Metadata = metadata,
                 Events = events.ToArray()
             };
         }
@@ -120,13 +113,7 @@ namespace APIBlox.NetCore
                 DataType = @event.Data.GetType().AssemblyQualifiedName,
                 Data = @event.Data
             };
-
-            if (@event.Metadata != null)
-            {
-                document.MetadataType = @event.Metadata.GetType().AssemblyQualifiedName;
-                document.Metadata = @event.Metadata;
-            }
-
+            
             return document;
         }
 
@@ -140,13 +127,7 @@ namespace APIBlox.NetCore
                 DataType = snapshot.Data.GetType().AssemblyQualifiedName,
                 Data = snapshot.Data
             };
-
-            if (snapshot.Metadata != null)
-            {
-                document.Metadata = snapshot.Metadata;
-                document.MetadataType = snapshot.Metadata.GetType().AssemblyQualifiedName;
-            }
-
+            
             return document;
         }
     }

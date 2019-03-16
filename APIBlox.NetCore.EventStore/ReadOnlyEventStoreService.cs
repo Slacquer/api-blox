@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -29,10 +28,7 @@ namespace APIBlox.NetCore
         {
             if (streamId == null)
                 throw new ArgumentNullException(nameof(streamId));
-
-            //if (fromVersion.HasValue && fromVersion > 0)
-            //    await VersionCheckAsync(streamId, fromVersion, cancellationToken);
-
+            
             Expression<Func<EventStoreDocument, bool>> predicate = e => e.StreamId == streamId;
 
             if (fromVersion.HasValue && fromVersion > 0)
@@ -48,12 +44,7 @@ namespace APIBlox.NetCore
                 return null;
 
             var rootDoc = results.First(d=> d.DocumentType== DocumentType.Root);
-
-            object metadata = null;
-
-            if (!string.IsNullOrEmpty(rootDoc.MetadataType))
-                metadata = rootDoc.Metadata;
-
+            
             var snapshot = fromVersion is null ? results
                 .OrderByDescending(d => d.SortOrder)
                 .Where(d => d.DocumentType == DocumentType.Snapshot)
@@ -70,8 +61,6 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = rootDoc.Version,
-                Metadata = metadata,
-                MetadataType = rootDoc.MetadataType,
                 Events = events.ToArray(),
                 Snapshot = snapshot
             };
@@ -96,48 +85,22 @@ namespace APIBlox.NetCore
 
         private static EventModel BuildEventModel(EventStoreDocument document)
         {
-            object metadata = null;
-
-            if (!string.IsNullOrEmpty(document.MetadataType))
-                metadata = document.Metadata;
-
             return new EventModel
             {
                 Data = document.Data,
                 DataType = document.DataType,
-                Version = document.Version,
-                Metadata = metadata
+                Version = document.Version
             };
         }
 
         private static SnapshotModel BuildSnapshotModel(EventStoreDocument document)
         {
-            object metadata = null;
-
-            if (!string.IsNullOrEmpty(document.MetadataType))
-                metadata = document.Metadata;
-
             return new SnapshotModel
             {
                 Data = document.Data,
                 DataType = document.DataType,
-                Metadata = metadata,
-                MetadataType = document.MetadataType,
                 Version = document.Version
             };
         }
-
-        //private async Task VersionCheckAsync(string streamId,
-        //    long? expectedVersion, CancellationToken cancellationToken
-        //)
-        //{
-        //    var root = await ReadRootAsync(streamId, cancellationToken);
-
-        //    // if for whatever reason, the incoming version is greater than what is stored then something is a miss...
-        //    if (root.Version < expectedVersion)
-        //        throw new DocumentConcurrencyException(
-        //            $"Provided version:{expectedVersion} for stream '{streamId}' is greater than the event source version:{root.Version}!"
-        //        );
-        //}
     }
 }
