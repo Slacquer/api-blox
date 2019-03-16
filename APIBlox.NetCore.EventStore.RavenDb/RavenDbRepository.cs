@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Session;
 
 namespace APIBlox.NetCore
 {
@@ -28,71 +29,91 @@ namespace APIBlox.NetCore
 
         public JsonSerializerSettings JsonSettings { get; }
 
-        public Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
+        public async Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
         {
-            using (var session = _context.Store(_colName).OpenSession())
+            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
             {
                 foreach (var document in documents)
-                    session.Store(document, document.Id);
+                    await session.StoreAsync(document, document.Id, cancellationToken);
 
-                session.SaveChanges();
+                await session.SaveChangesAsync(cancellationToken);
             }
 
-            return Task.FromResult(documents.Length);
+            return documents.Length;
         }
 
-        public Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<IEnumerable<TResult>> GetAsync<TResult>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
             where TResult : EventStoreDocument
         {
-            using (var session = _context.Store(_colName).OpenSession())
-            {
-                var ret = session.Query<EventStoreDocument>(null, _colName)
-                    .Where(predicate)
-                    .OfType<TResult>().ToList();
+            IEnumerable<TResult> ret;
 
-                return Task.FromResult<IEnumerable<TResult>>(ret);
+            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
+            {
+                ret = await session.Query<EventStoreDocument>(null, _colName)
+                    .Where(predicate)
+                    .OfType<TResult>()
+                    .ToListAsync(token: cancellationToken);
             }
+
+            return ret;
         }
 
-        public Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
+        public async Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
         {
-            using (var session = _context.Store(_colName).OpenSession())
+            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
             {
-                var doc = session.Query<TDocument>(collectionName: _colName)
-                    .Single(x => x.Id == document.Id
-                    );
+                var doc = await session.Query<TDocument>(collectionName: _colName)
+                    .SingleAsync(x => x.Id == document.Id, token: cancellationToken);
+
                 doc.Version = document.Version;
 
-                session.SaveChanges();
+                await session.SaveChangesAsync(cancellationToken);
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
+        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
         {
             int ret;
 
-            using (var session = _context.Store(_colName).OpenSession())
+            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
             {
-                var ids = session.Query<EventStoreDocument>(null, _colName)
+                var ids = await session.Query<EventStoreDocument>(null, _colName)
                     .Where(predicate)
                     .Select(x => x.Id)
-                    .ToList();
+                    .ToListAsync(token: cancellationToken);
 
                 ret = ids.Count;
 
                 foreach (var id in ids)
                     session.Delete(id);
 
-                session.SaveChanges();
+                await session.SaveChangesAsync(cancellationToken);
             }
 
-            return Task.FromResult(ret);
+            return ret;
         }
+
+        //private async Task Session(Action<IAsyncDocumentSession> callback, bool saveChanges = false, CancellationToken cancellation = default)
+        //{
+        //    using (var session = _context.Store(_colName).OpenAsyncSession(
+        //        new SessionOptions
+        //        {
+        //            NoCaching = true
+        //        }
+        //    ))
+        //    {
+        //        callback(session);
+
+        //        if (saveChanges)
+        //            await session.SaveChangesAsync(cancellation);
+
+        //        // there is a race condition going on somewhere!
+        //        //System.Threading.Thread.Sleep(500);
+        //    }
+        //}
     }
 }

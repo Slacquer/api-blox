@@ -80,10 +80,12 @@ namespace APIBlox.NetCore
         protected async Task<RootDocument> ReadRootAsync(string streamId,
             CancellationToken cancellationToken = default)
         {
-            var ret = (await Repository.GetAsync<RootDocument>(
+            var result = await Repository.GetAsync<RootDocument>(
                 d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
                 cancellationToken
-            )).FirstOrDefault();
+            );
+
+            var ret = result.FirstOrDefault();
 
             if (ret is null)
                 throw new DataAccessException($"Stream '{streamId}' wasn't found");
