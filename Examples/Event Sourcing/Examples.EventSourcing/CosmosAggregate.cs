@@ -113,8 +113,6 @@ namespace Examples
         /// <returns>Task.</returns>
         public async Task PublishChangesAsync(CancellationToken cancellationToken = default)
         {
-            Debug.Assert(_myEventStream != null);
-
             var result = await _es.WriteToEventStreamAsync(_streamId,
                 DomainEvents.Select(e => new EventModel { Data = e }).ToArray(),
                 _myEventStream.Version > 0 ? _myEventStream.Version : (long?)null,
@@ -123,12 +121,14 @@ namespace Examples
 
             MyVersion = result.Version;
 
-            if (result.Version % 2 == 0)
+            if (result.Version % 10 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
                     new SnapshotModel { Data = this },
                     cancellationToken: cancellationToken
                 );
+
+            _myEventStream = result;
         }
 
         /// <summary>

@@ -124,6 +124,8 @@ namespace Examples
                     new SnapshotModel { Data = this },
                     cancellationToken: cancellationToken
                 );
+
+            _myEventStream = result;
         }
 
         /// <summary>

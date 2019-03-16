@@ -56,7 +56,7 @@ namespace Examples.Controllers
                 r.Build(true)
             );
 
-            return Ok(new { CosmosAggregate = c,MongoAggregate = m, RavenAggregate = r });
+            return Ok(new { CosmosAggregate = c, MongoAggregate = m, RavenAggregate = r });
         }
 
         /// <summary>
@@ -101,24 +101,21 @@ namespace Examples.Controllers
             var m = new MongoAggregate(_mongoSvc, firstName);
             var r = new RavenAggregate(_ravenSvc, Reverse(firstName));
 
-            for (int i = 0; i < 1; i++)
+            for (var i = 0; i < 10; i++)
             {
                 await Task.WhenAll(
                     c.UpdateSomeValue(someValue + i, cancellationToken),
                     m.UpdateSomeValue(someValue + i, cancellationToken),
-                    r.UpdateSomeValue(Reverse(someValue), cancellationToken)
+                    r.UpdateSomeValue(Reverse(someValue + i), cancellationToken)
                 );
 
-                System.Threading.Thread.Sleep(100);
+                await Task.WhenAll(
+                    c.PublishChangesAsync(cancellationToken),
+                    m.PublishChangesAsync(cancellationToken),
+                    r.PublishChangesAsync(cancellationToken)
+                );
             }
-
-            await Task.WhenAll(
-                c.PublishChangesAsync(cancellationToken),
-                m.PublishChangesAsync(cancellationToken),
-                r.PublishChangesAsync(cancellationToken)
-            );
             
-
             return Accepted();
         }
 

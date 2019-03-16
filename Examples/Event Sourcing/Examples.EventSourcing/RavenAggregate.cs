@@ -117,12 +117,14 @@ namespace Examples
 
             MyVersion = result.Version;
 
-            if (result.Version % 5 == 0)
+            if (result.Version % 10 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
                     new SnapshotModel { Data = this },
                     cancellationToken: cancellationToken
                 );
+
+            _myEventStream = result;
         }
 
         /// <summary>
