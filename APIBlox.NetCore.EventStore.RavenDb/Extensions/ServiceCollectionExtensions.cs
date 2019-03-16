@@ -1,14 +1,14 @@
 ﻿using System;
+using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Options;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 // ReSharper disable once CheckNamespace
-namespace APIBlox.NetCore.Extensions
+namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     ///     Class ServiceCollectionExtensions.

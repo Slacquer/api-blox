@@ -1,3 +1,12 @@
+_March 16th, 2019_  **v1.0.109**  
+- ServiceCollection extensions had incorrect namespace.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 16th, 2019_  **v1.0.108**  
 - Various package updates.
 
