@@ -56,6 +56,9 @@ namespace Examples
         /// <value>Some value.</value>
         public string SomeValue { get; private set; }
 
+        public long MyVersion { get; private set; }
+
+
         /// <summary>
         ///     Adds some value.
         /// </summary>
@@ -113,6 +116,8 @@ namespace Examples
                 cancellationToken: cancellationToken
             );
 
+            MyVersion = result.Version;
+
             if (result.Version % 10 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
@@ -162,6 +167,8 @@ namespace Examples
             }
 
             ApplyPreviousEvents(_myEventStream.Events);
+
+            MyVersion = _myEventStream.Version;
         }
 
         private void When(SomeValueAdded e)

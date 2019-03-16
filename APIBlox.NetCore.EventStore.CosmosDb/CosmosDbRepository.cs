@@ -26,6 +26,7 @@ namespace APIBlox.NetCore
         private readonly string _collectionId;
         private readonly string _databaseId;
         private readonly Uri _docCollectionUri;
+        private readonly JsonSerializer _ser;
 
         public CosmosDbRepository(IDocumentClient client, JsonSerializerSettings settings, IOptions<CosmosDbOptions> options)
         {
@@ -44,6 +45,8 @@ namespace APIBlox.NetCore
 
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync(colValue.UniqueKeys.ToList(), colValue.OfferThroughput).Wait();
+
+            _ser = JsonSerializer.Create(JsonSettings);
         }
 
 
@@ -101,11 +104,21 @@ namespace APIBlox.NetCore
                     if (!(document.Data is null))
                     {
                         if (!(document.Data is ValueType) && !(document.Data is string))
-                            document.Data = ((JObject)document.Data).ToObject(Type.GetType(document.DataType));
+                            document.Data = ((JObject)document.Data).ToObject(Type.GetType(document.DataType),_ser);
 
                     }
                     lst.Add(document);
                 }
+
+                //foreach (var document in ret)
+                //{
+                //    var result = JsonConvert.DeserializeObject<TResultDocument>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings);
+
+                //    if (result is EventStoreDocument ev && !(ev.Data is null) && ev.Data.GetType() != typeof(string))
+                //        ev.Data = JsonConvert.DeserializeObject(ev.Data.ToString(), Type.GetType(ev.DataType), JsonSettings);
+
+                //    lst.Add(result);
+                //}
             }
 
             return lst;
