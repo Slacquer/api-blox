@@ -1,4 +1,4 @@
-_March ?th, 2019_  **v1.0.???**  
+_March 16th, 2019_  **v1.0.107**  
 - MongoDb, 
 - Added indexing to configuration options.
 - CosmosDb
