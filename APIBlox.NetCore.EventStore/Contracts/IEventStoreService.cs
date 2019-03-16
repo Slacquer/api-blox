@@ -18,12 +18,10 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="streamId">The stream identifier.</param>
         /// <param name="events">The events.</param>
         /// <param name="expectedVersion">The expected version.</param>
-        /// <param name="metadata">The metadata.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;System.UInt64&gt;.</returns>
         Task<EventStreamModel> WriteToEventStreamAsync(string streamId, EventModel[] events,
-            long? expectedVersion = null, object metadata = null,
-            CancellationToken cancellationToken = default
+            long? expectedVersion = null, CancellationToken cancellationToken = default
         );
 
         /// <summary>

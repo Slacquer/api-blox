@@ -1,3 +1,12 @@
+_March 16th, 2019_  **v1.0.111**  
+- Removed metadata from WriteToEventStreamAsync
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 16th, 2019_  **v1.0.110**  
 - Potential bug with event store service where you are allowed to write to 
 a stream without specifying the version.  When the stream exists, it would 
