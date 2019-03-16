@@ -48,7 +48,7 @@
 //            var repo = new MongoDbRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
 
 //            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
-            
+
 //            return svc;
 //        }
 
@@ -110,7 +110,7 @@
 //            Assert.True(result.StreamId == agg.StreamId);
 //            Assert.Null(result.Snapshot);
 //            Assert.NotNull(result.Events);
-            
+
 //            agg.Children = new List<Child>
 //            {
 //                new Child{ Foo="aaa", Bar=123},
@@ -127,7 +127,7 @@
 //            result = await svc.ReadEventStreamAsync(agg.StreamId, includeEvents: true);
 
 //            Assert.True(result.Version == 5);
-//            Assert.True(result.Events.Length == 1,$"length is {result.Events.Length}");
+//            Assert.True(result.Events.Length == 1, $"length is {result.Events.Length}");
 //            Assert.NotNull(result.Snapshot);
 //            Assert.NotNull(result.Snapshot.Data as DummyAggregate);
 

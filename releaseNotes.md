@@ -1,3 +1,15 @@
+_March 16th, 2019_  **v1.0.110**  
+- Potential bug with event store service where you are allowed to write to 
+a stream without specifying the version.  When the stream exists, it would 
+overwrite the 1st entry.  Now will throw error if stream root exists but 
+you have not specified an expectedVersion.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 16th, 2019_  **v1.0.109**  
 - ServiceCollection extensions had incorrect namespace.
 

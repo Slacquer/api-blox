@@ -73,13 +73,8 @@ namespace APIBlox.NetCore
                 d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
                 cancellationToken
             );
-
-            var ret = result.FirstOrDefault();
-
-            if (ret is null)
-                throw new DataAccessException($"Stream '{streamId}' wasn't found");
-
-            return ret;
+            
+            return result.FirstOrDefault();
         }
 
 

@@ -31,13 +31,19 @@ namespace APIBlox.NetCore
                 throw new ArgumentException("You must supply events.", nameof(events));
 
             var updating = expectedVersion.HasValue;
-            RootDocument root;
+
+            var root = await ReadRootAsync(streamId, cancellationToken);
+
+            if (root is null && expectedVersion.HasValue)
+                throw new DataAccessException($"Stream '{streamId}' wasn't found.");
+
+            if (!(root is null) && !(expectedVersion.HasValue))
+                throw new DocumentConcurrencyException($"Stream '{streamId}' exists, therefore you must specify an expected version.");
+
             var docs = new List<EventStoreDocument>();
 
             if (updating)
             {
-                root = await ReadRootAsync(streamId, cancellationToken);
-
                 if (root.Version != expectedVersion)
                     throw new DocumentConcurrencyException(
                         $"Expected stream '{streamId}' to have version {expectedVersion.Value} but is {root.Version}."
@@ -55,7 +61,7 @@ namespace APIBlox.NetCore
 
             var curVersion = root.Version;
             root.Version += events.Length;
-            
+
             for (long i = 0; i < events.Length; i++)
                 docs.Add(BuildEventDoc(events[i], streamId, ++curVersion));
 
@@ -63,7 +69,7 @@ namespace APIBlox.NetCore
 
             if (updating)
                 await Repository.UpdateAsync(root, cancellationToken);
-            
+
             return new EventStreamModel
             {
                 StreamId = streamId,
@@ -113,7 +119,7 @@ namespace APIBlox.NetCore
                 DataType = @event.Data.GetType().AssemblyQualifiedName,
                 Data = @event.Data
             };
-            
+
             return document;
         }
 
@@ -127,7 +133,7 @@ namespace APIBlox.NetCore
                 DataType = snapshot.Data.GetType().AssemblyQualifiedName,
                 Data = snapshot.Data
             };
-            
+
             return document;
         }
     }
