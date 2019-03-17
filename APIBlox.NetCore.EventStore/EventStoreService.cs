@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
@@ -47,12 +46,15 @@ namespace APIBlox.NetCore
                     throw new DocumentConcurrencyException(
                         $"Expected stream '{streamId}' to have version {expectedVersion.Value} but is {root.Version}."
                     );
+
+                root.TimeStamp = DateTimeOffset.Now.ToString();
             }
             else
             {
                 root = new RootDocument
                 {
-                    StreamId = streamId
+                    StreamId = streamId,
+                    TimeStamp = DateTimeOffset.Now.ToString()
                 };
 
                 docs.Add(root);
@@ -61,20 +63,29 @@ namespace APIBlox.NetCore
             var curVersion = root.Version;
             root.Version += events.Length;
 
+            var ret = new EventStreamModel
+            {
+                StreamId= streamId,
+                Version= root.Version,
+                TimeStamp =DateTimeOffset.Parse( root.TimeStamp)
+            };
+
+            var lst = new List<EventModel>();
             for (long i = 0; i < events.Length; i++)
-                docs.Add(BuildEventDoc(events[i], streamId, ++curVersion));
+            {
+                var eDoc = BuildEventDoc(events[i], streamId, root.TimeStamp, ++curVersion);
+                docs.Add(eDoc);
+                lst.Add(BuildEventModel(eDoc));
+            }
+
+            ret.Events = lst.ToArray();
 
             await Repository.AddAsync(docs.ToArray(), cancellationToken);
 
             if (updating)
                 await Repository.UpdateAsync(root, cancellationToken);
 
-            return new EventStreamModel
-            {
-                StreamId = streamId,
-                Version = root.Version,
-                Events = events.ToArray()
-            };
+            return ret;
         }
 
         public async Task DeleteEventStreamAsync(string streamId,
@@ -109,12 +120,13 @@ namespace APIBlox.NetCore
 
 
         private static EventDocument BuildEventDoc(EventModel @event, string streamId,
-            long streamVersion)
+           string timeStamp, long streamVersion)
         {
             var document = new EventDocument
             {
                 StreamId = streamId,
                 Version = streamVersion,
+                TimeStamp = timeStamp,
                 DataType = @event.Data.GetType().AssemblyQualifiedName,
                 Data = @event.Data
             };
@@ -123,12 +135,13 @@ namespace APIBlox.NetCore
         }
 
         private static SnapshotDocument BuildSnapShotDoc(string streamId, SnapshotModel snapshot,
-            long version)
+           long version)
         {
             var document = new SnapshotDocument
             {
                 StreamId = streamId,
                 Version = version,
+                TimeStamp = DateTimeOffset.Now.ToString(),
                 DataType = snapshot.Data.GetType().AssemblyQualifiedName,
                 Data = snapshot.Data
             };

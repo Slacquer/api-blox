@@ -36,6 +36,12 @@ namespace APIBlox.NetCore.Documents
         public long Version { get; set; }
 
         /// <summary>
+        ///     Gets or sets the time stamp.
+        /// </summary>
+        /// <value>The time stamp.</value>
+        public string TimeStamp { get; set; }
+
+        /// <summary>
         ///     Gets the sort order.
         /// </summary>
         /// <value>The sort order.</value>

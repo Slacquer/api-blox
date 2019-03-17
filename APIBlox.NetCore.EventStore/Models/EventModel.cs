@@ -17,10 +17,10 @@
         /// <value>The type of the data.</value>
         public string DataType { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the version.
-        /// </summary>
-        /// <value>The version.</value>
-        public long Version { get; set; }
+        ///// <summary>
+        /////     Gets or sets the version.
+        ///// </summary>
+        ///// <value>The version.</value>
+        //public long Version { get; set; }
     }
 }

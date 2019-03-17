@@ -91,7 +91,7 @@
 
 //            await svc.DeleteEventStreamAsync(agg.StreamId);
 
-//            var lst = new List<EventModel> { new EventModel { Data = "1" }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
+//            var lst = new List<EventModel> { new EventModel { Data = new { someTHing = 99 } }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
 
 //            var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
 

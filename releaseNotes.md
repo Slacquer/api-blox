@@ -1,3 +1,12 @@
+_March 17th, 2019_  **v1.0.112**  
+- EventstoreDocument, added DateTimeOffset TimeStamp, stored as a string.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 16th, 2019_  **v1.0.111**  
 - Removed metadata from WriteToEventStreamAsync
 

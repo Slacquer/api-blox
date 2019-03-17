@@ -70,6 +70,7 @@ namespace APIBlox.NetCore
                     .SingleAsync(x => x.Id == document.Id, token: cancellationToken);
 
                 doc.Version = document.Version;
+                doc.TimeStamp = document.TimeStamp;
 
                 await session.SaveChangesAsync(cancellationToken);
             }

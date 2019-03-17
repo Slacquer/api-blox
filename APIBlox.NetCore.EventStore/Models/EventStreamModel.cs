@@ -1,4 +1,6 @@
-﻿namespace APIBlox.NetCore.Models
+﻿using System;
+
+namespace APIBlox.NetCore.Models
 {
     /// <summary>
     ///     Class EventStreamModel.
@@ -28,5 +30,11 @@
         /// </summary>
         /// <value>The version.</value>
         public long Version { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the time stamp.
+        /// </summary>
+        /// <value>The time stamp.</value>
+        public DateTimeOffset TimeStamp { get; set; }
     }
 }

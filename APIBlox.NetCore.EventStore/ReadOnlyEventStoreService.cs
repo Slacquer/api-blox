@@ -19,7 +19,7 @@ namespace APIBlox.NetCore
         {
             Repository = repo;
         }
-        
+
 
         public async Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
             bool includeEvents = false,
@@ -28,7 +28,7 @@ namespace APIBlox.NetCore
         {
             if (streamId == null)
                 throw new ArgumentNullException(nameof(streamId));
-            
+
             Expression<Func<EventStoreDocument, bool>> predicate = e => e.StreamId == streamId;
 
             if (fromVersion.HasValue && fromVersion > 0)
@@ -43,8 +43,8 @@ namespace APIBlox.NetCore
             if (results.Count == 0)
                 return null;
 
-            var rootDoc = results.First(d=> d.DocumentType== DocumentType.Root);
-            
+            var rootDoc = results.First(d => d.DocumentType == DocumentType.Root);
+
             var snapshot = fromVersion is null ? results
                 .OrderByDescending(d => d.SortOrder)
                 .Where(d => d.DocumentType == DocumentType.Snapshot)
@@ -61,6 +61,7 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = rootDoc.Version,
+                TimeStamp = DateTimeOffset.Parse(rootDoc.TimeStamp),
                 Events = events.ToArray(),
                 Snapshot = snapshot
             };
@@ -73,18 +74,17 @@ namespace APIBlox.NetCore
                 d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
                 cancellationToken
             );
-            
+
             return result.FirstOrDefault();
         }
 
 
-        private static EventModel BuildEventModel(EventStoreDocument document)
+        protected static EventModel BuildEventModel(EventStoreDocument document)
         {
             return new EventModel
             {
                 Data = document.Data,
-                DataType = document.DataType,
-                Version = document.Version
+                DataType = document.DataType
             };
         }
 
