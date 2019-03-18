@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -19,10 +18,10 @@ namespace Examples
     public class CosmosAggregate
     {
         private readonly IEventStoreService<CosmosAggregate> _es;
+        private EventStreamModel _myEventStream;
 
         private readonly string _streamId;
         private readonly IDictionary<Type, MethodInfo> _whenMethods;
-        private EventStreamModel _myEventStream;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CosmosAggregate" /> class.
@@ -60,6 +59,10 @@ namespace Examples
         /// <value>Some value.</value>
         public string SomeValue { get; private set; }
 
+        /// <summary>
+        ///     Gets my version.
+        /// </summary>
+        /// <value>My version.</value>
         public long MyVersion { get; private set; }
 
         /// <summary>
@@ -68,13 +71,13 @@ namespace Examples
         /// <param name="someValue">Some value.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="DataAccessException">Aggregate with stream id {_streamId}</exception>
+        /// <exception cref="EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         public async Task AddSomeValue(string someValue, CancellationToken cancellationToken)
         {
             await Build(false, cancellationToken);
 
             if (!(_myEventStream is null))
-                throw new DataAccessException($"Aggregate with stream id {_streamId} already exists!");
+                throw new EventStoreConcurrencyException($"Aggregate with stream id {_streamId} already exists!");
 
             _myEventStream = new EventStreamModel();
 
@@ -92,13 +95,13 @@ namespace Examples
         /// <param name="someValue">Some value.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="DataAccessException">Aggregate with stream id {_streamId}</exception>
+        /// <exception cref="EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         public async Task UpdateSomeValue(string someValue, CancellationToken cancellationToken)
         {
             await Build(false, cancellationToken);
 
             if (_myEventStream is null)
-                throw new DataAccessException($"Aggregate with stream id {_streamId} not found!");
+                throw new EventStoreConcurrencyException($"Aggregate with stream id {_streamId} not found!");
 
             // Validate and such
             SomeValue = someValue;
@@ -114,9 +117,9 @@ namespace Examples
         public async Task PublishChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = await _es.WriteToEventStreamAsync(_streamId,
-                DomainEvents.Select(e => new EventModel { Data = e }).ToArray(),
-                _myEventStream.Version > 0 ? _myEventStream.Version : (long?)null,
-                cancellationToken: cancellationToken
+                DomainEvents.Select(e => new EventModel {Data = e}).ToArray(),
+                _myEventStream.Version > 0 ? _myEventStream.Version : (long?) null,
+                cancellationToken
             );
 
             MyVersion = result.Version;
@@ -124,7 +127,7 @@ namespace Examples
             if (result.Version % 10 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
-                    new SnapshotModel { Data = this },
+                    new SnapshotModel {Data = this},
                     cancellationToken: cancellationToken
                 );
 
@@ -132,12 +135,12 @@ namespace Examples
         }
 
         /// <summary>
-        /// Builds the specified fail not found.
+        ///     Builds the specified fail not found.
         /// </summary>
         /// <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="DocumentNotFoundException">StreamId {_streamId}</exception>
+        /// <exception cref="EventStoreNotFoundException">StreamId {_streamId}</exception>
         public async Task Build(bool failNotFound = false, CancellationToken cancellationToken = default)
         {
             if (!(_myEventStream is null))
@@ -148,14 +151,14 @@ namespace Examples
             if (_myEventStream is null)
             {
                 if (failNotFound)
-                    throw new DocumentNotFoundException($"StreamId {_streamId} not found");
+                    throw new EventStoreNotFoundException($"StreamId {_streamId} not found");
 
                 return;
             }
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (CosmosAggregate)_myEventStream.Snapshot.Data;
+                var data = (CosmosAggregate) _myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;
@@ -204,7 +207,7 @@ namespace Examples
                 throw new InvalidOperationException(s);
             }
 
-            info.Invoke(this, new[] { @event });
+            info.Invoke(this, new[] {@event});
         }
     }
 }

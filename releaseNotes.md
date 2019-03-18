@@ -1,5 +1,6 @@
 _March 18th, 2019_  **v1.0.113**  
 - AssemblyResolver, found a bug where it would return null rather than a cached assembly.
+- EventStore exceptions, renamed.
 
 Thanks,  
 _Slacquer_  

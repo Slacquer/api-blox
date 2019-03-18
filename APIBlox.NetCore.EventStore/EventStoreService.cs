@@ -33,17 +33,17 @@ namespace APIBlox.NetCore
             var root = await ReadRootAsync(streamId, cancellationToken);
 
             if (root is null && expectedVersion.HasValue)
-                throw new DataAccessException($"Stream '{streamId}' wasn't found.");
+                throw new EventStoreNotFoundException($"Stream '{streamId}' wasn't found.");
 
             if (!(root is null) && !(expectedVersion.HasValue))
-                throw new DocumentConcurrencyException($"Stream '{streamId}' exists, therefore you must specify an expected version.");
+                throw new EventStoreConcurrencyException($"Stream '{streamId}' exists, therefore you must specify an expected version.");
 
             var docs = new List<EventStoreDocument>();
 
             if (updating)
             {
                 if (root.Version != expectedVersion)
-                    throw new DocumentConcurrencyException(
+                    throw new EventStoreConcurrencyException(
                         $"Expected stream '{streamId}' to have version {expectedVersion.Value} but is {root.Version}."
                     );
 

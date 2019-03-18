@@ -22,7 +22,7 @@ namespace Examples.Controllers
         private readonly IEventStoreService<RavenAggregate> _ravenSvc;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EventSourcingController"/> class.
+        ///     Initializes a new instance of the <see cref="EventSourcingController" /> class.
         /// </summary>
         /// <param name="cosmosSvc">The cosmos SVC.</param>
         /// <param name="mongoSvc">The mongo SVC.</param>
@@ -56,7 +56,7 @@ namespace Examples.Controllers
                 r.Build(true)
             );
 
-            return Ok(new { CosmosAggregate = c, MongoAggregate = m, RavenAggregate = r });
+            return Ok(new {CosmosAggregate = c, MongoAggregate = m, RavenAggregate = r});
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Examples.Controllers
                     r.PublishChangesAsync(cancellationToken)
                 );
             }
-            
+
             return Accepted();
         }
 

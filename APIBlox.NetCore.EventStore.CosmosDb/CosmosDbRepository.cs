@@ -143,7 +143,7 @@ namespace APIBlox.NetCore
             catch (DocumentClientException e)
             {
                 if (e.StatusCode == HttpStatusCode.NotFound)
-                    throw new DocumentNotFoundException($"Document with stream id '{document.StreamId}' not found!");
+                    throw new EventStoreNotFoundException($"Document with stream id '{document.StreamId}' not found!");
 
                 throw;
             }
@@ -174,7 +174,7 @@ namespace APIBlox.NetCore
             catch (DocumentClientException e)
             {
                 if (e.StatusCode == HttpStatusCode.NotFound)
-                    throw new DocumentNotFoundException(e.Message);
+                    throw new EventStoreNotFoundException(e.Message);
 
                 throw;
             }

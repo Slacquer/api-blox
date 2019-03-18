@@ -1,5 +1,4 @@
-﻿using APIBlox.NetCore.Extensions;
-using Examples.Events;
+﻿using Examples.Events;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +15,10 @@ namespace Examples
 
         private const string Version = "v1";
         private readonly IConfiguration _config;
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly IHostingEnvironment _environment;
 
-        public Startup(IConfiguration config, ILoggerFactory loggerFactory, IHostingEnvironment environment)
+        public Startup(IConfiguration config)
         {
             _config = config;
-            _loggerFactory = loggerFactory;
-            _environment = environment;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -32,22 +27,18 @@ namespace Examples
         {
             services
                 .AddServerFaults()
-
                 .AddEventStoreService<CosmosAggregate>()
                 .AddCosmosDbRepository<CosmosAggregate>(_config)
-
                 .AddEventStoreService<MongoAggregate>()
                 .AddMongoDbRepository<MongoAggregate>(_config)
-
                 .AddEventStoreService<RavenAggregate>()
                 .AddRavenDbRepository<RavenAggregate>(_config)
-
                 ;
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
-            
+
             BsonClassMap.RegisterClassMap<MongoAggregate>();
             BsonClassMap.RegisterClassMap<SomeValueAdded>();
             BsonClassMap.RegisterClassMap<SomeValueChanged>();
@@ -59,7 +50,7 @@ namespace Examples
             //
             // Handle any and all server (500) errors with a defined structure.
             app.UseServerFaults();
-            
+
             app.UseMvc();
 
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
