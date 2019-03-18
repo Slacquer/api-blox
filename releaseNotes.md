@@ -1,3 +1,12 @@
+_March 18th, 2019_  **v1.0.113**  
+- AssemblyResolver, found a bug where it would return null rather than a cached assembly.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 17th, 2019_  **v1.0.112**  
 - EventstoreDocument, added DateTimeOffset TimeStamp, stored as a string.
 
