@@ -13,8 +13,8 @@ namespace APIBlox.NetCore
     internal class EventStoreService<TModel> : ReadOnlyEventStoreService<TModel>, IEventStoreService<TModel>
         where TModel : class
     {
-        public EventStoreService(IEventStoreRepository<TModel> repo)
-            : base(repo)
+        public EventStoreService(IEventStoreRepository<TModel> repo, bool useCompression)
+            : base(repo, useCompression)
         {
         }
 
@@ -65,9 +65,9 @@ namespace APIBlox.NetCore
 
             var ret = new EventStreamModel
             {
-                StreamId= streamId,
-                Version= root.Version,
-                TimeStamp =DateTimeOffset.Parse( root.TimeStamp)
+                StreamId = streamId,
+                Version = root.Version,
+                TimeStamp = DateTimeOffset.Parse(root.TimeStamp)
             };
 
             var lst = new List<EventModel>();

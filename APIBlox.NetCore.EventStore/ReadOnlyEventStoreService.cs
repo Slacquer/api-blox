@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
-using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Models;
 
 namespace APIBlox.NetCore
@@ -13,11 +12,13 @@ namespace APIBlox.NetCore
     internal class ReadOnlyEventStoreService<TModel> : IReadOnlyEventStoreService<TModel>
         where TModel : class
     {
+        protected bool UsingCompression { get; private set; }
         protected readonly IEventStoreRepository<TModel> Repository;
 
-        public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repo)
+        public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repo, bool useCompression)
         {
             Repository = repo;
+            UsingCompression = useCompression;
         }
 
 
