@@ -13,8 +13,8 @@ namespace APIBlox.NetCore
     internal class EventStoreService<TModel> : ReadOnlyEventStoreService<TModel>, IEventStoreService<TModel>
         where TModel : class
     {
-        public EventStoreService(IEventStoreRepository<TModel> repo, bool useCompression)
-            : base(repo, useCompression)
+        public EventStoreService(IEventStoreRepository<TModel> repo)
+            : base(repo)
         {
         }
 

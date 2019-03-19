@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -12,18 +13,21 @@ namespace APIBlox.NetCore
     internal class ReadOnlyEventStoreService<TModel> : IReadOnlyEventStoreService<TModel>
         where TModel : class
     {
-        protected bool UsingCompression { get; private set; }
         protected readonly IEventStoreRepository<TModel> Repository;
 
-        public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repo, bool useCompression)
+        public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repo)
         {
             Repository = repo;
-            UsingCompression = useCompression;
         }
 
+        public async Task<(long, string)> ReadEventStreamVersionAsync(string streamId, CancellationToken cancellationToken = default)
+        {
+            var root = await ReadRootAsync(streamId, cancellationToken);
+
+            return (root.Version, root.TimeStamp);
+        }
 
         public async Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
-            bool includeEvents = false,
             CancellationToken cancellationToken = default
         )
         {
@@ -58,12 +62,18 @@ namespace APIBlox.NetCore
                 .Select(BuildEventModel)
                 .ToArray();
 
+            return BuildEventStreamModel(streamId, rootDoc, events, snapshot);
+        }
+
+        private static EventStreamModel BuildEventStreamModel(string streamId, EventStoreDocument rootDoc,
+            IEnumerable<EventModel> events = null, SnapshotModel snapshot = null)
+        {
             return new EventStreamModel
             {
                 StreamId = streamId,
                 Version = rootDoc.Version,
                 TimeStamp = DateTimeOffset.Parse(rootDoc.TimeStamp),
-                Events = events.ToArray(),
+                Events = events?.ToArray(),
                 Snapshot = snapshot
             };
         }
@@ -78,9 +88,8 @@ namespace APIBlox.NetCore
 
             return result.FirstOrDefault();
         }
-
-
-        protected static EventModel BuildEventModel(EventStoreDocument document)
+        
+        protected virtual EventModel BuildEventModel(EventStoreDocument document)
         {
             return new EventModel
             {
@@ -89,7 +98,7 @@ namespace APIBlox.NetCore
             };
         }
 
-        private static SnapshotModel BuildSnapshotModel(EventStoreDocument document)
+        protected virtual SnapshotModel BuildSnapshotModel(EventStoreDocument document)
         {
             return new SnapshotModel
             {

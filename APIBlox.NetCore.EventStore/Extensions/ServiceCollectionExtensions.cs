@@ -14,17 +14,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TModel">The type of the t model (perhaps your ddd aggregate).</typeparam>
         /// <param name="services">The services.</param>
-        /// <param name="useCompression">When true, all data stored will be GZipped first.</param>
         /// <returns>IServiceCollection.</returns>
-        public static IServiceCollection AddEventStoreService<TModel>(this IServiceCollection services, bool useCompression = false)
+        public static IServiceCollection AddEventStoreService<TModel>(this IServiceCollection services)
             where TModel : class
         {
-            return services.AddScoped<IEventStoreService<TModel>, EventStoreService<TModel>>(s =>
-                {
-                    var repo = s.GetRequiredService<IEventStoreRepository<TModel>>();
-                    return new EventStoreService<TModel>(repo, useCompression);
-                }
-            );
+            return services.AddScoped<IEventStoreService<TModel>, EventStoreService<TModel>>();
         }
 
         /// <summary>
@@ -33,16 +27,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TModel">The type of the t model (perhaps your ddd aggregate).</typeparam>
         /// <param name="services">The services.</param>
         /// <returns>IServiceCollection.</returns>
-        /// <param name="useCompression">When true, all data stored will be GZipped first.</param>
-        public static IServiceCollection AddReadOnlyEventStoreService<TModel>(this IServiceCollection services, bool useCompression = false)
+        public static IServiceCollection AddReadOnlyEventStoreService<TModel>(this IServiceCollection services)
             where TModel : class
         {
-            return services.AddScoped<IReadOnlyEventStoreService<TModel>, ReadOnlyEventStoreService<TModel>>(s =>
-                {
-                    var repo = s.GetRequiredService<IEventStoreRepository<TModel>>();
-                    return new ReadOnlyEventStoreService<TModel>(repo, useCompression);
-                }
-            );
+            return services.AddScoped<IReadOnlyEventStoreService<TModel>, ReadOnlyEventStoreService<TModel>>();
         }
     }
 }

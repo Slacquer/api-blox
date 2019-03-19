@@ -16,12 +16,21 @@ namespace APIBlox.NetCore.Contracts
         ///     Reads the stream asynchronous.
         /// </summary>
         /// <param name="streamId">The stream identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;EventStreamModel&gt;.</returns>
+        Task<(long, string)> ReadEventStreamVersionAsync(string streamId,
+            CancellationToken cancellationToken = default
+        );
+
+        /// <summary>
+        ///     Reads the stream asynchronous.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
         /// <param name="fromVersion">From version.</param>
-        /// <param name="includeEvents">if set to <c>true</c> [include events].</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;EventStreamModel&gt;.</returns>
         Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
-            bool includeEvents = false, CancellationToken cancellationToken = default
+            CancellationToken cancellationToken = default
         );
     }
 }
