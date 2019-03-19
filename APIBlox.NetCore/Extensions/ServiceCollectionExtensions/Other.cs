@@ -312,7 +312,6 @@ namespace Microsoft.Extensions.DependencyInjection
                         throw new DirectoryNotFoundException();
 
                     absDis.Add(di);
-                    absDis.AddRange(di.GetDirectories("*", SearchOption.AllDirectories).Except(absDis));
                 }
                 catch (Exception ex)
                 {

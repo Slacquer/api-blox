@@ -1,3 +1,19 @@
+_? ?th, 2019_  **v1.0.???**  
+- InjectableServices
+- During assembly lookup we had the following in "GetAbsDirectoryInfos" and should not have
+
+```csharp
+// shouldnt be doing this, it disregards use selected paths.  
+//absDis.AddRange(di.GetDirectories("*", SearchOption.AllDirectories).Except(absDis));
+```
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _March 18th, 2019_  **v1.0.114**  
 - EventStore service(s)
 - Added ReadEventStreamVersionAsync, removed includeEvents from ReadEventStreamAsync.
