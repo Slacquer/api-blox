@@ -17,7 +17,7 @@ namespace APIBlox.NetCore.Contracts
         /// </summary>
         /// <param name="streamId">The stream identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;EventStreamModel&gt;.</returns>
+        /// <returns>Version and Timestamp, when empty will return 0,""</returns>
         Task<(long, string)> ReadEventStreamVersionAsync(string streamId,
             CancellationToken cancellationToken = default
         );

@@ -24,6 +24,9 @@ namespace APIBlox.NetCore
         {
             var root = await ReadRootAsync(streamId, cancellationToken);
 
+            if (root is null)
+                return (0, "");
+
             return (root.Version, root.TimeStamp);
         }
 
@@ -88,7 +91,7 @@ namespace APIBlox.NetCore
 
             return result.FirstOrDefault();
         }
-        
+
         protected virtual EventModel BuildEventModel(EventStoreDocument document)
         {
             return new EventModel
