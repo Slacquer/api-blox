@@ -1,4 +1,4 @@
-_? ?th, 2019_  **v1.0.???**  
+_March 19th, 2019_  **v1.0.115**  
 - InjectableServices - During assembly lookup we had the following in "GetAbsDirectoryInfos" and should not have
 ```csharp
 // shouldnt be doing this, it disregards use selected paths.  
