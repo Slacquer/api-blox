@@ -1,3 +1,12 @@
+_March ?th, 2019_  **v1.0.116**  
+- CosmosDbRepository - accidentally left a try catch in code.  
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 19th, 2019_  **v1.0.115**  
 - InjectableServices - During assembly lookup we had the following in "GetAbsDirectoryInfos" and should not have
 ```csharp

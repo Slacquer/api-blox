@@ -58,26 +58,18 @@ namespace APIBlox.NetCore
         )
             where TDocument : EventStoreDocument
         {
-            try
+            foreach (var doc in documents)
             {
-                foreach (var doc in documents)
-                {
-                    await _client.CreateDocumentAsync(_docCollectionUri,
-                        doc,
-                        new RequestOptions
-                        {
-                            PartitionKey = new PartitionKey(doc.StreamId)
-                        },
-                        true,
-                        cancellationToken
-                    );
-                }
+                await _client.CreateDocumentAsync(_docCollectionUri,
+                    doc,
+                    new RequestOptions
+                    {
+                        PartitionKey = new PartitionKey(doc.StreamId)
+                    },
+                    true,
+                    cancellationToken
+                );
             }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-            }
-
             return documents.Length;
         }
 
@@ -104,21 +96,11 @@ namespace APIBlox.NetCore
                     if (!(document.Data is null))
                     {
                         if (!(document.Data is ValueType) && !(document.Data is string))
-                            document.Data = ((JObject)document.Data).ToObject(Type.GetType(document.DataType),_ser);
+                            document.Data = ((JObject)document.Data).ToObject(Type.GetType(document.DataType), _ser);
 
                     }
                     lst.Add(document);
                 }
-
-                //foreach (var document in ret)
-                //{
-                //    var result = JsonConvert.DeserializeObject<TResultDocument>(JsonConvert.SerializeObject(document, JsonSettings), JsonSettings);
-
-                //    if (result is EventStoreDocument ev && !(ev.Data is null) && ev.Data.GetType() != typeof(string))
-                //        ev.Data = JsonConvert.DeserializeObject(ev.Data.ToString(), Type.GetType(ev.DataType), JsonSettings);
-
-                //    lst.Add(result);
-                //}
             }
 
             return lst;
