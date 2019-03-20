@@ -20,19 +20,39 @@ namespace APIBlox.NetCore
             Repository = repo;
         }
 
-        public async Task<(long, string)> ReadEventStreamVersionAsync(string streamId, CancellationToken cancellationToken = default)
+        public async Task<(long, DateTimeOffset)> ReadEventStreamVersionAsync(string streamId, CancellationToken cancellationToken = default)
         {
             var root = await ReadRootAsync(streamId, cancellationToken);
 
             if (root is null)
-                return (0, "");
+                return (0, default(DateTime));
 
-            return (root.Version, root.TimeStamp);
+            return (root.Version,  DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp));
         }
 
-        public async Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
+        public Task<EventStreamModel> ReadEventStreamAsync(string streamId, CancellationToken cancellationToken = default)
+        {
+            return ReadAsync(streamId, cancellationToken: cancellationToken);
+        }
+
+        public Task<EventStreamModel> ReadEventStreamAsync(string streamId, long fromVersion,
             CancellationToken cancellationToken = default
         )
+        {
+            return ReadAsync(streamId, fromVersion, cancellationToken: cancellationToken);
+        }
+
+        public Task<EventStreamModel> ReadEventStreamAsync(string streamId, DateTimeOffset fromDate,
+            DateTimeOffset? toDate = null,
+            CancellationToken cancellationToken = default
+        )
+        {
+            return ReadAsync(streamId, null, fromDate, toDate, cancellationToken);
+        }
+
+
+        private async Task<EventStreamModel> ReadAsync(string streamId, long? fromVersion = null, DateTimeOffset? fromDate = null,
+            DateTimeOffset? toDate = null, CancellationToken cancellationToken = default)
         {
             if (streamId == null)
                 throw new ArgumentNullException(nameof(streamId));
@@ -41,6 +61,13 @@ namespace APIBlox.NetCore
 
             if (fromVersion.HasValue && fromVersion > 0)
                 predicate = e => e.StreamId == streamId && e.Version >= fromVersion;
+            else if (fromDate.HasValue)
+            {
+                if (!toDate.HasValue)
+                    predicate = e => e.StreamId == streamId && e.TimeStamp >= fromDate.Value.Ticks;
+                else
+                    predicate = e => e.StreamId == streamId && e.TimeStamp >= fromDate.Value.Ticks && e.TimeStamp <= toDate.Value.Ticks;
+            }
 
             var results = (await Repository.GetAsync<EventStoreDocument>(predicate, cancellationToken))
                 .OrderByDescending(d => d.DocumentType == DocumentType.Root)
@@ -68,6 +95,7 @@ namespace APIBlox.NetCore
             return BuildEventStreamModel(streamId, rootDoc, events, snapshot);
         }
 
+
         private static EventStreamModel BuildEventStreamModel(string streamId, EventStoreDocument rootDoc,
             IEnumerable<EventModel> events = null, SnapshotModel snapshot = null)
         {
@@ -75,7 +103,7 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = rootDoc.Version,
-                TimeStamp = DateTimeOffset.Parse(rootDoc.TimeStamp),
+                TimeStamp = DateTimeOffset.FromUnixTimeSeconds(rootDoc.TimeStamp),
                 Events = events?.ToArray(),
                 Snapshot = snapshot
             };

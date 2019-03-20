@@ -1,5 +1,6 @@
-_March ?th, 2019_  **v1.0.116**  
+_March 20th, 2019_  **v1.0.116**  
 - CosmosDbRepository - accidentally left a try catch in code.  
+- IReadOnlyEventStoreService - changed storage type of TimeStamp to long.  Will be storing and parsing DateTimeOffset.Now.ToUnixTimeSeconds().  Also added the to and from params for predicates.
 
 Thanks,  
 _Slacquer_  

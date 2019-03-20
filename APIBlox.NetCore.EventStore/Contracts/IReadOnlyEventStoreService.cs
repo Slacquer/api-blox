@@ -17,19 +17,42 @@ namespace APIBlox.NetCore.Contracts
         /// </summary>
         /// <param name="streamId">The stream identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Version and Timestamp, when empty will return 0,""</returns>
-        Task<(long, string)> ReadEventStreamVersionAsync(string streamId,
+        /// <returns>Version and Timestamp, when empty will return 0,default(DateTimeOffset)</returns>
+        Task<(long, DateTimeOffset)> ReadEventStreamVersionAsync(string streamId,
             CancellationToken cancellationToken = default
         );
 
         /// <summary>
-        ///     Reads the stream asynchronous.
+        ///     Reads the stream asynchronously.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;EventStreamModel&gt;.</returns>
+        Task<EventStreamModel> ReadEventStreamAsync(string streamId,
+            CancellationToken cancellationToken = default
+        );
+
+        /// <summary>
+        ///     Reads the stream asynchronously optionally from a specific version.
         /// </summary>
         /// <param name="streamId">The stream identifier.</param>
         /// <param name="fromVersion">From version.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;EventStreamModel&gt;.</returns>
-        Task<EventStreamModel> ReadEventStreamAsync(string streamId, long? fromVersion = null,
+        Task<EventStreamModel> ReadEventStreamAsync(string streamId, long fromVersion,
+            CancellationToken cancellationToken = default
+        );
+
+        /// <summary>
+        ///     Reads the event stream asynchronously from a specific date optionally to a specific date.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
+        /// <param name="fromDate">From date.</param>
+        /// <param name="toDate">To date.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;EventStreamModel&gt;.</returns>
+        Task<EventStreamModel> ReadEventStreamAsync(string streamId, DateTimeOffset fromDate,
+            DateTimeOffset? toDate = null,
             CancellationToken cancellationToken = default
         );
     }

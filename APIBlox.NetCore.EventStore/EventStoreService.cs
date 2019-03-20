@@ -47,14 +47,14 @@ namespace APIBlox.NetCore
                         $"Expected stream '{streamId}' to have version {expectedVersion.Value} but is {root.Version}."
                     );
 
-                root.TimeStamp = DateTimeOffset.Now.ToString();
+                root.TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
             }
             else
             {
                 root = new RootDocument
                 {
                     StreamId = streamId,
-                    TimeStamp = DateTimeOffset.Now.ToString()
+                    TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds()
                 };
 
                 docs.Add(root);
@@ -67,7 +67,7 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = root.Version,
-                TimeStamp = DateTimeOffset.Parse(root.TimeStamp)
+                TimeStamp =DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp)
             };
 
             var lst = new List<EventModel>();
@@ -120,7 +120,7 @@ namespace APIBlox.NetCore
 
 
         private static EventDocument BuildEventDoc(EventModel @event, string streamId,
-           string timeStamp, long streamVersion)
+           long timeStamp, long streamVersion)
         {
             var document = new EventDocument
             {
@@ -141,7 +141,7 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = version,
-                TimeStamp = DateTimeOffset.Now.ToString(),
+                TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds(),
                 DataType = snapshot.Data.GetType().AssemblyQualifiedName,
                 Data = snapshot.Data
             };

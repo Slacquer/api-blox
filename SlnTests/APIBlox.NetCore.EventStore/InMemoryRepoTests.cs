@@ -92,9 +92,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             await svc.DeleteEventStreamAsync(agg.StreamId);
 
             var lst = new List<EventModel> { new EventModel { Data = new { someTHing = 99 } }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
-
-            var foo = await svc.ReadEventStreamVersionAsync("asdf");
-
+            
             var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
 
             Assert.NotNull(eventStoreDoc);

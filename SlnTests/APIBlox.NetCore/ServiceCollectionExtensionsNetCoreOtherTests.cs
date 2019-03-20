@@ -65,8 +65,8 @@ namespace SlnTests.APIBlox.NetCore
                     }
                 )
             );
-
-            sc.AddInjectableServices(_loggerFactory, names, paths);
+            
+           Assert.Throws<ArgumentException>(()=> sc.AddInjectableServices(_loggerFactory, names, paths));
         }
 
         //[Fact]
