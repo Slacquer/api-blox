@@ -21,7 +21,7 @@ namespace APIBlox.AspNetCore.Types.Errors
         ///     The logger
         /// </summary>
         [JsonIgnore]
-        protected ILogger<RequestErrorObject> Logger;
+        protected readonly ILogger<RequestErrorObject> Logger = new LoggerFactory().CreateLogger<RequestErrorObject>();
 
         /// <inheritdoc />
         /// <summary>
@@ -34,13 +34,12 @@ namespace APIBlox.AspNetCore.Types.Errors
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RequestErrorObject" /> class.
+        /// Initializes a new instance of the <see cref="RequestErrorObject"/> class.
         /// </summary>
         /// <param name="title">The title.</param>
         /// <param name="detail">The detail.</param>
         /// <param name="status">The status.</param>
         /// <param name="instance">The instance.</param>
-        /// <inheritdoc />
         public RequestErrorObject(string title, string detail, int? status, string instance)
         {
             Title = title;

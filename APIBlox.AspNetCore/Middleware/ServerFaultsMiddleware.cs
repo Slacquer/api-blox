@@ -134,7 +134,9 @@ namespace APIBlox.AspNetCore
                 Type = _typeUrl
             };
 
-            dto.Errors.Add(err.ToDynamicDataObject());
+            var er = err.ToDynamicDataObject();
+            er.AddProperty("StackTrace", err.StackTrace);
+            dto.Errors.Add(er);
 
             return dto;
         }

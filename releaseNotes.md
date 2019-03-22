@@ -1,3 +1,14 @@
+_March 21st, 2019_  **v1.0.117**  
+- Added - AddCamelCaseResultsOptions  
+- Added - Stacktrace to results on ServerFaultsMiddleware
+- Deprecated - AddConsumesProducesJsonResourceResultFilters, it causes issues with version 4 of swagger.
+  
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 20th, 2019_  **v1.0.116**  
 - CosmosDbRepository - accidentally left a try catch in code.  
 - IReadOnlyEventStoreService - changed storage type of TimeStamp to long.  Will be storing and parsing DateTimeOffset.Now.ToUnixTimeSeconds().  Also added the to and from params for predicates.

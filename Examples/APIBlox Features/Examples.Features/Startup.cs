@@ -96,7 +96,7 @@ namespace Examples
 #endif
                 .AddMvc()
 #if UseAPIBlox
-
+                .AddCamelCaseResultsOptions()
                 //
                 // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
@@ -135,7 +135,7 @@ namespace Examples
             // quickly because your dev machine is such a monster!)
             app.UseSimulateWaitTime(_environment);
 #else
-            app.UseDeveloperExceptionPage();
+            //app.UseDeveloperExceptionPage();
 #endif
             app.UseHsts();
 
