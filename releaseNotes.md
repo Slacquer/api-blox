@@ -1,3 +1,14 @@
+_March 22nd, 2019_  **v1.0.118**  
+- DynamicControllers  
+- Having an issue with swashbuckle and ApiExplorer where operationId's are getting duplicated.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _March 21st, 2019_  **v1.0.117**  
 - Added - AddCamelCaseResultsOptions  
 - Added - Stacktrace to results on ServerFaultsMiddleware

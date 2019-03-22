@@ -55,7 +55,10 @@ namespace APIBlox.AspNetCore
                 return;
             }
 
-            action.ActionName = $"{action.Controller.ControllerName}-{action.ActionName}";
+            var param1 = FirstParamName(action.Parameters);
+            param1 = param1 ?? "";
+
+            action.ActionName = Increment($"{action.Controller.ControllerName}-{action.ActionName}{param1}", action.Controller);
 
             var t = cType.GenericTypeArguments[cType.GenericTypeArguments.Length == 1 ? 0 : 1];
 
@@ -67,6 +70,25 @@ namespace APIBlox.AspNetCore
                 else if (typeof(IResource).IsAssignableTo(rt.Type)) // Using marker interface
                     rt.Type = t;
             }
+        }
+
+        private static string Increment(string name, ControllerModel controller)
+        {
+            if (controller.Actions is null || !(controller.Actions.Any()))
+                return name;
+
+            var count = controller.Actions.Count(a => a.ActionName.EqualsEx(name));
+
+            return count == 0 ? name : $"{name}-{count + 1}";
+        }
+
+        private static string FirstParamName(IList<ParameterModel> actionParameters)
+        {
+            if (actionParameters is null || !(actionParameters.Any()))
+                return null;
+
+
+            return $"-{actionParameters.First().ParameterType.Name.ToPascalCase()}";
         }
     }
 }

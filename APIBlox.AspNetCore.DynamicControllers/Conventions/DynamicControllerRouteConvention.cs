@@ -76,6 +76,7 @@ namespace APIBlox.AspNetCore
                 .Where(b => b.ControllerType == controller.ControllerType)
                 .ToList();
 
+
             return controllerConfigs;
         }
     }

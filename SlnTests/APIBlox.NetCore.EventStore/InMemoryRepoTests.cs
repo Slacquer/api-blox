@@ -85,7 +85,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             await RunCommon(svc);
         }
 
-        private async Task RunCommon(IEventStoreService<DummyAggregate> svc)
+        private static async Task RunCommon(IEventStoreService<DummyAggregate> svc)
         {
             var agg = new DummyAggregate { StreamId = "test-doc" };
 

@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // Since children is a sub route, we use a relative url(s), and they are
             // built for us, so we only need one url.  With that being said, you COULD call
             // AddController instead of AddSubController, and it NOT be considered a sub route.
-            var childrenSubRoutes = new[] {"{parentId:int}/children"};
+            var childrenSubRoutes = new[] { "{parentId:int}/children" };
 
             //
             //  Now technically we COULD use the same models over and over which would
@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             parentController.AddSubController<ChildRequest, ChildResponse, int>(
                 typeof(int),
-                childrenSubRoutes,
+                childrenSubRoutes, 
                 typeof(FamilyDynamicGetController<,,>)
             );
 
