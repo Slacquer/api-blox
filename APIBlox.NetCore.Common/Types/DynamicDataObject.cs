@@ -110,7 +110,7 @@ namespace APIBlox.NetCore.Types
             );
 
             if (kvp.Key is null)
-                return default(TType);
+                return default;
 
             var success = Properties.TryGetValue(kvp.Key, out var value);
 
@@ -132,7 +132,7 @@ namespace APIBlox.NetCore.Types
             );
 
             if (kvp.Key is null)
-                return default(TType);
+                return default;
 
             var success = Properties.TryGetValue(kvp.Key, out var value);
 

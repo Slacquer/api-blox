@@ -42,7 +42,7 @@ namespace APIBlox.AspNetCore
                 );
 
             var responseTypes = action.Attributes.OfType<ProducesResponseTypeAttribute>()
-                .Where(rt => rt.Type != default(Type))
+                .Where(rt => rt.Type != default)
                 .ToList();
 
             if (!responseTypes.Any())
@@ -54,6 +54,8 @@ namespace APIBlox.AspNetCore
 
                 return;
             }
+
+            action.ActionName = $"{action.Controller.ControllerName}-{action.ActionName}";
 
             var t = cType.GenericTypeArguments[cType.GenericTypeArguments.Length == 1 ? 0 : 1];
 

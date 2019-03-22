@@ -1,6 +1,7 @@
 _March 21st, 2019_  **v1.0.117**  
 - Added - AddCamelCaseResultsOptions  
 - Added - Stacktrace to results on ServerFaultsMiddleware
+- Altered - DynamicControllersConvertResponseTypeConvention, now prefixes action names with the controller name, this should help prevent the need to have filters when using swagger.
 - Deprecated - AddConsumesProducesJsonResourceResultFilters, it causes issues with version 4 of swagger.
   
 Thanks,  
