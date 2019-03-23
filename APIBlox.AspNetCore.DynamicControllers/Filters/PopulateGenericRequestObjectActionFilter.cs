@@ -44,13 +44,13 @@ namespace APIBlox.AspNetCore
         {
             var bits = new Bits(context);
 
-            var requestObj = context.ActionArguments
+            var (_, value) = context.ActionArguments
                 .FirstOrDefault(a => a.Value.GetType() == bits.RequestObjectType);
 
-            if (!(requestObj.Value is null))
+            if (!(value is null))
             {
-                JsonConvert.PopulateObject(bits.RouteDataString, requestObj.Value);
-                JsonConvert.PopulateObject(bits.QueryString, requestObj.Value);
+                JsonConvert.PopulateObject(bits.RouteDataString, value);
+                JsonConvert.PopulateObject(bits.QueryString, value);
             }
             else
             {

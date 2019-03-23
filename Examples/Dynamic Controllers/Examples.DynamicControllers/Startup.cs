@@ -8,7 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
-
+using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 //
 //  This project is a clone of Examples.Features with additional bits for DynamicControllers.
@@ -98,4 +99,6 @@ namespace Examples
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
         }
     }
+
+   
 }
