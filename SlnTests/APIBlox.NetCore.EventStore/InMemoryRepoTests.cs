@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
 using APIBlox.NetCore;
@@ -61,6 +63,53 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             return svc;
         }
 
+        private static IEventStoreService<DummyAggregate> GetSqlServerBackedEventStoreService()
+        {
+            var myConn = new SqlConnection("Server=.;Integrated security=SSPI");
+
+            var p = @"C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\";
+
+            var str = $"CREATE DATABASE testDb ON PRIMARY (NAME = TestDb_Data, FILENAME = '{p}TestDbData.mdf', " +
+                      $"SIZE = 2MB, MAXSIZE = 10MB, FILEGROWTH = 10%) LOG ON (NAME = TestDbLog, FILENAME = '{p}TestDbLog.ldf', " +
+                      "SIZE = 1MB, MAXSIZE = 5MB, FILEGROWTH = 10%)";
+
+            var myCommand = new SqlCommand(str, myConn);
+            try
+            {
+                myConn.Open();
+                myCommand.ExecuteNonQuery();
+
+                var ctx = new SqlDbContext(new SqlServerOptions { CnnString = "Server=.;Integrated security=SSPI;Database=TestDb" });
+                var repo = new SqlServerRepository<DummyAggregate>(ctx);
+
+                return new EventStoreService<DummyAggregate>(repo);
+            }
+            finally
+            {
+                if (myConn.State == ConnectionState.Open)
+                    myConn.Close();
+            }
+        }
+
+        private static void DeleteSqlServerTestDb()
+        {
+            var myConn = new SqlConnection("Server=.;Integrated security=SSPI");
+            
+            const string str = "drop database [TestDb]";
+
+            var myCommand = new SqlCommand(str, myConn);
+            try
+            {
+                myConn.Open();
+                myCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (myConn.State == ConnectionState.Open)
+                    myConn.Close();
+            }
+        }
+
         [Fact]
         public async Task CosmosDbFullTest()
         {
@@ -85,6 +134,16 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             await RunCommon(svc);
         }
 
+        [Fact]
+        public async Task SqlServerFullTest()
+        {
+            var svc = GetSqlServerBackedEventStoreService();
+
+            await RunCommon(svc);
+
+            DeleteSqlServerTestDb();
+        }
+
         private static async Task RunCommon(IEventStoreService<DummyAggregate> svc)
         {
             var agg = new DummyAggregate { StreamId = "test-doc" };
@@ -92,7 +151,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             await svc.DeleteEventStreamAsync(agg.StreamId);
 
             var lst = new List<EventModel> { new EventModel { Data = new { someTHing = 99 } }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
-            
+
             var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
 
             Assert.NotNull(eventStoreDoc);

@@ -14,7 +14,7 @@
         </member>
         <member name="M:Examples.Controllers.EventSourcingController.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.CosmosAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.MongoAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.RavenAggregate})">
             <summary>
-                Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingController"/> class.
+                Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingController" /> class.
             </summary>
             <param name="cosmosSvc">The cosmos SVC.</param>
             <param name="mongoSvc">The mongo SVC.</param>
@@ -82,6 +82,12 @@
             </summary>
             <value>Some value.</value>
         </member>
+        <member name="P:Examples.CosmosAggregate.MyVersion">
+            <summary>
+                Gets my version.
+            </summary>
+            <value>My version.</value>
+        </member>
         <member name="M:Examples.CosmosAggregate.AddSomeValue(System.String,System.Threading.CancellationToken)">
             <summary>
                 Adds some value.
@@ -89,7 +95,7 @@
             <param name="someValue">Some value.</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         </member>
         <member name="M:Examples.CosmosAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
             <summary>
@@ -98,7 +104,7 @@
             <param name="someValue">Some value.</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         </member>
         <member name="M:Examples.CosmosAggregate.PublishChangesAsync(System.Threading.CancellationToken)">
             <summary>
@@ -109,12 +115,12 @@
         </member>
         <member name="M:Examples.CosmosAggregate.Build(System.Boolean,System.Threading.CancellationToken)">
             <summary>
-            Builds the specified fail not found.
+                Builds the specified fail not found.
             </summary>
             <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="T:APIBlox.NetCore.Exceptions.DocumentNotFoundException">StreamId {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">StreamId {_streamId}</exception>
         </member>
         <member name="M:Examples.CosmosAggregate.DeleteMe(System.Threading.CancellationToken)">
             <summary>
@@ -122,6 +128,11 @@
             </summary>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
+        </member>
+        <member name="T:Examples.MongoAggregate">
+            <summary>
+                Class MongoAggregate.
+            </summary>
         </member>
         <member name="M:Examples.MongoAggregate.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.MongoAggregate},System.String)">
             <summary>
@@ -148,6 +159,12 @@
             </summary>
             <value>Some value.</value>
         </member>
+        <member name="P:Examples.MongoAggregate.MyVersion">
+            <summary>
+                Gets my version.
+            </summary>
+            <value>My version.</value>
+        </member>
         <member name="M:Examples.MongoAggregate.AddSomeValue(System.String,System.Threading.CancellationToken)">
             <summary>
                 Adds some value.
@@ -155,7 +172,7 @@
             <param name="someValue">Some value.</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         </member>
         <member name="M:Examples.MongoAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
             <summary>
@@ -164,7 +181,7 @@
             <param name="someValue">Some value.</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">Aggregate with stream id {_streamId}</exception>
         </member>
         <member name="M:Examples.MongoAggregate.PublishChangesAsync(System.Threading.CancellationToken)">
             <summary>
@@ -182,12 +199,17 @@
         </member>
         <member name="M:Examples.MongoAggregate.Build(System.Boolean,System.Threading.CancellationToken)">
             <summary>
-            Builds the specified fail not found.
+                Builds the specified fail not found.
             </summary>
             <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="T:APIBlox.NetCore.Exceptions.DocumentNotFoundException">StreamId {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">StreamId {_streamId}</exception>
+        </member>
+        <member name="T:Examples.RavenAggregate">
+            <summary>
+                Class RavenAggregate.
+            </summary>
         </member>
         <member name="M:Examples.RavenAggregate.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.RavenAggregate},System.String)">
             <summary>
@@ -214,6 +236,12 @@
             </summary>
             <value>Some value.</value>
         </member>
+        <member name="P:Examples.RavenAggregate.MyVersion">
+            <summary>
+                Gets my version.
+            </summary>
+            <value>My version.</value>
+        </member>
         <member name="M:Examples.RavenAggregate.AddSomeValue(System.String,System.Threading.CancellationToken)">
             <summary>
                 Adds some value.
@@ -221,7 +249,7 @@
             <param name="someValue">Some value.</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+            <exception cref="!:DataAccessException">Aggregate with stream id {_streamId}</exception>
         </member>
         <member name="M:Examples.RavenAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
             <summary>
@@ -230,7 +258,7 @@
             <param name="someValue">Some value.</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="T:APIBlox.NetCore.Exceptions.DataAccessException">Aggregate with stream id {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">Aggregate with stream id {_streamId}</exception>
         </member>
         <member name="M:Examples.RavenAggregate.PublishChangesAsync(System.Threading.CancellationToken)">
             <summary>
@@ -248,12 +276,12 @@
         </member>
         <member name="M:Examples.RavenAggregate.Build(System.Boolean,System.Threading.CancellationToken)">
             <summary>
-            Builds the specified fail not found.
+                Builds the specified fail not found.
             </summary>
             <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="T:APIBlox.NetCore.Exceptions.DocumentNotFoundException">StreamId {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">StreamId {_streamId}</exception>
         </member>
         <member name="T:Examples.Resources.AggregateResource">
             <summary>

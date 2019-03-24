@@ -32,6 +32,7 @@
     <ProjectReference Include="..\APIBlox.NetCore.EventStore.CosmosDb\APIBlox.NetCore.EventStore.CosmosDb.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.EventStore.MongoDb\APIBlox.NetCore.EventStore.MongoDb.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.EventStore.RavenDb\APIBlox.NetCore.EventStore.RavenDb.csproj" />
+    <ProjectReference Include="..\APIBlox.NetCore.EventStore.SqlServer\APIBlox.NetCore.EventStore.SqlServer.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj" />
     <ProjectReference Include="..\ApiBlox.NetCore\APIBlox.NetCore.csproj" />
   </ItemGroup>
