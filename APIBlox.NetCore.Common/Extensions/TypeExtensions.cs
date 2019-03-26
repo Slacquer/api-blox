@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.Extensions
 {
@@ -15,6 +16,21 @@ namespace APIBlox.NetCore.Extensions
     {
         // Cached results.
         private static readonly List<MethodInfo> Extensions = new List<MethodInfo>();
+
+        /// <summary>
+        ///     Sets the value of a nullable type.
+        /// </summary>
+        /// <param name="prop">The property.</param>
+        /// <param name="obj">The object instance.</param>
+        /// <param name="qp">The qp.</param>
+        public static void SetNullableValue(this PropertyInfo prop, object obj, object qp)
+        {
+            var t = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+
+            var safeValue = (qp == null) ? null : Convert.ChangeType(qp, t);
+
+            prop.SetValue(obj, safeValue, null);
+        }
 
         /// <summary>
         ///     Find an extension method for a given type with a specific
@@ -107,6 +123,27 @@ namespace APIBlox.NetCore.Extensions
         public static bool IsOpenGeneric(this Type type)
         {
             return type.GetTypeInfo().IsGenericTypeDefinition;
+        }
+
+        /// <summary>
+        ///     Gets all json property name values for a type that is using the <see cref="JsonPropertyAttribute"/>.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Dictionary&lt;PropertyInfo, System.String&gt;.</returns>
+        public static Dictionary<PropertyInfo, string> JsonPropertyNames(this Type type)
+        {
+            var props = type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            var lst = new Dictionary<PropertyInfo,string>();
+            foreach (var pi in props)
+            {
+                if (!(pi.GetCustomAttributes(typeof(JsonPropertyAttribute), false).FirstOrDefault() is JsonPropertyAttribute att))
+                    continue;
+
+                lst.Add(pi, att.PropertyName);
+            }
+
+            return lst;
         }
 
         private static bool IsAssignableToGenericTypeDefinition(

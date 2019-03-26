@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using APIBlox.AspNetCore.Types;
+﻿using APIBlox.AspNetCore.Types;
 using Examples.Contracts;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
-    public class ChildRootRequest : PaginationQuery, IChildRequest
+    internal class ChildRootRequest : PaginationQuery, IChildRequest
     {
-        public bool LikesCandy { get;set; }
+        [FromQuery(Name = "likesCandy")] 
+        public bool LikesCandy { get; set; }
     }
 }

@@ -20,7 +20,16 @@ namespace APIBlox.AspNetCore.ActionResults
         protected readonly RequestErrorObject Error;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ProblemResult" /> class.
+        ///     Initializes a new instance of the <see cref="ProblemResult" /> class.  I will set the following:
+        ///     <para>
+        ///         <see cref="RequestErrorObject.Instance" /> value to the ActionContext.HttpContext.Request.Path
+        ///     </para>
+        ///     <para>
+        ///         <see cref="ObjectResult.StatusCode" /> value to the <see cref="RequestErrorObject.Status" />
+        ///     </para>
+        ///     <para>
+        ///         I will clear all content types and add "application/problem+json"
+        ///     </para>
         /// </summary>
         /// <param name="error">The error.</param>
         public ProblemResult(RequestErrorObject error)
@@ -29,7 +38,7 @@ namespace APIBlox.AspNetCore.ActionResults
             Error = error;
             StatusCode = Error.Status;
             ContentTypes.Clear();
-            ContentTypes.Add("application/problem+json");
+            ContentTypes.Add(InternalHelpers.ErrorResponseContentType);
         }
 
         /// <inheritdoc />

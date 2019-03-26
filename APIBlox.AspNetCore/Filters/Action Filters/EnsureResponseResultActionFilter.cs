@@ -53,14 +53,14 @@ namespace APIBlox.AspNetCore.Filters
 
             var t = result.Value.GetType();
 
-            ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable));
-            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>) result.Value).Count() : 0;
+            ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable)) && !t.IsAssignableTo(typeof(string));
+            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>)result.Value).Count() : 0;
 
             var retValue = InternalHelpers.EnsureResponseCompliesWithAction(result.Value);
 
             if (!(retValue is null))
                 result.Value = retValue;
-            
+
             Handle(context, result);
         }
 

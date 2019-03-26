@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // We can use our tokens here as well.
             var parentsRoutes = new[]
             {
-                // SIDE NOTE: route values are case sensitive in swashbuckle UI.
+                // SIDE NOTE: route values are case sensitive in swashbuckle UI, the need to match whatever the property name is.
                 "api/dev-v0.0.1/resources/{someRouteValueWeNeed:int}/parents",
                 //
                 //  Comment out to make it more readable in the browser.
@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // Since children is a sub route, we use a relative url(s), and they are
             // built for us, so we only need one url.  With that being said, you COULD call
             // AddController instead of AddSubController, and it NOT be considered a sub route.
-            var childrenSubRoutes = new[] {"{parentId:int}/children"};
+            var childrenSubRoutes = new[] { "{parentId:int}/children" };
 
             //
             //  Now technically we COULD use the same models over and over which would
@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             parentController.AddSubController<ChildRequest, ChildResponse, int>(
                 typeof(int),
-                childrenSubRoutes,
+                childrenSubRoutes, 
                 typeof(FamilyDynamicGetController<,,>)
             );
 
@@ -54,14 +54,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // We could create a ROOT level route for children and return result based on if they like candy or not
             // (Clearly I am having a tough time coming up with example data, don't judge me, sorry for partying...).
-            var childrenRoutes = new[]  { "api/dev-v0.0.1/resources/children/{likesCandy:bool}" };
+            var childrenRoutes = new[] { "api/dev-v0.0.1/resources/children" };
             configs.AddController<ChildRootRequest, ChildResponse, int>(
                 childrenRoutes,
                 //
                 // We are specifying the controller name (which could have been children
                 // like the other existing routes), as the logic behind the scenes uses the last
                 // segment in the route to figure out the name, comment out the name and you will understand.
-                "kidsWithHighDentalBills",
+                "KidsWithHighDentalBills",
                 typeof(ChildrenDynamicGetAllController<,,>)
             );
         }

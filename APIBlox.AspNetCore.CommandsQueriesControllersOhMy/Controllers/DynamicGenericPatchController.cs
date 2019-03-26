@@ -20,18 +20,15 @@ namespace APIBlox.AspNetCore.Controllers
     [ApiController]
     public sealed class DynamicGenericPatchController<TPatchRequest, TPatchObject> : ControllerBase,
         IDynamicController<TPatchRequest>
-        where TPatchRequest : PatchRequest<TPatchObject>
         where TPatchObject : class
     {
-        private readonly IPatchCommandHandler<TPatchRequest, TPatchObject, HandlerResponse> _patchHandler;
-
-        private readonly string _rn = typeof(TPatchRequest).Name;
+        private readonly IGenericPatchCommandHandler<TPatchRequest, TPatchObject, HandlerResponse> _patchHandler;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicPatchController{TRequest}" /> class.
         /// </summary>
         /// <param name="patchHandler">The patch handler.</param>
-        public DynamicGenericPatchController(IPatchCommandHandler<TPatchRequest, TPatchObject, HandlerResponse> patchHandler)
+        public DynamicGenericPatchController(IGenericPatchCommandHandler<TPatchRequest, TPatchObject, HandlerResponse> patchHandler)
         {
             _patchHandler = patchHandler;
         }
@@ -43,6 +40,7 @@ namespace APIBlox.AspNetCore.Controllers
         ///     </para>
         /// </summary>
         /// <param name="patch">The patch.</param>
+        /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;IActionResult&gt;.</returns>
         [HttpPatch]
@@ -53,16 +51,11 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Patch(
             JsonPatchDocument<TPatchObject> patch,
+            [FromRoute] TPatchRequest request,
             CancellationToken cancellationToken
         )
         {
-            //  If a service does not support UPSERT, then a PATCH/PUT call against a resource that
-            //  does not exist MUST result in an HTTP "409 Conflict" error.
-            var req = (TPatchRequest) RouteData.Values[_rn];
-
-            req.Patch = patch;
-
-            var ret = await _patchHandler.HandleAsync(req, cancellationToken).ConfigureAwait(false);
+            var ret = await _patchHandler.HandleAsync(request, patch, cancellationToken).ConfigureAwait(false);
 
             return ret.HasErrors
                 ? (IActionResult) new ProblemResult(ret.Error)

@@ -57,10 +57,11 @@ namespace Examples
         {
             services
 #if UseAPIBlox
-
-            //
-            // Instead of having to manually add to service collection.
+                .AddServerFaults()
+                //
+                // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
+                
                 //
                 //  Change what is returned to the user when an error occurs.
                 .AddAlterRequestErrorObject(err =>
@@ -95,9 +96,9 @@ namespace Examples
 #endif
                 .AddMvc()
 #if UseAPIBlox
-
-            //
-            // Handles cancellation token cancelled.
+                .AddCamelCaseResultsOptions()
+                //
+                // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
                 //
                 // Automatically fill in request object(s) from query params and route data.
@@ -118,7 +119,7 @@ namespace Examples
                 // Custom tokens, example has version
                 .AddRouteTokensConvention(_configuration, _environment, "ExampleTokens")
 #endif
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
         }
@@ -134,7 +135,7 @@ namespace Examples
             // quickly because your dev machine is such a monster!)
             app.UseSimulateWaitTime(_environment);
 #else
-            app.UseDeveloperExceptionPage();
+            //app.UseDeveloperExceptionPage();
 #endif
             app.UseHsts();
 

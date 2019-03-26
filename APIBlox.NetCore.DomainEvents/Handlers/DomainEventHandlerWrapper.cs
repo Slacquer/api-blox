@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 
 // ReSharper disable once CheckNamespace
@@ -14,9 +15,9 @@ namespace APIBlox.NetCore
             _handler = handler;
         }
 
-        public override Task HandleEventAsync(IDomainEvent domainEvent)
+        public override Task HandleEventAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default)
         {
-            return _handler.HandleEventAsync((TDomainEvent) domainEvent);
+            return _handler.HandleEventAsync((TDomainEvent) domainEvent, cancellationToken);
         }
     }
 }

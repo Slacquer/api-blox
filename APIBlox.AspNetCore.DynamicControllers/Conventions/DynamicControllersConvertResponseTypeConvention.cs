@@ -42,7 +42,7 @@ namespace APIBlox.AspNetCore
                 );
 
             var responseTypes = action.Attributes.OfType<ProducesResponseTypeAttribute>()
-                .Where(rt => rt.Type != default(Type))
+                .Where(rt => rt.Type != default)
                 .ToList();
 
             if (!responseTypes.Any())
@@ -54,7 +54,7 @@ namespace APIBlox.AspNetCore
 
                 return;
             }
-
+            
             var t = cType.GenericTypeArguments[cType.GenericTypeArguments.Length == 1 ? 0 : 1];
 
             foreach (var rt in responseTypes)

@@ -1,0 +1,382 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Examples.EventSourcing</name>
+    </assembly>
+    <members>
+        <member name="T:Examples.Controllers.EventSourcingController">
+            <summary>
+                Class EventSourcingController.
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+            <inheritdoc />
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.CosmosAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.MongoAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.RavenAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.EfCoreSqlAggregate})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingController"/> class.
+            </summary>
+            <param name="cosmosSvc">The cosmos SVC.</param>
+            <param name="mongoSvc">The mongo SVC.</param>
+            <param name="ravenSvc">The raven SVC.</param>
+            <param name="efCoreSqlSvc">The ef core SQL SVC.</param>
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController.Get(System.String)">
+            <summary>
+                Gets the specified first name.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <returns>Task&lt;ActionResult&gt;.</returns>
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController.Post(Examples.Resources.AggregateResource,System.Threading.CancellationToken)">
+            <summary>
+                Posts the specified resource.
+            </summary>
+            <param name="resource">The resource.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task&lt;ActionResult&gt;.</returns>
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController.Put(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+                Puts the specified first name.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task&lt;ActionResult&gt;.</returns>
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController.Delete(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Deletes the specified first name.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task&lt;ActionResult&gt;.</returns>
+        </member>
+        <member name="T:Examples.CosmosAggregate">
+            <summary>
+                Class CosmosAggregate.
+            </summary>
+        </member>
+        <member name="M:Examples.CosmosAggregate.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.CosmosAggregate},System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.CosmosAggregate" /> class.
+            </summary>
+            <param name="eventStoreService">The event store service.</param>
+            <param name="streamId">The stream identifier.</param>
+        </member>
+        <member name="P:Examples.CosmosAggregate.DomainEvents">
+            <summary>
+                Gets the domain events.
+            </summary>
+            <value>The domain events.</value>
+        </member>
+        <member name="P:Examples.CosmosAggregate.AggregateId">
+            <summary>
+                Gets the aggregate identifier.
+            </summary>
+            <value>The aggregate identifier.</value>
+        </member>
+        <member name="P:Examples.CosmosAggregate.SomeValue">
+            <summary>
+                Gets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+        <member name="P:Examples.CosmosAggregate.MyVersion">
+            <summary>
+                Gets my version.
+            </summary>
+            <value>My version.</value>
+        </member>
+        <member name="M:Examples.CosmosAggregate.AddSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Adds some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.CosmosAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Updates some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.CosmosAggregate.PublishChangesAsync(System.Threading.CancellationToken)">
+            <summary>
+                publish changes as an asynchronous operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Examples.CosmosAggregate.Build(System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+                Builds the specified fail not found.
+            </summary>
+            <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">StreamId {_streamId}</exception>
+        </member>
+        <member name="M:Examples.CosmosAggregate.DeleteMe(System.Threading.CancellationToken)">
+            <summary>
+                Deletes me.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="T:Examples.EfCoreSqlAggregate">
+            <summary>
+                Class EfCoreSqlAggregate.
+            </summary>
+        </member>
+        <member name="M:Examples.EfCoreSqlAggregate.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.EfCoreSqlAggregate},System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.EfCoreSqlAggregate" /> class.
+            </summary>
+            <param name="eventStoreService">The event store service.</param>
+            <param name="streamId">The stream identifier.</param>
+        </member>
+        <member name="P:Examples.EfCoreSqlAggregate.DomainEvents">
+            <summary>
+                Gets the domain events.
+            </summary>
+            <value>The domain events.</value>
+        </member>
+        <member name="P:Examples.EfCoreSqlAggregate.AggregateId">
+            <summary>
+                Gets the aggregate identifier.
+            </summary>
+            <value>The aggregate identifier.</value>
+        </member>
+        <member name="P:Examples.EfCoreSqlAggregate.SomeValue">
+            <summary>
+                Gets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+        <member name="P:Examples.EfCoreSqlAggregate.MyVersion">
+            <summary>
+                Gets my version.
+            </summary>
+            <value>My version.</value>
+        </member>
+        <member name="M:Examples.EfCoreSqlAggregate.AddSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Adds some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="!:DataAccessException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.EfCoreSqlAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Updates some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.EfCoreSqlAggregate.PublishChangesAsync(System.Threading.CancellationToken)">
+            <summary>
+                publish changes as an asynchronous operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Examples.EfCoreSqlAggregate.DeleteMe(System.Threading.CancellationToken)">
+            <summary>
+                Deletes me.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Examples.EfCoreSqlAggregate.Build(System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+                Builds the specified fail not found.
+            </summary>
+            <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">StreamId {_streamId}</exception>
+        </member>
+        <member name="T:Examples.MongoAggregate">
+            <summary>
+                Class MongoAggregate.
+            </summary>
+        </member>
+        <member name="M:Examples.MongoAggregate.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.MongoAggregate},System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.MongoAggregate" /> class.
+            </summary>
+            <param name="eventStoreService">The event store service.</param>
+            <param name="streamId">The stream identifier.</param>
+        </member>
+        <member name="P:Examples.MongoAggregate.DomainEvents">
+            <summary>
+                Gets the domain events.
+            </summary>
+            <value>The domain events.</value>
+        </member>
+        <member name="P:Examples.MongoAggregate.AggregateId">
+            <summary>
+                Gets the aggregate identifier.
+            </summary>
+            <value>The aggregate identifier.</value>
+        </member>
+        <member name="P:Examples.MongoAggregate.SomeValue">
+            <summary>
+                Gets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+        <member name="P:Examples.MongoAggregate.MyVersion">
+            <summary>
+                Gets my version.
+            </summary>
+            <value>My version.</value>
+        </member>
+        <member name="M:Examples.MongoAggregate.AddSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Adds some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.MongoAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Updates some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.MongoAggregate.PublishChangesAsync(System.Threading.CancellationToken)">
+            <summary>
+                publish changes as an asynchronous operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Examples.MongoAggregate.DeleteMe(System.Threading.CancellationToken)">
+            <summary>
+                Deletes me.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Examples.MongoAggregate.Build(System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+                Builds the specified fail not found.
+            </summary>
+            <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">StreamId {_streamId}</exception>
+        </member>
+        <member name="T:Examples.RavenAggregate">
+            <summary>
+                Class RavenAggregate.
+            </summary>
+        </member>
+        <member name="M:Examples.RavenAggregate.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.RavenAggregate},System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.RavenAggregate" /> class.
+            </summary>
+            <param name="eventStoreService">The event store service.</param>
+            <param name="streamId">The stream identifier.</param>
+        </member>
+        <member name="P:Examples.RavenAggregate.DomainEvents">
+            <summary>
+                Gets the domain events.
+            </summary>
+            <value>The domain events.</value>
+        </member>
+        <member name="P:Examples.RavenAggregate.AggregateId">
+            <summary>
+                Gets the aggregate identifier.
+            </summary>
+            <value>The aggregate identifier.</value>
+        </member>
+        <member name="P:Examples.RavenAggregate.SomeValue">
+            <summary>
+                Gets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+        <member name="P:Examples.RavenAggregate.MyVersion">
+            <summary>
+                Gets my version.
+            </summary>
+            <value>My version.</value>
+        </member>
+        <member name="M:Examples.RavenAggregate.AddSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Adds some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="!:DataAccessException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.RavenAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
+            <summary>
+                Updates some value.
+            </summary>
+            <param name="someValue">Some value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">Aggregate with stream id {_streamId}</exception>
+        </member>
+        <member name="M:Examples.RavenAggregate.PublishChangesAsync(System.Threading.CancellationToken)">
+            <summary>
+                publish changes as an asynchronous operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Examples.RavenAggregate.DeleteMe(System.Threading.CancellationToken)">
+            <summary>
+                Deletes me.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Examples.RavenAggregate.Build(System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+                Builds the specified fail not found.
+            </summary>
+            <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task.</returns>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">StreamId {_streamId}</exception>
+        </member>
+        <member name="T:Examples.Resources.AggregateResource">
+            <summary>
+                Class AggregateResource.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.AggregateResource.FirstName">
+            <summary>
+                Gets or sets the first name.
+            </summary>
+            <value>The first name.</value>
+        </member>
+        <member name="P:Examples.Resources.AggregateResource.SomeValue">
+            <summary>
+                Gets or sets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+    </members>
+</doc>

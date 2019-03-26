@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> 
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>Examples</RootNamespace> 
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -20,15 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.App"  />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\..\ApiBlox.NetCore.Common\APIBlox.NetCore.Common.csproj" />
-    <ProjectReference Include="..\..\..\ApiBlox.NetCore\APIBlox.NetCore.csproj" />
   </ItemGroup>
 
 </Project>

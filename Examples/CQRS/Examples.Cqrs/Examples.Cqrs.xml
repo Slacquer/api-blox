@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Examples.Cqrs</name>
+    </assembly>
+    <members>
+        <member name="T:Examples.Controllers.CqrsController">
+            <inheritdoc />
+            <summary>
+                Very simple usage examples for our CQRS bits.  More real world usage can be found in the Clean Architecture
+                example.
+                <para>
+                    I think the big "Take away" from these examples is to realize just how easy it ends up being to test the
+                    handlers rather than controller code.  They are self contained small blocks of testable code. (or at least
+                    should/could be :)
+                </para>
+                <para>
+                    FYI: (my opinion anyways...)
+                </para>
+                <para>
+                    Request Validation = "Anything that CAN be tested without the need for external sources (IE: checking a db
+                    value)."
+                </para>
+                <para>
+                    Domain Validation = "Anything that CAN NOT be tested without the need for external sources (IE: checking a db
+                    value)."
+                </para>
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="M:Examples.Controllers.CqrsController.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{System.Collections.Generic.IEnumerable{System.String}},APIBlox.AspNetCore.Contracts.IQueryHandler{System.Int32,System.Int32},APIBlox.AspNetCore.Contracts.ICommandHandler{Examples.Resources.ExampleRequestObject})">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Controllers.CqrsController" /> class.
+            </summary>
+            <param name="queryNoInputsHandler">The query no inputs handler.</param>
+            <param name="queryInputsHandler">The query inputs handler.</param>
+            <param name="commandHandler">The command handler.</param>
+        </member>
+        <member name="M:Examples.Controllers.CqrsController.Get">
+            <summary>
+                An example of a query handler that doesn't require inputs.
+            </summary>
+            <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
+        </member>
+        <member name="M:Examples.Controllers.CqrsController.Get(System.Int32)">
+            <summary>
+                An example of a query handler that has inputs.
+            </summary>
+            <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
+        </member>
+        <member name="M:Examples.Controllers.CqrsController.Post(Examples.Resources.ExampleRequestObject)">
+            <summary>
+                An example of a command handler, that is also "wrapped" with a decorator (a great use case is being able to do some
+                domain validation before letting the handler deal with it).
+            </summary>
+            <param name="requestResource">The request resource.</param>
+            <returns>ActionResult.</returns>
+        </member>
+        <member name="T:Examples.Resources.ExampleRequestObject">
+            <summary>
+                Class ExampleRequestObject.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.ExampleRequestObject.SomeValue">
+            <summary>
+                Gets or sets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Examples.DomainEvents</name>
+    </assembly>
+    <members>
+        <member name="T:Examples.Contracts.ILameRepository">
+            <summary>
+                Interface ILameRepository
+            </summary>
+        </member>
+        <member name="M:Examples.Contracts.ILameRepository.AddDomainObject(Examples.DomainModels.DomainObject)">
+            <summary>
+                Adds the domain object.
+            </summary>
+            <param name="domainObject">The domain object.</param>
+        </member>
+        <member name="M:Examples.Contracts.ILameRepository.SaveChanges">
+            <summary>
+                Saves the changes.
+            </summary>
+        </member>
+        <member name="T:Examples.Controllers.NonQueuedDomainEventsController">
+            <inheritdoc />
+            <summary>
+                NON queued domain events controller.
+                <para>
+                    All events are created INSIDE the entities themselves.  Personally,  I use 2
+                    different types of entities, for example IDomainModel and/or IDomainModelWithEvents.
+                    The reason should be clear, you will not always use domain events and
+                    I don't think the entities should be unnecessarily bloated.
+                </para>
+            </summary>
+        </member>
+        <member name="M:Examples.Controllers.NonQueuedDomainEventsController.#ctor(Examples.Contracts.ILameRepository)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Controllers.NonQueuedDomainEventsController" /> class.
+            </summary>
+            <param name="repository">The repository.</param>
+        </member>
+        <member name="M:Examples.Controllers.NonQueuedDomainEventsController.Post(Examples.Resources.ExampleRequestObject)">
+            <summary>
+                Creates an aggregate root entity named DomainObject
+                internally it adds the new event to its own internal collection.
+                Upon saving changes the repository will then inform the event
+                dispatcher of all the events in all of the models in its collection.
+                For me, this was an easy concept to understand, however mastering
+                it will be much more difficult... as there are several ways to do this.
+                Be sure to do your research.  What I have created in the 2 different dispatchers
+                should allow you to handle your events any way you see fit.
+            </summary>
+            <param name="requestResource">The request resource.</param>
+            <returns>ActionResult.</returns>
+        </member>
+        <member name="T:Examples.EventBits.RequestObjectCreatedEvent">
+            <summary>
+                Class RequestObjectCreatedEvent.
+            </summary>
+            <seealso cref="T:APIBlox.NetCore.Contracts.IDomainEvent" />
+        </member>
+        <member name="M:Examples.EventBits.RequestObjectCreatedEvent.#ctor(System.Int32,System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.EventBits.RequestObjectCreatedEvent" /> class.
+            </summary>
+            <param name="theValueThatWasCreated">The value that was created.</param>
+            <param name="someOtherDomainSpecificEventValueNeededForConsumption">
+                Some other domain specific event value needed for consumption.
+            </param>
+        </member>
+        <member name="P:Examples.EventBits.RequestObjectCreatedEvent.TheValueThatWasCreated">
+            <summary>
+                Gets the value that was created.
+            </summary>
+            <value>The value that was created.</value>
+        </member>
+        <member name="P:Examples.EventBits.RequestObjectCreatedEvent.SomeOtherDomainSpecificEventValueNeededForConsumption">
+            <summary>
+                Gets some other domain specific event value needed for consumption.
+            </summary>
+        </member>
+        <member name="T:Examples.DomainModels.DomainObject">
+            <summary>
+                Class DomainObject.
+            </summary>
+        </member>
+        <member name="M:Examples.DomainModels.DomainObject.#ctor(System.Int32)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.DomainModels.DomainObject" /> class.
+            </summary>
+            <param name="someValueToSave">Some value to save.</param>
+        </member>
+        <member name="P:Examples.DomainModels.DomainObject.SomeValueToSave">
+            <summary>
+                Gets some value to save.
+            </summary>
+            <value>Some value to save.</value>
+        </member>
+        <member name="P:Examples.DomainModels.DomainObject.Id">
+            <summary>
+                Gets or sets the identifier.
+            </summary>
+            <value>The identifier.</value>
+        </member>
+        <member name="P:Examples.DomainModels.DomainObject.Events">
+            <summary>
+                Gets the events.
+            </summary>
+            <value>The events.</value>
+        </member>
+        <member name="T:Examples.Resources.ExampleRequestObject">
+            <summary>
+                Class ExampleRequestObject.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.ExampleRequestObject.SomeValue">
+            <summary>
+                Gets or sets some value.
+            </summary>
+            <value>Some value.</value>
+        </member>
+    </members>
+</doc>

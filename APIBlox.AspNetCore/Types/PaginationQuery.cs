@@ -1,125 +1,69 @@
-﻿using System.Collections.Generic;
-using APIBlox.NetCore.Extensions;
-using APIBlox.NetCore.Types.JsonBits;
+﻿using APIBlox.AspNetCore.Contracts;
 using Microsoft.AspNetCore.Http.Extensions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
+    /// <inheritdoc cref="OrderedQuery" />
     /// <summary>
     ///     Class PaginationQuery.
     /// </summary>
-    public class PaginationQuery
+    public class PaginationQuery : OrderedQuery, IPaginationQuery
     {
+        /// <inheritdoc />
         /// <summary>
-        ///     The in map for deciphering incoming query params.
-        /// </summary>
-        [JsonIgnore]
-        public static readonly Dictionary<string, string[]> PaginationMap = new Dictionary<string, string[]>
-        {
-            {"Skip", new[] {"$Skip", "Offset", "$Offset"}},
-            {"Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"}},
-            {"RunningCount", new[] {"$Rc", "Rc", "Count", "$Count", "$RunningCount"}},
-        };
-
-        internal static readonly JsonSerializerSettings AliasesInSettings = new JsonSerializerSettings
-        {
-            ContractResolver = new AliasContractResolver(PaginationMap)
-        };
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="PaginationQuery" /> class.
+        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.PaginationQuery" /> class.
         /// </summary>
         public PaginationQuery()
         {
+            Map.TryAdd("Skip", new[] { "$Skip", "Offset", "$Offset" });
+            Map.TryAdd("Top", new[] { "$Top", "Limit", "$Limit", "Take", "$Take" });
+            Map.TryAdd("RunningCount", new[] { "$Rc", "Rc", "Count", "$Count", "$RunningCount" });
         }
 
-        internal PaginationQuery(PaginationQuery query)
-        {
-            Skip = query.Skip;
-            Top = query.Top;
-            Undefined = query.Undefined;
-
-            if (!query.RunningCountAlias.IsEmptyNullOrWhiteSpace())
-                RunningCountAlias = query.RunningCountAlias;
-
-            if (!query.SkipAlias.IsEmptyNullOrWhiteSpace())
-                SkipAlias = query.SkipAlias;
-
-            if (!query.TopAlias.IsEmptyNullOrWhiteSpace())
-                TopAlias = query.TopAlias;
-        }
-
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the running count.
         /// </summary>
         /// <value>The running count.</value>
+        [FromQuery(Name = "runningCount")]
         public int? RunningCount { get; set; }
 
-        [JsonProperty]
-        internal string RunningCountAlias { get; set; } = "$runningCount";
-
-
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the skip.
         /// </summary>
         /// <value>The skip.</value>
+        [FromQuery(Name = "skip")]
         public int? Skip { get; set; }
 
-        [JsonProperty]
-        internal string SkipAlias { get; set; } = "$skip";
-
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the top.
         /// </summary>
         /// <value>The top.</value>
+        [FromQuery(Name = "top")]
         public int? Top { get; set; }
 
-        [JsonProperty]
-        internal string TopAlias { get; set; } = "$top";
-
-
-        /// <summary>
-        ///     Gets or sets the undefined parameters.
-        /// </summary>
-        /// <value>The other.</value>
-        [JsonExtensionData]
-        internal IDictionary<string, JToken> Undefined { get; set; }
-
+        /// <inheritdoc />
         /// <summary>
         ///     Builds the query.
         /// </summary>
         /// <returns>QueryBuilder.</returns>
-        protected virtual QueryBuilder BuildQuery()
+        protected override QueryBuilder BuildQuery()
         {
-            var qb = new QueryBuilder();
+            var qb = base.BuildQuery();
 
             if (Skip.HasValue)
-                qb.Add(SkipAlias.ToCamelCase(), Skip.Value.ToString());
+                qb.Add("skip", Skip.Value.ToString());
 
             if (Top.HasValue)
-                qb.Add(TopAlias.ToCamelCase(), Top.Value.ToString());
+                qb.Add("top", Top.Value.ToString());
 
             if (RunningCount.HasValue)
-                qb.Add(RunningCountAlias.ToCamelCase(), RunningCount.ToString());
-
-            if (Undefined is null)
-                return qb;
-
-            foreach (var p in Undefined)
-                qb.Add(p.Key.ToCamelCase(), p.Value.ToString());
+                qb.Add("runningCount", RunningCount.ToString());
 
             return qb;
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance if the form of a query string.
-        /// </summary>
-        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
-        public override string ToString()
-        {
-            return BuildQuery().ToString();
         }
     }
 }

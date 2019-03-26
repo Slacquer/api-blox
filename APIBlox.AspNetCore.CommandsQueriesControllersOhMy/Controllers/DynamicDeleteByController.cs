@@ -21,7 +21,7 @@ namespace APIBlox.AspNetCore.Controllers
         where TRequest : class
     {
         private readonly ICommandHandler<TRequest, HandlerResponse> _deleteByHandler;
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicDeleteByController{TRequest}" /> class.
         /// </summary>
@@ -45,12 +45,12 @@ namespace APIBlox.AspNetCore.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(TRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete([FromRoute] TRequest request, CancellationToken cancellationToken)
         {
             var ret = await _deleteByHandler.HandleAsync(request, cancellationToken).ConfigureAwait(false);
 
             return ret.HasErrors
-                ? (IActionResult)new ProblemResult(ret.Error)
+                ? (IActionResult) new ProblemResult(ret.Error)
                 : NoContent();
         }
     }

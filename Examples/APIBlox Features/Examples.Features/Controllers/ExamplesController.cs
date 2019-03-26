@@ -70,7 +70,7 @@ namespace Examples.Controllers
 #if UseAPIBlox
         public ActionResult GetProblemResultExample(CommonStatusCodes statusCode = CommonStatusCodes.Forbidden, string description = null)
         {
-            if (statusCode == CommonStatusCodes.Ok)
+            if (statusCode == CommonStatusCodes.Ok || statusCode == CommonStatusCodes.NoResults)
                 return Ok("Try one that isn't a success code :)");
 
             var errObject = new RequestErrorObject();
@@ -119,14 +119,15 @@ namespace Examples.Controllers
         [HttpGet("serverFault")]
         public ActionResult ThrowExceptionForServerFaultExample(string exceptionMessage)
         {
-            throw new Exception("Be sure to try this out in RELEASE mode",
-                new IndexOutOfRangeException("As most if not all of this",
-                    new ArgumentException("error information is NOT displayed in production",
-                        new FileNotFoundException("By the way here is your message",
-                            new NullReferenceException(exceptionMessage)
-                        )
-                    )
-                )
+            throw new Exception("Be sure to try this out in RELEASE mode"
+                //,
+                //new IndexOutOfRangeException("As most if not all of this",
+                //    new ArgumentException("error information is NOT displayed in production",
+                //        new FileNotFoundException("By the way here is your message",
+                //            new NullReferenceException(exceptionMessage)
+                //        )
+                //    )
+                //)
             );
         }
 

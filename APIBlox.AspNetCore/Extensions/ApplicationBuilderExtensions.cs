@@ -21,6 +21,10 @@ namespace Microsoft.Extensions.DependencyInjection
         ///         <see cref="DeveloperExceptionPageMiddleware" /> then
         ///         be sure to use an ELSE block, otherwise I will take over, MUHAHAHA!.
         ///     </para>
+        ///     <para>
+        ///         Be sure to call <see cref="ServiceCollectionExtensionsAspNetCore.AddServerFaults"/>
+        ///         extension method during service configuration.
+        ///     </para>
         /// </summary>
         /// <param name="app">The application.</param>
         /// <param name="typeUrl">The url to specify in the <see cref="ProblemDetails.Type" /></param>

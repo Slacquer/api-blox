@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Exceptions;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Types.Errors;
@@ -22,11 +23,8 @@ namespace APIBlox.AspNetCore
         private readonly bool _verboseProduction;
 
         public ServerFaultsMiddleware(
-            RequestDelegate next,
-            ILogger<ServerFaultsMiddleware> logger,
-            IHostingEnvironment env,
-            string typeUrl,
-            bool verboseProduction,
+            RequestDelegate next, ILogger<ServerFaultsMiddleware> logger,
+            IHostingEnvironment env, string typeUrl, bool verboseProduction,
             Func<string> referenceIdFunc
         )
         {
@@ -53,24 +51,35 @@ namespace APIBlox.AspNetCore
 
             try
             {
-                string response;
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                ProblemResult result;
 
                 if (error.Error is HandledRequestException handled)
                 {
-                    if (handled.RequestErrorObject.Status != null)
-                        context.Response.StatusCode = handled.RequestErrorObject.Status.Value;
-                    
-                    response = handled.RequestErrorObject.Serialize();
+                    result = new ProblemResult(handled.RequestErrorObject)
+                    {
+                        StatusCode = handled.RequestErrorObject.Status ?? (int)HttpStatusCode.InternalServerError
+                    };
                 }
                 else
                 {
-                    context.Response.Headers["Content-Type"] = "application/problem+json";
-
-                    response = BuildResponse(error.Error, context.Request.Path);
+                    result = new ProblemResult(BuildResponse(error.Error, context.Request.Path))
+                    {
+                        StatusCode = (int)HttpStatusCode.InternalServerError
+                    };
                 }
 
-                await context.Response.WriteAsync(response, context.RequestAborted).ConfigureAwait(false);
+                await context.WriteResultExecutorAsync(result);
+
+            }
+            catch (InvalidOperationException iex)
+            {
+                if (iex.Message.Contains("No result executor"))
+                    _log.LogCritical("It appears that you did not call services.AddServerFaults() during startup (ConfigureServices).");
+                else
+                    _log.LogCritical("Could not write response, Ex: {0}", iex.ToDynamicDataObject(true));
+
+                if (!_env.IsProduction())
+                    throw;
             }
             catch (Exception ex)
             {
@@ -81,16 +90,16 @@ namespace APIBlox.AspNetCore
             }
         }
 
-        private string BuildResponse(Exception err, string instance)
+        private ServerErrorObject BuildResponse(Exception err, string instance)
         {
-            var serialized = "Could not create NON production response.  Error UNKNOWN";
-
+            ServerErrorObject ret = null;
             try
             {
-                serialized = BuildNonProdResponse(err, instance);
+                ret = BuildNonProdResponse(err, instance);
 
-                // We always want to log the full meal deal, however do not display it to user(s) when in production.
-                _log.LogCritical(serialized);
+                // We always want to log the full meal deal,
+                // however do not display it to user(s) when in production.
+                _log.LogCritical(ret.Serialize());
             }
             catch (Exception ex)
             {
@@ -98,22 +107,22 @@ namespace APIBlox.AspNetCore
             }
 
             if (!_env.IsProduction() || _verboseProduction)
-                return serialized;
+                return ret;
 
             try
             {
                 // What we show the consumer in production.
-                serialized = BuildProdResponse(instance);
+                ret = BuildProdResponse(instance);
             }
             catch (Exception ex)
             {
                 _log.LogCritical(() => $"Could not create production response: {ex.Message}");
             }
 
-            return serialized;
+            return ret;
         }
 
-        private string BuildNonProdResponse(Exception err, string instance)
+        private ServerErrorObject BuildNonProdResponse(Exception err, string instance)
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
@@ -125,12 +134,14 @@ namespace APIBlox.AspNetCore
                 Type = _typeUrl
             };
 
-            dto.Errors.Add(err.ToDynamicDataObject());
+            var er = err.ToDynamicDataObject();
+            er.AddProperty("StackTrace", err.StackTrace);
+            dto.Errors.Add(er);
 
-            return dto.Serialize();
+            return dto;
         }
 
-        private string BuildProdResponse(string instance)
+        private ServerErrorObject BuildProdResponse(string instance)
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
@@ -146,7 +157,7 @@ namespace APIBlox.AspNetCore
                 Title = "Please contact support."
             };
 
-            return dto.Serialize();
+            return dto;
         }
     }
 }

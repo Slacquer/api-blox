@@ -1,23 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <!--<RuntimeFrameworkVersion>2.1.*</RuntimeFrameworkVersion>-->
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
 
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
 
-    <PackageReference Include="FluentAssertions" Version="5.4.2" />
-    <PackageReference Include="Moq" Version="4.10.0" />
+    <PackageReference Include="FluentAssertions" Version="5.6.0" />
+    <PackageReference Include="Moq" Version="4.10.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +30,11 @@
     <ProjectReference Include="..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
     <ProjectReference Include="..\ApiBlox.NetCore.Common\APIBlox.NetCore.Common.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.DomainEvents\APIBlox.NetCore.DomainEvents.csproj" />
+    <ProjectReference Include="..\APIBlox.NetCore.EventStore.CosmosDb\APIBlox.NetCore.EventStore.CosmosDb.csproj" />
+    <ProjectReference Include="..\APIBlox.NetCore.EventStore.EfCore\APIBlox.NetCore.EventStore.EfCore.csproj" />
+    <ProjectReference Include="..\APIBlox.NetCore.EventStore.MongoDb\APIBlox.NetCore.EventStore.MongoDb.csproj" />
+    <ProjectReference Include="..\APIBlox.NetCore.EventStore.RavenDb\APIBlox.NetCore.EventStore.RavenDb.csproj" />
+    <ProjectReference Include="..\APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj" />
     <ProjectReference Include="..\ApiBlox.NetCore\APIBlox.NetCore.csproj" />
   </ItemGroup>
 

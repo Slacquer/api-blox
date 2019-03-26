@@ -10,15 +10,23 @@ namespace Microsoft.Extensions.DependencyInjection
         public static void AddFullyDynamicConfiguration(this IDynamicControllerConfigurations configs)
         {
             // We can use our tokens here as well.
-            var route = new[]
-            {
-                "api/noControllers/{someId:int}/dynamicControllerResources/{id:int}"
-            };
+            //var route = new[]
+            //{
+            //    "api/noControllers/{someId:int}/dynamicControllerResources/{id:int}"
+            //};
 
-            configs.AddController<DynamicControllerRequest, DynamicControllerResponse, int>(
-                route,
-                "noControllers",
-                typeof(DynamicQueryByController<,,>)
+            //// This will only be able to be displayed, it will not function as the
+            //// controller requires a query handler (CQRS).  Take a look at the CQRS example.
+            //configs.AddController<DynamicControllerRequest, DynamicControllerResponse, int>(
+            //    route,
+            //    "NoControllers",
+            //    typeof(DynamicQueryByController<,,>)
+            //);
+
+            configs.AddController<DynamicControllerPostRequest, DynamicControllerPostResponse, int>(
+                new[] {"api/noControllers/{someId:int}/dynamicControllerResources"},
+                "NoControllers",
+                typeof(DynamicPostController<,,>)
             );
         }
     }

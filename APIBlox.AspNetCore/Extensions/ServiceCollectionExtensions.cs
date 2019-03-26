@@ -1,6 +1,9 @@
 ﻿using System;
 using APIBlox.AspNetCore;
+using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Types.Errors;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -10,6 +13,18 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceCollectionExtensionsAspNetCore
     {
+        /// <summary>
+        ///     Adds the server faults middleware to the pipeline.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddServerFaults(this IServiceCollection services)
+        {
+            services.TryAddSingleton<IActionResultExecutor<ProblemResult>, ObjectResultExecutor>();
+
+            return services;
+        }
+
         /// <summary>
         ///     Adds a callback mechanism allowing you to modify a fully built
         ///     <see cref="RequestErrorObject" /> just prior to being sent.

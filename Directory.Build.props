@@ -1,7 +1,5 @@
 <Project>
  <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion>
     <Authors>Slacquer</Authors>
     <Company>Slacquers Building Blox</Company>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -13,9 +11,11 @@
     <PackageReleaseNotes>Public Production Release</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://github.com/Slacquer/api-blox/blob/master/LICENSE</PackageLicenseUrl>
+    
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    
     <Version>0.0.0</Version>
-    <PackageTags>dynamic-controllers;controller;netcore2;api-rest;cqrs;aspnetcore;asp-net-core;dependency-injection;inversion-of-control;ioc;ioc-container</PackageTags>
+    <PackageTags>dynamic-controllers;controller;netcore2;api-rest;cqrs;aspnetcore;asp-net-core;dependency-injection;inversion-of-control;ioc;ioc-container;event-sourcing;cqrs</PackageTags>
     <RepositoryUrl>https://github.com/Slacquer/api-blox</RepositoryUrl>
     <Copyright>Slacquers Building Blox</Copyright>
     <AssemblyVersion>0.0.0.0</AssemblyVersion>

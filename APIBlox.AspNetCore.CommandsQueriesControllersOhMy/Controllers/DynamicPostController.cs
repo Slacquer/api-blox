@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace APIBlox.AspNetCore.Controllers
 {
- /// <summary>
+    /// <summary>
     ///     Class DynamicPostController.
     /// </summary>
     /// <typeparam name="TRequest">The type of the t request.</typeparam>
@@ -74,12 +74,13 @@ namespace APIBlox.AspNetCore.Controllers
 
             var id = FindId(ret.Result);
 
-            return id == -1
+            return Equals(id, -1)
                 ? (IActionResult) Ok(ret.Result)
                 : (IActionResult) CreatedAtRoute(new {id}, ret.Result);
         }
 
-        // But it seems sometimes responses do not match what was requested, I think that's a violation but what do I know...
+        // But it seems sometimes responses do not match what was
+        // requested, I think that's a violation but what do I know...
         private object FindId(object result)
         {
             try
@@ -90,10 +91,8 @@ namespace APIBlox.AspNetCore.Controllers
                 var id = props.FirstOrDefault(p => p.Name.EqualsEx("Id"));
 
                 if (id is null)
-                {
                     foreach (var pi in props)
                         return FindId(t.GetProperty(pi.Name).GetValue(result, null));
-                }
                 else
                     return t.GetProperty(id.Name).GetValue(result, null);
             }

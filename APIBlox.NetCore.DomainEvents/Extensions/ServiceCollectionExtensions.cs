@@ -14,10 +14,13 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     <para>
         ///         Designed for use with entities that manager their own events.
         ///     </para>
+        ///     <para>
+        ///         This is not mutually exclusive with <see cref="AddQueuedDomainEventsDispatcher"/>.  Both can be used.
+        ///     </para>
         /// </summary>
         /// <param name="services">The services.</param>
         /// <returns>IServiceCollection.</returns>
-        public static IServiceCollection AddDefaultDomainEventsDispatcher(this IServiceCollection services)
+        public static IServiceCollection AddDomainEventsDispatcher(this IServiceCollection services)
         {
             return services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
         }
@@ -25,7 +28,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         ///     Adds the queued domain events dispatcher to the service collection.
         ///     <para>
-        ///         Designed to be used with commands or either objects when entities do NOT manage their own events.
+        ///         Designed to be used with commands or objects when entities do NOT manage their own events.
+        ///     </para>
+        ///     <para>
+        ///         This is not mutually exclusive with <see cref="AddDomainEventsDispatcher"/>.  Both can be used.
         ///     </para>
         /// </summary>
         /// <param name="services">The services.</param>

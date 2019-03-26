@@ -37,7 +37,7 @@ namespace APIBlox.NetCore
 
             foreach (var ev in events)
             {
-                ExecuteHandlers(ev,
+                await ExecuteHandlers(ev,
                     async handlerTask =>
                     {
                         _log.LogInformation(() => $"Calling HandleEvent {handlerTask}");

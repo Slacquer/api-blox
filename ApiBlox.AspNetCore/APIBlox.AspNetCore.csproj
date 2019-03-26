@@ -2,7 +2,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <!-- <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> -->
+    
     <RootNamespace>APIBlox.AspNetCore</RootNamespace>
 
     <Description>AspNetCore bits.  SourceLink is enabled.</Description>
@@ -13,6 +15,7 @@
 
     <PackageId>APIBlox.AspNetCore</PackageId>
 
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.App"  />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

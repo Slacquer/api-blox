@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
@@ -18,7 +19,7 @@ namespace APIBlox.NetCore
             _serviceProvider = serviceProvider;
         }
 
-        protected void ExecuteHandlers(IDomainEvent de, Action<Task> callback)
+        protected Task ExecuteHandlers(IDomainEvent de, Action<Task> callback)
         {
             // Find the correct handlers, that has a generic arg that matches the event type.
             // Create a wrapper to prevent from invoking magic string methods.
@@ -31,8 +32,18 @@ namespace APIBlox.NetCore
                 (DomainEventHandlerBase) Activator.CreateInstance(handlerWrapperType, h)
             );
 
+            var tasks = new List<Task>();
+
             foreach (var dh in wrapped)
-                callback(dh.HandleEventAsync(de));
+            {
+                var t = dh.HandleEventAsync(de);
+                tasks.Add(t);
+                callback(t);
+            }
+
+            Task.WaitAll(tasks.ToArray());
+
+            return Task.CompletedTask;
         }
     }
 }
