@@ -60,7 +60,7 @@ namespace APIBlox.NetCore
             if (streamId == null)
                 throw new ArgumentNullException(nameof(streamId));
 
-            Expression<Func<IEventStoreDocument, bool>> predicate = e => e.StreamId == streamId;
+            Expression<Func<EventStoreDocument, bool>> predicate = e => e.StreamId == streamId;
 
             if (fromVersion.HasValue && fromVersion > 0)
                 predicate = e => e.StreamId == streamId && e.Version >= fromVersion;
@@ -72,7 +72,7 @@ namespace APIBlox.NetCore
                     predicate = e => e.StreamId == streamId && e.TimeStamp >= fromDate.Value.Ticks && e.TimeStamp <= toDate.Value.Ticks;
             }
 
-            var results = (await Repository.GetAsync<IEventStoreDocument>(predicate, cancellationToken))
+            var results = (await Repository.GetAsync<EventStoreDocument>(predicate, cancellationToken))
                 .OrderByDescending(d => d.DocumentType == DocumentType.Root)
                 .ThenByDescending(d => d.DocumentType == DocumentType.Snapshot)
                 .ThenBy(d => d.SortOrder)
@@ -99,7 +99,7 @@ namespace APIBlox.NetCore
         }
 
 
-        private static EventStreamModel BuildEventStreamModel(string streamId, IEventStoreDocument rootDoc,
+        private static EventStreamModel BuildEventStreamModel(string streamId, EventStoreDocument rootDoc,
             IEnumerable<EventModel> events = null, SnapshotModel snapshot = null)
         {
             return new EventStreamModel
@@ -115,32 +115,58 @@ namespace APIBlox.NetCore
         protected async Task<RootDocument> ReadRootAsync(string streamId,
             CancellationToken cancellationToken = default)
         {
-            var result = await Repository.GetAsync<IEventStoreDocument>(
+            var result = (await Repository.GetAsync<EventStoreDocument>(
                 d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
                 cancellationToken
-            );
+            )).FirstOrDefault();
 
-            return (RootDocument) result.FirstOrDefault();
+            var doc = !(result is null)
+                ? new RootDocument
+                {
+                    DocumentType = result.DocumentType,
+                    Id = result.Id,
+                    StreamId = result.StreamId,
+                    TimeStamp = result.TimeStamp,
+                    Version = result.Version
+                } : null;
+
+            return doc;
         }
 
-        protected virtual EventModel BuildEventModel(IEventStoreDocument document)
+        protected virtual EventModel BuildEventModel(EventStoreDocument document)
         {
-            var d = (EventStoreDocument) document;
+            object data;
+            try
+            {
+                data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings);
+            }
+            catch (JsonSerializationException)
+            {
+                data = document.Data;
+            }
 
             return new EventModel
             {
-                Data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings),
+                Data = data,
                 DataType = document.DataType
             };
         }
 
-        protected virtual SnapshotModel BuildSnapshotModel(IEventStoreDocument document)
+        protected virtual SnapshotModel BuildSnapshotModel(EventStoreDocument document)
         {
-            var d = (EventStoreDocument) document;
+            object data;
+            try
+            {
+                data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings);
+            }
+            catch (JsonSerializationException)
+            {
+                data = document.Data;
+            }
 
             return new SnapshotModel
             {
-                Data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings),
+                Data = data,
                 DataType = document.DataType,
                 Version = document.Version
             };

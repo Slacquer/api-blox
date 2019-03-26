@@ -31,6 +31,7 @@ _March 16th, 2019_  **v1.0.107** _[release notes][rn]_
 - APIBlox.NetCore.DomainEvents
 - APIBlox.NetCore.EventStore
 - APIBlox.NetCore.EventStore.CosmosDb
+- APIBlox.NetCore.EventStore.EfCore
 - APIBlox.NetCore.EventStore.MongoDb
 - APIBlox.NetCore.EventStore.RavenDb
 

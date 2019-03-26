@@ -31,7 +31,7 @@ namespace APIBlox.NetCore
         }
 
         public IMongoCollection<TDocument> Collection<TDocument>(string colName)
-            where TDocument : IEventStoreDocument
+            where TDocument : EventStoreDocument
         {
             var ret = _database.GetCollection<TDocument>(colName);
 
@@ -41,7 +41,7 @@ namespace APIBlox.NetCore
         }
 
         private void IndexCheck<TDocument>(IMongoCollection<TDocument> collection)
-            where TDocument : IEventStoreDocument
+            where TDocument : EventStoreDocument
         {
             if(_options.CollectionProperties is null || !_options.CollectionProperties.Any())
                 return;

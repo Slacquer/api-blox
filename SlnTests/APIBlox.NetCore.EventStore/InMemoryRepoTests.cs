@@ -114,19 +114,23 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             var agg = new DummyAggregate { StreamId = "test-doc" };
 
             await svc.DeleteEventStreamAsync(agg.StreamId);
+            await Task.Delay(100);
 
             var lst = new List<EventModel> { new EventModel { Data = new { someTHing = 99 } }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
 
             var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
+            await Task.Delay(100);
 
             Assert.NotNull(eventStoreDoc);
 
             lst = new List<EventModel> { new EventModel { Data = "4" } };
 
             eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
+            await Task.Delay(100);
             Assert.NotNull(eventStoreDoc);
 
             var result = await svc.ReadEventStreamAsync(agg.StreamId);
+            await Task.Delay(100);
 
             Assert.NotNull(result);
             Assert.True(result.Version == 4);
@@ -142,13 +146,17 @@ namespace SlnTests.APIBlox.NetCore.EventStore
                 new Child{ Foo="ccc", Bar=789},
             };
             await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = agg });
+            await Task.Delay(100);
 
             lst = new List<EventModel> { new EventModel { Data = "5" } };
 
             eventStoreDoc = await svc.WriteToEventStreamAsync(result.StreamId, lst.ToArray(), result.Version);
+            await Task.Delay(100);
+
             Assert.NotNull(eventStoreDoc);
 
             result = await svc.ReadEventStreamAsync(agg.StreamId);
+            await Task.Delay(100);
 
             Assert.True(result.Version == 5);
             Assert.True(result.Events.Length == 1, $"length is {result.Events.Length}");
@@ -159,8 +167,10 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             Assert.True(((List<Child>)data.Children)[0].Structure.Num1 == 44);
 
             await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = "snapshot2" }, true);
+            await Task.Delay(100);
 
             result = await svc.ReadEventStreamAsync(agg.StreamId);
+            await Task.Delay(100);
 
             Assert.True(result.Version == 5);
             Assert.True(result.Events.Length == 0);

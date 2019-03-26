@@ -8,7 +8,7 @@ namespace APIBlox.NetCore.Documents
     /// <summary>
     ///     Class EventStoreDocument.
     /// </summary>
-    public class EventStoreDocument : IEventStoreDocument
+    public class EventStoreDocument
     {
         /// <summary>
         ///     Gets or sets the identifier.

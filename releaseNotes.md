@@ -1,3 +1,13 @@
+_March 25th, 2019_  **v1.0.???**  
+- EventStore, EfCore  
+- Added an EFCore repository, this required me to change the EventStoreDocument "Data" property from type Object to string.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 22nd, 2019_  **v1.0.118**  
 - DynamicControllers  
 - Having an issue with swashbuckle and ApiExplorer where operationId's are getting duplicated.

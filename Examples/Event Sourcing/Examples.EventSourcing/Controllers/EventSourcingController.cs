@@ -23,11 +23,12 @@ namespace Examples.Controllers
         private readonly IEventStoreService<EfCoreSqlAggregate> _efCoreSqlSvc;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EventSourcingController" /> class.
+        /// Initializes a new instance of the <see cref="EventSourcingController"/> class.
         /// </summary>
         /// <param name="cosmosSvc">The cosmos SVC.</param>
         /// <param name="mongoSvc">The mongo SVC.</param>
         /// <param name="ravenSvc">The raven SVC.</param>
+        /// <param name="efCoreSqlSvc">The ef core SQL SVC.</param>
         public EventSourcingController(
             IEventStoreService<CosmosAggregate> cosmosSvc,
             IEventStoreService<MongoAggregate> mongoSvc,
@@ -56,9 +57,9 @@ namespace Examples.Controllers
 
 
             await Task.WhenAll(
-                //c.Build(true),
-                //m.Build(true),
-                //r.Build(true),
+                c.Build(true),
+                m.Build(true),
+                r.Build(true),
                 e.Build(true)
             );
 
@@ -80,16 +81,16 @@ namespace Examples.Controllers
             var e = new EfCoreSqlAggregate(_efCoreSqlSvc, resource.FirstName);
 
             await Task.WhenAll(
-                //c.AddSomeValue(resource.SomeValue, cancellationToken),
-                //m.AddSomeValue(resource.SomeValue, cancellationToken),
-                //r.AddSomeValue(Reverse(resource.SomeValue), cancellationToken),
+                c.AddSomeValue(resource.SomeValue, cancellationToken),
+                m.AddSomeValue(resource.SomeValue, cancellationToken),
+                r.AddSomeValue(Reverse(resource.SomeValue), cancellationToken),
                 e.AddSomeValue(resource.SomeValue, cancellationToken)
             );
 
             await Task.WhenAll(
-                //c.PublishChangesAsync(cancellationToken),
-                //m.PublishChangesAsync(cancellationToken),
-                //r.PublishChangesAsync(cancellationToken),
+                c.PublishChangesAsync(cancellationToken),
+                m.PublishChangesAsync(cancellationToken),
+                r.PublishChangesAsync(cancellationToken),
                 e.PublishChangesAsync(cancellationToken)
             );
 
@@ -114,16 +115,16 @@ namespace Examples.Controllers
             for (var i = 0; i < 10; i++)
             {
                 await Task.WhenAll(
-                    //c.UpdateSomeValue(someValue + i, cancellationToken),
-                    //m.UpdateSomeValue(someValue + i, cancellationToken),
-                    //r.UpdateSomeValue(Reverse(someValue + i), cancellationToken),
+                    c.UpdateSomeValue(someValue + i, cancellationToken),
+                    m.UpdateSomeValue(someValue + i, cancellationToken),
+                    r.UpdateSomeValue(Reverse(someValue + i), cancellationToken),
                     e.UpdateSomeValue(someValue + i, cancellationToken)
                 );
 
                 await Task.WhenAll(
-                    //c.PublishChangesAsync(cancellationToken),
-                    //m.PublishChangesAsync(cancellationToken),
-                    //r.PublishChangesAsync(cancellationToken),
+                    c.PublishChangesAsync(cancellationToken),
+                    m.PublishChangesAsync(cancellationToken),
+                    r.PublishChangesAsync(cancellationToken),
                     e.PublishChangesAsync(cancellationToken)
                 );
             }
@@ -146,9 +147,9 @@ namespace Examples.Controllers
             var e = new EfCoreSqlAggregate(_efCoreSqlSvc, firstName);
 
             await Task.WhenAll(
-                //c.DeleteMe(cancellationToken),
-                //m.DeleteMe(cancellationToken),
-                //r.DeleteMe(cancellationToken),
+                c.DeleteMe(cancellationToken),
+                m.DeleteMe(cancellationToken),
+                r.DeleteMe(cancellationToken),
                 e.DeleteMe(cancellationToken)
             );
 

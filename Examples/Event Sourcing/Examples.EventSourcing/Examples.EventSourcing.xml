@@ -14,11 +14,12 @@
         </member>
         <member name="M:Examples.Controllers.EventSourcingController.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.CosmosAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.MongoAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.RavenAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.EfCoreSqlAggregate})">
             <summary>
-                Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingController" /> class.
+            Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingController"/> class.
             </summary>
             <param name="cosmosSvc">The cosmos SVC.</param>
             <param name="mongoSvc">The mongo SVC.</param>
             <param name="ravenSvc">The raven SVC.</param>
+            <param name="efCoreSqlSvc">The ef core SQL SVC.</param>
         </member>
         <member name="M:Examples.Controllers.EventSourcingController.Get(System.String)">
             <summary>

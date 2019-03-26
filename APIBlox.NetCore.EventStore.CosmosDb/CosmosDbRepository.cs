@@ -69,10 +69,9 @@ namespace APIBlox.NetCore
             return documents.Length;
         }
 
-        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<IEventStoreDocument, bool>> predicate,
+        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
-        )
-            where TResultDocument : IEventStoreDocument
+        ) where TResultDocument : EventStoreDocument
         {
             var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
                     new FeedOptions { EnableCrossPartitionQuery = true }
@@ -119,7 +118,7 @@ namespace APIBlox.NetCore
             }
         }
 
-        public async Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate,
+        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
         {
