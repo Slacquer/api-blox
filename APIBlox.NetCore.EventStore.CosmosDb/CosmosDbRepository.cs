@@ -73,10 +73,10 @@ namespace APIBlox.NetCore
             return documents.Length;
         }
 
-        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<IEventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TResultDocument : EventStoreDocument
+            where TResultDocument : IEventStoreDocument
         {
             var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
                     new FeedOptions { EnableCrossPartitionQuery = true }
@@ -85,11 +85,11 @@ namespace APIBlox.NetCore
                 .OrderByDescending(d => d.SortOrder)
                 .AsDocumentQuery();
 
-            var lst = new List<TResultDocument>();
+            var lst = new List<EventStoreDocument>();
 
             while (qry.HasMoreResults)
             {
-                var ret = await qry.ExecuteNextAsync<TResultDocument>(cancellationToken);
+                var ret = await qry.ExecuteNextAsync<EventStoreDocument>(cancellationToken);
 
                 foreach (var document in ret)
                 {
@@ -103,7 +103,7 @@ namespace APIBlox.NetCore
                 }
             }
 
-            return lst;
+            return (IEnumerable<TResultDocument>) lst;
         }
 
         public async Task UpdateAsync<TDocument>(TDocument document,
@@ -131,7 +131,7 @@ namespace APIBlox.NetCore
             }
         }
 
-        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
         {

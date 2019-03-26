@@ -10,6 +10,7 @@
   <ItemGroup>
 
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -30,9 +31,9 @@
     <ProjectReference Include="..\ApiBlox.NetCore.Common\APIBlox.NetCore.Common.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.DomainEvents\APIBlox.NetCore.DomainEvents.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.EventStore.CosmosDb\APIBlox.NetCore.EventStore.CosmosDb.csproj" />
+    <ProjectReference Include="..\APIBlox.NetCore.EventStore.EfCore\APIBlox.NetCore.EventStore.EfCore.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.EventStore.MongoDb\APIBlox.NetCore.EventStore.MongoDb.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.EventStore.RavenDb\APIBlox.NetCore.EventStore.RavenDb.csproj" />
-    <ProjectReference Include="..\APIBlox.NetCore.EventStore.SqlServer\APIBlox.NetCore.EventStore.SqlServer.csproj" />
     <ProjectReference Include="..\APIBlox.NetCore.EventStore\APIBlox.NetCore.EventStore.csproj" />
     <ProjectReference Include="..\ApiBlox.NetCore\APIBlox.NetCore.csproj" />
   </ItemGroup>

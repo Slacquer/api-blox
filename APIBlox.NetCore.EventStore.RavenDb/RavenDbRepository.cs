@@ -43,16 +43,16 @@ namespace APIBlox.NetCore
             return documents.Length;
         }
 
-        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<IEventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TResultDocument : EventStoreDocument
+            where TResultDocument : IEventStoreDocument
         {
             IEnumerable<TResultDocument> ret;
 
             using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
             {
-                ret = await session.Query<EventStoreDocument>(null, _colName)
+                ret = await session.Query<IEventStoreDocument>(null, _colName)
                     .Where(predicate)
                     .OfType<TResultDocument>()
                     .ToListAsync(token: cancellationToken);
@@ -76,13 +76,13 @@ namespace APIBlox.NetCore
             }
         }
 
-        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
+        public async Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
         {
             int ret;
 
             using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
             {
-                var ids = await session.Query<EventStoreDocument>(null, _colName)
+                var ids = await session.Query<IEventStoreDocument>(null, _colName)
                     .Where(predicate)
                     .Select(x => x.Id)
                     .ToListAsync(token: cancellationToken);

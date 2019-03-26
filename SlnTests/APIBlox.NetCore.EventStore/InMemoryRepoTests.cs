@@ -10,6 +10,7 @@ using APIBlox.NetCore.Models;
 using APIBlox.NetCore.Options;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Azure.Documents.Client;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
@@ -63,51 +64,17 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             return svc;
         }
 
-        private static IEventStoreService<DummyAggregate> GetSqlServerBackedEventStoreService()
+        private static IEventStoreService<DummyAggregate> GetEfCoreSqlBackedEventStoreService()
         {
-            var myConn = new SqlConnection("Server=.;Integrated security=SSPI");
+            var options = new DbContextOptionsBuilder<EventStoreDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .Options;
 
-            var p = @"C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\";
+            var ctx = new EventStoreDbContext(options);
+            var repo = new EfCoreSqlRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
 
-            var str = $"CREATE DATABASE testDb ON PRIMARY (NAME = TestDb_Data, FILENAME = '{p}TestDbData.mdf', " +
-                      $"SIZE = 2MB, MAXSIZE = 10MB, FILEGROWTH = 10%) LOG ON (NAME = TestDbLog, FILENAME = '{p}TestDbLog.ldf', " +
-                      "SIZE = 1MB, MAXSIZE = 5MB, FILEGROWTH = 10%)";
-
-            var myCommand = new SqlCommand(str, myConn);
-            try
-            {
-                myConn.Open();
-                myCommand.ExecuteNonQuery();
-
-                var ctx = new SqlDbContext(new SqlServerOptions { CnnString = "Server=.;Integrated security=SSPI;Database=TestDb" });
-                var repo = new SqlServerRepository<DummyAggregate>(ctx);
-
-                return new EventStoreService<DummyAggregate>(repo);
-            }
-            finally
-            {
-                if (myConn.State == ConnectionState.Open)
-                    myConn.Close();
-            }
-        }
-
-        private static void DeleteSqlServerTestDb()
-        {
-            var myConn = new SqlConnection("Server=.;Integrated security=SSPI");
-            
-            const string str = "drop database [TestDb]";
-
-            var myCommand = new SqlCommand(str, myConn);
-            try
-            {
-                myConn.Open();
-                myCommand.ExecuteNonQuery();
-            }
-            finally
-            {
-                if (myConn.State == ConnectionState.Open)
-                    myConn.Close();
-            }
+            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+            return svc;
         }
 
         [Fact]
@@ -135,13 +102,11 @@ namespace SlnTests.APIBlox.NetCore.EventStore
         }
 
         [Fact]
-        public async Task SqlServerFullTest()
+        public async Task EfCoreSqlServerFullTest()
         {
-            var svc = GetSqlServerBackedEventStoreService();
+            var svc = GetEfCoreSqlBackedEventStoreService();
 
             await RunCommon(svc);
-
-            DeleteSqlServerTestDb();
         }
 
         private static async Task RunCommon(IEventStoreService<DummyAggregate> svc)

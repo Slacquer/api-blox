@@ -7,6 +7,7 @@ using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Models;
+using Newtonsoft.Json;
 
 namespace APIBlox.NetCore
 {

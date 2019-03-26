@@ -1,4 +1,5 @@
 ﻿using System;
+using APIBlox.NetCore.Contracts;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -7,7 +8,7 @@ namespace APIBlox.NetCore.Documents
     /// <summary>
     ///     Class EventStoreDocument.
     /// </summary>
-    public class EventStoreDocument
+    public class EventStoreDocument : IEventStoreDocument
     {
         /// <summary>
         ///     Gets or sets the identifier.

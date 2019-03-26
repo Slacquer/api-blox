@@ -33,6 +33,8 @@ namespace Examples
                 .AddMongoDbRepository<MongoAggregate>(_config)
                 .AddEventStoreService<RavenAggregate>()
                 .AddRavenDbRepository<RavenAggregate>(_config)
+                .AddEventStoreService<EfCoreSqlAggregate>()
+                .AddEfCoreSqlRepository<EfCoreSqlAggregate>(_config)
                 ;
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
