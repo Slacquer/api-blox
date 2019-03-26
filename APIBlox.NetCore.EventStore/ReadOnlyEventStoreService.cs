@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Models;
+using Newtonsoft.Json;
 
 namespace APIBlox.NetCore
 {
@@ -14,10 +15,12 @@ namespace APIBlox.NetCore
         where TModel : class
     {
         protected readonly IEventStoreRepository<TModel> Repository;
+        protected JsonSerializerSettings JsonSettings { get; }
 
-        public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repo)
+        public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repository, JsonSerializerSettings serializerSettings)
         {
-            Repository = repo;
+            Repository = repository;
+            JsonSettings = serializerSettings ?? new JsonSerializerSettings();
         }
 
         public async Task<(long, DateTimeOffset)> ReadEventStreamVersionAsync(string streamId, CancellationToken cancellationToken = default)
@@ -27,7 +30,7 @@ namespace APIBlox.NetCore
             if (root is null)
                 return (0, default(DateTime));
 
-            return (root.Version,  DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp));
+            return (root.Version, DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp));
         }
 
         public Task<EventStreamModel> ReadEventStreamAsync(string streamId, CancellationToken cancellationToken = default)
@@ -124,7 +127,7 @@ namespace APIBlox.NetCore
         {
             return new EventModel
             {
-                Data = document.Data,
+                Data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings),
                 DataType = document.DataType
             };
         }
@@ -133,7 +136,7 @@ namespace APIBlox.NetCore
         {
             return new SnapshotModel
             {
-                Data = document.Data,
+                Data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings),
                 DataType = document.DataType,
                 Version = document.Version
             };

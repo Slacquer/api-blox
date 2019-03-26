@@ -7,15 +7,17 @@ using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Models;
+using Newtonsoft.Json;
 
 namespace APIBlox.NetCore
 {
     internal class EventStoreService<TModel> : ReadOnlyEventStoreService<TModel>, IEventStoreService<TModel>
         where TModel : class
     {
-        public EventStoreService(IEventStoreRepository<TModel> repo)
-            : base(repo)
+        public EventStoreService(IEventStoreRepository<TModel> repo, JsonSerializerSettings serializerSettings = null)
+            : base(repo,serializerSettings)
         {
+            
         }
 
         public async Task<EventStreamModel> WriteToEventStreamAsync(string streamId, EventModel[] events,
@@ -67,7 +69,7 @@ namespace APIBlox.NetCore
             {
                 StreamId = streamId,
                 Version = root.Version,
-                TimeStamp =DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp)
+                TimeStamp = DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp)
             };
 
             var lst = new List<EventModel>();
@@ -119,7 +121,7 @@ namespace APIBlox.NetCore
         }
 
 
-        private static EventDocument BuildEventDoc(EventModel @event, string streamId,
+        private EventDocument BuildEventDoc(EventModel @event, string streamId,
            long timeStamp, long streamVersion)
         {
             var document = new EventDocument
@@ -128,13 +130,13 @@ namespace APIBlox.NetCore
                 Version = streamVersion,
                 TimeStamp = timeStamp,
                 DataType = @event.Data.GetType().AssemblyQualifiedName,
-                Data = @event.Data
+                Data = JsonConvert.SerializeObject(@event.Data, JsonSettings)
             };
 
             return document;
         }
 
-        private static SnapshotDocument BuildSnapShotDoc(string streamId, SnapshotModel snapshot,
+        private SnapshotDocument BuildSnapShotDoc(string streamId, SnapshotModel snapshot,
            long version)
         {
             var document = new SnapshotDocument
@@ -143,7 +145,7 @@ namespace APIBlox.NetCore
                 Version = version,
                 TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds(),
                 DataType = snapshot.Data.GetType().AssemblyQualifiedName,
-                Data = snapshot.Data
+                Data = JsonConvert.SerializeObject(snapshot.Data, JsonSettings)
             };
 
             return document;
