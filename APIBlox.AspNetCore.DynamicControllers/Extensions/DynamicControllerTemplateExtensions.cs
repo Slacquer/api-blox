@@ -13,18 +13,19 @@ namespace APIBlox.AspNetCore.Extensions
     /// </summary>
     public static class DynamicControllerTemplateExtensions
     {
-        ////var controllerName = "MyController";
-        ////var requestObjectType = "int";
-        ////var responseObjectType = "long";
-        ////var parameters = "int p1, long p2";
-        ////var contents = File.ReadAllText(@".\getController.txt");
+        //var controllerName = "MyController";
+        //var requestObjectType = "int";
+        //var responseObjectType = "long";
+        //var parameters = "int p1, long p2";
+        //var contents = File.ReadAllText(@".\getController.txt");
 
-        ////contents = contents.Replace("@GetController", controllerName)
-        ////.Replace("@RequestObj", requestObjectType)
-        ////.Replace("@ResponseObj", responseObjectType)
-        ////.Replace("@params", parameters);
+        //contents = contents.Replace("@GetController", controllerName)
+        //.Replace("@RequestObj", requestObjectType)
+        //.Replace("@ResponseObj", responseObjectType)
+        //.Replace("@params", parameters);
 
-        ////var types = CompileContents(contents);
+        // List<string> failures;
+        //var types = contents.ToTypes(out failures);
 
         /// <summary>
         ///     The beginning of a new way of thinking...
