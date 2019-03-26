@@ -44,12 +44,12 @@ namespace APIBlox.NetCore
             return documents.Length;
         }
 
-        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<IEventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TResultDocument : EventStoreDocument
+            where TResultDocument : IEventStoreDocument
         {
-            var ret = await _context.Collection<EventStoreDocument>(_colName)
+            var ret = await _context.Collection<IEventStoreDocument>(_colName)
                 .Find(predicate)
                 .ToListAsync(cancellationToken);
 
@@ -69,11 +69,11 @@ namespace APIBlox.NetCore
             );
         }
 
-        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<int> DeleteAsync(Expression<Func<IEventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
         {
-            var ret = await _context.Collection<EventStoreDocument>(_colName)
+            var ret = await _context.Collection<IEventStoreDocument>(_colName)
                 .DeleteManyAsync(predicate, null, cancellationToken);
 
             return (int)ret.DeletedCount;

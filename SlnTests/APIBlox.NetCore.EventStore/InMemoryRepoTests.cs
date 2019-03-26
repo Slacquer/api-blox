@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
 using APIBlox.NetCore;
@@ -8,6 +10,7 @@ using APIBlox.NetCore.Models;
 using APIBlox.NetCore.Options;
 using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Azure.Documents.Client;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
@@ -61,6 +64,19 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             return svc;
         }
 
+        private static IEventStoreService<DummyAggregate> GetEfCoreSqlBackedEventStoreService()
+        {
+            var options = new DbContextOptionsBuilder<EventStoreDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .Options;
+
+            var ctx = new EventStoreDbContext(options);
+            var repo = new EfCoreSqlRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
+
+            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+            return svc;
+        }
+
         [Fact]
         public async Task CosmosDbFullTest()
         {
@@ -85,6 +101,14 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             await RunCommon(svc);
         }
 
+        [Fact]
+        public async Task EfCoreSqlServerFullTest()
+        {
+            var svc = GetEfCoreSqlBackedEventStoreService();
+
+            await RunCommon(svc);
+        }
+
         private static async Task RunCommon(IEventStoreService<DummyAggregate> svc)
         {
             var agg = new DummyAggregate { StreamId = "test-doc" };
@@ -92,7 +116,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             await svc.DeleteEventStreamAsync(agg.StreamId);
 
             var lst = new List<EventModel> { new EventModel { Data = new { someTHing = 99 } }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
-            
+
             var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
 
             Assert.NotNull(eventStoreDoc);
