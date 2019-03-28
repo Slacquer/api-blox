@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
         private static IInternalDynamicControllerConfigurationsService _configs;
 
         /// <summary>
-        ///     Add sub controller/resource configuration that has no specific response type.
+        ///     Add controller/resource configuration that has no specific response type.
         ///     <para>
         ///         WARNING!  When your routes are the same yet the route params are different, be sure to use route constraints!
         ///         IE: foo/{id}/bar is no different than foo/{key}/bar, unless the id for example is {id:int}.
@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        ///     Add sub controller/resource configuration that has no specific response type.
+        ///     Add controller/resource configuration that has no specific response type.
         ///     <para>
         ///         WARNING!  When your routes are the same yet the route params are different, be sure to use route constraints!
         ///         IE: foo/{id}/bar is no different than foo/{key}/bar, unless the id for example is {id:int}.

@@ -1,4 +1,6 @@
-_March 25th, 2019_  **v1.0.???**  
+_March 28th, 2019_  **v1.0.119**  
+- DynamicController(s) GET and GETALL, added overload for nothing more than a requestObject.
+- ValidateEnumerable, there technically is no restriction on the DynamicQueryAllController to prevent you from returning back a NON collection.  Meaninging you should have been using DynamicQueryByController.  This will now check for this and log a warning.
 - EventStore, EfCore  
 - Added an EFCore repository, this required me to change the EventStoreDocument "Data" property from type Object to string.
 
