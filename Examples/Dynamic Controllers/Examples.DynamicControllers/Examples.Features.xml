@@ -4,6 +4,11 @@
         <name>Examples.DynamicControllers</name>
     </assembly>
     <members>
+        <member name="T:Microsoft.Extensions.DependencyInjection.MvcBuilderExtensionsDynamicControllers">
+            <summary>
+                Class MvcBuilderExtensions.
+            </summary>
+        </member>
         <member name="T:Examples.Contracts.IRandomNumberGeneratorService">
             <summary>
                 Interface IRandomNumberGeneratorService
@@ -17,6 +22,24 @@
         </member>
         <member name="T:Examples.Resources.ChildRequest">
             <inheritdoc />
+        </member>
+        <member name="P:Examples.Resources.DynamicControllerRequest.RequiredValueMustBeThreeCharacters">
+            <summary>
+            Gets or sets the required value must be three characters.
+            </summary>
+            <value>The required value must be three characters.</value>
+        </member>
+        <member name="P:Examples.Resources.DynamicControllerRequest.SomeId">
+            <summary>
+            Gets or sets some identifier.
+            </summary>
+            <value>Some identifier.</value>
+        </member>
+        <member name="P:Examples.Resources.DynamicControllerRequest.Id">
+            <summary>
+            Gets or sets the identifier.
+            </summary>
+            <value>The identifier.</value>
         </member>
         <member name="T:Examples.Resources.ParentResponse">
             <inheritdoc />

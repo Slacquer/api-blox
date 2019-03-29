@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OutputFile</name>
+    </assembly>
+    <members>
+        <member name="T:SomeNameSpace.Controllers.FUllyDynamic">
+            <summary>
+                Class FUllyDynamic.
+            </summary>
+            <typeparam name="DynamicControllerRequest">The controller actions request parameters.</typeparam>
+            <typeparam name="HandlerResponse">APIBlox default action response object</typeparam>
+        </member>
+        <member name="M:SomeNameSpace.Controllers.FUllyDynamic.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.DynamicControllerRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
+            <summary>
+                Initializes a new instance of the <see cref="T:SomeNameSpace.Controllers.FUllyDynamic" /> class.
+            </summary>
+            <param name="getAllHandler">The handler used to for querying DynamicControllerResponse.</param>
+        </member>
+        <member name="M:SomeNameSpace.Controllers.FUllyDynamic.QueryBy(System.String,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                Action for getting a collection of DynamicControllerResponse resources.
+                <para>
+                    Responses: 200, 204, 401, 403
+                </para>
+            </summary>
+            <response code="200">Successful operation</response>
+            <response code="204">Success with no results</response>
+            <response code="401">UnAuthorized, meaning not authenticated.</response>
+            <response code="403">Authenticated yet not authorized</response>
+        </member>
+    </members>
+</doc>

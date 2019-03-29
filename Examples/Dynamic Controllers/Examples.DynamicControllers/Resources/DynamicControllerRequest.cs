@@ -5,14 +5,26 @@ namespace Examples.Resources
 {
     public class DynamicControllerRequest
     {
+        /// <summary>
+        /// Gets or sets the required value must be three characters.
+        /// </summary>
+        /// <value>The required value must be three characters.</value>
         [FromQuery(Name = "requiredValueMustBeThreeCharacters")]
         [Required]
         [StringLength(3, MinimumLength = 3, ErrorMessage = "Value must be exactly 3 characters long.")]
         public string RequiredValueMustBeThreeCharacters { get; set; }
 
+        /// <summary>
+        /// Gets or sets some identifier.
+        /// </summary>
+        /// <value>Some identifier.</value>
         [FromRoute(Name = "someId")]
         public int SomeId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
         [FromRoute(Name = "id")]
         public int Id { get; set; }
     }

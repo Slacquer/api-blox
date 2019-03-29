@@ -11,6 +11,7 @@ using APIBlox.AspNetCore.Extensions;
 using Examples.Resources;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -35,13 +36,11 @@ namespace Examples
 
             _assemblyNames = new[]
             {
-                "Examples.","OutputFile."
+                "Examples."
             };
 
             var excludeThese = PathParser.FindAllSubDirectories($"{environment.ContentRootPath}\\**\\obj")
                 .Select(di => $"!{di.FullName}").ToList();
-
-            excludeThese.Add("D:\\Source\\Repos\\FKS\\api-blox\\SlnTests\\bin\\Debug\\netcoreapp2.2\\SuccessfullyCompileMultipleControllersAndAssemblyExists");
 
             _assemblyPaths = new List<string>(excludeThese)
             {
@@ -52,15 +51,21 @@ namespace Examples
 
         }
 
+        private const string dll =
+            @"D:\\Source\\Repos\\FKS\\api-blox\\SlnTests\\bin\\Debug\\netcoreapp2.2\\SuccessfullyCompileMultipleControllersAndAssemblyExists\\OutputFile.dll";
+
         public void ConfigureServices(IServiceCollection services)
         {
             services
                 .AddServerFaults()
+
                 //
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
 
                 .AddMvc()
+
+                //.AddApplicationPart(Assembly.LoadFile(dll))
 
                 //
                 //  DynamicControllers and configuration
@@ -69,17 +74,25 @@ namespace Examples
                         //configs.AddFamilyDynamicControllersConfiguration();
                         configs.AddFullyDynamicConfiguration();
                     },
-                   addPostLocationHeaderResultFilter: true)
+                    addPostLocationHeaderResultFilter: true
+                )
+
+                .AddDynamicControllers()
+                
+
                 //
                 // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
+
                 //
                 // Fills in request objects for us.
                 .AddPopulateGenericRequestObjectActionFilter()
+
                 //
                 // Pagination
                 //.AddEnsurePaginationResultActionFilter(100)
                 .AddEnsureResponseResultActionFilter()
+
                 //
                 // Resource Validator.
                 .AddValidateResourceActionFilter()
@@ -94,6 +107,7 @@ namespace Examples
             //
             // Handle any and all server (500) errors with a defined structure.
             app.UseServerFaults();
+
             //
             // Good for testing how things respond (when things go too
             // quickly because your dev machine is such a monster!)
@@ -106,6 +120,36 @@ namespace Examples
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
         }
     }
+}
 
+// ReSharper disable once CheckNamespace
+namespace Microsoft.Extensions.DependencyInjection
+{
+    /// <summary>
+    ///     Class MvcBuilderExtensions.
+    /// </summary>
+    public static class MvcBuilderExtensionsDynamicControllers
+    {
 
+        public static IMvcBuilder AddDynamicControllers( this IMvcBuilder builder)
+        {
+            var factory = new DynamicControllerFactory("OutputFile", false);
+
+            var c1 = factory.ComposeQueryByController<DynamicControllerRequest, DynamicControllerResponse>(
+                "FUllyDynamic"
+            );
+
+            var outfile = @".\FullyDynamic";
+            var fi = factory.Compile(outfile, c1);
+
+            builder.ConfigureApplicationPartManager(pm =>
+                {
+                    var part = new AssemblyPart(Assembly.LoadFrom(fi.FullName));
+                    pm.ApplicationParts.Add(part);
+                }
+            );
+
+            return builder;
+        }
+    }
 }
