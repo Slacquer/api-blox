@@ -50,10 +50,6 @@ namespace Examples
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var factory = new DynamicControllerFactory();
-
-            var (t, e) = factory.MakeGetAllController<DynamicControllerRequest, DynamicControllerResponse>("OmgThisIsCool");
-            
             services
                 .AddServerFaults()
                 //
@@ -107,5 +103,5 @@ namespace Examples
         }
     }
 
-   
+
 }

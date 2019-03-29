@@ -16,24 +16,30 @@ namespace APIBlox.AspNetCore
     /// </summary>
     public class DynamicControllerFactory
     {
+        private readonly string _assemblyOutputName;
+        private readonly bool _production;
+
         /// <summary>
-        ///     Makes a controller given a template.
+        ///     Initializes a new instance of the <see cref="DynamicControllerFactory" /> class.
+        /// </summary>
+        /// <param name="assemblyOutputName">Name of the assembly output.</param>
+        /// <param name="production">if set to <c>true</c> [production].</param>
+        public DynamicControllerFactory(string assemblyOutputName, bool production)
+        {
+            _assemblyOutputName = assemblyOutputName;
+            _production = production;
+        }
+
+        /// <summary>
+        ///     Compiles a template into a controller.
         /// </summary>
         /// <param name="template">The template.</param>
-        /// <param name="assemblyName">Name of the assembly.</param>
-        /// <param name="debug">if set to <c>true</c> compiles in [debug].</param>
         /// <returns>System.ValueTuple&lt;Type, IEnumerable&lt;System.String&gt;&gt;.</returns>
-        public static (IEnumerable<Type>, IEnumerable<string>) Make(string template,
-            string assemblyName = "DynamicControllers",
-            bool debug = true
-        )
+        public (IEnumerable<Type>, IEnumerable<string>) Compile(string template)
         {
             // Found the following piece of gold at...
             // https://github.com/dotnet/roslyn/wiki/Runtime-code-generation-using-Roslyn-compilations-in-.NET-Core-App
             var lst = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
-
-                //
-                //
                 .ToString()
                 .Split(";", StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => MetadataReference.CreateFromFile(s))
@@ -41,14 +47,14 @@ namespace APIBlox.AspNetCore
 
             var csOptions = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,
-                optimizationLevel: debug
-                    ? OptimizationLevel.Debug
-                    : OptimizationLevel.Release
+                optimizationLevel: _production
+                    ? OptimizationLevel.Release
+                    : OptimizationLevel.Debug
             );
 
             var csSyntaxTree = new[] { CSharpSyntaxTree.ParseText(template) };
 
-            var compilation = CSharpCompilation.Create(assemblyName, csSyntaxTree, lst, csOptions);
+            var compilation = CSharpCompilation.Create(_assemblyOutputName, csSyntaxTree, lst, csOptions);
 
             using (var ms = new MemoryStream())
             {
@@ -57,9 +63,7 @@ namespace APIBlox.AspNetCore
                 if (emitResult.Success)
                 {
                     ms.Seek(0, SeekOrigin.Begin);
-                    //var assembly = Assembly.Load(ms.ToArray());
-
-                    var assembly = AppDomain.CurrentDomain.Load(ms.ToArray());
+                    var assembly = Assembly.Load(ms.ToArray());
 
                     return (assembly.GetExportedTypes(), null);
                 }
@@ -103,7 +107,7 @@ namespace APIBlox.AspNetCore
             public static (string, string[]) ToInputParams(Type obj)
             {
                 const string template = "@att @p";
-                var props = obj.GetProperties(BindingFlags.Public  | BindingFlags.Instance).ToList();
+                var props = obj.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList();
 
                 var namespaces = new List<string>();
                 var parameters = new StringBuilder();
@@ -130,11 +134,11 @@ namespace APIBlox.AspNetCore
             }
 
             /// <summary>
-            ///     Given a type this will get a types name and namespaces.
+            ///     Given a type this will get a types name and namespaces.  If a generic type, then the first argument is used as the type name.
             /// </summary>
             /// <param name="obj">The object.</param>
-            /// <returns>System.ValueTuple&lt;System.String, System.String[]&gt;.</returns>
-            public static (string, string[]) ToStringWithNamespaces(Type obj)
+            /// <returns>System.ValueTuple&lt;System.String, System.String, System.String[]&gt;.</returns>
+            public static (string, string, string[]) ToStringWithNamespaces(Type obj)
             {
                 var name = GetNameWithoutGenericArity(obj);
                 var ns = obj.Namespace;
@@ -143,28 +147,28 @@ namespace APIBlox.AspNetCore
                 var result = new StringBuilder();
                 result.Append($"{name}");
 
-                if (obj.IsGenericType)
+                if (!obj.IsGenericType)
+                    return (result.ToString(), null, namespaces.ToArray());
+
+                result.Append("<");
+
+                var args = obj.GetGenericArguments();
+
+                for (var index = 0; index < args.Length; index++)
                 {
-                    result.Append("<");
+                    var type = args[index];
+                    var tNs = type.Namespace;
+                    var tName = type.Name;
 
-                    var args = obj.GetGenericArguments();
+                    result.Append(index == args.Length - 1 ? $"{tName}" : $"{tName},");
 
-                    for (var index = 0; index < args.Length; index++)
-                    {
-                        var type = args[index];
-                        var tNs = type.Namespace;
-                        var tName = type.Name;
-
-                        result.Append(index == args.Length - 1 ? $"{tName}" : $"{tName},");
-
-                        if (!namespaces.Contains(tNs))
-                            namespaces.Add(tNs);
-                    }
-
-                    result.Append(">");
+                    if (!namespaces.Contains(tNs))
+                        namespaces.Add(tNs);
                 }
 
-                return (result.ToString(), namespaces.ToArray());
+                result.Append(">");
+
+                return (result.ToString(), args[0].Name, namespaces.ToArray());
             }
         }
     }

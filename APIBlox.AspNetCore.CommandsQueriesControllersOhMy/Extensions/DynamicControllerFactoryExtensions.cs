@@ -23,19 +23,9 @@ namespace APIBlox.AspNetCore.Extensions
             "APIBlox.AspNetCore.Types"
         };
 
-        /// <summary>
-        ///     Creates a DynamicGetAllController
-        /// </summary>
-        /// <typeparam name="TRequest">The type of the t request.</typeparam>
-        /// <typeparam name="TResponse">The type of the t response.</typeparam>
-        /// <param name="factory">The factory.</param>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <param name="assemblyName">Name of the assembly.</param>
-        /// <param name="productionBuild">if set to <c>true</c> [production build].</param>
-        /// <returns>System.ValueTuple&lt;Type, IEnumerable&lt;System.String&gt;&gt;.</returns>
-        public static (Type, IEnumerable<string>) MakeGetAllController<TRequest, TResponse>(
-            this DynamicControllerFactory factory, string controllerName = null,
-            string assemblyName = "DynamicControllers", bool productionBuild = false
+
+        public static string ComposeGetAllController<TRequest, TResponse>(
+            this DynamicControllerFactory factory, string controllerName = null
         )
         {
             var contents = Contents(typeof(TRequest),
@@ -44,17 +34,15 @@ namespace APIBlox.AspNetCore.Extensions
                 (req, res) => controllerName ?? $"GetAll{res}Using{req}Controller"
             );
 
-            var (types, errors) = DynamicControllerFactory.Make(contents, assemblyName, !productionBuild);
-
-            return (types?.FirstOrDefault(), errors);
+            return contents;
         }
 
 
         private static string Contents(Type requestObj, Type responseObjectResult, string template, Func<string, string, string> buildControllerName)
         {
-            var (reqObj, requestNs) = DynamicControllerFactory.Helpers.ToStringWithNamespaces(requestObj);
+            var (reqObj, _, requestNs) = DynamicControllerFactory.Helpers.ToStringWithNamespaces(requestObj);
             var (parameters, paramNs) = DynamicControllerFactory.Helpers.ToInputParams(requestObj);
-            var (resObj, resultObjNs) = DynamicControllerFactory.Helpers.ToStringWithNamespaces(responseObjectResult);
+            var (resObj, realResObject, resultObjNs) = DynamicControllerFactory.Helpers.ToStringWithNamespaces(responseObjectResult);
 
             var ns = string.Join(Environment.NewLine,
                 DefaultNamespaces
@@ -64,12 +52,13 @@ namespace APIBlox.AspNetCore.Extensions
                     .OrderBy(s => s).Select(s => $"using {s};")
             );
 
-            var cn = buildControllerName(reqObj, resObj);
+            var cn = buildControllerName(reqObj, realResObject??resObj);
 
             var contents = template.Replace("@ControllerName", cn)
                 .Replace("@namespaces", ns)
                 .Replace("@RequestObj", reqObj)
                 .Replace("@ResponseObjResult", resObj)
+                .Replace("@RealResponseObjResult", realResObject??resObj)
                 .Replace("@ResponseObj", typeof(HandlerResponse).Name)
                 .Replace("@params", parameters);
             return contents;
@@ -107,7 +96,7 @@ namespace SomeNameSpace.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAll@ResponseObjResult(@params, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll@RealResponseObjResult(@params, CancellationToken cancellationToken)
         {
             var obj = new @RequestObj();
 

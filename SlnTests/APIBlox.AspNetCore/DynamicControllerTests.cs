@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Extensions;
@@ -17,16 +18,17 @@ namespace SlnTests.APIBlox.AspNetCore
         [Fact]
         internal void Foo()
         {
-            var factory = new DynamicControllerFactory();
+            var factory = new DynamicControllerFactory("fooAss", true);
 
-            var (controllerType, errors) = factory.MakeGetAllController<TestControllerParameters, TestResponseObject>();
+            var foo = factory.ComposeGetAllController<TestControllerParameters, IEnumerable<TestResponseObject>>();
 
-            Assert.NotNull(controllerType);
+            var (controllerTypes, errors) = factory.Compile(foo);
+
+            Assert.NotNull(controllerTypes);
             Assert.Null(errors);
 
-            var actions = controllerType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                //.Where(m=> m.Name.ContainsEx("get")).Select(m=> m.Name).ToList();
-                .Where(m=> m.Name.EqualsEx("GetAllTestResponseObject")).ToList();
+            var actions = controllerTypes.First().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m => m.Name.EqualsEx("GetAllTestResponseObject")).ToList();
 
             Assert.NotEmpty(actions);
 
