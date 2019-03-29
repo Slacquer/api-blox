@@ -4,11 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 
 namespace APIBlox.AspNetCore
 {
@@ -17,39 +19,136 @@ namespace APIBlox.AspNetCore
     /// </summary>
     public class DynamicControllerFactory
     {
-        private readonly string _assemblyOutputName;
+        private readonly string _assemblyName;
         private readonly bool _production;
+        private readonly PortableExecutableReference[] _references;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicControllerFactory" /> class.
         /// </summary>
-        /// <param name="assemblyOutputName">Name of the assembly output.</param>
-        /// <param name="production">if set to <c>true</c> [production].</param>
-        public DynamicControllerFactory(string assemblyOutputName, bool production)
+        /// <param name="assemblyName">Name of the final assembly.</param>
+        /// <param name="production">if set to <c>true</c> [production] otherwise [debug].</param>
+        /// <exception cref="ArgumentNullException">assemblyName</exception>
+        public DynamicControllerFactory(string assemblyName, bool production = false)
         {
-            _assemblyOutputName = assemblyOutputName;
+            if (assemblyName.IsEmptyNullOrWhiteSpace())
+                throw new ArgumentNullException(nameof(assemblyName));
+
+            _assemblyName = assemblyName;
             _production = production;
-        }
 
-        public FileInfo Compile(string outputFolder, params string[] templates)
-        {
-
-        }
-
-        /// <summary>
-        ///     Compiles a template into a controller.
-        /// </summary>
-        /// <param name="templates">The templates to be compiled.</param>
-        /// <returns>System.ValueTuple&lt;Type, IEnumerable&lt;System.String&gt;&gt;.</returns>
-        public (IEnumerable<Type>, IEnumerable<string>) Compile(params string[] templates)
-        {
             // Found the following piece of gold at...
             // https://github.com/dotnet/roslyn/wiki/Runtime-code-generation-using-Roslyn-compilations-in-.NET-Core-App
-            var lst = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
+            _references = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
                 .ToString()
                 .Split(";", StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => MetadataReference.CreateFromFile(s))
                 .ToArray();
+        }
+
+        /// <summary>
+        ///     Gets the compilation errors.
+        /// </summary>
+        /// <value>The compilation errors.</value>
+        public IEnumerable<string> CompilationErrors { get; private set; } = new List<string>();
+
+        /// <summary>
+        ///     Gets the compilation warnings.
+        /// </summary>
+        /// <value>The compilation warnings.</value>
+        public IEnumerable<string> CompilationWarnings { get; private set; } = new List<string>();
+
+        /// <summary>
+        ///     Compiles <see cref="IComposedTemplate"/> to the specified assemblyOutputPath.
+        /// <para>
+        ///     When null is returned, then errors have been generated, check the <see cref="CompilationErrors"/> property.
+        /// </para>
+        /// </summary>
+        /// <param name="assemblyOutputPath">The assembly output path.</param>
+        /// <param name="templates">The templates.</param>
+        /// <returns>FileInfo.</returns>
+        /// <exception cref="ArgumentNullException">assemblyOutputPath</exception>
+        public FileInfo Compile(string assemblyOutputPath, params IComposedTemplate[] templates)
+        {
+            if (assemblyOutputPath.IsEmptyNullOrWhiteSpace())
+                throw new ArgumentNullException(nameof(assemblyOutputPath));
+
+            if (!Directory.Exists(assemblyOutputPath))
+                Directory.CreateDirectory(assemblyOutputPath);
+
+            return EmitToFile(assemblyOutputPath, templates);
+        }
+
+        /// <summary>
+        ///     Compiles <see cref="IComposedTemplate"/> to a collection of types.
+        /// <para>
+        ///     When null is returned, then errors have been generated, check the <see cref="CompilationErrors"/> property.
+        /// </para>
+        /// </summary>
+        /// <param name="templates">The templates.</param>
+        /// <returns>IEnumerable&lt;Type&gt;.</returns>
+        public IEnumerable<Type> Compile(params IComposedTemplate[] templates)
+        {
+            return EmitToTypes(templates);
+        }
+
+        private IEnumerable<Type> EmitToTypes(params IComposedTemplate[] templates)
+        {
+            var csOptions = ResetErrorsAndGetSyntaxTree(templates, out var csSyntaxTree);
+
+            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, _references, csOptions);
+
+            using (var ms = new MemoryStream())
+            {
+                var emitResult = compilation.Emit(ms);
+
+                if (emitResult.Success)
+                {
+                    CheckAndSetWarnings(emitResult);
+
+                    ms.Seek(0, SeekOrigin.Begin);
+
+                    var assembly = Assembly.Load(ms.ToArray());
+
+                    return assembly.GetExportedTypes();
+                }
+
+                CheckAndSetFailures(emitResult);
+
+                return null;
+            }
+        }
+
+
+        private FileInfo EmitToFile(string outputFolder, params IComposedTemplate[] templates)
+        {
+            var csOptions = ResetErrorsAndGetSyntaxTree(templates, out var csSyntaxTree);
+
+            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, _references, csOptions);
+
+            var dll = Path.Combine(outputFolder, $"{_assemblyName}.dll");
+            var pdb = Path.Combine(outputFolder, $"{_assemblyName}.pdb");
+            var xml = Path.Combine(outputFolder, $"{_assemblyName}.xml");
+
+            var emitResult = compilation.Emit(dll, _production ? null : pdb, xml);
+
+            if (emitResult.Success)
+            {
+                CheckAndSetWarnings(emitResult);
+                return new FileInfo(dll);
+            }
+
+            CheckAndSetFailures(emitResult);
+
+            return null;
+        }
+
+        private CSharpCompilationOptions ResetErrorsAndGetSyntaxTree(IComposedTemplate[] templates, out IEnumerable<SyntaxTree> csSyntaxTree)
+        {
+            if (templates is null || !templates.Any())
+                throw new ArgumentNullException(nameof(templates));
+
+            CompilationErrors = null;
 
             var csOptions = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,
@@ -58,34 +157,35 @@ namespace APIBlox.AspNetCore
                     : OptimizationLevel.Debug
             );
 
-            var csSyntaxTree = templates.Select(s => CSharpSyntaxTree.ParseText(s));
-            //var csSyntaxTree = new[] { CSharpSyntaxTree.ParseText(templates) };
+            csSyntaxTree = templates.Select(t => CSharpSyntaxTree.ParseText(t.Content));
+            return csOptions;
+        }
 
-            var compilation = CSharpCompilation.Create(_assemblyOutputName, csSyntaxTree, lst, csOptions);
+        private void CheckAndSetFailures(EmitResult emitResult)
+        {
+            var diagnostics = emitResult.Diagnostics.Where(diagnostic =>
+                diagnostic.IsWarningAsError ||
+                diagnostic.Severity == DiagnosticSeverity.Error
+            );
 
-            using (var ms = new MemoryStream())
-            {
-                var emitResult = compilation.Emit(ms);
+            var failures = diagnostics.Select(diagnostic =>
+                $"{diagnostic.Id}: {diagnostic.GetMessage()}"
+            ).ToArray();
 
-                if (emitResult.Success)
-                {
-                    ms.Seek(0, SeekOrigin.Begin);
-                    var assembly = Assembly.Load(ms.ToArray());
-                    
-                    return (assembly.GetExportedTypes(), null);
-                }
+            CompilationErrors = failures;
+        }
 
-                var diagnostics = emitResult.Diagnostics.Where(diagnostic =>
-                    diagnostic.IsWarningAsError ||
-                    diagnostic.Severity == DiagnosticSeverity.Error
-                );
+        private void CheckAndSetWarnings(EmitResult emitResult)
+        {
+            var diagnostics = emitResult.Diagnostics.Where(diagnostic =>
+                !diagnostic.IsSuppressed
+            );
 
-                var failures = diagnostics.Select(diagnostic =>
-                    $"{diagnostic.Id}: {diagnostic.GetMessage()}"
-                ).ToArray();
+            var warnings = diagnostics.Select(diagnostic =>
+                $"{diagnostic.Id}: {diagnostic.GetMessage()}"
+            ).ToArray();
 
-                return (null, failures);
-            }
+            CompilationWarnings = warnings;
         }
 
         private static string GetNameWithoutGenericArity(Type t)
@@ -100,6 +200,8 @@ namespace APIBlox.AspNetCore
             var preFix = isRoute ? "Route" : "Query";
             return att.Name is null ? $"[From{preFix}]" : $"[From{preFix}(Name = \"{att.Name}\")]";
         }
+
+        #region -    Nested type: Helpers    -
 
         /// <summary>
         ///     Class Helpers.
@@ -141,7 +243,8 @@ namespace APIBlox.AspNetCore
             }
 
             /// <summary>
-            ///     Given a type this will get a types name and namespaces.  If a generic type, then the first argument is used as the type name.
+            ///     Given a type this will get a types name and namespaces.  If a generic type, then the first argument is used as the
+            ///     type name.
             /// </summary>
             /// <param name="obj">The object.</param>
             /// <returns>System.ValueTuple&lt;System.String, System.String, System.String[]&gt;.</returns>
@@ -196,7 +299,7 @@ namespace APIBlox.AspNetCore
                     setters.Append($"{pi.Name} = {pi.Name.ToCamelCase()}{comma}");
                 }
 
-                return $"new {obj.Name}{{{ setters }}}";
+                return $"new {obj.Name}{{{setters}}}";
             }
 
             private static List<PropertyInfo> GetPublicReadWriteProperties(Type type)
@@ -206,5 +309,7 @@ namespace APIBlox.AspNetCore
                     .ToList();
             }
         }
+
+        #endregion
     }
 }

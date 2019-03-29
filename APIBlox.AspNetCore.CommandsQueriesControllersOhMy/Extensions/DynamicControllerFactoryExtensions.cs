@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Types;
 
@@ -25,7 +26,7 @@ namespace APIBlox.AspNetCore.Extensions
         };
 
         
-        public static string ComposeQueryByController<TRequest, TResponse>(
+        public static IComposedTemplate ComposeQueryByController<TRequest, TResponse>(
             this DynamicControllerFactory factory, string controllerName = null,
             string controllerRoute = "api/[controller]", string actionRoute = null
         )
@@ -40,10 +41,10 @@ namespace APIBlox.AspNetCore.Extensions
                 (req, res) => controllerName ?? $"QueryBy{res}Controller"
             );
 
-            return contents;
+            return new DynamicControllerComposedTemplate(contents);
         }
 
-        public static string ComposeQueryAllController<TRequest, TResponse>(
+        public static IComposedTemplate ComposeQueryAllController<TRequest, TResponse>(
             this DynamicControllerFactory factory, string controllerName = null,
             string controllerRoute = "api/[controller]", string actionRoute = null
         )
@@ -58,7 +59,7 @@ namespace APIBlox.AspNetCore.Extensions
                 (req, res) => controllerName ?? $"QueryAll{res}Controller"
             );
 
-            return contents;
+            return new DynamicControllerComposedTemplate(contents);
         }
 
         private static string Contents(Type requestObj, Type responseObjectResult,
@@ -87,7 +88,7 @@ namespace APIBlox.AspNetCore.Extensions
                 .Replace("[ACTION_ROUTE]", actionRoute is null ? "" : $"({actionRoute})")
                 .Replace("[REQ_OBJECT]", reqObj)
                 .Replace("[RES_OBJECT_RESULT]", resObj)
-                .Replace("[RES_OBJECT_INNER_RESULT", realResObject ?? resObj)
+                .Replace("[RES_OBJECT_INNER_RESULT]", realResObject ?? resObj)
                 .Replace("[NEW_REQ_OBJECT]", newReqObj)
                 .Replace("[ACTION_PARAMS]", parameters);
             return contents;

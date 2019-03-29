@@ -35,17 +35,21 @@ namespace Examples
 
             _assemblyNames = new[]
             {
-                "Examples."
+                "Examples.","OutputFile."
             };
 
             var excludeThese = PathParser.FindAllSubDirectories($"{environment.ContentRootPath}\\**\\obj")
-                .Select(di => $"!{di.FullName}");
+                .Select(di => $"!{di.FullName}").ToList();
+
+            excludeThese.Add("D:\\Source\\Repos\\FKS\\api-blox\\SlnTests\\bin\\Debug\\netcoreapp2.2\\SuccessfullyCompileMultipleControllersAndAssemblyExists");
 
             _assemblyPaths = new List<string>(excludeThese)
             {
                 _environment.ContentRootPath,
                 new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName
             }.ToArray();
+
+
         }
 
         public void ConfigureServices(IServiceCollection services)

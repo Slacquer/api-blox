@@ -22,10 +22,10 @@ namespace SlnTests.APIBlox.AspNetCore
 
             var foo = factory.ComposeQueryAllController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryAllController");
 
-            var (controllerTypes, errors) = factory.Compile(foo);
+            var controllerTypes = factory.Compile(foo);
 
             Assert.NotNull(controllerTypes);
-            Assert.Null(errors);
+            Assert.Null(factory.CompilationErrors);
 
             var actions = controllerTypes.First().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Where(m => m.Name.EqualsEx("QueryAll")).ToList();
@@ -48,10 +48,10 @@ namespace SlnTests.APIBlox.AspNetCore
 
             var foo = factory.ComposeQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryByController");
 
-            var (controllerTypes, errors) = factory.Compile(foo);
+            var controllerTypes = factory.Compile(foo);
 
             Assert.NotNull(controllerTypes);
-            Assert.Null(errors);
+            Assert.Null(factory.CompilationErrors);
 
             var actions = controllerTypes.First().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Where(m => m.Name.EqualsEx("QueryBy")).ToList();
@@ -70,7 +70,7 @@ namespace SlnTests.APIBlox.AspNetCore
         [Fact]
         internal void SuccessfullyCompileMultipleControllersAndAssemblyExists()
         {
-            var factory = new DynamicControllerFactory("RealAssembly", false);
+            var factory = new DynamicControllerFactory("OutputFile", false);
 
             var c1 = factory.ComposeQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>(
                 "SuccessfullyCompileMultipleControllersAndAssemblyExists1"
@@ -79,8 +79,13 @@ namespace SlnTests.APIBlox.AspNetCore
                 "SuccessfullyCompileMultipleControllersAndAssemblyExists2"
             );
 
-            var (controllerTypes, errors) = factory.Compile( c1, c2 );
+            var outfile = @".\SuccessfullyCompileMultipleControllersAndAssemblyExists";
+            var fi = factory.Compile(outfile, c1, c2);
 
+            Assert.NotNull(fi);
+
+            Assert.True(fi.Exists);
+            Assert.True(fi.Length > 0);
         }
     }
 

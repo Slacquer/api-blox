@@ -2,17 +2,33 @@
 
 namespace SomeNameSpace.Controllers
 {
+	/// <summary>
+    ///     Class [CONTROLLER_NAME].
+    /// </summary>
+    /// <typeparam name="[REQ_OBJECT]">The controller actions request parameters.</typeparam>
+    /// <typeparam name="HandlerResponse">APIBlox default action response object</typeparam>
     [Route("[CONTROLLER_ROUTE]")]
     [ApiController]
     public sealed class [CONTROLLER_NAME] : ControllerBase
     {
         private readonly IQueryHandler<[REQ_OBJECT], HandlerResponse> _getByHandler;
 
+		/// <summary>
+        ///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
+        /// </summary>
+        /// <param name="getAllHandler">The handler used to for querying [RES_OBJECT_INNER_RESULT].</param>
         public [CONTROLLER_NAME](IQueryHandler<[REQ_OBJECT], HandlerResponse> getByHandler)
         {
             _getByHandler = getByHandler;
         }
 
+		/// <summary>
+        ///     Action for getting a collection of [RES_OBJECT_INNER_RESULT] resources.
+        ///     <para>
+        ///         Responses: 200, 204, 401, 403
+        ///     </para>
+        /// </summary>
+        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [HttpGet[ACTION_ROUTE]]
         [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
