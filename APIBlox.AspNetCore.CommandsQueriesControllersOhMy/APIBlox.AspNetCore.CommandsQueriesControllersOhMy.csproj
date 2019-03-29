@@ -21,6 +21,13 @@
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
     <None Remove="APIBlox.AspNetCore.CommandsQueriesControllersOhMy.csproj.DotSettings" />
+    <None Remove="Templates\DynamicQueryAllController.txt" />
+    <None Remove="Templates\DynamicQueryByController.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\DynamicQueryByController.txt" />
+    <EmbeddedResource Include="Templates\DynamicQueryAllController.txt" />
   </ItemGroup>
 
   <ItemGroup>
