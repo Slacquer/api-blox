@@ -37,7 +37,7 @@ namespace APIBlox.AspNetCore.Extensions
                 controllerRoute,
                 actionRoute,
                 getTemplate,
-                (req, res) => controllerName ?? $"GetAll{res}Using{req}Controller"
+                (req, res) => controllerName ?? $"QueryBy{res}Controller"
             );
 
             return contents;
@@ -55,7 +55,7 @@ namespace APIBlox.AspNetCore.Extensions
                 controllerRoute,
                 actionRoute,
                 getTemplate,
-                (req, res) => controllerName ?? $"GetAll{res}Using{req}Controller"
+                (req, res) => controllerName ?? $"QueryAll{res}Controller"
             );
 
             return contents;
@@ -86,9 +86,8 @@ namespace APIBlox.AspNetCore.Extensions
                 .Replace("[CONTROLLER_ROUTE]", controllerRoute)
                 .Replace("[ACTION_ROUTE]", actionRoute is null ? "" : $"({actionRoute})")
                 .Replace("[REQ_OBJECT]", reqObj)
-                .Replace("[REQ_OBJECT_RESULT]", resObj)
-                .Replace("[REAL_RES_OBJECT_RESULT", realResObject ?? resObj)
-                .Replace("[RES_OBJECT]", typeof(HandlerResponse).Name)
+                .Replace("[RES_OBJECT_RESULT]", resObj)
+                .Replace("[RES_OBJECT_INNER_RESULT", realResObject ?? resObj)
                 .Replace("[NEW_REQ_OBJECT]", newReqObj)
                 .Replace("[ACTION_PARAMS]", parameters);
             return contents;

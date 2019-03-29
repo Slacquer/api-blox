@@ -31,12 +31,17 @@ namespace APIBlox.AspNetCore
             _production = production;
         }
 
+        public FileInfo Compile(string outputFolder, params string[] templates)
+        {
+
+        }
+
         /// <summary>
         ///     Compiles a template into a controller.
         /// </summary>
-        /// <param name="template">The template.</param>
+        /// <param name="templates">The templates to be compiled.</param>
         /// <returns>System.ValueTuple&lt;Type, IEnumerable&lt;System.String&gt;&gt;.</returns>
-        public (IEnumerable<Type>, IEnumerable<string>) Compile(string template)
+        public (IEnumerable<Type>, IEnumerable<string>) Compile(params string[] templates)
         {
             // Found the following piece of gold at...
             // https://github.com/dotnet/roslyn/wiki/Runtime-code-generation-using-Roslyn-compilations-in-.NET-Core-App
@@ -53,7 +58,8 @@ namespace APIBlox.AspNetCore
                     : OptimizationLevel.Debug
             );
 
-            var csSyntaxTree = new[] { CSharpSyntaxTree.ParseText(template) };
+            var csSyntaxTree = templates.Select(s => CSharpSyntaxTree.ParseText(s));
+            //var csSyntaxTree = new[] { CSharpSyntaxTree.ParseText(templates) };
 
             var compilation = CSharpCompilation.Create(_assemblyOutputName, csSyntaxTree, lst, csOptions);
 
@@ -65,7 +71,7 @@ namespace APIBlox.AspNetCore
                 {
                     ms.Seek(0, SeekOrigin.Begin);
                     var assembly = Assembly.Load(ms.ToArray());
-
+                    
                     return (assembly.GetExportedTypes(), null);
                 }
 

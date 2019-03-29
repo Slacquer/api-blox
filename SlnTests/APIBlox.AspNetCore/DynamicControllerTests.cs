@@ -16,11 +16,11 @@ namespace SlnTests.APIBlox.AspNetCore
     public class DynamicControllerTests
     {
         [Fact]
-        internal void Foo()
+        internal void SuccessfullyCompileQueryAllController()
         {
             var factory = new DynamicControllerFactory("fooAss", true);
 
-            var foo = factory.ComposeQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>("MySUperCooolController");
+            var foo = factory.ComposeQueryAllController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryAllController");
 
             var (controllerTypes, errors) = factory.Compile(foo);
 
@@ -28,7 +28,7 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.Null(errors);
 
             var actions = controllerTypes.First().GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(m => m.Name.EqualsEx("GetAllTestResponseObject")).ToList();
+                .Where(m => m.Name.EqualsEx("QueryAll")).ToList();
 
             Assert.NotEmpty(actions);
 
@@ -39,6 +39,48 @@ namespace SlnTests.APIBlox.AspNetCore
             var p1 = parameters.First().GetCustomAttributes(typeof(FromRouteAttribute), false);
 
             Assert.NotNull(p1);
+        }
+
+        [Fact]
+        internal void SuccessfullyCompileQueryByController()
+        {
+            var factory = new DynamicControllerFactory("MyAss", false);
+
+            var foo = factory.ComposeQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryByController");
+
+            var (controllerTypes, errors) = factory.Compile(foo);
+
+            Assert.NotNull(controllerTypes);
+            Assert.Null(errors);
+
+            var actions = controllerTypes.First().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m => m.Name.EqualsEx("QueryBy")).ToList();
+
+            Assert.NotEmpty(actions);
+
+            var parameters = actions.First().GetParameters();
+
+            Assert.NotEmpty(parameters);
+
+            var p1 = parameters.First().GetCustomAttributes(typeof(FromRouteAttribute), false);
+
+            Assert.NotNull(p1);
+        }
+
+        [Fact]
+        internal void SuccessfullyCompileMultipleControllersAndAssemblyExists()
+        {
+            var factory = new DynamicControllerFactory("RealAssembly", false);
+
+            var c1 = factory.ComposeQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>(
+                "SuccessfullyCompileMultipleControllersAndAssemblyExists1"
+            );
+            var c2 = factory.ComposeQueryAllController<TestControllerParameters, IEnumerable<TestResponseObject>>(
+                "SuccessfullyCompileMultipleControllersAndAssemblyExists2"
+            );
+
+            var (controllerTypes, errors) = factory.Compile( c1, c2 );
+
         }
     }
 
