@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-// ReSharper disable once CheckNamespace
-namespace APIBlox.AspNetCore.Filters.Authorization
+namespace APIBlox.AspNetCore.Filters
 {
     /// <inheritdoc />
     /// <summary>

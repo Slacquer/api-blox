@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-// ReSharper disable once CheckNamespace
 namespace APIBlox.AspNetCore.Filters
 {
     internal class EnsureResponseResultActionFilter : IAsyncActionFilter

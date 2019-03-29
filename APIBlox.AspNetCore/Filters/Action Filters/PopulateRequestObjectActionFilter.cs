@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-// ReSharper disable once CheckNamespace
-namespace APIBlox.AspNetCore
+namespace APIBlox.AspNetCore.Filters
 {
     internal class PopulateRequestObjectActionFilter : IAsyncActionFilter
     {
