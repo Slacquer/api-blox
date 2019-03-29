@@ -4,6 +4,7 @@ using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Types;
+using APIBlox.NetCore.Extensions;
 
 namespace APIBlox.AspNetCore.Extensions
 {
@@ -81,6 +82,11 @@ namespace APIBlox.AspNetCore.Extensions
             );
 
             var cn = buildControllerName(reqObj, realResObject ?? resObj);
+
+            // XML Comments need to be read for input params, summary, remarks etc.
+            // https://stackoverflow.com/questions/15602606/programmatically-get-summary-comments-at-runtime
+
+            var foo = requestObj.GetProperties().First().GetDocumentation();
 
             var contents = template.Replace("[CONTROLLER_NAME]", cn)
                 .Replace("[NAMESPACES]", ns)

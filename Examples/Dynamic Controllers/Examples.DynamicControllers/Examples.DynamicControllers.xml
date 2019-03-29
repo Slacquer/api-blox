@@ -1,9 +1,14 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Examples.Features</name>
+        <name>Examples.DynamicControllers</name>
     </assembly>
     <members>
+        <member name="T:Microsoft.Extensions.DependencyInjection.MvcBuilderExtensionsDynamicControllers">
+            <summary>
+                Class MvcBuilderExtensions.
+            </summary>
+        </member>
         <member name="T:Examples.Contracts.IRandomNumberGeneratorService">
             <summary>
                 Interface IRandomNumberGeneratorService
@@ -15,117 +20,44 @@
             </summary>
             <returns>System.Int32.</returns>
         </member>
-        <member name="T:Examples.Controllers.ExamplesController">
+        <member name="T:Examples.Resources.ChildRequest">
             <inheritdoc />
-            <summary>
-                Class ExamplesController.
-            </summary>
-            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
         </member>
-        <member name="M:Examples.Controllers.ExamplesController.#ctor(Examples.Contracts.IRandomNumberGeneratorService)">
+        <member name="T:Examples.Resources.DynamicControllerRequest">
             <summary>
-                Initializes a new instance of the <see cref="T:Examples.Controllers.ExamplesController"/> class.
-            </summary>
-            <param name="randomNumberGeneratorService">The random number generator service.</param>
-        </member>
-        <member name="M:Examples.Controllers.ExamplesController.Get(System.String)">
-             <summary>
-                 app.UseSimulateWaitTime(_environment); example 
-             </summary>
-            <param name="wait">if not null then simulate wait middleware will kick in.</param>
-            
-             <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
-        </member>
-        <member name="M:Examples.Controllers.ExamplesController.GetProblemResultExample(APIBlox.AspNetCore.Enums.CommonStatusCodes,System.String)">
-            <summary>
-                ProblemResult example
-            </summary>
-            <param name="statusCode">The status code.</param>
-            <param name="description">The description, when empty no error details are displayed</param>
-            <returns>ActionResult.</returns>
-        </member>
-        <member name="M:Examples.Controllers.ExamplesController.ThrowExceptionForServerFaultExample(System.String)">
-            <summary>
-                app.UseServerFaults(); example
-            </summary>
-            <param name="exceptionMessage">The exception message.</param>
-            <returns>ActionResult.</returns>
-            <exception cref="T:System.Exception">
-                Be sure to try this out in RELEASE mode - new System.IndexOutOfRangeException("As most if not all of this",
-                new System.ArgumentException("error information is NOT displayed in production",
-                new System.IO.FileNotFoundException("By the way here is your message",
-                new System.NullReferenceException(exceptionMessage)
-                )
-                )
-                )
-            </exception>
-            <exception cref="T:System.IndexOutOfRangeException">
-                As most if not all of this - new System.ArgumentException("error information is NOT displayed in production",
-                new System.IO.FileNotFoundException("By the way here is your message",
-                new System.NullReferenceException(exceptionMessage)
-                )
-                )
-            </exception>
-            <exception cref="T:System.ArgumentException">
-                error information is NOT displayed in production - new System.IO.FileNotFoundException("By the way here is your
-                message",
-                new System.NullReferenceException(exceptionMessage)
-                )
-            </exception>
-            <exception cref="T:System.IO.FileNotFoundException">By the way here is your message</exception>
-            <exception cref="T:System.NullReferenceException"></exception>
-        </member>
-        <member name="M:Examples.Controllers.ExamplesController.Post(Examples.Resources.ExampleRequestObject)">
-            <summary>
-                services.AddPopulateRequestObjectActionFilter() example
-            </summary>
-            <param name="requestResource">The request resource.</param>
-        </member>
-        <member name="M:Examples.Controllers.ExamplesController.Put(System.Int32,System.String,System.Threading.CancellationToken)">
-            <summary>
-                services.AddOperationCanceledExceptionFilter() example
-            </summary>
-            <remarks>
-                This method doesn't PUT anything, its actually an example that will show how the APIBlox OperationCanceledExceptionFilter will prevent errors from showing up in your logs when someone makes a call to one of your actions, doesn't bother to wait, and ends up going to YOUTUBE (or somewhere else).  If you don't know what i mean, be sure to comment out the  startup entry services.AddOperationCanceledExceptionFilter().  Then execute this action, and within 30 seconds browse to a new location.
-            </remarks>
-            <param name="id">The identifier.</param>
-            <param name="value">The value.</param>
-            <param name="cancellationToken"></param>
-        </member>
-        <member name="M:Examples.Controllers.ExamplesController.Delete(System.Int32)">
-            <summary>
-                Deletes the specified identifier.
-            </summary>
-            <param name="id">The identifier.</param>
-        </member>
-        <member name="T:Examples.Resources.ExampleRequestObject">
-            <summary>
-                Class ExampleRequestObject.
+                DynamicControllerRequest.
             </summary>
         </member>
-        <member name="P:Examples.Resources.ExampleRequestObject.ValueId">
+        <member name="P:Examples.Resources.DynamicControllerRequest.RequiredValueMustBeThreeCharacters">
             <summary>
-                Gets the parent value id.
-            <para>
-                The action filter will populate private properties from query and route params.
-            </para>
+            Gets or sets the required value must be three characters.
             </summary>
-            <value>The parent value id.</value>
+            <value>The required value must be three characters.</value>
         </member>
-        <member name="P:Examples.Resources.ExampleRequestObject.CoolNewValue">
+        <member name="P:Examples.Resources.DynamicControllerRequest.SomeId">
             <summary>
-                Gets or sets the cool new value.  I am required, so if
-                you omit me, then the APIBlox ValidateResourceActionFilter will kick in resulting in an 400.
+            Gets or sets some identifier.
             </summary>
-            <value>The cool new value.</value>
+            <value>Some identifier.</value>
+        </member>
+        <member name="P:Examples.Resources.DynamicControllerRequest.Id">
+            <summary>
+            Gets or sets the identifier.
+            </summary>
+            <value>The identifier.</value>
+        </member>
+        <member name="T:Examples.Resources.ParentResponse">
+            <inheritdoc />
         </member>
         <member name="T:Examples.Services.RandomNumberGeneratorService">
+            <inheritdoc />
             <summary>
                 Class RandomNumberGeneratorService.
             </summary>
             <seealso cref="T:Examples.Contracts.IRandomNumberGeneratorService" />
         </member>
         <member name="M:Examples.Services.RandomNumberGeneratorService.GenerateNumber(System.Int32)">
+            <inheritdoc />
             <summary>
                 Generates the number.
             </summary>

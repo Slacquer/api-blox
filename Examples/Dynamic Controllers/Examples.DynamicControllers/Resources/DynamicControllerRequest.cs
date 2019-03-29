@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
+    /// <summary>
+    ///     DynamicControllerRequest.
+    /// </summary>
     public class DynamicControllerRequest
     {
         /// <summary>

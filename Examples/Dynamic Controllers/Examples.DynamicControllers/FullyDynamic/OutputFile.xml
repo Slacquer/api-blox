@@ -19,15 +19,16 @@
         </member>
         <member name="M:SomeNameSpace.Controllers.FUllyDynamic.QueryBy(System.String,System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
-                Action for getting a collection of DynamicControllerResponse resources.
-                <para>
-                    Responses: 200, 204, 401, 403
-                </para>
+                Action for getting a DynamicControllerResponse resource.
             </summary>
-            <response code="200">Successful operation</response>
-            <response code="204">Success with no results</response>
-            <response code="401">UnAuthorized, meaning not authenticated.</response>
-            <response code="403">Authenticated yet not authorized</response>
+            <remarks>
+                Responses: 200, 204, 401, 403
+            </remarks>
+            <response code="200"></response>
+            <response code="204"></response>
+            <response code="401"></response>
+            <response code="403"></response>
+            <param name="id">The id fat ass!</param>
         </member>
     </members>
 </doc>

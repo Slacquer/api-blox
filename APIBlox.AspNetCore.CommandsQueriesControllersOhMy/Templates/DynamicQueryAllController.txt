@@ -24,14 +24,15 @@ namespace SomeNameSpace.Controllers
 
 		/// <summary>
         ///     Action for getting a collection of [RES_OBJECT_INNER_RESULT] resources.
-        ///     <para>
-        ///         Responses: 200, 204, 401, 403
-        ///     </para>
         /// </summary>
-        /// <response code="200">Successful operation</response>
-        /// <response code="204">Success with no results</response>
-        /// <response code="401">UnAuthorized, meaning not authenticated.</response>
-        /// <response code="403">Authenticated yet not authorized</response>
+        /// <remarks>
+        ///     Responses: 200, 204, 401, 403
+        /// </remarks>
+        /// <response code="200"></response>
+        /// <response code="204"></response>
+        /// <response code="401"></response>
+        /// <response code="403"></response>
+		/// <param name=""></param>
         [HttpGet[ACTION_ROUTE]]
         [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
