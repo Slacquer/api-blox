@@ -1,5 +1,7 @@
-﻿using APIBlox.AspNetCore.Contracts;
+﻿using APIBlox.AspNetCore;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Controllers;
+using APIBlox.AspNetCore.Extensions;
 using Examples.Resources;
 
 // ReSharper disable once CheckNamespace

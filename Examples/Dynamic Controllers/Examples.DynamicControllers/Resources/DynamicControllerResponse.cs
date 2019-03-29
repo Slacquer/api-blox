@@ -6,7 +6,7 @@ using APIBlox.AspNetCore.Contracts;
 
 namespace Examples.Resources
 {
-    internal class DynamicControllerResponse : IResource<int>
+    public class DynamicControllerResponse : IResource<int>
     {
         public int Id { get; set; }
 

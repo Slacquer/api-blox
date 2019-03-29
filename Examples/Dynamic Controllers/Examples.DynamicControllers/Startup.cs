@@ -6,6 +6,9 @@ using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using APIBlox.AspNetCore;
+using APIBlox.AspNetCore.Extensions;
+using Examples.Resources;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Swashbuckle.AspNetCore.Swagger;
@@ -47,6 +50,10 @@ namespace Examples
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var factory = new DynamicControllerFactory();
+
+            var (t, e) = factory.MakeGetAllController<DynamicControllerRequest, DynamicControllerResponse>("OmgThisIsCool");
+            
             services
                 .AddServerFaults()
                 //

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
-    internal class DynamicControllerRequest
+    public class DynamicControllerRequest
     {
         [FromQuery(Name = "requiredValueMustBeThreeCharacters")]
         [Required]
