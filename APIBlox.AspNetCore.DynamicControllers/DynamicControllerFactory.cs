@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.CodeAnalysis;
@@ -104,10 +105,10 @@ namespace APIBlox.AspNetCore
             /// </summary>
             /// <param name="obj">The object.</param>
             /// <returns>System.ValueTuple&lt;System.String, System.String[]&gt;.</returns>
-            public static (string, string[]) ToInputParams(Type obj)
+            public static (string, string[]) GetInputParamsWithNamespaces(Type obj)
             {
                 const string template = "@att @p";
-                var props = obj.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList();
+                var props = GetPublicReadWriteProperties(obj);
 
                 var namespaces = new List<string>();
                 var parameters = new StringBuilder();
@@ -127,7 +128,7 @@ namespace APIBlox.AspNetCore
                         namespaces.Add(pi.PropertyType.Namespace);
 
                     var v = index < props.Count - 1 ? ", " : "";
-                    parameters.Append(temp.Replace("@p", $"{pi.PropertyType.Name} {pi.Name}{v}"));
+                    parameters.Append(temp.Replace("@p", $"{pi.PropertyType.Name} {pi.Name.ToCamelCase()}{v}"));
                 }
 
                 return (parameters.ToString(), namespaces.ToArray());
@@ -138,7 +139,7 @@ namespace APIBlox.AspNetCore
             /// </summary>
             /// <param name="obj">The object.</param>
             /// <returns>System.ValueTuple&lt;System.String, System.String, System.String[]&gt;.</returns>
-            public static (string, string, string[]) ToStringWithNamespaces(Type obj)
+            public static (string, string, string[]) GetNameWithNamespaces(Type obj)
             {
                 var name = GetNameWithoutGenericArity(obj);
                 var ns = obj.Namespace;
@@ -169,6 +170,34 @@ namespace APIBlox.AspNetCore
                 result.Append(">");
 
                 return (result.ToString(), args[0].Name, namespaces.ToArray());
+            }
+
+            /// <summary>
+            ///     To the new object.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            /// <returns>System.String.</returns>
+            public static string GetNewObject(Type obj)
+            {
+                var props = GetPublicReadWriteProperties(obj);
+
+                var setters = new StringBuilder();
+
+                for (var index = 0; index < props.Count; index++)
+                {
+                    var pi = props[index];
+                    var comma = index == props.Count - 1 ? "" : ", ";
+                    setters.Append($"{pi.Name} = {pi.Name.ToCamelCase()}{comma}");
+                }
+
+                return $"new {obj.Name}{{{ setters }}}";
+            }
+
+            private static List<PropertyInfo> GetPublicReadWriteProperties(Type type)
+            {
+                return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => p.CanRead && p.CanWrite)
+                    .ToList();
             }
         }
     }

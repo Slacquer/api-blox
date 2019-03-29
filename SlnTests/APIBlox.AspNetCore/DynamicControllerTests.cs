@@ -20,7 +20,7 @@ namespace SlnTests.APIBlox.AspNetCore
         {
             var factory = new DynamicControllerFactory("fooAss", true);
 
-            var foo = factory.ComposeGetAllController<TestControllerParameters, IEnumerable<TestResponseObject>>();
+            var foo = factory.ComposeGetAllController<TestControllerParameters, IEnumerable<TestResponseObject>>("MySUperCooolController");
 
             var (controllerTypes, errors) = factory.Compile(foo);
 
@@ -67,4 +67,8 @@ namespace SlnTests.APIBlox.AspNetCore
             public string Name { get; set; }
         }
     }
+
+
 }
+
+
