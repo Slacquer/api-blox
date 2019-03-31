@@ -23,7 +23,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets or sets the running count.
+        ///     Gets the running count.  Used internally.
         /// </summary>
         /// <value>The running count.</value>
         [FromQuery(Name = "runningCount")]
@@ -31,7 +31,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets or sets the skip.
+        ///     Sets the skip amount.
         /// </summary>
         /// <value>The skip.</value>
         [FromQuery(Name = "skip")]
@@ -39,7 +39,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets or sets the top.
+        ///     Sets the top amount.
         /// </summary>
         /// <value>The top.</value>
         [FromQuery(Name = "top")]

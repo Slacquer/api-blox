@@ -40,7 +40,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets or sets the order by.
+        ///     Sets the order by.  Usage is determined by the API itself. 
         /// </summary>
         /// <value>The order by.</value>
         [FromQuery(Name = "orderBy")]

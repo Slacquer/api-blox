@@ -188,13 +188,6 @@ namespace APIBlox.AspNetCore
             CompilationWarnings = warnings;
         }
 
-        private static string GetNameWithoutGenericArity(Type t)
-        {
-            var name = t.Name;
-            var index = name.IndexOf('`');
-            return index == -1 ? name : name.Substring(0, index);
-        }
-
         #region -    Nested type: Helpers    -
 
         /// <summary>
@@ -213,25 +206,45 @@ namespace APIBlox.AspNetCore
                 var props = GetPublicReadWriteProperties(obj);
 
                 var namespaces = new List<string>();
-                var parameters = new StringBuilder();
+                var parameters = new List<string>();
 
                 for (var index = 0; index < props.Count; index++)
                 {
                     var pi = props[index];
 
                     var temp = template.Replace("@att", GetAttributesAndValues(namespaces, pi));
-
+                    
                     if (!namespaces.Contains(pi.PropertyType.Namespace))
                         namespaces.Add(pi.PropertyType.Namespace);
-                    
+
                     var space = index == 0 ? "" : "            ";
-                    parameters.AppendLine(temp
+                    parameters.Add(temp
                         .Replace("@space", space)
-                        .Replace("@p", $"{pi.PropertyType.Name} {pi.Name.ToCamelCase()},")
+                        .Replace("@p", $"{GetPropertyTypeAndValue(pi.PropertyType, pi.Name)},")
                     );
                 }
 
-                return (parameters.ToString(), namespaces.ToArray());
+                var paramsString = string.Join(Environment.NewLine, parameters);
+
+                return (paramsString, namespaces.ToArray());
+            }
+
+            private static string GetPropertyTypeAndValue(Type prop, string propName)
+            {
+                var (nullable, name) = IsOfNullableType(prop);
+
+                return !nullable
+                    ? $"{prop.Name} {propName.ToCamelCase()}"
+                    : $"{name}? {propName.ToCamelCase()}";
+            }
+
+            private static (bool, string) IsOfNullableType(Type o)
+            {
+                var nullable = o.IsGenericType && o.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+                return !nullable 
+                    ? (false, o.Name) 
+                    : (true, o.GetGenericArguments().First().Name);
             }
 
             /// <summary>
@@ -323,6 +336,17 @@ namespace APIBlox.AspNetCore
                 return $"new {obj.Name}{{{setters}}}";
             }
 
+            /// <summary>
+            ///  Gets the name without generic arity.
+            /// </summary>
+            /// <param name="t">The t.</param>
+            /// <returns>System.String.</returns>
+            public static string GetNameWithoutGenericArity(Type t)
+            {
+                var name = t.Name;
+                var index = name.IndexOf('`');
+                return index == -1 ? name : name.Substring(0, index);
+            }
 
             private static string GetAttributesAndValues(ICollection<string> namespaces, MemberInfo pi)
             {
@@ -401,7 +425,7 @@ namespace APIBlox.AspNetCore
                 {
                     var cp = ctorArgs[index];
                     var cpi = readProps.First(p => p.Name.EqualsEx(cp.Name));
-                    
+
                     var value = cpi.GetValue(attribute);
 
                     if (!namespaces.Contains(cp.ParameterType.Namespace))
@@ -426,6 +450,25 @@ namespace APIBlox.AspNetCore
                     .ToList();
             }
 
+            public static void ValidateResponseType(Type response)
+            {
+                if (response.IsPublic)
+                    return;
+
+                throw new ArgumentException($"{response.Name} protection level must be public.");
+            }
+
+            public static void ValidateRequestType(Type request)
+            {
+                //ValidateResponseType(request);
+
+                var valid = request.GetProperties(BindingFlags.Public | BindingFlags.Instance).Any(p => p.CanRead);
+
+                if (valid)
+                    return;
+
+                throw new ArgumentException($"{request.Name} must have at least 1 publicly accessible getter property.");
+            }
         }
 
         #endregion

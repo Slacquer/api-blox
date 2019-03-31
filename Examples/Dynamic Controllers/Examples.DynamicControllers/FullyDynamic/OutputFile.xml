@@ -27,11 +27,76 @@
             <response code="200">Success, with an array of results.</response>
             <response code="204">Success, no results.</response>
             <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
-            <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested DynamicControllerRequest resource.</response>
+            <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
             <param name="cancellationToken">The cancellation token.</param>
             <param name ="requiredValueMustBeThreeCharacters">The required value, and it must be three characters. please check out http://www.foo.com for more info.</param>
             <param name ="someId">Gets or sets some identifier.</param>
             <param name ="id">Gets or sets the identifier.</param>
+        </member>
+        <member name="T:Examples.Controllers.QueryAllChildResponseController">
+            <inheritdoc />
+            <summary>
+                Class QueryAllChildResponseController.
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="M:Examples.Controllers.QueryAllChildResponseController.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.ChildRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Controllers.QueryAllChildResponseController" /> class.
+            </summary>
+            <param name="getAllHandler">The handler used to for querying ChildResponse.</param>
+        </member>
+        <member name="M:Examples.Controllers.QueryAllChildResponseController.QueryAll(System.Int32,System.Int32,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+                Action for getting a collection of ChildResponse resources.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href="https://httpstatuses.com/200">200</a>, <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>
+            </remarks>
+            <response code="200">Success, with an array of results.</response>
+            <response code="204">Success, no results.</response>
+            <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name ="parentId">Gets or sets the parent identifier.</param>
+            <param name ="someRouteValueWeNeed">Gets or sets some route value we need.</param>
+            <param name ="filter">Sets the filter (where). Usage is determined by the API itself.</param>
+            <param name ="select">Sets the select (projection).  Usage is determined by the API itself.</param>
+            <param name ="orderBy">Sets the order by.  Usage is determined by the API itself.</param>
+        </member>
+        <member name="T:Examples.Controllers.QueryAllParentResponseController">
+            <inheritdoc />
+            <summary>
+                Class QueryAllParentResponseController.
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="M:Examples.Controllers.QueryAllParentResponseController.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.ParentRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Controllers.QueryAllParentResponseController" /> class.
+            </summary>
+            <param name="getAllHandler">The handler used to for querying ParentResponse.</param>
+        </member>
+        <member name="M:Examples.Controllers.QueryAllParentResponseController.QueryAll(System.String,System.Int32,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.Threading.CancellationToken)">
+            <summary>
+                Action for getting a collection of ParentResponse resources.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href="https://httpstatuses.com/200">200</a>, <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>
+            </remarks>
+            <response code="200">Success, with an array of results.</response>
+            <response code="204">Success, no results.</response>
+            <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name ="someOtherThingWeNeedToKnowWhenRequestingData">Gets or sets some other thing we need to know when requesting data.</param>
+            <param name ="someRouteValueWeNeed">Gets or sets some route value we need.</param>
+            <param name ="filter">Sets the filter (where). Usage is determined by the API itself.</param>
+            <param name ="select">Sets the select (projection).  Usage is determined by the API itself.</param>
+            <param name ="runningCount">Gets the running count.  Used internally.</param>
+            <param name ="skip">Sets the skip amount.</param>
+            <param name ="top">Sets the top amount.</param>
+            <param name ="orderBy">Sets the order by.  Usage is determined by the API itself.</param>
         </member>
     </members>
 </doc>

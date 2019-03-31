@@ -21,7 +21,58 @@
             <returns>System.Int32.</returns>
         </member>
         <member name="T:Examples.Resources.ChildRequest">
+            <summary>
+                Class ChildRequest.
+            </summary>
+            <seealso cref="T:APIBlox.AspNetCore.Types.FilteredQuery" />
             <inheritdoc />
+        </member>
+        <member name="P:Examples.Resources.ChildRequest.ParentId">
+            <summary>
+                Gets or sets the parent identifier.
+            </summary>
+            <value>The parent identifier.</value>
+        </member>
+        <member name="P:Examples.Resources.ChildRequest.SomeRouteValueWeNeed">
+            <summary>
+                Gets or sets some route value we need.
+            </summary>
+            <value>Some route value we need.</value>
+        </member>
+        <member name="T:Examples.Resources.ChildResponse">
+            <summary>
+                Class ChildResponse.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.ChildResponse.Age">
+            <summary>
+                Gets or sets the age.
+            </summary>
+            <value>The age.</value>
+        </member>
+        <member name="P:Examples.Resources.ChildResponse.FirstName">
+            <summary>
+                Gets or sets the first name.
+            </summary>
+            <value>The first name.</value>
+        </member>
+        <member name="P:Examples.Resources.ChildResponse.Id">
+            <summary>
+                Gets or sets the Id.
+            </summary>
+            <value>The Id.</value>
+        </member>
+        <member name="P:Examples.Resources.ChildResponse.LastName">
+            <summary>
+                Gets or sets the last name.
+            </summary>
+            <value>The last name.</value>
+        </member>
+        <member name="P:Examples.Resources.ChildResponse.Parents">
+            <summary>
+                Gets or sets the parents.
+            </summary>
+            <value>The parents.</value>
         </member>
         <member name="T:Examples.Resources.DynamicControllerRequest">
             <summary>
@@ -61,8 +112,58 @@
                 Gets some value that had to be three characters.
             </summary>
         </member>
+        <member name="T:Examples.Resources.ParentRequest">
+            <summary>
+                Class ParentRequest.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.ParentRequest.SomeOtherThingWeNeedToKnowWhenRequestingData">
+            <summary>
+                Gets or sets some other thing we need to know when requesting data.
+            </summary>
+            <value>Some other thing we need to know when requesting data.</value>
+        </member>
+        <member name="P:Examples.Resources.ParentRequest.SomeRouteValueWeNeed">
+            <summary>
+                Gets or sets some route value we need.
+            </summary>
+            <value>Some route value we need.</value>
+        </member>
         <member name="T:Examples.Resources.ParentResponse">
+            <summary>
+                Class ParentResponse.
+            </summary>
             <inheritdoc />
+        </member>
+        <member name="P:Examples.Resources.ParentResponse.Id">
+            <summary>
+                Gets or sets the Id.
+            </summary>
+            <value>The Id.</value>
+        </member>
+        <member name="P:Examples.Resources.ParentResponse.Age">
+            <summary>
+                Gets or sets the age.
+            </summary>
+            <value>The age.</value>
+        </member>
+        <member name="P:Examples.Resources.ParentResponse.FirstName">
+            <summary>
+                Gets or sets the first name.
+            </summary>
+            <value>The first name.</value>
+        </member>
+        <member name="P:Examples.Resources.ParentResponse.LastName">
+            <summary>
+                Gets or sets the last name.
+            </summary>
+            <value>The last name.</value>
+        </member>
+        <member name="P:Examples.Resources.ParentResponse.Children">
+            <summary>
+                Gets or sets the children.
+            </summary>
+            <value>The children.</value>
         </member>
         <member name="T:Examples.Services.RandomNumberGeneratorService">
             <inheritdoc />

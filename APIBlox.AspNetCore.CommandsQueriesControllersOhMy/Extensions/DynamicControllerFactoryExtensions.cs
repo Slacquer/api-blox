@@ -27,31 +27,31 @@ namespace APIBlox.AspNetCore.Extensions
 
 
         public static IComposedTemplate WriteQueryByController<TRequest, TResponse>(
-            this DynamicControllerFactory factory, string controllerName = null,
-            string controllerNamespace = "DynamicControllers",
-            string controllerRoute = "api/[controller]", string actionRoute = null
+            this DynamicControllerFactory factory, string name = null,
+            string nameSpace = "DynamicControllers",
+            string route = "api/[controller]", string actionRoute = null
         )
             where TRequest : new()
         {
             var getTemplate = Templates.GetTemplate("DynamicQueryByController");
             var contents = Contents(
                 DefaultNamespaces,
-                controllerNamespace,
+                nameSpace,
                 typeof(TRequest),
                 typeof(TResponse),
-                controllerRoute,
+                route,
                 actionRoute,
                 getTemplate,
-                (req, res) => controllerName ?? $"QueryBy{res}Controller"
+                (req, res) => name ?? $"QueryBy{res}Controller"
             );
 
             return new DynamicControllerComposedTemplate(contents);
         }
 
         public static IComposedTemplate WriteQueryAllController<TRequest, TResponse>(
-            this DynamicControllerFactory factory, string controllerName = null,
-            string controllerNamespace = "DynamicControllers",
-            string controllerRoute = "api/[controller]", string actionRoute = null
+            this DynamicControllerFactory factory, string name = null,
+            string nameSpace = "DynamicControllers",
+            string route = "api/[controller]", string actionRoute = null
         )
             where TRequest : new()
         {
@@ -62,13 +62,13 @@ namespace APIBlox.AspNetCore.Extensions
             var getTemplate = Templates.GetTemplate("DynamicQueryAllController");
             var contents = Contents(
                ns,
-               controllerNamespace,
+               nameSpace,
                 typeof(TRequest),
                 typeof(TResponse),
-                controllerRoute,
+                route,
                 actionRoute,
                 getTemplate,
-                (req, res) => controllerName ?? $"QueryAll{res}Controller"
+                (req, res) => name ?? $"QueryAll{res}Controller"
             );
 
             return new DynamicControllerComposedTemplate(contents);
@@ -79,6 +79,9 @@ namespace APIBlox.AspNetCore.Extensions
             Func<string, string, string> buildControllerName
         )
         {
+            DynamicControllerFactory.Helpers.ValidateRequestType(requestObj);
+            DynamicControllerFactory.Helpers.ValidateResponseType(responseObjectResult);
+
             var (reqObj, _, requestNs) = DynamicControllerFactory.Helpers.WriteNameWithNamespaces(requestObj);
             var (parameters, paramNs) = DynamicControllerFactory.Helpers.WriteInputParamsWithNamespaces(requestObj);
             var parameterComments = string.Join(Environment.NewLine, DynamicControllerFactory.Helpers.WriteInputParamsXmlComments(requestObj));

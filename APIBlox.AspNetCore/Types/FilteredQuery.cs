@@ -24,7 +24,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets or sets the filter.
+        ///     Sets the filter (where). Usage is determined by the API itself. 
         /// </summary>
         /// <value>The filter.</value>
         [FromQuery(Name = "filter")]
@@ -32,7 +32,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets or sets the select.
+        ///     Sets the select (projection).  Usage is determined by the API itself. 
         /// </summary>
         /// <value>The select.</value>
         [FromQuery(Name = "select")]

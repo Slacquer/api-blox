@@ -78,7 +78,7 @@ namespace Examples
                 )
 
                 .AddDynamicControllers()
-                
+
 
                 //
                 // Handles cancellation token cancelled.
@@ -131,16 +131,27 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class MvcBuilderExtensionsDynamicControllers
     {
 
-        public static IMvcBuilder AddDynamicControllers( this IMvcBuilder builder)
+        public static IMvcBuilder AddDynamicControllers(this IMvcBuilder builder)
         {
             var factory = new DynamicControllerFactory("OutputFile", false);
 
             var c1 = factory.WriteQueryAllController<DynamicControllerRequest, DynamicControllerResponse>(
-                "MyComposedController","Examples"
+                "MyComposedController", "Examples"
+            );
+
+            var c2 = factory.WriteQueryAllController<ChildRequest, ChildResponse>(
+                 nameSpace: "Examples"
+            );
+
+            var c3 = factory.WriteQueryAllController<ParentRequest, ParentResponse>(
+                nameSpace: "Examples"
             );
 
             var outfile = @".\FullyDynamic";
-            var fi = factory.Compile(outfile, c1);
+            var fi = factory.Compile(outfile,c1,c2, c3);
+
+            if (fi is null || factory.CompilationErrors != null)
+                throw new System.Exception(factory.CompilationErrors.First());
 
             builder.ConfigureApplicationPartManager(pm =>
                 {
