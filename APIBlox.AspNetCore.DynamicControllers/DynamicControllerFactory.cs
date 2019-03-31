@@ -195,93 +195,6 @@ namespace APIBlox.AspNetCore
             return index == -1 ? name : name.Substring(0, index);
         }
 
-        private static string BuildAtt(IModelNameProvider att, bool isRoute = true)
-        {
-            var preFix = isRoute ? "Route" : "Query";
-            return att.Name is null ? $"[From{preFix}]" : $"[From{preFix}(Name = \"{att.Name}\")]";
-        }
-
-        private static string GetAllAttibutes(List<string> namespaces, PropertyInfo pi)
-        {
-            var builder = new StringBuilder();
-
-            var atts = pi.GetCustomAttributes().ToList();
-
-            foreach (var att in atts)
-            {
-                var attType = att.GetType();
-
-                if (!namespaces.Contains(attType.Namespace))
-                    namespaces.Add(attType.Namespace);
-
-                builder.Append("[");
-                builder.Append($"{attType.Name.Replace("Attribute", "")}(");
-
-                var writeProps = attType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => p.CanWrite && p.GetValue(att) != default)
-                    .ToList();
-
-                var ctor = attType.GetConstructors(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault();
-
-                if (!(ctor is null))
-                {
-                    var ctorArgs = ctor.GetParameters().ToList();
-
-                    if (ctorArgs.Any())
-                    {
-                        var readProps = attType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                            .Where(p => p.CanRead && p.GetValue(att) != default)
-                            .ToList();
-
-                        for (var index = 0; index < ctorArgs.Count; index++)
-                        {
-                            var cp = ctorArgs[index];
-
-                            var comma = index == ctorArgs.Count - 1 ? "" : ", ";
-
-                            var cpi = readProps.First(p => p.Name.EqualsEx(cp.Name));
-                            var value = cpi.GetValue(att);
-
-                            var cpiType = cpi.GetType();
-
-                            if (!namespaces.Contains(cpiType.Namespace))
-                                namespaces.Add(cpiType.Namespace);
-
-                            if (value is bool b)
-                                value = b.ToString().ToLower();
-
-                            builder.Append(cpiType == typeof(string) ? $"\"{value}\"{comma}" : $"{value}{comma}");
-                        }
-                    }
-                }
-
-                if (!builder.ToString().EndsWith("("))
-                    builder.Append(", ");
-
-                for (var index = 0; index < writeProps.Count; index++)
-                {
-                    var prop = writeProps[index];
-                    var value = prop.GetValue(att);
-
-                    if (value is bool b)
-                        value = b.ToString().ToLower();
-
-                    var comma = index == writeProps.Count - 1 ? "" : ", ";
-
-                    builder.Append(prop.PropertyType == typeof(string)
-                        ? $"{prop.Name} = \"{value}\"{comma}"
-                        : $"{prop.Name} = {value}{comma}"
-                    );
-                }
-
-                builder.Append(")]\n");
-            }
-
-            var ret = builder.ToString();
-
-            return ret;
-        }
-
         #region -    Nested type: Helpers    -
 
         /// <summary>
@@ -294,9 +207,9 @@ namespace APIBlox.AspNetCore
             /// </summary>
             /// <param name="obj">The object.</param>
             /// <returns>System.ValueTuple&lt;System.String, System.String[]&gt;.</returns>
-            public static (string, string[]) GetInputParamsWithNamespaces(Type obj)
+            public static (string, string[]) WriteInputParamsWithNamespaces(Type obj)
             {
-                const string template = "@att @p";
+                const string template = "@space@att @p";
                 var props = GetPublicReadWriteProperties(obj);
 
                 var namespaces = new List<string>();
@@ -306,20 +219,16 @@ namespace APIBlox.AspNetCore
                 {
                     var pi = props[index];
 
-                    //var qryAtt = pi.GetCustomAttributes(false).FirstOrDefault(t => t is FromQueryAttribute) as FromQueryAttribute;
-                    //var routeAtt = pi.GetCustomAttributes(false).FirstOrDefault(t => t is FromRouteAttribute) as FromRouteAttribute;
-
-                    //var temp = qryAtt is null && routeAtt is null
-                    //    ? template.Replace("@att", "")
-                    //    : template.Replace("@att", qryAtt is null ? BuildAtt(routeAtt) : BuildAtt(qryAtt, false));
-
-                    var temp = template.Replace("@att", GetAllAttibutes(namespaces, pi));
+                    var temp = template.Replace("@att", GetAttributesAndValues(namespaces, pi));
 
                     if (!namespaces.Contains(pi.PropertyType.Namespace))
                         namespaces.Add(pi.PropertyType.Namespace);
-
-                    var v = index < props.Count - 1 ? ", " : "";
-                    parameters.Append(temp.Replace("@p", $"{pi.PropertyType.Name} {pi.Name.ToCamelCase()}{v}"));
+                    
+                    var space = index == 0 ? "" : "            ";
+                    parameters.AppendLine(temp
+                        .Replace("@space", space)
+                        .Replace("@p", $"{pi.PropertyType.Name} {pi.Name.ToCamelCase()},")
+                    );
                 }
 
                 return (parameters.ToString(), namespaces.ToArray());
@@ -330,18 +239,25 @@ namespace APIBlox.AspNetCore
             /// </summary>
             /// <param name="obj">The object.</param>
             /// <returns>List&lt;System.String&gt;.</returns>
-            public static List<string> GetInputParamsXmlComments(Type obj)
+            public static IEnumerable<string> WriteInputParamsXmlComments(Type obj)
             {
-                const string template = "/// <param name =\"@pName\">@pComment</param>";
+                const string template = "@space/// <param name =\"@pName\">@pComment</param>";
                 var props = GetPublicReadWriteProperties(obj);
 
                 var parameters = new List<string>();
 
-                foreach (var pi in props)
+                for (var index = 0; index < props.Count; index++)
                 {
+                    var pi = props[index];
                     var xml = pi.GetSummary();
 
-                    parameters.Add(template.Replace("@pName", pi.Name.ToCamelCase()).Replace("@pComment", xml));
+                    var space = index == 0 ? "" : "        ";
+
+                    parameters.Add(template
+                        .Replace("@space", space)
+                        .Replace("@pName", pi.Name.ToCamelCase())
+                        .Replace("@pComment", xml)
+                    );
                 }
 
                 return parameters;
@@ -353,7 +269,7 @@ namespace APIBlox.AspNetCore
             /// </summary>
             /// <param name="obj">The object.</param>
             /// <returns>System.ValueTuple&lt;System.String, System.String, System.String[]&gt;.</returns>
-            public static (string, string, string[]) GetNameWithNamespaces(Type obj)
+            public static (string, string, string[]) WriteNameWithNamespaces(Type obj)
             {
                 var name = GetNameWithoutGenericArity(obj);
                 var ns = obj.Namespace;
@@ -391,7 +307,7 @@ namespace APIBlox.AspNetCore
             /// </summary>
             /// <param name="obj">The object.</param>
             /// <returns>System.String.</returns>
-            public static string GetNewObject(Type obj)
+            public static string WriteNewObject(Type obj)
             {
                 var props = GetPublicReadWriteProperties(obj);
 
@@ -407,12 +323,109 @@ namespace APIBlox.AspNetCore
                 return $"new {obj.Name}{{{setters}}}";
             }
 
+
+            private static string GetAttributesAndValues(ICollection<string> namespaces, MemberInfo pi)
+            {
+                var builder = new StringBuilder();
+
+                var attributes = pi.GetCustomAttributes().ToList();
+
+                foreach (var attribute in attributes)
+                {
+                    var attType = attribute.GetType();
+
+                    if (!namespaces.Contains(attType.Namespace))
+                        namespaces.Add(attType.Namespace);
+
+                    builder.Append("[");
+                    builder.Append($"{attType.Name.Replace("Attribute", "")}(");
+                    BuildAttributeConstructor(namespaces, attribute, builder);
+                    BuildAttributeWriteProperties(attribute, builder);
+
+                    builder.Append(")]");
+                }
+
+                var ret = builder.ToString();
+
+                return ret;
+            }
+
+            private static void BuildAttributeWriteProperties(Attribute attribute, StringBuilder builder)
+            {
+                var type = attribute.GetType();
+                var writeProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => p.CanWrite && p.GetValue(attribute) != default)
+                    .ToList();
+
+                if (!writeProps.Any())
+                    return;
+
+                if (!builder.ToString().EndsWith("("))
+                    builder.Append(", ");
+
+                for (var index = 0; index < writeProps.Count; index++)
+                {
+                    var prop = writeProps[index];
+                    var value = prop.GetValue(attribute);
+
+                    if (value is bool b)
+                        value = b.ToString().ToLower();
+
+                    var comma = index == writeProps.Count - 1 ? "" : ", ";
+
+                    builder.Append(prop.PropertyType == typeof(string)
+                        ? $"{prop.Name} = \"{value}\"{comma}"
+                        : $"{prop.Name} = {value}{comma}"
+                    );
+                }
+            }
+
+            private static void BuildAttributeConstructor(ICollection<string> namespaces, Attribute attribute, StringBuilder builder)
+            {
+                var type = attribute.GetType();
+                var ctor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault();
+
+                if (ctor is null)
+                    return;
+
+                var ctorArgs = ctor.GetParameters().ToList();
+
+                if (!ctorArgs.Any())
+                    return;
+
+                var readProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => p.CanRead && p.GetValue(attribute) != default)
+                    .ToList();
+
+                for (var index = 0; index < ctorArgs.Count; index++)
+                {
+                    var cp = ctorArgs[index];
+                    var cpi = readProps.First(p => p.Name.EqualsEx(cp.Name));
+                    
+                    var value = cpi.GetValue(attribute);
+
+                    if (!namespaces.Contains(cp.ParameterType.Namespace))
+                        namespaces.Add(cp.ParameterType.Namespace);
+
+                    if (value is bool b)
+                        value = b.ToString().ToLower();
+
+                    var comma = index == ctorArgs.Count - 1 ? "" : ", ";
+
+                    builder.Append(cp.ParameterType == typeof(string)
+                        ? $"\"{value}\"{comma}"
+                        : $"{value}{comma}"
+                    );
+                }
+            }
+
             private static List<PropertyInfo> GetPublicReadWriteProperties(Type type)
             {
                 return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p => p.CanRead && p.CanWrite)
                     .ToList();
             }
+
         }
 
         #endregion

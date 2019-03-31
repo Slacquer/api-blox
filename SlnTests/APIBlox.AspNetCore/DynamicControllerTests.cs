@@ -20,7 +20,7 @@ namespace SlnTests.APIBlox.AspNetCore
         {
             var factory = new DynamicControllerFactory("fooAss", true);
 
-            var foo = factory.ComposeQueryAllController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryAllController");
+            var foo = factory.WriteQueryAllController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryAllController");
 
             var controllerTypes = factory.Compile(foo);
 
@@ -46,7 +46,7 @@ namespace SlnTests.APIBlox.AspNetCore
         {
             var factory = new DynamicControllerFactory("MyAss", false);
 
-            var foo = factory.ComposeQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryByController");
+            var foo = factory.WriteQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryByController");
 
             var controllerTypes = factory.Compile(foo);
 
@@ -72,10 +72,10 @@ namespace SlnTests.APIBlox.AspNetCore
         {
             var factory = new DynamicControllerFactory("OutputFile", false);
 
-            var c1 = factory.ComposeQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>(
+            var c1 = factory.WriteQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>(
                 "SuccessfullyCompileMultipleControllersAndAssemblyExists1"
             );
-            var c2 = factory.ComposeQueryAllController<TestControllerParameters, IEnumerable<TestResponseObject>>(
+            var c2 = factory.WriteQueryAllController<TestControllerParameters, IEnumerable<TestResponseObject>>(
                 "SuccessfullyCompileMultipleControllersAndAssemblyExists2"
             );
 

@@ -4,30 +4,31 @@
         <name>OutputFile</name>
     </assembly>
     <members>
-        <member name="T:SomeNameSpace.Controllers.FUllyDynamic">
+        <member name="T:Examples.Controllers.MyComposedController">
+            <inheritdoc />
             <summary>
-                Class FUllyDynamic.
+                Class MyComposedController.
             </summary>
-            <typeparam name="DynamicControllerRequest">The controller actions request parameters.</typeparam>
-            <typeparam name="HandlerResponse">APIBlox default action response object</typeparam>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
         </member>
-        <member name="M:SomeNameSpace.Controllers.FUllyDynamic.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.DynamicControllerRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
+        <member name="M:Examples.Controllers.MyComposedController.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.DynamicControllerRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
             <summary>
-                Initializes a new instance of the <see cref="T:SomeNameSpace.Controllers.FUllyDynamic" /> class.
+                Initializes a new instance of the <see cref="T:Examples.Controllers.MyComposedController" /> class.
             </summary>
             <param name="getAllHandler">The handler used to for querying DynamicControllerResponse.</param>
         </member>
-        <member name="M:SomeNameSpace.Controllers.FUllyDynamic.QueryBy(System.String,System.Int32,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Examples.Controllers.MyComposedController.QueryAll(System.String,System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
-                Action for getting a DynamicControllerResponse resource.
+                Action for getting a collection of DynamicControllerResponse resources.
             </summary>
             <remarks>
                 Possible Response Status Codes: <a href="https://httpstatuses.com/200">200</a>, <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>
             </remarks>
-            <response code="200">Success, with a result.</response>
+            <response code="200">Success, with an array of results.</response>
             <response code="204">Success, no results.</response>
             <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
-            <response code="403">Forbidden, You do not have permission to access the requested DynamicControllerRequest resource.</response>
+            <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested DynamicControllerRequest resource.</response>
+            <param name="cancellationToken">The cancellation token.</param>
             <param name ="requiredValueMustBeThreeCharacters">The required value, and it must be three characters. please check out http://www.foo.com for more info.</param>
             <param name ="someId">Gets or sets some identifier.</param>
             <param name ="id">Gets or sets the identifier.</param>

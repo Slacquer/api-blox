@@ -1,28 +1,28 @@
 ﻿[NAMESPACES]
 
-namespace SomeNameSpace.Controllers
+namespace [CONTROLLERS_NAMESPACE].Controllers
 {
-	/// <summary>
+    /// <inheritdoc />
+    /// <summary>
     ///     Class [CONTROLLER_NAME].
     /// </summary>
-    /// <typeparam name="[REQ_OBJECT]">The controller actions request parameters.</typeparam>
-    /// <typeparam name="HandlerResponse">APIBlox default action response object</typeparam>
+    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     [Route("[CONTROLLER_ROUTE]")]
     [ApiController]
     public sealed class [CONTROLLER_NAME] : ControllerBase
     {
         private readonly IQueryHandler<[REQ_OBJECT], HandlerResponse> _getByHandler;
 
-		/// <summary>
+        /// <summary>
         ///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
         /// </summary>
-        /// <param name="getAllHandler">The handler used to for querying [RES_OBJECT_INNER_RESULT].</param>
+        /// <param name="getByHandler">The handler used to for querying [RES_OBJECT_INNER_RESULT].</param>
         public [CONTROLLER_NAME](IQueryHandler<[REQ_OBJECT], HandlerResponse> getByHandler)
         {
             _getByHandler = getByHandler;
         }
 
-		/// <summary>
+        /// <summary>
         ///     Action for getting a [RES_OBJECT_INNER_RESULT] resource.
         /// </summary>
         /// <remarks>
@@ -31,18 +31,18 @@ namespace SomeNameSpace.Controllers
         /// <response code="200">Success, with a result.</response>
         /// <response code="204">Success, no results.</response>
         /// <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
-        /// <response code="403">Forbidden, You do not have permission to access the requested [REQ_OBJECT] resource.</response>
+        /// <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+        /// <param name="cancellationToken">The cancellation token.</param>
         [PARAMS_COMMENTS]
         [HttpGet[ACTION_ROUTE]]
-		[Produces("application/json")]
-		[Consumes("application/json")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> QueryBy(
-            [ACTION_PARAMS], 
-            CancellationToken cancellationToken
+            [ACTION_PARAMS]            CancellationToken cancellationToken
         )
         {
             var ret = await _getByHandler.HandleAsync(
@@ -54,7 +54,8 @@ namespace SomeNameSpace.Controllers
                 return new ProblemResult(ret.Error);
             
             if (ret.Result is null)
-                throw new NullReferenceException(
+                throw new ArgumentNullException(
+                    nameof(HandlerResponse.Result),
                     "When responding to a GET you must either set an error or pass a result!"
                 );
 

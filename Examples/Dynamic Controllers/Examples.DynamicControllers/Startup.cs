@@ -135,8 +135,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var factory = new DynamicControllerFactory("OutputFile", false);
 
-            var c1 = factory.ComposeQueryByController<DynamicControllerRequest, DynamicControllerResponse>(
-                "FUllyDynamic"
+            var c1 = factory.WriteQueryAllController<DynamicControllerRequest, DynamicControllerResponse>(
+                "MyComposedController","Examples"
             );
 
             var outfile = @".\FullyDynamic";
