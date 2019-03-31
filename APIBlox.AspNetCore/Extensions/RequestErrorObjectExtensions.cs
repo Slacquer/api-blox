@@ -141,7 +141,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         /// <summary>
-        ///     Sets the error to un authorized.
+        ///     Sets the error to un authorized (401).
         /// </summary>
         /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
         /// <param name="description">The description.</param>

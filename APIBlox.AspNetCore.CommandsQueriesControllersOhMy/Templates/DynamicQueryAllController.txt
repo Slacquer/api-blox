@@ -26,14 +26,16 @@ namespace SomeNameSpace.Controllers
         ///     Action for getting a collection of [RES_OBJECT_INNER_RESULT] resources.
         /// </summary>
         /// <remarks>
-        ///     Responses: 200, 204, 401, 403
+        ///     Possible Response Status Codes: <a href="https://httpstatuses.com/200">200</a>, <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>
         /// </remarks>
-        /// <response code="200"></response>
-        /// <response code="204"></response>
-        /// <response code="401"></response>
-        /// <response code="403"></response>
-		/// <param name=""></param>
+        /// <response code="200">Success, with an array of results.</response>
+        /// <response code="204">Success, no results.</response>
+        /// <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+        /// <response code="403">Forbidden, You do not have permission to access the requested [REQ_OBJECT] resource.</response>
+        [PARAMS_COMMENTS]
         [HttpGet[ACTION_ROUTE]]
+		[Produces("application/json")]
+		[Consumes("application/json")]
         [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

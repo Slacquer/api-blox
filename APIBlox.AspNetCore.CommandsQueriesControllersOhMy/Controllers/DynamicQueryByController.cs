@@ -6,6 +6,7 @@ using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace APIBlox.AspNetCore.Controllers
 {

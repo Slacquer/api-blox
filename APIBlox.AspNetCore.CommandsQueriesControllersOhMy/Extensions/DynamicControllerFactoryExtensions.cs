@@ -23,10 +23,11 @@ namespace APIBlox.AspNetCore.Extensions
             "Microsoft.AspNetCore.Mvc",
             "APIBlox.AspNetCore.ActionResults",
             "APIBlox.AspNetCore.Contracts",
-            "APIBlox.AspNetCore.Types"
+            "APIBlox.AspNetCore.Types",
+            "APIBlox.AspNetCore.Types.Errors"
         };
 
-        
+
         public static IComposedTemplate ComposeQueryByController<TRequest, TResponse>(
             this DynamicControllerFactory factory, string controllerName = null,
             string controllerRoute = "api/[controller]", string actionRoute = null
@@ -70,6 +71,7 @@ namespace APIBlox.AspNetCore.Extensions
         {
             var (reqObj, _, requestNs) = DynamicControllerFactory.Helpers.GetNameWithNamespaces(requestObj);
             var (parameters, paramNs) = DynamicControllerFactory.Helpers.GetInputParamsWithNamespaces(requestObj);
+            var parameterComments = string.Join(Environment.NewLine, DynamicControllerFactory.Helpers.GetInputParamsXmlComments(requestObj));
             var (resObj, realResObject, resultObjNs) = DynamicControllerFactory.Helpers.GetNameWithNamespaces(responseObjectResult);
             var newReqObj = DynamicControllerFactory.Helpers.GetNewObject(requestObj);
 
@@ -86,8 +88,6 @@ namespace APIBlox.AspNetCore.Extensions
             // XML Comments need to be read for input params, summary, remarks etc.
             // https://stackoverflow.com/questions/15602606/programmatically-get-summary-comments-at-runtime
 
-            var foo = requestObj.GetProperties().First().GetDocumentation();
-
             var contents = template.Replace("[CONTROLLER_NAME]", cn)
                 .Replace("[NAMESPACES]", ns)
                 .Replace("[CONTROLLER_ROUTE]", controllerRoute)
@@ -96,7 +96,8 @@ namespace APIBlox.AspNetCore.Extensions
                 .Replace("[RES_OBJECT_RESULT]", resObj)
                 .Replace("[RES_OBJECT_INNER_RESULT]", realResObject ?? resObj)
                 .Replace("[NEW_REQ_OBJECT]", newReqObj)
-                .Replace("[ACTION_PARAMS]", parameters);
+                .Replace("[ACTION_PARAMS]", parameters)
+                .Replace("[PARAMS_COMMENTS]", parameterComments);
             return contents;
         }
 
@@ -109,4 +110,6 @@ namespace APIBlox.AspNetCore.Extensions
             }
         }
     }
+
+
 }

@@ -9,7 +9,7 @@ namespace Examples.Resources
     public class DynamicControllerRequest
     {
         /// <summary>
-        /// Gets or sets the required value must be three characters.
+        /// The required value, and it must be three characters. please check out http://www.foo.com for more info.
         /// </summary>
         /// <value>The required value must be three characters.</value>
         [FromQuery(Name = "requiredValueMustBeThreeCharacters")]
