@@ -14,20 +14,20 @@
 //{
 //    /// <inheritdoc />
 //    /// <summary>
-//    ///     Class QueryAllParentResponseController.
+//    ///     Class Foo.
 //    /// </summary>
 //    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
 //    [Route("api/[controller]")]
 //    [ApiController]
-//    public sealed class QueryAllParentResponseController : ControllerBase
+//    public sealed class Foo : ControllerBase
 //    {
 //        private readonly IQueryHandler<ParentRequest, HandlerResponse> _getAllHandler;
 
 //        /// <summary>
-//        ///     Initializes a new instance of the <see cref="QueryAllParentResponseController" /> class.
+//        ///     Initializes a new instance of the <see cref="Foo" /> class.
 //        /// </summary>
 //        /// <param name="getAllHandler">The handler used to for querying ParentResponse.</param>
-//        public QueryAllParentResponseController(IQueryHandler<ParentRequest, HandlerResponse> getAllHandler)
+//        public Foo(IQueryHandler<ParentRequest, HandlerResponse> getAllHandler)
 //        {
 //            _getAllHandler = getAllHandler;
 //        }

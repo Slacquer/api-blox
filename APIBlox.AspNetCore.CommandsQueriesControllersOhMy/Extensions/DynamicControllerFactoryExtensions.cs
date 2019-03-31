@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Types;
 using APIBlox.NetCore.Extensions;
@@ -28,7 +27,7 @@ namespace APIBlox.AspNetCore.Extensions
 
 
         public static DynamicControllerComposedTemplate WriteQueryByController<TRequest, TResponse>(
-            this DynamicControllerFactory factory, string name = null,
+            this DynamicControllerFactory factory, string controllerName = null,
             string nameSpace = "DynamicControllers",
             string controllerRoute = "api/[controller]", string actionRoute = null
         )
@@ -47,7 +46,37 @@ namespace APIBlox.AspNetCore.Extensions
                 controllerRoute,
                 actionRoute,
                 getTemplate,
-                (req, res) => name.ToPascalCase() ?? $"QueryBy{res}Controller"
+                (req, res) => controllerName.ToPascalCase() ?? $"QueryBy{res}Controller"
+            );
+
+            var queryHandler = $"IQueryHandler<{typeof(TRequest).Name}, HandlerResponse>";
+
+            return new DynamicControllerComposedTemplate(contents, queryHandler);
+        }
+
+        public static DynamicControllerComposedTemplate WriteQueryAllController<TRequest, TResponse>(
+            this DynamicControllerFactory factory, string controllerName = null,
+            string nameSpace = "DynamicControllers",
+            string controllerRoute = "api/[controller]", string actionRoute = null
+        )
+            where TRequest : new()
+            where TResponse : IEnumerable
+        {
+            var ns = new List<string>();
+            ns.AddRange(DefaultNamespaces);
+            ns.Add("System.Collections.Generic");
+
+            var getTemplate = Templates.GetTemplate("DynamicQueryAllController");
+            var contents = ContentsWithResults(
+                ns,
+                nameSpace,
+                typeof(TRequest),
+                typeof(TResponse),
+                false,
+                controllerRoute,
+                actionRoute,
+                getTemplate,
+                (req, res) => controllerName.ToPascalCase() ?? $"QueryAll{res}Controller"
             );
 
             var queryHandler = $"IQueryHandler<{typeof(TRequest).Name}, HandlerResponse>";
@@ -56,7 +85,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         public static DynamicControllerComposedTemplate WriteDeleteByController<TRequest>(
-            this DynamicControllerFactory factory, string name = null,
+            this DynamicControllerFactory factory, string controllerName = null,
             string nameSpace = "DynamicControllers",
             string controllerRoute = "api/[controller]", string actionRoute = null
         )
@@ -71,7 +100,7 @@ namespace APIBlox.AspNetCore.Extensions
                 controllerRoute,
                 actionRoute,
                 getTemplate,
-                (req) => name.ToPascalCase() ?? $"DeleteUsing{req}Controller"
+                (req) => controllerName.ToPascalCase() ?? $"DeleteUsing{req}Controller"
             );
 
             var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
@@ -80,7 +109,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         public static DynamicControllerComposedTemplate WritePutController<TRequest>(
-            this DynamicControllerFactory factory, string name = null,
+            this DynamicControllerFactory factory, string controllerName = null,
             string nameSpace = "DynamicControllers",
             string controllerRoute = "api/[controller]", string actionRoute = null
         )
@@ -95,7 +124,7 @@ namespace APIBlox.AspNetCore.Extensions
                 controllerRoute,
                 actionRoute,
                 getTemplate,
-                (req) => name.ToPascalCase() ?? $"PutUsing{req}Controller"
+                (req) => controllerName.ToPascalCase() ?? $"PutUsing{req}Controller"
             );
 
             var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
@@ -103,8 +132,8 @@ namespace APIBlox.AspNetCore.Extensions
             return new DynamicControllerComposedTemplate(contents, cmdHandler);
         }
 
-        public static DynamicControllerComposedTemplate WritePostController<TRequest,TResponse>(
-            this DynamicControllerFactory factory, string name = null,
+        public static DynamicControllerComposedTemplate WritePostController<TRequest, TResponse>(
+            this DynamicControllerFactory factory, string controllerName = null,
             string nameSpace = "DynamicControllers",
             string controllerRoute = "api/[controller]", string actionRoute = null
         )
@@ -126,43 +155,14 @@ namespace APIBlox.AspNetCore.Extensions
                 controllerRoute,
                 actionRoute,
                 getTemplate,
-                (req,res) => name.ToPascalCase() ?? $"PostUsing{req}Controller"
+                (req, res) => controllerName.ToPascalCase() ?? $"PostUsing{req}Controller"
             );
 
             var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
 
             return new DynamicControllerComposedTemplate(contents, cmdHandler);
         }
-
-        public static DynamicControllerComposedTemplate WriteQueryAllController<TRequest, TResponse>(
-            this DynamicControllerFactory factory, string name = null,
-            string nameSpace = "DynamicControllers",
-            string controllerRoute = "api/[controller]", string actionRoute = null
-        )
-            where TRequest : new()
-            where TResponse : IEnumerable
-        {
-            var ns = new List<string>();
-            ns.AddRange(DefaultNamespaces);
-            ns.Add("System.Collections.Generic");
-
-            var getTemplate = Templates.GetTemplate("DynamicQueryAllController");
-            var contents = ContentsWithResults(
-               ns,
-               nameSpace,
-                typeof(TRequest),
-                typeof(TResponse),
-               false,
-                controllerRoute,
-                actionRoute,
-                getTemplate,
-                (req, res) => name.ToPascalCase() ?? $"QueryAll{res}Controller"
-            );
-
-            var queryHandler = $"IQueryHandler<{typeof(TRequest).Name}, HandlerResponse>";
-
-            return new DynamicControllerComposedTemplate(contents, queryHandler);
-        }
+        
 
         private static string Contents(IEnumerable<string> namespaces, string controllersNamespace, Type requestObj,
             bool requestObjMustHaveBody, string controllerRoute, string actionRoute, string template,
@@ -186,9 +186,6 @@ namespace APIBlox.AspNetCore.Extensions
 
             var cn = buildControllerName(reqObj);
 
-            // XML Comments need to be read for input params, summary, remarks etc.
-            // https://stackoverflow.com/questions/15602606/programmatically-get-summary-comments-at-runtime
-
             var contents = template
                 .Replace("[CONTROLLERS_NAMESPACE]", controllersNamespace)
                 .Replace("[CONTROLLER_NAME]", cn)
@@ -201,7 +198,7 @@ namespace APIBlox.AspNetCore.Extensions
                 .Replace("[PARAMS_COMMENTS]", parameterComments)
                 // lame but its bugging me.
                 .Replace("()]", "]")
-                .Replace("(\"\")","");
+                .Replace("(\"\")", "");
             return contents;
         }
 
@@ -234,9 +231,6 @@ namespace APIBlox.AspNetCore.Extensions
 
             var cn = buildControllerName(reqObj, realResObject ?? resObj);
 
-            // XML Comments need to be read for input params, summary, remarks etc.
-            // https://stackoverflow.com/questions/15602606/programmatically-get-summary-comments-at-runtime
-
             var contents = template
                 .Replace("[CONTROLLERS_NAMESPACE]", controllersNamespace)
                 .Replace("[CONTROLLER_NAME]", cn)
@@ -251,7 +245,7 @@ namespace APIBlox.AspNetCore.Extensions
                 .Replace("[PARAMS_COMMENTS]", parameterComments)
                 // lame but its bugging me.
                 .Replace("()]", "]")
-                .Replace("(\"\")","");
+                .Replace("(\"\")", "");
             return contents;
         }
 

@@ -135,39 +135,40 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", false);
 
-            var c1 = factory.WriteQueryAllController<DynamicControllerRequest, IEnumerable<DynamicControllerResponse>>(
-                "My Cool Dynamic controller request thing     Controller", "Examples"
-            );
+            //var c1 = factory.WriteQueryAllController<DynamicControllerRequest, IEnumerable<DynamicControllerResponse>>(
+            //    "My Cool Dynamic controller request thing     Controller", "Examples"
+            //);
 
-            var c2 = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
-                 nameSpace: "Examples"
-            );
+            //var c2 = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
+            //     nameSpace: "Examples"
+            //);
 
-            var c2b = factory.WriteQueryByController<ChildByIdRequest, ChildResponse>(
-                nameSpace: "Examples", controllerRoute: "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute: "{childId}"
-            );
+            //var c2b = factory.WriteQueryByController<ChildByIdRequest, ChildResponse>(
+            //     nameSpace: "Examples", controllerRoute: "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute: "{childId}"
+            //);
 
-            var c2c = factory.WriteDeleteByController<ChildByIdRequest>(
-                nameSpace: "Examples", controllerRoute: "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute: "{childId}"
-            );
+            //var c2c = factory.WriteDeleteByController<ChildByIdRequest>(
+            //     nameSpace: "Examples", controllerRoute: "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute: "{childId}"
+            //);
 
-            var c2d = factory.WritePutController<ChildPutRequest>(
-                nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children", actionRoute: "{childId}"
-            );
+            //var c2d = factory.WritePutController<ChildPutRequest>(
+            //    nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children", actionRoute: "{childId}"
+            //);
 
-            var c2e = factory.WritePostController<ChildPostRequest, ChildResponse>(
-                nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children"
-            );
+            //var c2e = factory.WritePostController<ChildPostRequest, ChildResponse>(
+            //     nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children"
+            //);
 
             var c3 = factory.WriteQueryAllController<ParentRequest, IEnumerable<ParentResponse>>(
-                nameSpace: "Examples"
+                 controllerName: "Parents", nameSpace: "Examples"
             );
 
-            //var outfile = @".\FullyDynamic";
+            var outfile = @".\FullyDynamic";
             //var fi = factory.Compile(outfile, c1, c2, c2b, c2c, c2d, c2e, c3);
             //var fi = factory.Compile(outfile, c2e);
 
-            var ass = factory.Compile(c1, c2, c2b, c2c, c2d, c2e, c3);
+            //var ass = factory.Compile(c1, c2, c2b, c2c, c2d, c2e, c3);
+            var ass = factory.Compile(outfile, c3);
 
             //if (fi is null || factory.CompilationErrors != null)
             //    throw new System.Exception(factory.CompilationErrors.First());
@@ -175,19 +176,19 @@ namespace Microsoft.Extensions.DependencyInjection
             if (ass is null || factory.CompilationErrors != null)
                 throw new System.Exception(factory.CompilationErrors.First());
 
-            //builder.ConfigureApplicationPartManager(pm =>
-            //    {
-            //        var part = new AssemblyPart(Assembly.LoadFrom(fi.FullName));
-            //        pm.ApplicationParts.Add(part);
-            //    }
-            //);
-
             builder.ConfigureApplicationPartManager(pm =>
                 {
-                    var part = new AssemblyPart(ass);
+                    var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
                     pm.ApplicationParts.Add(part);
                 }
             );
+
+            //builder.ConfigureApplicationPartManager(pm =>
+            //    {
+            //        var part = new AssemblyPart(ass);
+            //        pm.ApplicationParts.Add(part);
+            //    }
+            //);
 
             return builder;
         }
