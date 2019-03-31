@@ -133,7 +133,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IMvcBuilder AddDynamicControllers(this IMvcBuilder builder)
         {
-            var factory = new DynamicControllerFactory("OutputFile", false);
+            var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", false);
 
             var c1 = factory.WriteQueryAllController<DynamicControllerRequest, IEnumerable<DynamicControllerResponse>>(
                 "My Cool Dynamic controller request thing     Controller", "Examples"
@@ -163,16 +163,28 @@ namespace Microsoft.Extensions.DependencyInjection
                 nameSpace: "Examples"
             );
 
-            var outfile = @".\FullyDynamic";
-            var fi = factory.Compile(outfile, c1, c2, c2b, c2c, c2d, c2e, c3);
+            //var outfile = @".\FullyDynamic";
+            //var fi = factory.Compile(outfile, c1, c2, c2b, c2c, c2d, c2e, c3);
             //var fi = factory.Compile(outfile, c2e);
 
-            if (fi is null || factory.CompilationErrors != null)
+            var ass = factory.Compile(c1, c2, c2b, c2c, c2d, c2e, c3);
+
+            //if (fi is null || factory.CompilationErrors != null)
+            //    throw new System.Exception(factory.CompilationErrors.First());
+
+            if (ass is null || factory.CompilationErrors != null)
                 throw new System.Exception(factory.CompilationErrors.First());
+
+            //builder.ConfigureApplicationPartManager(pm =>
+            //    {
+            //        var part = new AssemblyPart(Assembly.LoadFrom(fi.FullName));
+            //        pm.ApplicationParts.Add(part);
+            //    }
+            //);
 
             builder.ConfigureApplicationPartManager(pm =>
                 {
-                    var part = new AssemblyPart(Assembly.LoadFrom(fi.FullName));
+                    var part = new AssemblyPart(ass);
                     pm.ApplicationParts.Add(part);
                 }
             );

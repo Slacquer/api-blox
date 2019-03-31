@@ -80,19 +80,19 @@ namespace APIBlox.AspNetCore
         }
 
         /// <summary>
-        ///     Compiles <see cref="IComposedTemplate"/> to a collection of types.
+        ///     Compiles <see cref="IComposedTemplate"/> to an assembly in memory.
         /// <para>
         ///     When null is returned, then errors have been generated, check the <see cref="CompilationErrors"/> property.
         /// </para>
         /// </summary>
         /// <param name="templates">The templates.</param>
         /// <returns>IEnumerable&lt;Type&gt;.</returns>
-        public IEnumerable<Type> Compile(params IComposedTemplate[] templates)
+        public Assembly Compile(params IComposedTemplate[] templates)
         {
-            return EmitToTypes(templates);
+            return EmitToAssembly(templates);
         }
 
-        private IEnumerable<Type> EmitToTypes(params IComposedTemplate[] templates)
+        private Assembly EmitToAssembly(params IComposedTemplate[] templates)
         {
             var csOptions = ResetErrorsAndGetSyntaxTree(templates, out var csSyntaxTree);
 
@@ -110,7 +110,7 @@ namespace APIBlox.AspNetCore
 
                     var assembly = Assembly.Load(ms.ToArray());
 
-                    return assembly.GetExportedTypes();
+                    return assembly;
                 }
 
                 CheckAndSetFailures(emitResult);

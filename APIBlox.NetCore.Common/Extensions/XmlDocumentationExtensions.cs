@@ -66,10 +66,8 @@ namespace APIBlox.NetCore.Extensions
         {
             var element = memberInfo.GetDocumentation();
             var summaryElm = element?.SelectSingleNode("summary");
-            if (summaryElm == null)
-                return "";
 
-            return summaryElm.InnerText.Trim();
+            return summaryElm == null ? "" : summaryElm.InnerText.Trim();
         }
 
         /// <summary>

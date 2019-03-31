@@ -22,12 +22,12 @@ namespace SlnTests.APIBlox.AspNetCore
 
             var foo = factory.WriteQueryAllController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryAllController");
 
-            var controllerTypes = factory.Compile(foo);
+            var ass = factory.Compile(foo);
 
-            Assert.NotNull(controllerTypes);
+            Assert.NotNull(ass);
             Assert.Null(factory.CompilationErrors);
 
-            var actions = controllerTypes.First().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            var actions = ass.GetExportedTypes().First().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Where(m => m.Name.EqualsEx("QueryAll")).ToList();
 
             Assert.NotEmpty(actions);
@@ -48,12 +48,12 @@ namespace SlnTests.APIBlox.AspNetCore
 
             var foo = factory.WriteQueryByController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryByController");
 
-            var controllerTypes = factory.Compile(foo);
+            var ass = factory.Compile(foo);
 
-            Assert.NotNull(controllerTypes);
+            Assert.NotNull(ass);
             Assert.Null(factory.CompilationErrors);
 
-            var actions = controllerTypes.First().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            var actions = ass.GetExportedTypes().First().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Where(m => m.Name.EqualsEx("QueryBy")).ToList();
 
             Assert.NotEmpty(actions);
