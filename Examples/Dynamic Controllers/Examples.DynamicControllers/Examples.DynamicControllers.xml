@@ -37,6 +37,18 @@
             </summary>
             <value>Some route value we need.</value>
         </member>
+        <member name="P:Examples.Resources.ChildPostRequest.ParentId">
+            <summary>
+                Gets or sets the parent identifier.
+            </summary>
+            <value>The parent identifier.</value>
+        </member>
+        <member name="P:Examples.Resources.ChildPostRequest.Body">
+            <summary>
+            Gets or sets the body.
+            </summary>
+            <value>The body.</value>
+        </member>
         <member name="T:Examples.Resources.ChildPutRequest">
             <summary>
             Class ChildPutRequest.
@@ -54,34 +66,17 @@
             </summary>
             <value>The parent identifier.</value>
         </member>
-        <member name="P:Examples.Resources.ChildPutRequest.SomeRouteValueWeNeed">
+        <member name="P:Examples.Resources.ChildPutRequest.AnQueryValueWeWant">
             <summary>
-            Gets or sets some route value we need.
+            Gets or sets an query value we want.
             </summary>
-            <value>Some route value we need.</value>
+            <value>An query value we want.</value>
         </member>
         <member name="P:Examples.Resources.ChildPutRequest.Body">
             <summary>
             Gets or sets the body.
             </summary>
             <value>The body.</value>
-        </member>
-        <member name="T:Examples.Resources.PersonModel">
-            <summary>
-            Class PersonModel.
-            </summary>
-        </member>
-        <member name="P:Examples.Resources.PersonModel.Age">
-            <summary>
-            Gets or sets the age.
-            </summary>
-            <value>The age.</value>
-        </member>
-        <member name="P:Examples.Resources.PersonModel.FirstName">
-            <summary>
-            Gets or sets the first name.
-            </summary>
-            <value>The first name.</value>
         </member>
         <member name="T:Examples.Resources.ChildrenRequest">
             <summary>
@@ -227,6 +222,29 @@
                 Gets or sets the children.
             </summary>
             <value>The children.</value>
+        </member>
+        <member name="T:Examples.Resources.PersonModel">
+            <summary>
+            Class PersonModel.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.PersonModel.Age">
+            <summary>
+            Gets or sets the age.
+            </summary>
+            <value>The age.</value>
+        </member>
+        <member name="P:Examples.Resources.PersonModel.FirstName">
+            <summary>
+            Gets or sets the first name.
+            </summary>
+            <value>The first name.</value>
+        </member>
+        <member name="P:Examples.Resources.PersonModel.LastName">
+            <summary>
+            Gets or sets the last name.
+            </summary>
+            <value>The last name.</value>
         </member>
         <member name="T:Examples.Services.RandomNumberGeneratorService">
             <inheritdoc />

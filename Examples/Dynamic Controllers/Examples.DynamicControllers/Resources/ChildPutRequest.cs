@@ -27,11 +27,12 @@ namespace Examples.Resources
         public int ParentId { get; set; }
 
         /// <summary>
-        /// Gets or sets some route value we need.
+        /// Gets or sets an query value we want.
         /// </summary>
-        /// <value>Some route value we need.</value>
-        [FromRoute(Name = "someRouteValueWeNeed")]
-        public int SomeRouteValueWeNeed { get; set; }
+        /// <value>An query value we want.</value>
+        [FromQuery]
+        [Required]
+        public int AnQueryValueWeWant { get; set; }
 
 
         /// <summary>
@@ -40,25 +41,5 @@ namespace Examples.Resources
         /// <value>The body.</value>
         [FromBody]
         public PersonModel Body { get; set; }
-    }
-
-    /// <summary>
-    /// Class PersonModel.
-    /// </summary>
-    public class PersonModel
-    {
-        /// <summary>
-        /// Gets or sets the age.
-        /// </summary>
-        /// <value>The age.</value>
-        [Required]
-        public int Age { get; set; }
-
-        /// <summary>
-        /// Gets or sets the first name.
-        /// </summary>
-        /// <value>The first name.</value>
-        [Required]
-        public string FirstName { get; set; }
     }
 }

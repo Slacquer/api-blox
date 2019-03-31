@@ -69,13 +69,13 @@ namespace Examples
 
                 //
                 //  DynamicControllers and configuration
-                .AddDynamicControllersFeature(configs =>
-                    {
-                        //configs.AddFamilyDynamicControllersConfiguration();
-                        configs.AddFullyDynamicConfiguration();
-                    },
-                    addPostLocationHeaderResultFilter: true
-                )
+                //.AddDynamicControllersFeature(configs =>
+                //    {
+                //        //configs.AddFamilyDynamicControllersConfiguration();
+                //        configs.AddFullyDynamicConfiguration();
+                //    },
+                //    addPostLocationHeaderResultFilter: true
+                //)
 
                 .AddDynamicControllers()
 
@@ -136,7 +136,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var factory = new DynamicControllerFactory("OutputFile", false);
 
             var c1 = factory.WriteQueryAllController<DynamicControllerRequest, IEnumerable<DynamicControllerResponse>>(
-                "MyComposedController", "Examples"
+                "My Cool Dynamic controller request thing     Controller", "Examples"
             );
 
             var c2 = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
@@ -144,15 +144,19 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
             var c2b = factory.WriteQueryByController<ChildByIdRequest, ChildResponse>(
-                nameSpace: "Examples",controllerRoute:"api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute:"{childId}"
+                nameSpace: "Examples", controllerRoute: "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute: "{childId}"
             );
 
             var c2c = factory.WriteDeleteByController<ChildByIdRequest>(
-                nameSpace: "Examples",controllerRoute:"api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute:"{childId}"
+                nameSpace: "Examples", controllerRoute: "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute: "{childId}"
             );
 
             var c2d = factory.WritePutController<ChildPutRequest>(
-                nameSpace: "Examples",controllerRoute:"api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute:"{childId}"
+                nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children", actionRoute: "{childId}"
+            );
+
+            var c2e = factory.WritePostController<ChildPostRequest, ChildResponse>(
+                nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children"
             );
 
             var c3 = factory.WriteQueryAllController<ParentRequest, IEnumerable<ParentResponse>>(
@@ -160,7 +164,8 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
             var outfile = @".\FullyDynamic";
-            var fi = factory.Compile(outfile, c1, c2, c2b,c2c,c2d, c3);
+            var fi = factory.Compile(outfile, c1, c2, c2b, c2c, c2d, c2e, c3);
+            //var fi = factory.Compile(outfile, c2e);
 
             if (fi is null || factory.CompilationErrors != null)
                 throw new System.Exception(factory.CompilationErrors.First());

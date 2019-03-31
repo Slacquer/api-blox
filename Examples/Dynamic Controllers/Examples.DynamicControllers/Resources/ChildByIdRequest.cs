@@ -11,21 +11,21 @@ namespace Examples.Resources
         /// <summary>
         /// Sets the child id.
         /// </summary>
-        [FromRoute(Name ="childId")]
+        [FromRoute]
         public int Id { get; set; }
 
         /// <summary>
         ///     Gets or sets the parent identifier.
         /// </summary>
         /// <value>The parent identifier.</value>
-        [FromRoute(Name = "parentId")]
+        [FromRoute]
         public int ParentId { get; set; }
 
         /// <summary>
         ///     Gets or sets some route value we need.
         /// </summary>
         /// <value>Some route value we need.</value>
-        [FromRoute(Name = "someRouteValueWeNeed")]
+        [FromRoute]
         public int SomeRouteValueWeNeed { get; set; }
     }
 }

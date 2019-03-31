@@ -1,0 +1,104 @@
+﻿[NAMESPACES]
+
+namespace [CONTROLLERS_NAMESPACE].Controllers
+{
+    /// <inheritdoc />
+    /// <summary>
+    ///     Class [CONTROLLER_NAME].
+    /// </summary>
+    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
+    [Route("[CONTROLLER_ROUTE]")]
+    [ApiController]
+    public sealed class [CONTROLLER_NAME] : ControllerBase
+    {
+        private readonly ICommandHandler<[REQ_OBJECT], HandlerResponse> _postByHandler;
+        private readonly ILogger<[CONTROLLER_NAME]> _log;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
+        /// </summary>
+        /// <param name="loggerFactory">LoggerFactory</param>
+        /// <param name="postByHandler">The handler used to for creating a resource.</param>
+        public [CONTROLLER_NAME](ILoggerFactory loggerFactory, ICommandHandler<[REQ_OBJECT], HandlerResponse> postByHandler)
+        {
+            _postByHandler = postByHandler;
+            _log = loggerFactory.CreateLogger<[CONTROLLER_NAME]>();
+        }
+
+        /// <summary>
+        ///     Action for creating a resource.
+        /// </summary>
+        /// <remarks>
+        ///     Possible Response Status Codes: <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>, <a href="https://httpstatuses.com/404">404</a>, <a href="https://httpstatuses.com/409">409</a>
+        /// </remarks>
+        /// <response code="204">Success, no results.</response>
+        /// <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+        /// <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+        /// <response code="404">NotFound, The resource was not found using the supplied input parameters.</response>
+        /// <response code="409">Conflict, The supplied input parameters would cause a data violation.</response>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        [PARAMS_COMMENTS]
+        [HttpPost("[ACTION_ROUTE]")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> PutBy(
+            [ACTION_PARAMS]
+            CancellationToken cancellationToken
+        )
+        {
+            var ret = await _postByHandler.HandleAsync(
+                [NEW_REQ_OBJECT], 
+                cancellationToken
+            ).ConfigureAwait(false);
+
+            var errorResult = ret.HasErrors
+                ? new ProblemResult(ret.Error)
+                : null;
+
+            if (errorResult is null && ret.Result is null)
+                throw new NullReferenceException(
+                    "When responding to a POST you must either set an error or pass some results!"
+                );
+
+            if (!(errorResult is null))
+                return errorResult;
+
+            var id = FindId(ret.Result);
+
+            return Equals(id, -1)
+                ? Ok(ret.Result)
+                : CreatedAtRoute(new {id}, ret.Result);
+        }
+
+        private object FindId(object result)
+        {
+            try
+            {
+                var t = result.GetType();
+                var props = t.GetProperties();
+
+                var id = props.FirstOrDefault(p => p.Name.EqualsEx("Id"));
+
+                if (id is null)
+                    foreach (var pi in props)
+                        return FindId(t.GetProperty(pi.Name).GetValue(result, null));
+                else
+                    return t.GetProperty(id.Name).GetValue(result, null);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(() => $"Could not determine ID for CreatedAtRoute result!  Ex: {ex.Message}");
+
+                return -1;
+            }
+
+            return -1;
+        }
+    }
+}

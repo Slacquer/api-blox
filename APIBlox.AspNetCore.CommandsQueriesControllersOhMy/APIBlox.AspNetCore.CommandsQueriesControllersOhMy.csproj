@@ -22,6 +22,7 @@
     <None Remove=".gitignore" />
     <None Remove="APIBlox.AspNetCore.CommandsQueriesControllersOhMy.csproj.DotSettings" />
     <None Remove="Templates\DynamicDeleteByController.txt" />
+    <None Remove="Templates\DynamicPostController.txt" />
     <None Remove="Templates\DynamicPutController.txt" />
     <None Remove="Templates\DynamicQueryAllController.txt" />
     <None Remove="Templates\DynamicQueryByController.txt" />
@@ -29,6 +30,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Templates\DynamicDeleteByController.txt" />
+    <EmbeddedResource Include="Templates\DynamicPostController.txt" />
     <EmbeddedResource Include="Templates\DynamicPutController.txt" />
     <EmbeddedResource Include="Templates\DynamicQueryByController.txt" />
     <EmbeddedResource Include="Templates\DynamicQueryAllController.txt" />

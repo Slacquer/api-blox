@@ -1,11 +1,22 @@
-﻿namespace Examples.Resources
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Examples.Resources
 {
-    internal class ChildPostRequest
+    public class ChildPostRequest
     {
-        public int Age { get; set; }
+        
+        /// <summary>
+        ///     Gets or sets the parent identifier.
+        /// </summary>
+        /// <value>The parent identifier.</value>
+        [FromRoute(Name = "parentId")]
+        public int ParentId { get; set; }
 
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
+        /// <value>The body.</value>
+        [FromBody]
+        public PersonModel Body { get; set; }
     }
 }
