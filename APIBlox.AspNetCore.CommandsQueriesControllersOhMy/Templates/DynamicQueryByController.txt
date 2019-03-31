@@ -43,7 +43,7 @@ namespace [CONTROLLERS_NAMESPACE].Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> QueryBy(
             [ACTION_PARAMS]
-			CancellationToken cancellationToken
+            CancellationToken cancellationToken
         )
         {
             var ret = await _getByHandler.HandleAsync(

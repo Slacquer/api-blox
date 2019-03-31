@@ -38,7 +38,7 @@ namespace APIBlox.AspNetCore.Extensions
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
             var getTemplate = Templates.GetTemplate("DynamicQueryByController");
-            var contents = Contents(
+            var contents = ContentsWithResults(
                 DefaultNamespaces,
                 nameSpace,
                 typeof(TRequest),
@@ -47,6 +47,50 @@ namespace APIBlox.AspNetCore.Extensions
                 actionRoute,
                 getTemplate,
                 (req, res) => name ?? $"QueryBy{res}Controller"
+            );
+
+            return new DynamicControllerComposedTemplate(contents);
+        }
+
+        public static IComposedTemplate WriteDeleteByController<TRequest>(
+            this DynamicControllerFactory factory, string name = null,
+            string nameSpace = "DynamicControllers",
+            string controllerRoute = "api/[controller]", string actionRoute = null
+        )
+            where TRequest : new()
+        {
+            var getTemplate = Templates.GetTemplate("DynamicDeleteByController");
+            var contents = Contents(
+                DefaultNamespaces,
+                nameSpace,
+                typeof(TRequest),
+                false,
+                controllerRoute,
+                actionRoute,
+                getTemplate,
+                (req) => name ?? $"DeleteUsing{req}Controller"
+            );
+
+            return new DynamicControllerComposedTemplate(contents);
+        }
+
+        public static IComposedTemplate WritePutController<TRequest>(
+            this DynamicControllerFactory factory, string name = null,
+            string nameSpace = "DynamicControllers",
+            string controllerRoute = "api/[controller]", string actionRoute = null
+        )
+            where TRequest : new()
+        {
+            var getTemplate = Templates.GetTemplate("DynamicPutController");
+            var contents = Contents(
+                DefaultNamespaces,
+                nameSpace,
+                typeof(TRequest),
+                true,
+                controllerRoute,
+                actionRoute,
+                getTemplate,
+                (req) => name ?? $"PutUsing{req}Controller"
             );
 
             return new DynamicControllerComposedTemplate(contents);
@@ -65,7 +109,7 @@ namespace APIBlox.AspNetCore.Extensions
             ns.Add("System.Collections.Generic");
 
             var getTemplate = Templates.GetTemplate("DynamicQueryAllController");
-            var contents = Contents(
+            var contents = ContentsWithResults(
                ns,
                nameSpace,
                 typeof(TRequest),
@@ -79,18 +123,63 @@ namespace APIBlox.AspNetCore.Extensions
             return new DynamicControllerComposedTemplate(contents);
         }
 
-        private static string Contents(IEnumerable<string> namespaces, string controllersNamespace, Type requestObj, Type responseObjectResult,
+        private static string Contents(IEnumerable<string> namespaces, string controllersNamespace, Type requestObj,
+            bool requestObjMustHaveBody, string controllerRoute, string actionRoute, string template,
+           Func<string, string> buildControllerName
+       )
+        {
+            DynamicControllerFactory.Helpers.ValidateRequestType(requestObj, requestObjMustHaveBody);
+
+            var (reqObj, _, requestNs) = DynamicControllerFactory.Helpers.WriteNameWithNamespaces(requestObj);
+            var (parameters, paramNs) = DynamicControllerFactory.Helpers.WriteInputParamsWithNamespaces(requestObj);
+            var parameterComments = string.Join(Environment.NewLine, DynamicControllerFactory.Helpers.WriteInputParamsXmlComments(requestObj));
+
+            var newReqObj = DynamicControllerFactory.Helpers.WriteNewObject(requestObj);
+
+            var ns = string.Join(Environment.NewLine,
+                namespaces
+                    .Union(paramNs)
+                    .Union(requestNs)
+                    .OrderBy(s => s).Select(s => $"using {s};")
+            );
+
+            var cn = buildControllerName(reqObj);
+
+            // XML Comments need to be read for input params, summary, remarks etc.
+            // https://stackoverflow.com/questions/15602606/programmatically-get-summary-comments-at-runtime
+
+            var contents = template
+                .Replace("[CONTROLLERS_NAMESPACE]", controllersNamespace)
+                .Replace("[CONTROLLER_NAME]", cn)
+                .Replace("[NAMESPACES]", ns)
+                .Replace("[CONTROLLER_ROUTE]", controllerRoute)
+                .Replace("[ACTION_ROUTE]", actionRoute ?? "")
+                .Replace("[REQ_OBJECT]", reqObj)
+                .Replace("[NEW_REQ_OBJECT]", newReqObj)
+                .Replace("[ACTION_PARAMS]", parameters)
+                .Replace("[PARAMS_COMMENTS]", parameterComments)
+                // lame but its bugging me.
+                .Replace("()]", "]")
+                .Replace("(\"\")","");
+            return contents;
+        }
+
+        private static string ContentsWithResults(IEnumerable<string> namespaces, string controllersNamespace, Type requestObj, Type responseObjectResult,
             string controllerRoute, string actionRoute, string template,
             Func<string, string, string> buildControllerName
         )
         {
             DynamicControllerFactory.Helpers.ValidateRequestType(requestObj);
-            DynamicControllerFactory.Helpers.ValidateResponseType(responseObjectResult);
+
+            if (!(responseObjectResult is null))
+                DynamicControllerFactory.Helpers.ValidateResponseType(responseObjectResult);
 
             var (reqObj, _, requestNs) = DynamicControllerFactory.Helpers.WriteNameWithNamespaces(requestObj);
             var (parameters, paramNs) = DynamicControllerFactory.Helpers.WriteInputParamsWithNamespaces(requestObj);
             var parameterComments = string.Join(Environment.NewLine, DynamicControllerFactory.Helpers.WriteInputParamsXmlComments(requestObj));
-            var (resObj, realResObject, resultObjNs) = DynamicControllerFactory.Helpers.WriteNameWithNamespaces(responseObjectResult);
+            var (resObj, realResObject, resultObjNs) = responseObjectResult is null
+                ? (null, null, null)
+                : DynamicControllerFactory.Helpers.WriteNameWithNamespaces(responseObjectResult);
             var newReqObj = DynamicControllerFactory.Helpers.WriteNewObject(requestObj);
 
             var ns = string.Join(Environment.NewLine,
@@ -117,7 +206,10 @@ namespace APIBlox.AspNetCore.Extensions
                 .Replace("[RES_OBJECT_INNER_RESULT]", realResObject ?? resObj)
                 .Replace("[NEW_REQ_OBJECT]", newReqObj)
                 .Replace("[ACTION_PARAMS]", parameters)
-                .Replace("[PARAMS_COMMENTS]", parameterComments);
+                .Replace("[PARAMS_COMMENTS]", parameterComments)
+                // lame but its bugging me.
+                .Replace("()]", "]")
+                .Replace("(\"\")","");
             return contents;
         }
 

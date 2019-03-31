@@ -11,56 +11,51 @@ namespace [CONTROLLERS_NAMESPACE].Controllers
     [ApiController]
     public sealed class [CONTROLLER_NAME] : ControllerBase
     {
-        private readonly IQueryHandler<[REQ_OBJECT], HandlerResponse> _getAllHandler;
+        private readonly ICommandHandler<[REQ_OBJECT], HandlerResponse> _putByHandler;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
         /// </summary>
-        /// <param name="getAllHandler">The handler used to for querying [RES_OBJECT_INNER_RESULT].</param>
-        public [CONTROLLER_NAME](IQueryHandler<[REQ_OBJECT], HandlerResponse> getAllHandler)
+        /// <param name="putByHandler">The handler used to for updating a resource.</param>
+        public [CONTROLLER_NAME](ICommandHandler<[REQ_OBJECT], HandlerResponse> putByHandler)
         {
-            _getAllHandler = getAllHandler;
+            _putByHandler = putByHandler;
         }
 
-		/// <summary>
-        ///     Action for getting a collection of [RES_OBJECT_INNER_RESULT] resources.
+        /// <summary>
+        ///     Action for updating a resource.
         /// </summary>
         /// <remarks>
-        ///     Possible Response Status Codes: <a href="https://httpstatuses.com/200">200</a>, <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>
+        ///     Possible Response Status Codes: <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>, <a href="https://httpstatuses.com/404">404</a>, <a href="https://httpstatuses.com/409">409</a>
         /// </remarks>
-        /// <response code="200">Success, with an array of results.</response>
         /// <response code="204">Success, no results.</response>
         /// <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
         /// <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+        /// <response code="404">NotFound, The resource was not found using the supplied input parameters.</response>
+        /// <response code="409">Conflict, The supplied input parameters would cause a data violation.</response>
         /// <param name="cancellationToken">The cancellation token.</param>
         [PARAMS_COMMENTS]
-        [HttpGet("[ACTION_ROUTE]")]
+        [HttpPut("[ACTION_ROUTE]")]
         [Produces("application/json")]
         [Consumes("application/json")]
-        [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> QueryAll(
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> PutBy(
             [ACTION_PARAMS]
             CancellationToken cancellationToken
         )
         {
-            var ret = await _getAllHandler.HandleAsync(
+            var ret = await _putByHandler.HandleAsync(
                 [NEW_REQ_OBJECT], 
                 cancellationToken
             ).ConfigureAwait(false);
 
-            if (ret.HasErrors)
-                return new ProblemResult(ret.Error);
-
-            if (ret.Result is null)
-                throw new ArgumentNullException(
-                    nameof(HandlerResponse.Result),
-                    "When responding to a GET you must either set an error or pass a result!"
-                );
-
-            return Ok(ret.Result);
+            return ret.HasErrors
+                ? (IActionResult) new ProblemResult(ret.Error)
+                : NoContent();
         }
     }
 }

@@ -213,7 +213,7 @@ namespace APIBlox.AspNetCore
                     var pi = props[index];
 
                     var temp = template.Replace("@att", GetAttributesAndValues(namespaces, pi));
-                    
+
                     if (!namespaces.Contains(pi.PropertyType.Namespace))
                         namespaces.Add(pi.PropertyType.Namespace);
 
@@ -242,8 +242,8 @@ namespace APIBlox.AspNetCore
             {
                 var nullable = o.IsGenericType && o.GetGenericTypeDefinition() == typeof(Nullable<>);
 
-                return !nullable 
-                    ? (false, o.Name) 
+                return !nullable
+                    ? (false, o.Name)
                     : (true, o.GetGenericArguments().First().Name);
             }
 
@@ -458,16 +458,21 @@ namespace APIBlox.AspNetCore
                 throw new ArgumentException($"{response.Name} protection level must be public.");
             }
 
-            public static void ValidateRequestType(Type request)
+            public static void ValidateRequestType(Type request, bool mustHaveBodyProperty = false)
             {
-                //ValidateResponseType(request);
+                var readProps = request.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.CanRead)
+                    .ToList();
 
-                var valid = request.GetProperties(BindingFlags.Public | BindingFlags.Instance).Any(p => p.CanRead);
+                if (!readProps.Any())
+                    throw new ArgumentException($"{request.Name} must have at least 1 publicly accessible getter property.");
 
-                if (valid)
+                if (!mustHaveBodyProperty)
                     return;
 
-                throw new ArgumentException($"{request.Name} must have at least 1 publicly accessible getter property.");
+                var count = readProps.Count(pi => pi.GetCustomAttribute<FromBodyAttribute>() != null);
+
+                if (count != 1)
+                    throw new ArgumentException($"{request.Name} must have a public property that is decorated with a {nameof(FromBodyAttribute)}.");
             }
         }
 
