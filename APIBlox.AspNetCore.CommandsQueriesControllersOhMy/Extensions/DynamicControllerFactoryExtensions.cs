@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
@@ -29,17 +30,20 @@ namespace APIBlox.AspNetCore.Extensions
         public static IComposedTemplate WriteQueryByController<TRequest, TResponse>(
             this DynamicControllerFactory factory, string name = null,
             string nameSpace = "DynamicControllers",
-            string route = "api/[controller]", string actionRoute = null
+            string controllerRoute = "api/[controller]", string actionRoute = null
         )
             where TRequest : new()
         {
+            if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
+                throw new ArgumentException("Must be a single object type.", nameof(TResponse));
+
             var getTemplate = Templates.GetTemplate("DynamicQueryByController");
             var contents = Contents(
                 DefaultNamespaces,
                 nameSpace,
                 typeof(TRequest),
                 typeof(TResponse),
-                route,
+                controllerRoute,
                 actionRoute,
                 getTemplate,
                 (req, res) => name ?? $"QueryBy{res}Controller"
@@ -51,9 +55,10 @@ namespace APIBlox.AspNetCore.Extensions
         public static IComposedTemplate WriteQueryAllController<TRequest, TResponse>(
             this DynamicControllerFactory factory, string name = null,
             string nameSpace = "DynamicControllers",
-            string route = "api/[controller]", string actionRoute = null
+            string controllerRoute = "api/[controller]", string actionRoute = null
         )
             where TRequest : new()
+            where TResponse : IEnumerable
         {
             var ns = new List<string>();
             ns.AddRange(DefaultNamespaces);
@@ -65,7 +70,7 @@ namespace APIBlox.AspNetCore.Extensions
                nameSpace,
                 typeof(TRequest),
                 typeof(TResponse),
-                route,
+                controllerRoute,
                 actionRoute,
                 getTemplate,
                 (req, res) => name ?? $"QueryAll{res}Controller"
@@ -106,7 +111,7 @@ namespace APIBlox.AspNetCore.Extensions
                 .Replace("[CONTROLLER_NAME]", cn)
                 .Replace("[NAMESPACES]", ns)
                 .Replace("[CONTROLLER_ROUTE]", controllerRoute)
-                .Replace("[ACTION_ROUTE]", actionRoute is null ? "" : $"({actionRoute})")
+                .Replace("[ACTION_ROUTE]", actionRoute ?? "")
                 .Replace("[REQ_OBJECT]", reqObj)
                 .Replace("[RES_OBJECT_RESULT]", resObj)
                 .Replace("[RES_OBJECT_INNER_RESULT]", realResObject ?? resObj)

@@ -20,20 +20,60 @@
             </summary>
             <returns>System.Int32.</returns>
         </member>
-        <member name="T:Examples.Resources.ChildRequest">
+        <member name="T:Examples.Controllers.QueryByChildResponseController">
+            <inheritdoc />
+            <summary>
+                Class QueryByChildResponseController.
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="M:Examples.Controllers.QueryByChildResponseController.QueryBy(System.Int32,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                Action for getting a ChildResponse resource.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href="https://httpstatuses.com/200">200</a>, <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>
+            </remarks>
+            <response code="200">Success, with a result.</response>
+            <response code="204">Success, no results.</response>
+            <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name ="id">Sets the child id.</param>
+            <param name ="parentId">Gets or sets the parent identifier.</param>
+            <param name ="someRouteValueWeNeed">Gets or sets some route value we need.</param>
+        </member>
+        <member name="P:Examples.Resources.ChildByIdRequest.Id">
+            <summary>
+            Sets the child id.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.ChildByIdRequest.ParentId">
+            <summary>
+                Gets or sets the parent identifier.
+            </summary>
+            <value>The parent identifier.</value>
+        </member>
+        <member name="P:Examples.Resources.ChildByIdRequest.SomeRouteValueWeNeed">
+            <summary>
+                Gets or sets some route value we need.
+            </summary>
+            <value>Some route value we need.</value>
+        </member>
+        <member name="T:Examples.Resources.ChildrenRequest">
             <summary>
                 Class ChildRequest.
             </summary>
             <seealso cref="T:APIBlox.AspNetCore.Types.FilteredQuery" />
             <inheritdoc />
         </member>
-        <member name="P:Examples.Resources.ChildRequest.ParentId">
+        <member name="P:Examples.Resources.ChildrenRequest.ParentId">
             <summary>
                 Gets or sets the parent identifier.
             </summary>
             <value>The parent identifier.</value>
         </member>
-        <member name="P:Examples.Resources.ChildRequest.SomeRouteValueWeNeed">
+        <member name="P:Examples.Resources.ChildrenRequest.SomeRouteValueWeNeed">
             <summary>
                 Gets or sets some route value we need.
             </summary>

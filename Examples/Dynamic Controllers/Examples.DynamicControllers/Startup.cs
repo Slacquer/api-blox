@@ -135,30 +135,34 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var factory = new DynamicControllerFactory("OutputFile", false);
 
-            var c1 = factory.WriteQueryAllController<DynamicControllerRequest, DynamicControllerResponse>(
+            var c1 = factory.WriteQueryAllController<DynamicControllerRequest, IEnumerable<DynamicControllerResponse>>(
                 "MyComposedController", "Examples"
             );
 
-            var c2 = factory.WriteQueryAllController<ChildRequest, ChildResponse>(
+            var c2 = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
                  nameSpace: "Examples"
             );
 
-            var c3 = factory.WriteQueryAllController<ParentRequest, ParentResponse>(
+            var c2b = factory.WriteQueryByController<ChildByIdRequest, ChildResponse>(
+                nameSpace: "Examples",controllerRoute:"api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute:"{childId}"
+            );
+
+            var c3 = factory.WriteQueryAllController<ParentRequest, IEnumerable<ParentResponse>>(
                 nameSpace: "Examples"
             );
 
             var outfile = @".\FullyDynamic";
-            var fi = factory.Compile(outfile,c1,c2, c3);
+            var fi = factory.Compile(outfile, c1, c2, c2b, c3);
 
             if (fi is null || factory.CompilationErrors != null)
                 throw new System.Exception(factory.CompilationErrors.First());
 
-            builder.ConfigureApplicationPartManager(pm =>
-                {
-                    var part = new AssemblyPart(Assembly.LoadFrom(fi.FullName));
-                    pm.ApplicationParts.Add(part);
-                }
-            );
+            //builder.ConfigureApplicationPartManager(pm =>
+            //    {
+            //        var part = new AssemblyPart(Assembly.LoadFrom(fi.FullName));
+            //        pm.ApplicationParts.Add(part);
+            //    }
+            //);
 
             return builder;
         }

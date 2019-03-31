@@ -34,7 +34,7 @@ namespace [CONTROLLERS_NAMESPACE].Controllers
         /// <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
         /// <param name="cancellationToken">The cancellation token.</param>
         [PARAMS_COMMENTS]
-        [HttpGet[ACTION_ROUTE]]
+        [HttpGet("[ACTION_ROUTE]")]
         [Produces("application/json")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status200OK)]

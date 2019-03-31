@@ -1,19 +1,19 @@
-﻿#region -    Using Statements    -
-
-using APIBlox.AspNetCore.Types;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace Examples.Resources
 {
-    /// <summary>
-    ///     Class ChildRequest.
-    /// </summary>
-    /// <seealso cref="APIBlox.AspNetCore.Types.FilteredQuery" />
-    /// <inheritdoc />
-    public class ChildrenRequest : FilteredQuery
+    public class ChildByIdRequest
     {
+        /// <summary>
+        /// Sets the child id.
+        /// </summary>
+        [FromRoute(Name ="childId")]
+        public int Id { get; set; }
+
         /// <summary>
         ///     Gets or sets the parent identifier.
         /// </summary>

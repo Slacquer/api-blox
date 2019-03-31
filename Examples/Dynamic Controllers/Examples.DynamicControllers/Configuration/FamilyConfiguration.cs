@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 typeof(FamilyDynamicPostController<,,>)
             );
 
-            parentController.AddSubController<ChildRequest, ChildResponse, int>(
+            parentController.AddSubController<ChildrenRequest, ChildResponse, int>(
                 typeof(int),
                 childrenSubRoutes, 
                 typeof(FamilyDynamicGetController<,,>)
