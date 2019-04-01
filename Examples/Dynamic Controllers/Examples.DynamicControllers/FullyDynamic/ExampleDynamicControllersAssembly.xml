@@ -15,13 +15,13 @@
             <summary>
                 Initializes a new instance of the <see cref = "T:DynamicControllers.Controllers.MyDynamicController"/> class.
             </summary>
-            <param name = "getByHandler">The handler used to for querying DynamicControllerResponse.</param>
+            <param name = "getByDynamicControllerResponseHandler">The handler used to for querying DynamicControllerResponse.</param>
         </member>
         <member name="M:DynamicControllers.Controllers.MyDynamicController.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.AllRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
             <summary>
                 Initializes a new instance of the <see cref = "T:DynamicControllers.Controllers.MyDynamicController"/> class.
             </summary>
-            <param name = "getAllHandler">The handler used to for querying DynamicControllerResponse.</param>
+            <param name = "getAllDynamicControllerResponseHandler">The handler used to for querying DynamicControllerResponse.</param>
         </member>
         <member name="M:DynamicControllers.Controllers.MyDynamicController.QueryBy(System.String,System.Int32,System.Threading.CancellationToken)">
             <summary>
@@ -63,13 +63,13 @@
             <summary>
                 Initializes a new instance of the <see cref = "T:DynamicControllers.Controllers.Children"/> class.
             </summary>
-            <param name = "deleteByHandler">The handler used to for deleting a resource.</param>
+            <param name = "deleteByChildByIdRequestHandler">The handler used to for deleting a resource.</param>
         </member>
         <member name="M:DynamicControllers.Controllers.Children.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.ChildrenRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
             <summary>
                 Initializes a new instance of the <see cref = "T:DynamicControllers.Controllers.Children"/> class.
             </summary>
-            <param name = "getAllHandler">The handler used to for querying ChildResponse.</param>
+            <param name = "getAllChildResponseHandler">The handler used to for querying ChildResponse.</param>
         </member>
         <member name="M:DynamicControllers.Controllers.Children.DeleteBy(System.Int32,System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>

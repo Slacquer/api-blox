@@ -21,13 +21,5 @@ namespace APIBlox.AspNetCore.Types
         public string Name { get; set; }
         public string Route { get;  }
         public string Namespace { get;  }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is DynamicControllerComposedTemplate o))
-                return false;
-
-            return Name.EqualsEx(o.Name);
-        }
     }
 }

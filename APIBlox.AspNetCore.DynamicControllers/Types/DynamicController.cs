@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 
 namespace APIBlox.AspNetCore.Types
 {
+    [DebuggerDisplay("Controller: {Name} | {NameSpace} | {Route}")]
     internal class DynamicController
     {
         private static readonly string ControllerDefaultContent = EmbeddedResourceReader<DynamicControllerFactory>.GetResource("DynamicController.txt");

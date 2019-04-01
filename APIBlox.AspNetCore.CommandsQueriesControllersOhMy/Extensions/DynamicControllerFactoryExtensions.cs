@@ -1,10 +1,15 @@
-﻿using System;
+﻿#region -    Using Statements    -
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
-using APIBlox.NetCore.Types;
 using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Types;
+
+#endregion
 
 namespace APIBlox.AspNetCore.Extensions
 {
@@ -19,21 +24,18 @@ namespace APIBlox.AspNetCore.Extensions
             string nameSpace = "DynamicControllers",
             string controllerName = null,
             string controllerRoute = "api/[controller]"
-
         )
             where TRequest : new()
         {
             if (actionRoute.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException($"QueryBy requires a route for the action, maybe something like {{id}}.",
+                throw new ArgumentException("QueryBy requires a route for the action, maybe something like {id}.",
                     nameof(actionRoute)
                 );
 
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
-            var action = Templates.GetDynamicAction("QueryBy");
-            action.Name = "QueryBy";
-            action.Route = actionRoute;
+            var action = Templates.GetDynamicAction("QueryBy", actionRoute);
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
@@ -48,7 +50,6 @@ namespace APIBlox.AspNetCore.Extensions
             return template;
         }
 
-
         public static DynamicControllerComposedTemplate WriteQueryAllController<TRequest, TResponse>(
             this DynamicControllerFactory factory,
             string actionRoute = null,
@@ -62,9 +63,7 @@ namespace APIBlox.AspNetCore.Extensions
             if (!typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a enumerable object type.", nameof(TResponse));
 
-            var action = Templates.GetDynamicAction("QueryAll");
-            action.Name = "QueryAll";
-            action.Route = actionRoute;
+            var action = Templates.GetDynamicAction("QueryAll", actionRoute);
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
@@ -80,7 +79,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         public static DynamicControllerComposedTemplate WriteDeleteByController<TRequest>(
-            this DynamicControllerFactory factory, 
+            this DynamicControllerFactory factory,
             string actionRoute = null,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
@@ -88,9 +87,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var action = Templates.GetDynamicAction("DeleteBy");
-            action.Name = "DeleteBy";
-            action.Route = actionRoute;
+            var action = Templates.GetDynamicAction("DeleteBy", actionRoute);
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
@@ -110,7 +107,7 @@ namespace APIBlox.AspNetCore.Extensions
             Type requestObj,
             bool requestObjMustHaveBody,
             Func<string, string> buildControllerName
-)
+        )
         {
             factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
@@ -123,43 +120,37 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Namespaces = template.Action.Namespaces
                 .Union(paramNs)
                 .Union(requestNs)
-                .OrderBy(s => s).ToArray();
+                .ToArray();
 
             var cn = buildControllerName(reqObj);
 
             template.Name = cn;
-
-            template.Action.Content = template.Action.Content
-                .Replace("[REQ_OBJECT]", reqObj)
-                .Replace("[ACTION_ROUTE]", template.Action.Route ?? "")
-                .Replace("[PARAMS_COMMENTS]", parameterComments)
-                .Replace("[ACTION_PARAMS]", parameters)
-                .Replace("[NEW_REQ_OBJECT]", newReqObj)
-                .Replace("()]", "]")
-                .Replace("(\"\")", "");
-
-            template.Action.Ctor = template.Action.Ctor
-                .Replace("[REQ_OBJECT]", reqObj)
-                .Replace("[CONTROLLER_NAME]", cn);
-
-            template.Action.Fields = template.Action.Fields.Select(s =>
-                s.Replace("[REQ_OBJECT]", reqObj)
-            ).ToArray();
+            
+            template.Action.Tokens["[REQ_OBJECT]"] = reqObj;
+            template.Action.Tokens["[RES_OBJECT_INNER_RESULT]"] = "";
+            template.Action.Tokens["[ACTION_ROUTE]"] = template.Action.Route ?? "";
+            template.Action.Tokens["[PARAMS_COMMENTS]"] = parameterComments;
+            template.Action.Tokens["[RES_OBJECT_RESULT]"] = "";
+            template.Action.Tokens["[ACTION_PARAMS]"] = parameters;
+            template.Action.Tokens["[NEW_REQ_OBJECT]"] = newReqObj;
+            template.Action.Tokens["[CONTROLLER_NAME]"] = cn;
+            
+            template.Action.Compose();
         }
 
         private static void ParseAndReplaceWithResponse(
-                    DynamicControllerFactory factory,
-                    DynamicControllerComposedTemplate template,
-                    Type requestObj,
-                    Type responseObjectResult,
-                    bool requestObjMustHaveBody,
-                    Func<string, string> buildControllerName
+            DynamicControllerFactory factory,
+            IComposedTemplate template,
+            Type requestObj,
+            Type responseObjectResult,
+            bool requestObjMustHaveBody,
+            Func<string, string> buildControllerName
         )
         {
             factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
             if (!(responseObjectResult is null))
-                factory.ValidateResponseType(responseObjectResult);
+                DynamicControllerFactory.ValidateResponseType(responseObjectResult);
 
             var (reqObj, _, requestNs) = factory.WriteNameWithNamespaces(requestObj);
             var (parameters, paramNs) = factory.WriteInputParamsWithNamespaces(requestObj);
@@ -173,35 +164,23 @@ namespace APIBlox.AspNetCore.Extensions
                 .Union(paramNs)
                 .Union(requestNs)
                 .Union(resultObjNs)
-                .OrderBy(s => s).ToArray();
+                .ToArray();
 
             var cn = buildControllerName(realResObject);
 
             template.Name = cn;
 
-            template.Action.Content = template.Action.Content
-                .Replace("[REQ_OBJECT]", reqObj)
-                .Replace("[RES_OBJECT_INNER_RESULT]", realResObject ?? resObj)
-                .Replace("[ACTION_ROUTE]", template.Action.Route ?? "")
-                .Replace("[PARAMS_COMMENTS]", parameterComments)
-                .Replace("[RES_OBJECT_RESULT]", resObj)
-                .Replace("[ACTION_PARAMS]", parameters)
-                .Replace("[NEW_REQ_OBJECT]", newReqObj)
-                .Replace("()]", "]")
-                .Replace("(\"\")", "");
+            template.Action.Tokens["[REQ_OBJECT]"] = reqObj;
+            template.Action.Tokens["[RES_OBJECT_INNER_RESULT]"] = realResObject ?? resObj;
+            template.Action.Tokens["[ACTION_ROUTE]"] = template.Action.Route ?? "";
+            template.Action.Tokens["[PARAMS_COMMENTS]"] = parameterComments;
+            template.Action.Tokens["[RES_OBJECT_RESULT]"] = resObj;
+            template.Action.Tokens["[ACTION_PARAMS]"] = parameters;
+            template.Action.Tokens["[NEW_REQ_OBJECT]"] = newReqObj;
+            template.Action.Tokens["[CONTROLLER_NAME]"] = cn;
 
-            template.Action.Ctor = template.Action.Ctor
-                .Replace("[REQ_OBJECT]", reqObj)
-                .Replace("[RES_OBJECT_INNER_RESULT]", realResObject ?? resObj)
-                .Replace("[CONTROLLER_NAME]", cn);
-
-            template.Action.Fields = template.Action.Fields.Select(s =>
-                s.Replace("[REQ_OBJECT]", reqObj)
-                    .Replace("[RES_OBJECT_INNER_RESULT]", realResObject ?? resObj)
-            ).ToArray();
+            template.Action.Compose();
         }
-
-
 
         ////public static DynamicControllerComposedTemplate WritePutController<TRequest>(
         ////    this DynamicControllerFactory factory, string controllerName = null,
@@ -260,13 +239,12 @@ namespace APIBlox.AspNetCore.Extensions
         ////    return new DynamicControllerComposedTemplate(contents, cmdHandler);
         ////}
 
-
         private static string Contents(
             DynamicControllerFactory factory,
             IEnumerable<string> namespaces, string controllersNamespace, Type requestObj,
             bool requestObjMustHaveBody, string controllerRoute, string actionRoute, string template,
-           Func<string, string> buildControllerName
-       )
+            Func<string, string> buildControllerName
+        )
         {
             factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
@@ -295,6 +273,7 @@ namespace APIBlox.AspNetCore.Extensions
                 .Replace("[NEW_REQ_OBJECT]", newReqObj)
                 .Replace("[ACTION_PARAMS]", parameters)
                 .Replace("[PARAMS_COMMENTS]", parameterComments)
+
                 // lame but its bugging me.
                 .Replace("()]", "]")
                 .Replace("(\"\")", "");
@@ -311,7 +290,7 @@ namespace APIBlox.AspNetCore.Extensions
             factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
             if (!(responseObjectResult is null))
-                factory.ValidateResponseType(responseObjectResult);
+                DynamicControllerFactory.ValidateResponseType(responseObjectResult);
 
             var (reqObj, _, requestNs) = factory.WriteNameWithNamespaces(requestObj);
             var (parameters, paramNs) = factory.WriteInputParamsWithNamespaces(requestObj);
@@ -343,30 +322,38 @@ namespace APIBlox.AspNetCore.Extensions
                 .Replace("[NEW_REQ_OBJECT]", newReqObj)
                 .Replace("[ACTION_PARAMS]", parameters)
                 .Replace("[PARAMS_COMMENTS]", parameterComments)
+
                 // lame but its bugging me.
                 .Replace("()]", "]")
                 .Replace("(\"\")", "");
             return contents;
         }
 
+        #region -    Nested type: Templates    -
+
         // ReSharper disable once ClassNeverInstantiated.Local
         private class Templates
         {
-            public static DynamicAction GetDynamicAction(string templatePath)
+            public static DynamicAction GetDynamicAction(string templatePath, string actionRoute)
             {
                 var bits = EmbeddedResourceReader<Templates>.GetResources(templatePath);
 
-                return new DynamicAction
-                {
-                    Content = bits["ActionContent"],
-                    Ctor = bits["Ctor"],
-                    Fields = bits["Fields"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
-                    Namespaces = bits["Namespaces"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
-                };
+                var methods = bits.ContainsKey("Methods")
+                    ? bits["Methods"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                    : null;
+
+                return new DynamicAction(
+                    templatePath,
+                    actionRoute,
+                    bits["ActionContent"],
+                    bits["Ctor"],
+                    bits["Fields"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
+                    bits["Namespaces"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
+                    methods = methods
+                );
             }
         }
 
+        #endregion
     }
-
-
 }

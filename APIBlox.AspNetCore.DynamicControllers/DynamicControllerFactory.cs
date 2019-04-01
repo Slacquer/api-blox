@@ -7,11 +7,9 @@ using System.Text;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
-using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
 
 namespace APIBlox.AspNetCore
@@ -124,6 +122,7 @@ namespace APIBlox.AspNetCore
                     namespaces.Add(pi.PropertyType.Namespace);
 
                 var space = index == 0 ? "" : "            ";
+                
                 parameters.Add(temp
                     .Replace("@space", space)
                     .Replace("@p", $"{GetPropertyTypeAndValue(pi.PropertyType, pi.Name)},")
@@ -229,7 +228,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="t">The t.</param>
         /// <returns>System.String.</returns>
-        public string GetNameWithoutGenericArity(Type t)
+        public static string GetNameWithoutGenericArity(Type t)
         {
             var name = t.Name;
             var index = name.IndexOf('`');
@@ -241,7 +240,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="response">The response.</param>
         /// <exception cref="ArgumentException"></exception>
-        public void ValidateResponseType(Type response)
+        public static void ValidateResponseType(Type response)
         {
             if (response.IsPublic)
                 return;
@@ -303,7 +302,7 @@ namespace APIBlox.AspNetCore
 
                 if (!namespaces.Contains(attType.Namespace))
                     namespaces.Add(attType.Namespace);
-
+                
                 builder.Append("[");
                 builder.Append($"{attType.Name.Replace("Attribute", "")}(");
                 BuildAttributeConstructor(namespaces, attribute, builder);
@@ -329,11 +328,15 @@ namespace APIBlox.AspNetCore
 
             if (!builder.ToString().EndsWith("("))
                 builder.Append(", ");
+            
+            var argList = new List<string>();
 
             for (var index = 0; index < writeProps.Count; index++)
             {
                 var prop = writeProps[index];
                 var value = prop.GetValue(attribute);
+
+                argList.Add(value.ToString());
 
                 if (value is bool b)
                     value = b.ToString().ToLower();
@@ -359,11 +362,12 @@ namespace APIBlox.AspNetCore
 
             if (!ctorArgs.Any())
                 return;
-
+            
             var readProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.CanRead && p.GetValue(attribute) != default)
                 .ToList();
 
+            var argList = new List<string>();
             for (var index = 0; index < ctorArgs.Count; index++)
             {
                 var cp = ctorArgs[index];
@@ -374,6 +378,8 @@ namespace APIBlox.AspNetCore
                 if (!namespaces.Contains(cp.ParameterType.Namespace))
                     namespaces.Add(cp.ParameterType.Namespace);
 
+                argList.Add(value.ToString());
+                
                 if (value is bool b)
                     value = b.ToString().ToLower();
 
