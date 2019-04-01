@@ -1,1 +1,1 @@
-﻿IQueryHandler<[REQ_OBJECT], HandlerResponse> _getByHandler
+﻿private readonly IQueryHandler<[REQ_OBJECT], HandlerResponse> _getByHandler;

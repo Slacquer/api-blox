@@ -29,15 +29,13 @@ namespace APIBlox.AspNetCore.Extensions
             action.Name = "QueryBy";
             action.Route = actionRoute;
 
-            var template = new DynamicControllerComposedTemplate(action);
+            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
             ParseAndReplace(factory,
                 template,
-                nameSpace,
                 typeof(TRequest),
                 typeof(TResponse),
                 false,
-                controllerRoute,
                 req => controllerName.ToPascalCase() ?? $"QueryBy{req}Controller"
             );
 
@@ -45,9 +43,11 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         private static void ParseAndReplace(
-            DynamicControllerFactory factory, DynamicControllerComposedTemplate template,
-            string controllersNamespace, Type requestObj, Type responseObjectResult,
-            bool requestObjMustHaveBody, string controllerRoute,
+            DynamicControllerFactory factory, 
+            DynamicControllerComposedTemplate template,
+            Type requestObj, 
+            Type responseObjectResult,
+            bool requestObjMustHaveBody,
             Func<string, string> buildControllerName
         )
         {
@@ -73,7 +73,6 @@ namespace APIBlox.AspNetCore.Extensions
             var cn = buildControllerName(realResObject);
 
             template.Name = cn;
-            template.Route = controllerRoute;
 
             template.Action.Content = template.Action.Content
                 .Replace("[REQ_OBJECT]", reqObj)
@@ -134,7 +133,7 @@ namespace APIBlox.AspNetCore.Extensions
             //    (req, res) => controllerName.ToPascalCase() ?? $"QueryAll{res}Controller"
             //);
 
-            return new DynamicControllerComposedTemplate(null);
+            return new DynamicControllerComposedTemplate(null,null,null);
         }
 
         ////public static DynamicControllerComposedTemplate WriteDeleteByController<TRequest>(

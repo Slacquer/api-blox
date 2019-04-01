@@ -9,7 +9,8 @@ namespace APIBlox.AspNetCore.Contracts
     {
         DynamicAction Action { get; }
 
-         string Name { get; set; }
-         string Route { get; set; }
+        string Name { get; set; }
+        string Route { get;  }
+        string Namespace { get;  }
     }
 }

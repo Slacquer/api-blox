@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     c.DescribeAllEnumsAsStrings();
                     c.SwaggerDoc(version, new Info {Title = siteTitle, Version = version});
                     c.IncludeXmlComments(@".\Examples.DynamicControllers.xml", true);
-                    c.IncludeXmlComments("D:\\Source\\Repos\\FKS\\api-blox\\Examples\\Dynamic Controllers\\Examples.DynamicControllers\\FullyDynamic\\ExampleDynamicControllersAssembly.xml");
+                    c.IncludeXmlComments(@".\FullyDynamic\ExampleDynamicControllersAssembly.xml");
                 }
             );
         }

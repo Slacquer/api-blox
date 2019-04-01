@@ -38,4 +38,3 @@ public async Task<IActionResult> QueryBy(
 
     return Ok(ret.Result);
 }
-}

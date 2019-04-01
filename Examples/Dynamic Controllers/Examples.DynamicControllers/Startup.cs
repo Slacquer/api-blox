@@ -140,18 +140,42 @@ namespace Microsoft.Extensions.DependencyInjection
             var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", false);
 
             var c1 = factory.WriteQueryByController<ByIdRequest, DynamicControllerResponse>(
-                //"DynamicControllers",
-                //"MyDynamicController",
-                //"api/[controller]",
-                //""
+                "DynamicControllers",
+                  "MyDynamicController",
+            "api/[controller]/"
+            //""
             );
 
             var c2 = factory.WriteQueryAllController<AllRequest, IEnumerable<DynamicControllerResponse>>(
                 "DynamicControllers",
-                "MyDynamicController",
-                "api/[controller]",
-                ""
+                "MyDynamicController"
+            //"api/[controller]",
+            //""
             );
+
+
+            var ass = factory.Compile(@".\FullyDynamic", c1);//, c2);
+
+
+            if (ass is null || factory.CompilationErrors != null)
+                throw new System.Exception(factory.CompilationErrors.First());
+
+            builder.ConfigureApplicationPartManager(pm =>
+                {
+                    var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
+                    pm.ApplicationParts.Add(part);
+                }
+            );
+
+
+            //if (fi is null || factory.CompilationErrors != null)
+            //    throw new System.Exception(factory.CompilationErrors.First());
+
+
+            //var fi = factory.Compile(outfile, c1, c2, c2b, c2c, c2d, c2e, c3);
+            //var fi = factory.Compile(outfile, c2e);
+
+            //var ass = factory.Compile(c1, c2, c2b, c2c, c2d, c2e, c3);
 
             //var c2 = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
             //     nameSpace: "Examples"
@@ -176,26 +200,6 @@ namespace Microsoft.Extensions.DependencyInjection
             //var c3 = factory.WriteQueryAllController<ParentRequest, IEnumerable<ParentResponse>>(
             //     controllerName: "Parents", nameSpace: "Examples"
             //);
-
-            var outfile = @".\FullyDynamic";
-            //var fi = factory.Compile(outfile, c1, c2, c2b, c2c, c2d, c2e, c3);
-            //var fi = factory.Compile(outfile, c2e);
-
-            //var ass = factory.Compile(c1, c2, c2b, c2c, c2d, c2e, c3);
-            var ass = factory.Compile(outfile, c1);
-
-            //if (fi is null || factory.CompilationErrors != null)
-            //    throw new System.Exception(factory.CompilationErrors.First());
-
-            if (ass is null || factory.CompilationErrors != null)
-                throw new System.Exception(factory.CompilationErrors.First());
-
-            builder.ConfigureApplicationPartManager(pm =>
-                {
-                    var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
-                    pm.ApplicationParts.Add(part);
-                }
-            );
 
             //builder.ConfigureApplicationPartManager(pm =>
             //    {

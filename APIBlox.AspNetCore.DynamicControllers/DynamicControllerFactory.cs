@@ -1,19 +1,17 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
-
-#endregion
 
 namespace APIBlox.AspNetCore
 {
@@ -22,15 +20,9 @@ namespace APIBlox.AspNetCore
     /// </summary>
     public class DynamicControllerFactory
     {
-        #region -    Fields    -
-
         private readonly string _assemblyName;
         private readonly bool _production;
         private readonly PortableExecutableReference[] _references;
-
-        #endregion
-
-        #region -    Constructors    -
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicControllerFactory" /> class.
@@ -53,21 +45,26 @@ namespace APIBlox.AspNetCore
                 .Split(";", StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => MetadataReference.CreateFromFile(s))
                 .ToArray();
-        }
 
-        #endregion
+        }
 
         /// <summary>
         ///     Gets the compilation errors.
         /// </summary>
         /// <value>The compilation errors.</value>
-        public IEnumerable<string> CompilationErrors { get; private set; } = new List<string>();
+        public IEnumerable<string> CompilationErrors { get; private set; }
 
         /// <summary>
         ///     Gets the compilation warnings.
         /// </summary>
         /// <value>The compilation warnings.</value>
-        public IEnumerable<string> CompilationWarnings { get; private set; } = new List<string>();
+        public IEnumerable<string> CompilationWarnings { get; private set; }
+
+        /// <summary>
+        ///     Gets the controllers used during compilation.
+        /// </summary>
+        /// <value>The controllers.</value>
+        public IEnumerable<string> Controllers { get; private set; }
 
         /// <summary>
         ///     Compiles <see cref="IComposedTemplate" /> to the specified assemblyOutputPath.
@@ -108,7 +105,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>System.ValueTuple&lt;System.String, System.String[]&gt;.</returns>
-        public  (string, string[]) WriteInputParamsWithNamespaces(Type obj)
+        public (string, string[]) WriteInputParamsWithNamespaces(Type obj)
         {
             const string template = "@space@att @p";
             var props = GetPublicReadWriteProperties(obj);
@@ -142,7 +139,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>List&lt;System.String&gt;.</returns>
-        public  IEnumerable<string> WriteInputParamsXmlComments(Type obj)
+        public IEnumerable<string> WriteInputParamsXmlComments(Type obj)
         {
             const string template = "@space/// <param name =\"@pName\">@pComment</param>";
             var props = GetPublicReadWriteProperties(obj);
@@ -172,7 +169,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>System.ValueTuple&lt;System.String, System.String, System.String[]&gt;.</returns>
-        public  (string, string, string[]) WriteNameWithNamespaces(Type obj)
+        public (string, string, string[]) WriteNameWithNamespaces(Type obj)
         {
             var name = GetNameWithoutGenericArity(obj);
             var ns = obj.Namespace;
@@ -210,7 +207,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>System.String.</returns>
-        public  string WriteNewObject(Type obj)
+        public string WriteNewObject(Type obj)
         {
             var props = GetPublicReadWriteProperties(obj);
 
@@ -231,7 +228,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="t">The t.</param>
         /// <returns>System.String.</returns>
-        public  string GetNameWithoutGenericArity(Type t)
+        public string GetNameWithoutGenericArity(Type t)
         {
             var name = t.Name;
             var index = name.IndexOf('`');
@@ -258,7 +255,7 @@ namespace APIBlox.AspNetCore
         /// <param name="mustHaveBodyProperty">if set to <c>true</c> [must have body property].</param>
         /// <exception cref="ArgumentException">
         /// </exception>
-        public  void ValidateRequestType(Type request, bool mustHaveBodyProperty = false)
+        public void ValidateRequestType(Type request, bool mustHaveBodyProperty = false)
         {
             var readProps = request.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.CanRead)
                 .ToList();
@@ -397,7 +394,7 @@ namespace APIBlox.AspNetCore
 
         private Assembly EmitToAssembly(params IComposedTemplate[] templates)
         {
-            var csOptions = ResetErrorsAndGetSyntaxTree(templates, out var csSyntaxTree);
+            var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
 
             var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, _references, csOptions);
 
@@ -424,7 +421,7 @@ namespace APIBlox.AspNetCore
 
         private FileInfo EmitToFile(string outputFolder, params IComposedTemplate[] templates)
         {
-            var csOptions = ResetErrorsAndGetSyntaxTree(templates, out var csSyntaxTree);
+            var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
 
             var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, _references, csOptions);
 
@@ -445,12 +442,13 @@ namespace APIBlox.AspNetCore
             return null;
         }
 
-        private CSharpCompilationOptions ResetErrorsAndGetSyntaxTree(IComposedTemplate[] templates, out IEnumerable<SyntaxTree> csSyntaxTree)
+        private CSharpCompilationOptions ResetAndGetSyntaxTree(IComposedTemplate[] templates, out IEnumerable<SyntaxTree> csSyntaxTree)
         {
             if (templates is null || !templates.Any())
                 throw new ArgumentNullException(nameof(templates));
 
             CompilationErrors = null;
+            CompilationWarnings = null;
 
             var csOptions = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,
@@ -459,10 +457,40 @@ namespace APIBlox.AspNetCore
                     : OptimizationLevel.Debug
             );
 
-           // csSyntaxTree = templates.Select(t => CSharpSyntaxTree.ParseText(t.Content));
-          //  return csOptions;
-          csSyntaxTree = null;
-          return null;
+            // merge templates, make sure same route for controller name.
+            var controllers = templates.GroupBy(g => g.Name).ToList();
+            var mustBeSame = controllers.SelectMany(g => g.Select(c => new { c.Name, c.Route, c.Namespace })).ToList();
+            var invalid = mustBeSame.GroupBy(g => g.Route).Count() > 1;
+
+            if (invalid)
+                throw new ArgumentException(
+                    $"Controller {mustBeSame.First().Name} has more " +
+                    $"than one route specified, you must change the name of the controller or make its routes match.",
+                    nameof(IComposedTemplate.Route)
+                );
+
+            var results = new List<string>();
+            foreach (var controllerGroup in controllers)
+            {
+                var nr = mustBeSame.First(g => g.Name == controllerGroup.Key);
+
+                var dc = new DynamicController(nr.Name, nr.Namespace, nr.Route);
+
+                foreach (var da in controllerGroup)
+                {
+                    dc.Namespaces.AddRange(da.Action.Namespaces);
+                    dc.Fields.AddRange(da.Action.Fields);
+                    dc.Ctors.Add(da.Action.Ctor);
+                    dc.Actions.Add(da.Action.Content);
+                }
+
+                results.Add(CSharpSyntaxTree.ParseText(dc.ToString()).GetRoot().NormalizeWhitespace().ToFullString());
+            }
+
+            Controllers = results;
+            csSyntaxTree = Controllers.Select(r => CSharpSyntaxTree.ParseText(r));
+
+            return csOptions;
         }
 
         private void CheckAndSetFailures(EmitResult emitResult)

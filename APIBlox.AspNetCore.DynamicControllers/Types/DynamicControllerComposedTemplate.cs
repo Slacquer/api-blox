@@ -10,14 +10,17 @@ namespace APIBlox.AspNetCore.Types
     [DebuggerDisplay("Controller: {Name} | {Route}")]
     public class DynamicControllerComposedTemplate : IComposedTemplate
     {
-        public DynamicControllerComposedTemplate(DynamicAction action)
+        public DynamicControllerComposedTemplate(string nameSpace, string route, DynamicAction action)
         {
+            Namespace = nameSpace;
+            Route = route;
             Action = action;
         }
-        
+
         public DynamicAction Action { get; set; }
         public string Name { get; set; }
-        public string Route { get; set; }
+        public string Route { get;  }
+        public string Namespace { get;  }
 
         public override bool Equals(object obj)
         {
