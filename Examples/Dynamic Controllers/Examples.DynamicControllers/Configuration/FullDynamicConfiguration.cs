@@ -1,49 +1,64 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Extensions;
 using Examples.Resources;
+using Microsoft.AspNetCore.Hosting;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
     internal static class FullDynamicConfiguration
     {
-        public static IMvcBuilder AddFullyDynamicConfiguration(this IMvcBuilder builder, bool production,
+        public static IMvcBuilder AddFullyDynamicConfiguration(this IMvcBuilder builder, IHostingEnvironment environment,
             out string dynamicControllersXmlFile
         )
         {
-            var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", production);
+            var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", environment.IsProduction());
 
-            var childAll = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
-                null,
-                "DynamicControllers",
-                "Children",
-                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
-            );
+            const string nameSpace = "Examples";
+            const string controllerRoute = "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children";
 
-            var childDelete = factory.WriteDeleteByController<ChildByIdRequest>(
+            var childById = factory.WriteQueryByController<ChildByIdRequest, ChildResponse>(
                 "{childId}",
-                "DynamicControllers",
+                nameSpace,
                 "Children",
-                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+                controllerRoute
             );
 
             var childPut = factory.WritePutController<ChildPutRequest>(
                 "{childId}",
-                "DynamicControllers",
+                nameSpace,
                 "Children",
-                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+                controllerRoute
+            );
+
+            var childDelete = factory.WriteDeleteByController<ChildByIdRequest>(
+                "{childId}",
+                nameSpace,
+                "Children",
+                controllerRoute
+            );
+
+
+            var childAll = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
+                null,
+                nameSpace,
+                "Children",
+                controllerRoute
             );
 
             var childPost = factory.WritePostController<ChildPostRequest, ChildResponse>(
                 null,
-                "DynamicControllers",
+                nameSpace,
                 "Children",
-                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+                controllerRoute
             );
 
+            var output = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            factory.Compile(builder, @".\bin\debug\netcoreapp2.2", childDelete, childAll, childPut, childPost);
+            factory.Compile(builder, output, childById, childDelete, childAll, childPut, childPost);
 
             if (!(factory.CompilationErrors is null) || !(factory.CompilationWarnings is null))
             {

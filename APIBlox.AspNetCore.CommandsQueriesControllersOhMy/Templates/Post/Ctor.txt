@@ -2,7 +2,7 @@
 ///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
 /// </summary>
 /// <param name="loggerFactory">LoggerFactory</param>
-/// <param name="postBy[REQ_OBJECT]Handler">The handler used to for creating a resource.</param>
+/// <param name="postBy[REQ_OBJECT]Handler">The handler used to for creating a [RES_OBJECT_RESULT] resource.</param>
 public [CONTROLLER_NAME](ILoggerFactory loggerFactory, ICommandHandler<[REQ_OBJECT], HandlerResponse> postBy[REQ_OBJECT]Handler)
 {
     _postBy[REQ_OBJECT]Handler = postBy[REQ_OBJECT]Handler;

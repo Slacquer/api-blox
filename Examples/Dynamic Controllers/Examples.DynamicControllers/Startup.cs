@@ -52,7 +52,7 @@ namespace Examples
 
                 //
                 //  DynamicControllers and configuration
-                .AddFullyDynamicConfiguration(_environment.IsProduction(), out var dynamicControllersXmlFile)
+                .AddFullyDynamicConfiguration(_environment, out var dynamicControllersXmlFile)
 
                 //
                 // Handles cancellation token cancelled.
