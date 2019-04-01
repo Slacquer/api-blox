@@ -43,14 +43,14 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
 
-            factory.Compile(builder, @".\FullyDynamic", childDelete, childAll, childPut, childPost);
+            factory.Compile(builder, @".\bin\debug\netcoreapp2.2", childDelete, childAll, childPut, childPost);
 
-            //if (!(factory.CompilationErrors is null) || !(factory.CompilationWarnings is null))
-            //{
-            //    dynamicControllersXmlFile = null;
+            if (!(factory.CompilationErrors is null) || !(factory.CompilationWarnings is null))
+            {
+                dynamicControllersXmlFile = null;
 
-            //    return builder;
-            //}
+                return builder;
+            }
 
             var (_, _, xml) = factory.OutputFiles;
 
