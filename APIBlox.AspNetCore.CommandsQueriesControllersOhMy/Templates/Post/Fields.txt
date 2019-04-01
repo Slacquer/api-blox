@@ -1,0 +1,2 @@
+﻿private readonly ICommandHandler<[REQ_OBJECT], HandlerResponse> _postBy[REQ_OBJECT]Handler;
+private readonly ILogger<[CONTROLLER_NAME]> _log;

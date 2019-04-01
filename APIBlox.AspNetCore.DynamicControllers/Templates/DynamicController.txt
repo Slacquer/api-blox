@@ -1,4 +1,6 @@
-﻿[NAMESPACES]
+﻿
+[NAMESPACES]
+
 
 namespace [CONTROLLERS_NAMESPACE].Controllers
 {
@@ -13,8 +15,13 @@ namespace [CONTROLLERS_NAMESPACE].Controllers
     {
         [FIELDS]
 
+
         [CTORS]
 
+
 		[ACTIONS]
+
+
+		[METHODS]
     }
 }

@@ -127,19 +127,6 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", true);
 
-            var c1 = factory.WriteQueryByController<ByIdRequest, DynamicControllerResponse>(
-                "dynamicControllerResponses/{someId}",
-                "DynamicControllers",
-                "MyDynamicController"
-            );
-
-            var c2 = factory.WriteQueryAllController<AllRequest, IEnumerable<DynamicControllerResponse>>(
-                "dynamicControllerResponses",
-                "DynamicControllers",
-                "MyDynamicController"
-            );
-
-
             var childAll = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
                 null,
                 "DynamicControllers",
@@ -154,7 +141,21 @@ namespace Microsoft.Extensions.DependencyInjection
                 "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
             );
 
-            var ass = factory.Compile(@".\FullyDynamic", c1, c2, childDelete,childAll);
+            var childPut = factory.WritePutController<ChildPutRequest>(
+                "{childId}",
+                "DynamicControllers",
+                "Children",
+                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+            );
+
+            var childPost = factory.WritePostController<ChildPostRequest, ChildResponse>(
+                null,
+                "DynamicControllers",
+                "Children",
+                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+            );
+
+            var ass = factory.Compile(@".\FullyDynamic", childDelete,childAll, childPut,childPost);
 
             if (ass is null || factory.CompilationErrors != null)
                 throw new Exception(factory.CompilationErrors.First());
@@ -165,39 +166,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     pm.ApplicationParts.Add(part);
                 }
             );
-
-            //if (fi is null || factory.CompilationErrors != null)
-            //    throw new System.Exception(factory.CompilationErrors.First());
-
-            //var fi = factory.Compile(outfile, c1, c2, c2b, c2c, c2d, c2e, c3);
-            //var fi = factory.Compile(outfile, c2e);
-
-            //var ass = factory.Compile(c1, c2, c2b, c2c, c2d, c2e, c3);
-
-
-
-
-
-
-            //var c2d = factory.WritePutController<ChildPutRequest>(
-            //    nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children", actionRoute: "{childId}"
-            //);
-
-            //var c2e = factory.WritePostController<ChildPostRequest, ChildResponse>(
-            //     nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children"
-            //);
-
-            //var c3 = factory.WriteQueryAllController<ParentRequest, IEnumerable<ParentResponse>>(
-            //     controllerName: "Parents", nameSpace: "Examples"
-            //);
-
-            //builder.ConfigureApplicationPartManager(pm =>
-            //    {
-            //        var part = new AssemblyPart(ass);
-            //        pm.ApplicationParts.Add(part);
-            //    }
-            //);
-
+            
             return builder;
         }
     }

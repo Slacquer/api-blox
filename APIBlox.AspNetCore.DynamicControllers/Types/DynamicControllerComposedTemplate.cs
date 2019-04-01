@@ -7,7 +7,7 @@ using APIBlox.NetCore.Extensions;
 
 namespace APIBlox.AspNetCore.Types
 {
-    [DebuggerDisplay("Controller: {Name} | {Route}")]
+    [DebuggerDisplay("Controller: {Name} | {Route} - Action: {Action.Name} | {Action.Route}")]
     public class DynamicControllerComposedTemplate : IComposedTemplate
     {
         public DynamicControllerComposedTemplate(string nameSpace, string route, DynamicAction action)

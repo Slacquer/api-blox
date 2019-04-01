@@ -1,0 +1,24 @@
+﻿ private object FindId(object result)
+{
+    try
+    {
+        var t = result.GetType();
+        var props = t.GetProperties();
+
+        var id = props.FirstOrDefault(p => p.Name.EqualsEx("Id"));
+
+        if (id is null)
+            foreach (var pi in props)
+                return FindId(t.GetProperty(pi.Name).GetValue(result, null));
+        else
+            return t.GetProperty(id.Name).GetValue(result, null);
+    }
+    catch (Exception ex)
+    {
+        _log.LogError(() => $"Could not determine ID for CreatedAtRoute result!  Ex: {ex.Message}");
+
+        return -1;
+    }
+
+    return -1;
+}

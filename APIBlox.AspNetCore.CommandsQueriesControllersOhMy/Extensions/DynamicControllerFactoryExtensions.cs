@@ -101,6 +101,58 @@ namespace APIBlox.AspNetCore.Extensions
             return template;
         }
 
+        public static DynamicControllerComposedTemplate WritePutController<TRequest>(
+            this DynamicControllerFactory factory,
+            string actionRoute = null,
+            string nameSpace = "DynamicControllers",
+            string controllerName = null,
+            string controllerRoute = "api/[controller]"
+        )
+            where TRequest : new()
+        {
+            var action = Templates.GetDynamicAction("PutBy", actionRoute);
+
+            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+
+            ParseAndReplace(factory,
+                template,
+                typeof(TRequest),
+                false,
+                req => controllerName.ToPascalCase() ?? $"PutBy{req}Controller"
+            );
+
+            return template;
+        }
+
+
+        public static DynamicControllerComposedTemplate WritePostController<TRequest, TResponse>(
+            this DynamicControllerFactory factory,
+            string actionRoute = null,
+            string nameSpace = "DynamicControllers",
+            string controllerName = null,
+            string controllerRoute = "api/[controller]"
+        )
+            where TRequest : new()
+        {
+            if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
+                throw new ArgumentException("Must be a single object type.", nameof(TResponse));
+
+            var action = Templates.GetDynamicAction("Post", actionRoute);
+
+            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+
+            ParseAndReplaceWithResponse(factory,
+                template,
+                typeof(TRequest),
+                typeof(TResponse),
+                false,
+                req => controllerName.ToPascalCase() ?? $"Post{req}Controller"
+            );
+
+            return template;
+        }
+
+
         private static void ParseAndReplace(
             DynamicControllerFactory factory,
             DynamicControllerComposedTemplate template,
@@ -125,7 +177,7 @@ namespace APIBlox.AspNetCore.Extensions
             var cn = buildControllerName(reqObj);
 
             template.Name = cn;
-            
+
             template.Action.Tokens["[REQ_OBJECT]"] = reqObj;
             template.Action.Tokens["[RES_OBJECT_INNER_RESULT]"] = "";
             template.Action.Tokens["[ACTION_ROUTE]"] = template.Action.Route ?? "";
@@ -134,7 +186,7 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Tokens["[ACTION_PARAMS]"] = parameters;
             template.Action.Tokens["[NEW_REQ_OBJECT]"] = newReqObj;
             template.Action.Tokens["[CONTROLLER_NAME]"] = cn;
-            
+
             template.Action.Compose();
         }
 
@@ -182,62 +234,9 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Compose();
         }
 
-        ////public static DynamicControllerComposedTemplate WritePutController<TRequest>(
-        ////    this DynamicControllerFactory factory, string controllerName = null,
-        ////    string nameSpace = "DynamicControllers",
-        ////    string controllerRoute = "api/[controller]", string actionRoute = null
-        ////)
-        ////    where TRequest : new()
-        ////{
-        ////    var getTemplate = Templates.GetTemplate("DynamicPutController");
-        ////    var contents = Contents(
-        ////        factory,
-        ////        DefaultNamespaces,
-        ////        nameSpace,
-        ////        typeof(TRequest),
-        ////        true,
-        ////        controllerRoute,
-        ////        actionRoute,
-        ////        getTemplate,
-        ////        (req) => controllerName.ToPascalCase() ?? $"PutUsing{req}Controller"
-        ////    );
 
-        ////    var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
 
-        ////    return new DynamicControllerComposedTemplate(contents, cmdHandler);
-        ////}
 
-        ////public static DynamicControllerComposedTemplate WritePostController<TRequest, TResponse>(
-        ////    this DynamicControllerFactory factory, string controllerName = null,
-        ////    string nameSpace = "DynamicControllers",
-        ////    string controllerRoute = "api/[controller]", string actionRoute = null
-        ////)
-        ////    where TRequest : new()
-        ////{
-        ////    var ns = new List<string>();
-        ////    ns.AddRange(DefaultNamespaces);
-        ////    ns.Add("System.Linq");
-        ////    ns.Add("Microsoft.Extensions.Logging");
-        ////    ns.Add("APIBlox.NetCore.Extensions");
-
-        ////    var getTemplate = Templates.GetTemplate("DynamicPostController");
-        ////    var contents = ContentsWithResults(
-        ////        factory,
-        ////        ns,
-        ////        nameSpace,
-        ////        typeof(TRequest),
-        ////        typeof(TResponse),
-        ////        true,
-        ////        controllerRoute,
-        ////        actionRoute,
-        ////        getTemplate,
-        ////        (req, res) => controllerName.ToPascalCase() ?? $"PostUsing{req}Controller"
-        ////    );
-
-        ////    var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
-
-        ////    return new DynamicControllerComposedTemplate(contents, cmdHandler);
-        ////}
 
         private static string Contents(
             DynamicControllerFactory factory,
@@ -339,7 +338,7 @@ namespace APIBlox.AspNetCore.Extensions
                 var bits = EmbeddedResourceReader<Templates>.GetResources(templatePath);
 
                 var methods = bits.ContainsKey("Methods")
-                    ? bits["Methods"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                    ? bits["Methods"]
                     : null;
 
                 return new DynamicAction(
@@ -349,7 +348,7 @@ namespace APIBlox.AspNetCore.Extensions
                     bits["Ctor"],
                     bits["Fields"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
                     bits["Namespaces"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
-                    methods = methods
+                    methods
                 );
             }
         }

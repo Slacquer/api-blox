@@ -63,7 +63,7 @@ namespace APIBlox.AspNetCore
         ///     Gets the controllers used during compilation.
         /// </summary>
         /// <value>The controllers.</value>
-        public IEnumerable<string> Controllers { get; private set; }
+        public IDictionary<string, string> Controllers { get; private set; }
 
         /// <summary>
         ///     Compiles <see cref="IComposedTemplate" /> to the specified assemblyOutputPath.
@@ -122,7 +122,7 @@ namespace APIBlox.AspNetCore
                     namespaces.Add(pi.PropertyType.Namespace);
 
                 var space = index == 0 ? "" : "            ";
-                
+
                 parameters.Add(temp
                     .Replace("@space", space)
                     .Replace("@p", $"{GetPropertyTypeAndValue(pi.PropertyType, pi.Name)},")
@@ -302,7 +302,7 @@ namespace APIBlox.AspNetCore
 
                 if (!namespaces.Contains(attType.Namespace))
                     namespaces.Add(attType.Namespace);
-                
+
                 builder.Append("[");
                 builder.Append($"{attType.Name.Replace("Attribute", "")}(");
                 BuildAttributeConstructor(namespaces, attribute, builder);
@@ -328,7 +328,7 @@ namespace APIBlox.AspNetCore
 
             if (!builder.ToString().EndsWith("("))
                 builder.Append(", ");
-            
+
             var argList = new List<string>();
 
             for (var index = 0; index < writeProps.Count; index++)
@@ -362,7 +362,7 @@ namespace APIBlox.AspNetCore
 
             if (!ctorArgs.Any())
                 return;
-            
+
             var readProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.CanRead && p.GetValue(attribute) != default)
                 .ToList();
@@ -379,7 +379,7 @@ namespace APIBlox.AspNetCore
                     namespaces.Add(cp.ParameterType.Namespace);
 
                 argList.Add(value.ToString());
-                
+
                 if (value is bool b)
                     value = b.ToString().ToLower();
 
@@ -469,7 +469,7 @@ namespace APIBlox.AspNetCore
                 .Select(g => g)
                 .ToList();
 
-            var results = new List<string>();
+            var results = new Dictionary<string, string>();
 
             foreach (var cg in controllerGroups)
             {
@@ -487,17 +487,19 @@ namespace APIBlox.AspNetCore
                 {
                     AddExistingArray(dc.Namespaces, da.Action.Namespaces);
                     AddExistingArray(dc.Fields, da.Action.Fields);
-                    AddExistingArray(dc.Methods, da.Action.Methods);
+
+                    if (!da.Action.Methods.IsEmptyNullOrWhiteSpace())
+                        dc.Methods.Add(da.Action.Methods);
 
                     dc.Ctors.Add(da.Action.Ctor);
                     dc.Actions.Add(da.Action.Content);
                 }
-                
-                results.Add(CSharpSyntaxTree.ParseText(dc.ToString()).GetRoot().NormalizeWhitespace().ToFullString());
+
+                results.Add(cg.Key, CSharpSyntaxTree.ParseText(dc.ToString()).GetRoot().NormalizeWhitespace().ToFullString());
             }
 
             Controllers = results;
-            csSyntaxTree = Controllers.Select(r => CSharpSyntaxTree.ParseText(r));
+            csSyntaxTree = Controllers.Select(r => CSharpSyntaxTree.ParseText(r.Value));
 
             return csOptions;
         }

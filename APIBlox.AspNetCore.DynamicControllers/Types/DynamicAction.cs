@@ -20,7 +20,7 @@ namespace APIBlox.AspNetCore.Types
         /// <param name="fields">The fields.</param>
         /// <param name="namespaces">The namespaces.</param>
         /// <param name="methods">The methods.</param>
-        public DynamicAction(string name, string route, string content, string ctor, string[] fields, string[] namespaces, string[] methods = null)
+        public DynamicAction(string name, string route, string content, string ctor, string[] fields, string[] namespaces, string methods = null)
         {
             Name = name;
             Route = route;
@@ -71,7 +71,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets the methods.
         /// </summary>
         /// <value>The methods.</value>
-        public string[] Methods { get; private set; }
+        public string Methods { get; private set; }
 
         /// <summary>
         ///     Gets the tokens.
@@ -94,7 +94,19 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         public void Compose()
         {
-            Content = Content
+            Content = ParseTokens(Content);
+            Ctor = ParseTokens(Ctor);
+            Fields = Fields.Select(ParseTokens).ToArray();
+
+            if (Methods is null || !Methods.Any())
+                return;
+
+            Methods = ParseTokens(Methods);
+        }
+
+        private string ParseTokens(string input)
+        {
+            return input
                 .Replace("[REQ_OBJECT]", Tokens["[REQ_OBJECT]"])
                 .Replace("[RES_OBJECT_INNER_RESULT]", Tokens["[RES_OBJECT_INNER_RESULT]"])
                 .Replace("[ACTION_ROUTE]", Tokens["[ACTION_ROUTE]"])
@@ -102,33 +114,10 @@ namespace APIBlox.AspNetCore.Types
                 .Replace("[RES_OBJECT_RESULT]", Tokens["[RES_OBJECT_RESULT]"])
                 .Replace("[ACTION_PARAMS]", Tokens["[ACTION_PARAMS]"])
                 .Replace("[NEW_REQ_OBJECT]", Tokens["[NEW_REQ_OBJECT]"])
+                .Replace("[CONTROLLER_NAME]", Tokens["[CONTROLLER_NAME]"])
+
                 .Replace("()]", "]")
                 .Replace("(\"\")", "");
-
-            Ctor = Ctor
-                .Replace("[REQ_OBJECT]", Tokens["[REQ_OBJECT]"])
-                .Replace("[RES_OBJECT_INNER_RESULT]", Tokens["[RES_OBJECT_INNER_RESULT]"])
-                .Replace("[CONTROLLER_NAME]", Tokens["[CONTROLLER_NAME]"]);
-
-            Fields = Fields.Select(s =>
-                s.Replace("[REQ_OBJECT]", Tokens["[REQ_OBJECT]"])
-                    .Replace("[RES_OBJECT_INNER_RESULT]", Tokens["[RES_OBJECT_INNER_RESULT]"])
-            ).ToArray();
-
-            if (Methods is null || !Methods.Any())
-                return;
-
-            Methods = Methods.Select(s =>
-                s.Replace("[REQ_OBJECT]", Tokens["[REQ_OBJECT]"])
-                    .Replace("[RES_OBJECT_INNER_RESULT]", Tokens["[RES_OBJECT_INNER_RESULT]"])
-                    .Replace("[ACTION_ROUTE]", Tokens["[ACTION_ROUTE]"])
-                    .Replace("[PARAMS_COMMENTS]", Tokens["[PARAMS_COMMENTS]"])
-                    .Replace("[RES_OBJECT_RESULT]", Tokens["[RES_OBJECT_RESULT]"])
-                    .Replace("[ACTION_PARAMS]", Tokens["[ACTION_PARAMS]"])
-                    .Replace("[NEW_REQ_OBJECT]", Tokens["[NEW_REQ_OBJECT]"])
-                    .Replace("()]", "]")
-                    .Replace("(\"\")", "")
-            ).ToArray();
         }
     }
 }
