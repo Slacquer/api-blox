@@ -11,6 +11,7 @@ using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
 
 namespace APIBlox.AspNetCore
@@ -458,25 +459,25 @@ namespace APIBlox.AspNetCore
             );
 
             // merge templates, make sure same route for controller name.
-            var controllers = templates.GroupBy(g => g.Name).ToList();
-            var mustBeSame = controllers.SelectMany(g => g.Select(c => new { c.Name, c.Route, c.Namespace })).ToList();
-            var invalid = mustBeSame.GroupBy(g => g.Route).Count() > 1;
-
-            if (invalid)
-                throw new ArgumentException(
-                    $"Controller {mustBeSame.First().Name} has more " +
-                    $"than one route specified, you must change the name of the controller or make its routes match.",
-                    nameof(IComposedTemplate.Route)
-                );
+            var controllerGroups = templates.GroupBy(g => g.Name)
+                .Select(g => g)
+                .ToList();
 
             var results = new List<string>();
-            foreach (var controllerGroup in controllers)
+
+            foreach (var cg in controllerGroups)
             {
-                var nr = mustBeSame.First(g => g.Name == controllerGroup.Key);
+                if (cg.GroupBy(r => r.Route).Count() > 1 || cg.GroupBy(r => r.Namespace).Count() > 1)
+                    throw new ArgumentException(
+                        $"Controller {cg.Key} has more " +
+                        "than one route or namespace specified. Name, Route and Namespace must be identical (if your intention is that this is ONE controller)",
+                        nameof(IComposedTemplate.Route)
+                    );
 
-                var dc = new DynamicController(nr.Name, nr.Namespace, nr.Route);
+                var first = cg.First();
+                var dc = new DynamicController(first.Name, first.Namespace, first.Route);
 
-                foreach (var da in controllerGroup)
+                foreach (var da in cg)
                 {
                     AddExistingArray(dc.Namespaces, da.Action.Namespaces);
                     AddExistingArray(dc.Fields, da.Action.Fields);
@@ -485,7 +486,7 @@ namespace APIBlox.AspNetCore
                     dc.Ctors.Add(da.Action.Ctor);
                     dc.Actions.Add(da.Action.Content);
                 }
-
+                
                 results.Add(CSharpSyntaxTree.ParseText(dc.ToString()).GetRoot().NormalizeWhitespace().ToFullString());
             }
 

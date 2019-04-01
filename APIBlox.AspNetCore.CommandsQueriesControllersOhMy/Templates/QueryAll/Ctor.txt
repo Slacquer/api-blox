@@ -1,8 +1,8 @@
 ﻿/// <summary>
 ///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
 /// </summary>
-/// <param name="getAllHandler">The handler used to for querying [RES_OBJECT_INNER_RESULT].</param>
-public [CONTROLLER_NAME](IQueryHandler<[REQ_OBJECT], HandlerResponse> getAllHandler)
+/// <param name="getAll[RES_OBJECT_INNER_RESULT]Handler">The handler used to for querying [RES_OBJECT_INNER_RESULT].</param>
+public [CONTROLLER_NAME](IQueryHandler<[REQ_OBJECT], HandlerResponse> getAll[RES_OBJECT_INNER_RESULT]Handler)
 {
-    _getAllHandler = getAllHandler;
+    _getAll[RES_OBJECT_INNER_RESULT]Handler = getAll[RES_OBJECT_INNER_RESULT]Handler;
 }

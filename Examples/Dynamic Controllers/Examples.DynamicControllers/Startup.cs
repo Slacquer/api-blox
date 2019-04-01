@@ -1,21 +1,18 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using APIBlox.NetCore.Types;
-using System.IO;
-using System.Reflection;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Extensions;
-using APIBlox.AspNetCore.Types;
+using APIBlox.NetCore.Types;
 using Examples.Resources;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 //
 //  This project is a clone of Examples.Features with additional bits for DynamicControllers.
@@ -24,12 +21,15 @@ namespace Examples
 {
     internal class Startup
     {
+        private const string dll =
+            @"D:\\Source\\Repos\\FKS\\api-blox\\SlnTests\\bin\\Debug\\netcoreapp2.2\\SuccessfullyCompileMultipleControllersAndAssemblyExists\\OutputFile.dll";
+
+        private const string SiteTitle = "APIBlox Example: DynamiControllers";
+        private const string Version = "v1";
         private readonly string[] _assemblyNames;
         private readonly string[] _assemblyPaths;
         private readonly IHostingEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
-        private const string SiteTitle = "APIBlox Example: DynamiControllers";
-        private const string Version = "v1";
 
         public Startup(IHostingEnvironment environment, ILoggerFactory loggerFactory)
         {
@@ -49,12 +49,7 @@ namespace Examples
                 _environment.ContentRootPath,
                 new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName
             }.ToArray();
-
-
         }
-
-        private const string dll =
-            @"D:\\Source\\Repos\\FKS\\api-blox\\SlnTests\\bin\\Debug\\netcoreapp2.2\\SuccessfullyCompileMultipleControllersAndAssemblyExists\\OutputFile.dll";
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -64,7 +59,6 @@ namespace Examples
                 //
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
-
                 .AddMvc()
 
                 //.AddApplicationPart(Assembly.LoadFile(dll))
@@ -78,9 +72,7 @@ namespace Examples
                 //    },
                 //    addPostLocationHeaderResultFilter: true
                 //)
-
                 .AddDynamicControllers()
-
 
                 //
                 // Handles cancellation token cancelled.
@@ -98,7 +90,6 @@ namespace Examples
                 //
                 // Resource Validator.
                 .AddValidateResourceActionFilter()
-
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
@@ -132,30 +123,41 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class MvcBuilderExtensionsDynamicControllers
     {
-
         public static IMvcBuilder AddDynamicControllers(this IMvcBuilder builder)
         {
-
-
-            var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", false);
+            var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", true);
 
             var c1 = factory.WriteQueryByController<ByIdRequest, DynamicControllerResponse>(
                 "dynamicControllerResponses/{someId}",
                 "DynamicControllers",
-                  "MyDynamicController"
+                "MyDynamicController"
             );
 
             var c2 = factory.WriteQueryAllController<AllRequest, IEnumerable<DynamicControllerResponse>>(
+                "dynamicControllerResponses",
                 "DynamicControllers",
-                "MyDynamicController",actionRoute:"dynamicControllerResponses"
+                "MyDynamicController"
             );
 
 
-            var ass = factory.Compile(@".\FullyDynamic", c1, c2);
+            var childAll = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
+                null,
+                "DynamicControllers",
+                "Children",
+                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+            );
 
+            var childDelete = factory.WriteDeleteByController<ChildByIdRequest>(
+                "{childId}",
+                "DynamicControllers",
+                "Children",
+                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+            );
+
+            var ass = factory.Compile(@".\FullyDynamic", c1, c2, childDelete,childAll);
 
             if (ass is null || factory.CompilationErrors != null)
-                throw new System.Exception(factory.CompilationErrors.First());
+                throw new Exception(factory.CompilationErrors.First());
 
             builder.ConfigureApplicationPartManager(pm =>
                 {
@@ -164,27 +166,18 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
             );
 
-
             //if (fi is null || factory.CompilationErrors != null)
             //    throw new System.Exception(factory.CompilationErrors.First());
-
 
             //var fi = factory.Compile(outfile, c1, c2, c2b, c2c, c2d, c2e, c3);
             //var fi = factory.Compile(outfile, c2e);
 
             //var ass = factory.Compile(c1, c2, c2b, c2c, c2d, c2e, c3);
 
-            //var c2 = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
-            //     nameSpace: "Examples"
-            //);
 
-            //var c2b = factory.WriteQueryByController<ChildByIdRequest, ChildResponse>(
-            //     nameSpace: "Examples", controllerRoute: "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute: "{childId}"
-            //);
 
-            //var c2c = factory.WriteDeleteByController<ChildByIdRequest>(
-            //     nameSpace: "Examples", controllerRoute: "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children", actionRoute: "{childId}"
-            //);
+
+
 
             //var c2d = factory.WritePutController<ChildPutRequest>(
             //    nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children", actionRoute: "{childId}"

@@ -37,7 +37,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(factory,
+            ParseAndReplaceWithResponse(factory,
                 template,
                 typeof(TRequest),
                 typeof(TResponse),
@@ -51,10 +51,10 @@ namespace APIBlox.AspNetCore.Extensions
 
         public static DynamicControllerComposedTemplate WriteQueryAllController<TRequest, TResponse>(
             this DynamicControllerFactory factory,
+            string actionRoute = null,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            string actionRoute = null
+            string controllerRoute = "api/[controller]"
         )
             where TRequest : new()
             where TResponse : IEnumerable
@@ -68,7 +68,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(factory,
+            ParseAndReplaceWithResponse(factory,
                 template,
                 typeof(TRequest),
                 typeof(TResponse),
@@ -79,15 +79,82 @@ namespace APIBlox.AspNetCore.Extensions
             return template;
         }
 
+        public static DynamicControllerComposedTemplate WriteDeleteByController<TRequest>(
+            this DynamicControllerFactory factory, 
+            string actionRoute = null,
+            string nameSpace = "DynamicControllers",
+            string controllerName = null,
+            string controllerRoute = "api/[controller]"
+        )
+            where TRequest : new()
+        {
+            var action = Templates.GetDynamicAction("DeleteBy");
+            action.Name = "DeleteBy";
+            action.Route = actionRoute;
+
+            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+
+            ParseAndReplace(factory,
+                template,
+                typeof(TRequest),
+                false,
+                req => controllerName.ToPascalCase() ?? $"DeleteBy{req}Controller"
+            );
+
+            return template;
+        }
 
         private static void ParseAndReplace(
             DynamicControllerFactory factory,
             DynamicControllerComposedTemplate template,
             Type requestObj,
-            Type responseObjectResult,
             bool requestObjMustHaveBody,
             Func<string, string> buildControllerName
 )
+        {
+            factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
+
+            var (reqObj, _, requestNs) = factory.WriteNameWithNamespaces(requestObj);
+            var (parameters, paramNs) = factory.WriteInputParamsWithNamespaces(requestObj);
+            var parameterComments = string.Join(Environment.NewLine, factory.WriteInputParamsXmlComments(requestObj));
+
+            var newReqObj = factory.WriteNewObject(requestObj);
+
+            template.Action.Namespaces = template.Action.Namespaces
+                .Union(paramNs)
+                .Union(requestNs)
+                .OrderBy(s => s).ToArray();
+
+            var cn = buildControllerName(reqObj);
+
+            template.Name = cn;
+
+            template.Action.Content = template.Action.Content
+                .Replace("[REQ_OBJECT]", reqObj)
+                .Replace("[ACTION_ROUTE]", template.Action.Route ?? "")
+                .Replace("[PARAMS_COMMENTS]", parameterComments)
+                .Replace("[ACTION_PARAMS]", parameters)
+                .Replace("[NEW_REQ_OBJECT]", newReqObj)
+                .Replace("()]", "]")
+                .Replace("(\"\")", "");
+
+            template.Action.Ctor = template.Action.Ctor
+                .Replace("[REQ_OBJECT]", reqObj)
+                .Replace("[CONTROLLER_NAME]", cn);
+
+            template.Action.Fields = template.Action.Fields.Select(s =>
+                s.Replace("[REQ_OBJECT]", reqObj)
+            ).ToArray();
+        }
+
+        private static void ParseAndReplaceWithResponse(
+                    DynamicControllerFactory factory,
+                    DynamicControllerComposedTemplate template,
+                    Type requestObj,
+                    Type responseObjectResult,
+                    bool requestObjMustHaveBody,
+                    Func<string, string> buildControllerName
+        )
         {
             factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
@@ -130,33 +197,11 @@ namespace APIBlox.AspNetCore.Extensions
 
             template.Action.Fields = template.Action.Fields.Select(s =>
                 s.Replace("[REQ_OBJECT]", reqObj)
+                    .Replace("[RES_OBJECT_INNER_RESULT]", realResObject ?? resObj)
             ).ToArray();
         }
 
-        ////public static DynamicControllerComposedTemplate WriteDeleteByController<TRequest>(
-        ////    this DynamicControllerFactory factory, string controllerName = null,
-        ////    string nameSpace = "DynamicControllers",
-        ////    string controllerRoute = "api/[controller]", string actionRoute = null
-        ////)
-        ////    where TRequest : new()
-        ////{
-        ////    var getTemplate = Templates.GetTemplate("DynamicDeleteByController");
-        ////    var contents = Contents(
-        ////        factory,
-        ////        DefaultNamespaces,
-        ////        nameSpace,
-        ////        typeof(TRequest),
-        ////        false,
-        ////        controllerRoute,
-        ////        actionRoute,
-        ////        getTemplate,
-        ////        (req) => controllerName.ToPascalCase() ?? $"DeleteUsing{req}Controller"
-        ////    );
 
-        ////    var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
-
-        ////    return new DynamicControllerComposedTemplate(contents, cmdHandler);
-        ////}
 
         ////public static DynamicControllerComposedTemplate WritePutController<TRequest>(
         ////    this DynamicControllerFactory factory, string controllerName = null,

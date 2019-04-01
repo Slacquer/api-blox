@@ -52,5 +52,58 @@
             <param name = "cancellationToken">The cancellation token.</param>
             <param name = "requiredValueMustBeThreeCharacters">The required value, and it must be three characters. please check out http://www.foo.com for more info.</param>
         </member>
+        <member name="T:DynamicControllers.Controllers.Children">
+            <inheritdoc/>
+            <summary>
+                Class Children.
+            </summary>
+            <seealso cref = "T:Microsoft.AspNetCore.Mvc.ControllerBase"/>
+        </member>
+        <member name="M:DynamicControllers.Controllers.Children.#ctor(APIBlox.AspNetCore.Contracts.ICommandHandler{Examples.Resources.ChildByIdRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
+            <summary>
+                Initializes a new instance of the <see cref = "T:DynamicControllers.Controllers.Children"/> class.
+            </summary>
+            <param name = "deleteByHandler">The handler used to for deleting a resource.</param>
+        </member>
+        <member name="M:DynamicControllers.Controllers.Children.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.ChildrenRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
+            <summary>
+                Initializes a new instance of the <see cref = "T:DynamicControllers.Controllers.Children"/> class.
+            </summary>
+            <param name = "getAllHandler">The handler used to for querying ChildResponse.</param>
+        </member>
+        <member name="M:DynamicControllers.Controllers.Children.DeleteBy(System.Int32,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                Action for deleting a resource.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href = "https://httpstatuses.com/204">204</a>, <a href = "https://httpstatuses.com/401">401</a>, <a href = "https://httpstatuses.com/403">403</a>, <a href = "https://httpstatuses.com/404">404</a>
+            </remarks>
+            <response code = "204">Success, no results.</response>
+            <response code = "401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code = "403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <response code = "404">NotFound, The resource was not found using the supplied input parameters.</response>
+            <param name = "cancellationToken">The cancellation token.</param>
+            <param name = "id">Sets the child id.</param>
+            <param name = "parentId">Gets or sets the parent identifier.</param>
+            <param name = "someRouteValueWeNeed">Gets or sets some route value we need.</param>
+        </member>
+        <member name="M:DynamicControllers.Controllers.Children.QueryAll(System.Int32,System.Int32,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+                Action for getting a collection of ChildResponse resources.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href = "https://httpstatuses.com/200">200</a>, <a href = "https://httpstatuses.com/204">204</a>, <a href = "https://httpstatuses.com/401">401</a>, <a href = "https://httpstatuses.com/403">403</a>
+            </remarks>
+            <response code = "200">Success, with an array of results.</response>
+            <response code = "204">Success, no results.</response>
+            <response code = "401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code = "403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <param name = "cancellationToken">The cancellation token.</param>
+            <param name = "parentId">Gets or sets the parent identifier.</param>
+            <param name = "someRouteValueWeNeed">Gets or sets some route value we need.</param>
+            <param name = "filter">Sets the filter (where). Usage is determined by the API itself.</param>
+            <param name = "select">Sets the select (projection).  Usage is determined by the API itself.</param>
+            <param name = "orderBy">Sets the order by.  Usage is determined by the API itself.</param>
+        </member>
     </members>
 </doc>

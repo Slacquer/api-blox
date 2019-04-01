@@ -1,0 +1,1 @@
+﻿private readonly ICommandHandler<[REQ_OBJECT], HandlerResponse> _deleteBy[REQ_OBJECT]Handler;
