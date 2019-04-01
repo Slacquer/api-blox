@@ -1,5 +1,4 @@
-﻿
-/// <summary>
+﻿/// <summary>
 ///     Action for getting a [RES_OBJECT_INNER_RESULT] resource.
 /// </summary>
 /// <remarks>

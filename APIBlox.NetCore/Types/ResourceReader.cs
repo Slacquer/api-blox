@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +37,40 @@ namespace APIBlox.NetCore.Types
             {
                 return reader.ReadToEnd();
             }
+        }
+
+        /// <summary>
+        /// Gets embedded resources.
+        /// </summary>
+        /// <param name="templatePath">The template path.</param>
+        /// <returns>Dictionary&lt;System.String, System.String&gt;.</returns>
+        /// <exception cref="NullReferenceException">Resources for path '{templatePath}' Not found, Found: {string.Join(", ", names)}</exception>
+        public static Dictionary<string,string> GetResources(string templatePath)
+        {
+            var ret = new Dictionary<string, string>();
+
+            var tp = $".{templatePath}.";
+            var names = Ass.GetManifestResourceNames().Where(s=> s.ContainsEx(tp)).ToList();
+
+            if(!names.Any())
+                throw new NullReferenceException(
+                    $"Resources for path '{templatePath}' Not found, Found: {string.Join(", ", names)}"
+                );
+
+            foreach (var name in names)
+            {
+                var rs = Ass.GetManifestResourceStream(name);
+
+                using (var reader = new StreamReader(rs, Encoding.UTF8))
+                {
+                    var str = name.Replace(".txt", "");
+                    var key = str.Substring(str.LastIndexOfEx(".") + 1);
+
+                    ret.Add(key, reader.ReadToEnd());
+                }
+            }
+
+            return ret;
         }
     }
 }

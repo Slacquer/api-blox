@@ -140,10 +140,10 @@ namespace Microsoft.Extensions.DependencyInjection
             var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", false);
 
             var c1 = factory.WriteQueryByController<ByIdRequest, DynamicControllerResponse>(
-                "DynamicControllers",
-                "MyDynamicController",
-                "api/[controller]",
-                ""
+                //"DynamicControllers",
+                //"MyDynamicController",
+                //"api/[controller]",
+                //""
             );
 
             var c2 = factory.WriteQueryAllController<AllRequest, IEnumerable<DynamicControllerResponse>>(

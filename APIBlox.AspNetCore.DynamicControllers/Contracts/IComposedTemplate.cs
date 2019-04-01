@@ -9,6 +9,7 @@ namespace APIBlox.AspNetCore.Contracts
     {
         DynamicAction Action { get; }
 
-        IEnumerable<string> Fields { get; }
+         string Name { get; set; }
+         string Route { get; set; }
     }
 }
