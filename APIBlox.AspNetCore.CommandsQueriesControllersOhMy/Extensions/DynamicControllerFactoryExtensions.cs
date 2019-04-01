@@ -45,8 +45,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         private static void ParseAndReplace(
-            DynamicControllerFactory factory,
-            DynamicControllerComposedTemplate template,
+            DynamicControllerFactory factory, DynamicControllerComposedTemplate template,
             string controllersNamespace, Type requestObj, Type responseObjectResult,
             bool requestObjMustHaveBody, string controllerRoute,
             Func<string, string> buildControllerName
