@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -11,6 +12,6 @@ namespace APIBlox.AspNetCore.Types
         public string Ctor { get; set; }
         public string[] Fields { get; set; }
         public string[] Namespaces { get; set; }
-        
+        public string[] Methods { get; set; }
     }
 }

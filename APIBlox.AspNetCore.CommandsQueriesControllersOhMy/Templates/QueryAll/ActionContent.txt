@@ -1,0 +1,40 @@
+﻿/// <summary>
+///     Action for getting a collection of [RES_OBJECT_INNER_RESULT] resources.
+/// </summary>
+/// <remarks>
+///     Possible Response Status Codes: <a href="https://httpstatuses.com/200">200</a>, <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>
+/// </remarks>
+/// <response code="200">Success, with an array of results.</response>
+/// <response code="204">Success, no results.</response>
+/// <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+/// <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+/// <param name="cancellationToken">The cancellation token.</param>
+[PARAMS_COMMENTS]
+[HttpGet("[ACTION_ROUTE]")]
+[Produces("application/json")]
+[Consumes("application/json")]
+[ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status200OK)]
+[ProducesResponseType(StatusCodes.Status204NoContent)]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+public async Task<IActionResult> QueryAll(
+    [ACTION_PARAMS]
+    CancellationToken cancellationToken
+)
+{
+    var ret = await _getAllHandler.HandleAsync(
+        [NEW_REQ_OBJECT], 
+        cancellationToken
+    ).ConfigureAwait(false);
+
+    if (ret.HasErrors)
+        return new ProblemResult(ret.Error);
+
+    if (ret.Result is null)
+        throw new ArgumentNullException(
+            nameof(HandlerResponse.Result),
+            "When responding to a GET you must either set an error or pass a result!"
+        );
+
+    return Ok(ret.Result);
+}

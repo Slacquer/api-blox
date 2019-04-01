@@ -15,13 +15,19 @@ namespace APIBlox.AspNetCore.Extensions
     {
         public static DynamicControllerComposedTemplate WriteQueryByController<TRequest, TResponse>(
             this DynamicControllerFactory factory,
+            string actionRoute,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            string actionRoute = null
+            string controllerRoute = "api/[controller]"
+
         )
             where TRequest : new()
         {
+            if (actionRoute.IsEmptyNullOrWhiteSpace())
+                throw new ArgumentException($"QueryBy requires a route for the action, maybe something like {{id}}.",
+                    nameof(actionRoute)
+                );
+
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
@@ -42,14 +48,46 @@ namespace APIBlox.AspNetCore.Extensions
             return template;
         }
 
+
+        public static DynamicControllerComposedTemplate WriteQueryAllController<TRequest, TResponse>(
+            this DynamicControllerFactory factory,
+            string nameSpace = "DynamicControllers",
+            string controllerName = null,
+            string controllerRoute = "api/[controller]",
+            string actionRoute = null
+        )
+            where TRequest : new()
+            where TResponse : IEnumerable
+        {
+            if (!typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
+                throw new ArgumentException("Must be a enumerable object type.", nameof(TResponse));
+
+            var action = Templates.GetDynamicAction("QueryAll");
+            action.Name = "QueryAll";
+            action.Route = actionRoute;
+
+            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+
+            ParseAndReplace(factory,
+                template,
+                typeof(TRequest),
+                typeof(TResponse),
+                false,
+                req => controllerName.ToPascalCase() ?? $"QueryAll{req}Controller"
+            );
+
+            return template;
+        }
+
+
         private static void ParseAndReplace(
-            DynamicControllerFactory factory, 
+            DynamicControllerFactory factory,
             DynamicControllerComposedTemplate template,
-            Type requestObj, 
+            Type requestObj,
             Type responseObjectResult,
             bool requestObjMustHaveBody,
             Func<string, string> buildControllerName
-        )
+)
         {
             factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
@@ -93,47 +131,6 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Fields = template.Action.Fields.Select(s =>
                 s.Replace("[REQ_OBJECT]", reqObj)
             ).ToArray();
-
-            //var contents = template
-            //    .Replace("[CONTROLLERS_NAMESPACE]", controllersNamespace)
-            //    .Replace("[CONTROLLER_NAME]", cn)
-            //    .Replace("[NAMESPACES]", ns)
-            //    .Replace("[CONTROLLER_ROUTE]", controllerRoute)
-            //    .Replace("()]", "]")
-            //    .Replace("(\"\")", "");
-        }
-
-
-
-        public static DynamicControllerComposedTemplate WriteQueryAllController<TRequest, TResponse>(
-            this DynamicControllerFactory factory,
-            string nameSpace = "DynamicControllers",
-            string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            string actionRoute = null
-        )
-            where TRequest : new()
-            where TResponse : IEnumerable
-        {
-            //var ns = new List<string>();
-            //ns.AddRange(DefaultNamespaces);
-            //ns.Add("System.Collections.Generic");
-
-            //var getTemplate = Templates.GetTemplate("DynamicQueryAllController");
-            //var contents = ContentsWithResults(
-            //    factory,
-            //    ns,
-            //    nameSpace,
-            //    typeof(TRequest),
-            //    typeof(TResponse),
-            //    false,
-            //    controllerRoute,
-            //    actionRoute,
-            //    getTemplate,
-            //    (req, res) => controllerName.ToPascalCase() ?? $"QueryAll{res}Controller"
-            //);
-
-            return new DynamicControllerComposedTemplate(null,null,null);
         }
 
         ////public static DynamicControllerComposedTemplate WriteDeleteByController<TRequest>(

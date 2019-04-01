@@ -18,6 +18,7 @@ namespace APIBlox.AspNetCore.Types
         }
 
         public string Name { get; }
+
         public string NameSpace { get; }
 
         public string Route { get; }
@@ -32,13 +33,15 @@ namespace APIBlox.AspNetCore.Types
 
         public List<string> Actions { get; set; } = new List<string>();
 
+        public List<string> Methods { get; set; } = new List<string>();
+
         public override string ToString()
         {
-
-            var ns = string.Join("\n", Namespaces.Select(s => $"using {s.Trim()};"));
+            var ns = string.Join("\n", Namespaces.OrderBy(s=>s).GroupBy(g=> g).Select(s => $"using {s.Key.Trim()};"));
             var fields = string.Join("\n\n", Fields);
             var ctors = string.Join("\n\n", Ctors);
             var actions = string.Join("\n\n", Actions);
+            var methods = string.Join("\n\n", Methods);
 
             var ret = Content.Replace("[NAMESPACES]", ns)
                 .Replace("[CONTROLLERS_NAMESPACE]", NameSpace)
@@ -46,7 +49,8 @@ namespace APIBlox.AspNetCore.Types
                 .Replace("[CONTROLLER_ROUTE]", Route)
                 .Replace("[FIELDS]", fields)
                 .Replace("[CTORS]", ctors)
-                .Replace("[ACTIONS]", actions);
+                .Replace("[ACTIONS]", actions)
+                .Replace("[METHODS]", methods);
 
             return ret;
         }

@@ -478,8 +478,10 @@ namespace APIBlox.AspNetCore
 
                 foreach (var da in controllerGroup)
                 {
-                    dc.Namespaces.AddRange(da.Action.Namespaces);
-                    dc.Fields.AddRange(da.Action.Fields);
+                    AddExistingArray(dc.Namespaces, da.Action.Namespaces);
+                    AddExistingArray(dc.Fields, da.Action.Fields);
+                    AddExistingArray(dc.Methods, da.Action.Methods);
+
                     dc.Ctors.Add(da.Action.Ctor);
                     dc.Actions.Add(da.Action.Content);
                 }
@@ -491,6 +493,14 @@ namespace APIBlox.AspNetCore
             csSyntaxTree = Controllers.Select(r => CSharpSyntaxTree.ParseText(r));
 
             return csOptions;
+        }
+
+        private static void AddExistingArray(List<string> dest, IEnumerable<string> src)
+        {
+            if (src is null)
+                return;
+
+            dest.AddRange(src);
         }
 
         private void CheckAndSetFailures(EmitResult emitResult)

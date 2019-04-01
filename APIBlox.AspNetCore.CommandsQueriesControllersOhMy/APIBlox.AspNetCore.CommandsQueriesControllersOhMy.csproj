@@ -26,6 +26,10 @@
     <None Remove="Templates\DynamicPutController.txt" />
     <None Remove="Templates\DynamicQueryAllController.txt" />
     <None Remove="Templates\DynamicQueryByController.txt" />
+    <None Remove="Templates\QueryAll\ActionContent.txt" />
+    <None Remove="Templates\QueryAll\Ctor.txt" />
+    <None Remove="Templates\QueryAll\Fields.txt" />
+    <None Remove="Templates\QueryAll\Namespaces.txt" />
     <None Remove="Templates\QueryBy\ActionContent.txt" />
     <None Remove="Templates\QueryBy\Ctor.txt" />
     <None Remove="Templates\QueryBy\Namespaces.txt" />
@@ -35,6 +39,10 @@
     <EmbeddedResource Include="Templates\DynamicDeleteByController.txt" />
     <EmbeddedResource Include="Templates\DynamicPostController.txt" />
     <EmbeddedResource Include="Templates\DynamicPutController.txt" />
+    <EmbeddedResource Include="Templates\QueryAll\ActionContent.txt" />
+    <EmbeddedResource Include="Templates\QueryAll\Ctor.txt" />
+    <EmbeddedResource Include="Templates\QueryAll\Fields.txt" />
+    <EmbeddedResource Include="Templates\QueryAll\Namespaces.txt" />
     <EmbeddedResource Include="Templates\QueryBy\Namespaces.txt" />
     <EmbeddedResource Include="Templates\QueryBy\ActionContent.txt" />
     <EmbeddedResource Include="Templates\QueryBy\Ctor.txt" />

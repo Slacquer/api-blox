@@ -140,21 +140,18 @@ namespace Microsoft.Extensions.DependencyInjection
             var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", false);
 
             var c1 = factory.WriteQueryByController<ByIdRequest, DynamicControllerResponse>(
+                "dynamicControllerResponses/{someId}",
                 "DynamicControllers",
-                  "MyDynamicController",
-            "api/[controller]/"
-            //""
+                  "MyDynamicController"
             );
 
             var c2 = factory.WriteQueryAllController<AllRequest, IEnumerable<DynamicControllerResponse>>(
                 "DynamicControllers",
-                "MyDynamicController"
-            //"api/[controller]",
-            //""
+                "MyDynamicController",actionRoute:"dynamicControllerResponses"
             );
 
 
-            var ass = factory.Compile(@".\FullyDynamic", c1);//, c2);
+            var ass = factory.Compile(@".\FullyDynamic", c1, c2);
 
 
             if (ass is null || factory.CompilationErrors != null)
