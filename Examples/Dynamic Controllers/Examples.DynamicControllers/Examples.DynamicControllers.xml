@@ -20,6 +20,34 @@
             </summary>
             <returns>System.Int32.</returns>
         </member>
+        <member name="T:Examples.Resources.AllRequest">
+            <summary>
+            Class AllRequest.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.AllRequest.RequiredValueMustBeThreeCharacters">
+            <summary>
+            The required value, and it must be three characters. please check out http://www.foo.com for more info.
+            </summary>
+            <value>The required value must be three characters.</value>
+        </member>
+        <member name="T:Examples.Resources.ByIdRequest">
+            <summary>
+                ByIdRequest.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.ByIdRequest.RequiredValueMustBeThreeCharacters">
+            <summary>
+            The required value, and it must be three characters. please check out http://www.foo.com for more info.
+            </summary>
+            <value>The required value must be three characters.</value>
+        </member>
+        <member name="P:Examples.Resources.ByIdRequest.SomeId">
+            <summary>
+            Gets or sets some identifier.
+            </summary>
+            <value>Some identifier.</value>
+        </member>
         <member name="P:Examples.Resources.ChildByIdRequest.Id">
             <summary>
             Sets the child id.
@@ -131,29 +159,6 @@
                 Gets or sets the parents.
             </summary>
             <value>The parents.</value>
-        </member>
-        <member name="T:Examples.Resources.DynamicControllerRequest">
-            <summary>
-                DynamicControllerRequest.
-            </summary>
-        </member>
-        <member name="P:Examples.Resources.DynamicControllerRequest.RequiredValueMustBeThreeCharacters">
-            <summary>
-            The required value, and it must be three characters. please check out http://www.foo.com for more info.
-            </summary>
-            <value>The required value must be three characters.</value>
-        </member>
-        <member name="P:Examples.Resources.DynamicControllerRequest.SomeId">
-            <summary>
-            Gets or sets some identifier.
-            </summary>
-            <value>Some identifier.</value>
-        </member>
-        <member name="P:Examples.Resources.DynamicControllerRequest.Id">
-            <summary>
-            Gets or sets the identifier.
-            </summary>
-            <value>The identifier.</value>
         </member>
         <member name="T:Examples.Resources.DynamicControllerResponse">
             <summary>

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using APIBlox.AspNetCore.Types;
 
 namespace APIBlox.AspNetCore.Contracts
 {
     public interface IComposedTemplate
     {
-        string Content { get; }
+        DynamicAction Action { get; }
+
+        IEnumerable<string> Fields { get; }
     }
 }

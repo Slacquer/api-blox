@@ -7,13 +7,19 @@ namespace APIBlox.AspNetCore.Types
 {
     public class DynamicControllerComposedTemplate : IComposedTemplate
     {
-        public DynamicControllerComposedTemplate(string content, string requiredHandler)
+        public DynamicControllerComposedTemplate(DynamicAction action, IEnumerable<string> fields)
         {
-            Content = content;
-            RequiredHandler = requiredHandler;
+            Action = action;
+            Fields = fields;
         }
-        public string Content { get; }
 
-        public string RequiredHandler { get; }
+        public string Name { get; }
+
+        public string Route { get; }
+
+        public IEnumerable<string> Fields { get; }
+
+        public DynamicAction Action { get; }
+        
     }
 }

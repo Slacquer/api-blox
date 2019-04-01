@@ -1,12 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
     /// <summary>
-    ///     DynamicControllerRequest.
+    /// Class AllRequest.
     /// </summary>
-    public class DynamicControllerRequest
+    public class AllRequest
     {
         /// <summary>
         /// The required value, and it must be three characters. please check out http://www.foo.com for more info.
@@ -16,19 +20,5 @@ namespace Examples.Resources
         [Required]
         [StringLength(3, MinimumLength = 3, ErrorMessage = "Value must be exactly 3 characters long.")]
         public string RequiredValueMustBeThreeCharacters { get; set; }
-
-        /// <summary>
-        /// Gets or sets some identifier.
-        /// </summary>
-        /// <value>Some identifier.</value>
-        [FromRoute(Name = "someId")]
-        public int SomeId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
-        [FromRoute(Name = "id")]
-        public int Id { get; set; }
     }
 }

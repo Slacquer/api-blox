@@ -1,0 +1,8 @@
+﻿/// <summary>
+///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
+/// </summary>
+/// <param name="getByHandler">The handler used to for querying [RES_OBJECT_INNER_RESULT].</param>
+public [CONTROLLER_NAME](IQueryHandler<[REQ_OBJECT], HandlerResponse> getByHandler)
+{
+	_getByHandler = getByHandler;
+}

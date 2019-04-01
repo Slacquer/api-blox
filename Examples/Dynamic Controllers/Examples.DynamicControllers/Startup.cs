@@ -8,10 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Extensions;
+using APIBlox.AspNetCore.Types;
 using Examples.Resources;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -133,11 +135,23 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IMvcBuilder AddDynamicControllers(this IMvcBuilder builder)
         {
+
+
             var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", false);
 
-            //var c1 = factory.WriteQueryAllController<DynamicControllerRequest, IEnumerable<DynamicControllerResponse>>(
-            //    "My Cool Dynamic controller request thing     Controller", "Examples"
-            //);
+            var c1 = factory.WriteQueryByController<ByIdRequest, DynamicControllerResponse>(
+                "DynamicControllers",
+                "MyDynamicController",
+                "api/[controller]",
+                ""
+            );
+
+            var c2 = factory.WriteQueryAllController<AllRequest, IEnumerable<DynamicControllerResponse>>(
+                "DynamicControllers",
+                "MyDynamicController",
+                "api/[controller]",
+                ""
+            );
 
             //var c2 = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
             //     nameSpace: "Examples"
@@ -159,16 +173,16 @@ namespace Microsoft.Extensions.DependencyInjection
             //     nameSpace: "Examples", controllerRoute: "api/[controller]/parents/{parentId}/children"
             //);
 
-            var c3 = factory.WriteQueryAllController<ParentRequest, IEnumerable<ParentResponse>>(
-                 controllerName: "Parents", nameSpace: "Examples"
-            );
+            //var c3 = factory.WriteQueryAllController<ParentRequest, IEnumerable<ParentResponse>>(
+            //     controllerName: "Parents", nameSpace: "Examples"
+            //);
 
             var outfile = @".\FullyDynamic";
             //var fi = factory.Compile(outfile, c1, c2, c2b, c2c, c2d, c2e, c3);
             //var fi = factory.Compile(outfile, c2e);
 
             //var ass = factory.Compile(c1, c2, c2b, c2c, c2d, c2e, c3);
-            var ass = factory.Compile(outfile, c3);
+            var ass = factory.Compile(outfile, c1);
 
             //if (fi is null || factory.CompilationErrors != null)
             //    throw new System.Exception(factory.CompilationErrors.First());

@@ -13,169 +13,162 @@ namespace APIBlox.AspNetCore.Extensions
     /// </summary>
     public static class DynamicControllerFactoryExtensions
     {
-        private static readonly List<string> DefaultNamespaces = new List<string>
-        {
-            "System",
-            "System.Threading",
-            "System.Threading.Tasks",
-            "Microsoft.AspNetCore.Http",
-            "Microsoft.AspNetCore.Mvc",
-            "APIBlox.AspNetCore.ActionResults",
-            "APIBlox.AspNetCore.Contracts",
-            "APIBlox.AspNetCore.Types"
-        };
-
-
         public static DynamicControllerComposedTemplate WriteQueryByController<TRequest, TResponse>(
-            this DynamicControllerFactory factory, string controllerName = null,
+            this DynamicControllerFactory factory, 
             string nameSpace = "DynamicControllers",
-            string controllerRoute = "api/[controller]", string actionRoute = null
+            string controllerName = null,
+            string controllerRoute = "api/[controller]", 
+            string actionRoute = null
         )
             where TRequest : new()
         {
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
-            var getTemplate = Templates.GetTemplate("DynamicQueryByController");
-            var contents = ContentsWithResults(
-                DefaultNamespaces,
-                nameSpace,
-                typeof(TRequest),
-                typeof(TResponse),
-                false,
-                controllerRoute,
-                actionRoute,
-                getTemplate,
-                (req, res) => controllerName.ToPascalCase() ?? $"QueryBy{res}Controller"
+            var templates = Templates.GetBits("QueryBy");
+
+            var ret = new DynamicControllerComposedTemplate(
+                new DynamicAction
+                {
+                    Content = templates.Actions[0],
+                    Documentation = templates.Documentation,
+                    Route = actionRoute
+                },
+                templates.Fields
             );
-
-            var queryHandler = $"IQueryHandler<{typeof(TRequest).Name}, HandlerResponse>";
-
-            return new DynamicControllerComposedTemplate(contents, queryHandler);
+            
+            
+            return new DynamicControllerComposedTemplate(null, null);
         }
 
         public static DynamicControllerComposedTemplate WriteQueryAllController<TRequest, TResponse>(
-            this DynamicControllerFactory factory, string controllerName = null,
+            this DynamicControllerFactory factory, 
             string nameSpace = "DynamicControllers",
-            string controllerRoute = "api/[controller]", string actionRoute = null
+            string controllerName = null,
+            string controllerRoute = "api/[controller]", 
+            string actionRoute = null
         )
             where TRequest : new()
             where TResponse : IEnumerable
         {
-            var ns = new List<string>();
-            ns.AddRange(DefaultNamespaces);
-            ns.Add("System.Collections.Generic");
+            //var ns = new List<string>();
+            //ns.AddRange(DefaultNamespaces);
+            //ns.Add("System.Collections.Generic");
 
-            var getTemplate = Templates.GetTemplate("DynamicQueryAllController");
-            var contents = ContentsWithResults(
-                ns,
-                nameSpace,
-                typeof(TRequest),
-                typeof(TResponse),
-                false,
-                controllerRoute,
-                actionRoute,
-                getTemplate,
-                (req, res) => controllerName.ToPascalCase() ?? $"QueryAll{res}Controller"
-            );
-
-            var queryHandler = $"IQueryHandler<{typeof(TRequest).Name}, HandlerResponse>";
-
-            return new DynamicControllerComposedTemplate(contents, queryHandler);
+            //var getTemplate = Templates.GetTemplate("DynamicQueryAllController");
+            //var contents = ContentsWithResults(
+            //    factory,
+            //    ns,
+            //    nameSpace,
+            //    typeof(TRequest),
+            //    typeof(TResponse),
+            //    false,
+            //    controllerRoute,
+            //    actionRoute,
+            //    getTemplate,
+            //    (req, res) => controllerName.ToPascalCase() ?? $"QueryAll{res}Controller"
+            //);
+            
+            return new DynamicControllerComposedTemplate(null, null);
         }
 
-        public static DynamicControllerComposedTemplate WriteDeleteByController<TRequest>(
-            this DynamicControllerFactory factory, string controllerName = null,
-            string nameSpace = "DynamicControllers",
-            string controllerRoute = "api/[controller]", string actionRoute = null
-        )
-            where TRequest : new()
-        {
-            var getTemplate = Templates.GetTemplate("DynamicDeleteByController");
-            var contents = Contents(
-                DefaultNamespaces,
-                nameSpace,
-                typeof(TRequest),
-                false,
-                controllerRoute,
-                actionRoute,
-                getTemplate,
-                (req) => controllerName.ToPascalCase() ?? $"DeleteUsing{req}Controller"
-            );
+        ////public static DynamicControllerComposedTemplate WriteDeleteByController<TRequest>(
+        ////    this DynamicControllerFactory factory, string controllerName = null,
+        ////    string nameSpace = "DynamicControllers",
+        ////    string controllerRoute = "api/[controller]", string actionRoute = null
+        ////)
+        ////    where TRequest : new()
+        ////{
+        ////    var getTemplate = Templates.GetTemplate("DynamicDeleteByController");
+        ////    var contents = Contents(
+        ////        factory,
+        ////        DefaultNamespaces,
+        ////        nameSpace,
+        ////        typeof(TRequest),
+        ////        false,
+        ////        controllerRoute,
+        ////        actionRoute,
+        ////        getTemplate,
+        ////        (req) => controllerName.ToPascalCase() ?? $"DeleteUsing{req}Controller"
+        ////    );
 
-            var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
+        ////    var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
 
-            return new DynamicControllerComposedTemplate(contents, cmdHandler);
-        }
+        ////    return new DynamicControllerComposedTemplate(contents, cmdHandler);
+        ////}
 
-        public static DynamicControllerComposedTemplate WritePutController<TRequest>(
-            this DynamicControllerFactory factory, string controllerName = null,
-            string nameSpace = "DynamicControllers",
-            string controllerRoute = "api/[controller]", string actionRoute = null
-        )
-            where TRequest : new()
-        {
-            var getTemplate = Templates.GetTemplate("DynamicPutController");
-            var contents = Contents(
-                DefaultNamespaces,
-                nameSpace,
-                typeof(TRequest),
-                true,
-                controllerRoute,
-                actionRoute,
-                getTemplate,
-                (req) => controllerName.ToPascalCase() ?? $"PutUsing{req}Controller"
-            );
+        ////public static DynamicControllerComposedTemplate WritePutController<TRequest>(
+        ////    this DynamicControllerFactory factory, string controllerName = null,
+        ////    string nameSpace = "DynamicControllers",
+        ////    string controllerRoute = "api/[controller]", string actionRoute = null
+        ////)
+        ////    where TRequest : new()
+        ////{
+        ////    var getTemplate = Templates.GetTemplate("DynamicPutController");
+        ////    var contents = Contents(
+        ////        factory,
+        ////        DefaultNamespaces,
+        ////        nameSpace,
+        ////        typeof(TRequest),
+        ////        true,
+        ////        controllerRoute,
+        ////        actionRoute,
+        ////        getTemplate,
+        ////        (req) => controllerName.ToPascalCase() ?? $"PutUsing{req}Controller"
+        ////    );
 
-            var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
+        ////    var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
 
-            return new DynamicControllerComposedTemplate(contents, cmdHandler);
-        }
+        ////    return new DynamicControllerComposedTemplate(contents, cmdHandler);
+        ////}
 
-        public static DynamicControllerComposedTemplate WritePostController<TRequest, TResponse>(
-            this DynamicControllerFactory factory, string controllerName = null,
-            string nameSpace = "DynamicControllers",
-            string controllerRoute = "api/[controller]", string actionRoute = null
-        )
-            where TRequest : new()
-        {
-            var ns = new List<string>();
-            ns.AddRange(DefaultNamespaces);
-            ns.Add("System.Linq");
-            ns.Add("Microsoft.Extensions.Logging");
-            ns.Add("APIBlox.NetCore.Extensions");
+        ////public static DynamicControllerComposedTemplate WritePostController<TRequest, TResponse>(
+        ////    this DynamicControllerFactory factory, string controllerName = null,
+        ////    string nameSpace = "DynamicControllers",
+        ////    string controllerRoute = "api/[controller]", string actionRoute = null
+        ////)
+        ////    where TRequest : new()
+        ////{
+        ////    var ns = new List<string>();
+        ////    ns.AddRange(DefaultNamespaces);
+        ////    ns.Add("System.Linq");
+        ////    ns.Add("Microsoft.Extensions.Logging");
+        ////    ns.Add("APIBlox.NetCore.Extensions");
 
-            var getTemplate = Templates.GetTemplate("DynamicPostController");
-            var contents = ContentsWithResults(
-                ns,
-                nameSpace,
-                typeof(TRequest),
-                typeof(TResponse),
-                true,
-                controllerRoute,
-                actionRoute,
-                getTemplate,
-                (req, res) => controllerName.ToPascalCase() ?? $"PostUsing{req}Controller"
-            );
+        ////    var getTemplate = Templates.GetTemplate("DynamicPostController");
+        ////    var contents = ContentsWithResults(
+        ////        factory,
+        ////        ns,
+        ////        nameSpace,
+        ////        typeof(TRequest),
+        ////        typeof(TResponse),
+        ////        true,
+        ////        controllerRoute,
+        ////        actionRoute,
+        ////        getTemplate,
+        ////        (req, res) => controllerName.ToPascalCase() ?? $"PostUsing{req}Controller"
+        ////    );
 
-            var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
+        ////    var cmdHandler = $"ICommandHandler<{typeof(TRequest).Name}, HandlerResponse>";
 
-            return new DynamicControllerComposedTemplate(contents, cmdHandler);
-        }
-        
+        ////    return new DynamicControllerComposedTemplate(contents, cmdHandler);
+        ////}
 
-        private static string Contents(IEnumerable<string> namespaces, string controllersNamespace, Type requestObj,
+
+        private static string Contents(
+            DynamicControllerFactory factory,
+            IEnumerable<string> namespaces, string controllersNamespace, Type requestObj,
             bool requestObjMustHaveBody, string controllerRoute, string actionRoute, string template,
            Func<string, string> buildControllerName
        )
         {
-            DynamicControllerFactory.Helpers.ValidateRequestType(requestObj, requestObjMustHaveBody);
+            factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
-            var (reqObj, _, requestNs) = DynamicControllerFactory.Helpers.WriteNameWithNamespaces(requestObj);
-            var (parameters, paramNs) = DynamicControllerFactory.Helpers.WriteInputParamsWithNamespaces(requestObj);
-            var parameterComments = string.Join(Environment.NewLine, DynamicControllerFactory.Helpers.WriteInputParamsXmlComments(requestObj));
+            var (reqObj, _, requestNs) = factory.WriteNameWithNamespaces(requestObj);
+            var (parameters, paramNs) = factory.WriteInputParamsWithNamespaces(requestObj);
+            var parameterComments = string.Join(Environment.NewLine, factory.WriteInputParamsXmlComments(requestObj));
 
-            var newReqObj = DynamicControllerFactory.Helpers.WriteNewObject(requestObj);
+            var newReqObj = factory.WriteNewObject(requestObj);
 
             var ns = string.Join(Environment.NewLine,
                 namespaces
@@ -202,24 +195,24 @@ namespace APIBlox.AspNetCore.Extensions
             return contents;
         }
 
-        private static string ContentsWithResults(IEnumerable<string> namespaces, string controllersNamespace, Type requestObj, Type responseObjectResult,
+        private static string ContentsWithResults(DynamicControllerFactory factory, IEnumerable<string> namespaces, string controllersNamespace, Type requestObj, Type responseObjectResult,
             bool requestObjMustHaveBody,
             string controllerRoute, string actionRoute, string template,
             Func<string, string, string> buildControllerName
         )
         {
-            DynamicControllerFactory.Helpers.ValidateRequestType(requestObj, requestObjMustHaveBody);
+            factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
             if (!(responseObjectResult is null))
-                DynamicControllerFactory.Helpers.ValidateResponseType(responseObjectResult);
+                factory.ValidateResponseType(responseObjectResult);
 
-            var (reqObj, _, requestNs) = DynamicControllerFactory.Helpers.WriteNameWithNamespaces(requestObj);
-            var (parameters, paramNs) = DynamicControllerFactory.Helpers.WriteInputParamsWithNamespaces(requestObj);
-            var parameterComments = string.Join(Environment.NewLine, DynamicControllerFactory.Helpers.WriteInputParamsXmlComments(requestObj));
+            var (reqObj, _, requestNs) = factory.WriteNameWithNamespaces(requestObj);
+            var (parameters, paramNs) = factory.WriteInputParamsWithNamespaces(requestObj);
+            var parameterComments = string.Join(Environment.NewLine, factory.WriteInputParamsXmlComments(requestObj));
             var (resObj, realResObject, resultObjNs) = responseObjectResult is null
                 ? (null, null, null)
-                : DynamicControllerFactory.Helpers.WriteNameWithNamespaces(responseObjectResult);
-            var newReqObj = DynamicControllerFactory.Helpers.WriteNewObject(requestObj);
+                : factory.WriteNameWithNamespaces(responseObjectResult);
+            var newReqObj = factory.WriteNewObject(requestObj);
 
             var ns = string.Join(Environment.NewLine,
                 namespaces
@@ -256,6 +249,18 @@ namespace APIBlox.AspNetCore.Extensions
             {
                 return EmbeddedResourceReader<Templates>.GetResource($"{template}.txt");
             }
+
+            public static TemplateBits GetBits(string queryby)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class TemplateBits
+        {
+            public string[] Actions { get; set; }
+            public string Documentation { get; set; }
+            public string[] Fields { get; set; }
         }
     }
 
