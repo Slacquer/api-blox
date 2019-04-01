@@ -38,7 +38,8 @@ namespace APIBlox.AspNetCore.Filters
             var action = await next().ConfigureAwait(false);
             var result = action.Result as ObjectResult;
 
-            if (result?.Value is null || !(result.StatusCode is null) && result.StatusCode != StatusCodes.Status200OK)
+            if (result?.Value is null || !(result.StatusCode is null) 
+                && (result.StatusCode != StatusCodes.Status200OK || !InternalHelpers.ApplyEnsureResponseCompliesWithQueryActionsOnly))
             {
                 var sc = result != null
                     ? result.StatusCode

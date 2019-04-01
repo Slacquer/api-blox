@@ -1,6 +1,5 @@
-﻿using APIBlox.AspNetCore;
-using APIBlox.AspNetCore.Contracts;
-using APIBlox.AspNetCore.Controllers;
+﻿using System.Collections.Generic;
+using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Extensions;
 using Examples.Resources;
 
@@ -9,27 +8,55 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     internal static class FullDynamicConfiguration
     {
-        public static void AddFullyDynamicConfiguration(this IDynamicControllerConfigurations configs)
+        public static IMvcBuilder AddFullyDynamicConfiguration(this IMvcBuilder builder, bool production,
+            out string dynamicControllersXmlFile
+        )
         {
-            // We can use our tokens here as well.
-            //var route = new[]
-            //{
-            //    "api/noControllers/{someId:int}/dynamicControllerResources/{id:int}"
-            //};
+            var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", production);
 
-            //// This will only be able to be displayed, it will not function as the
-            //// controller requires a query handler (CQRS).  Take a look at the CQRS example.
-            //configs.AddController<DynamicControllerRequest, DynamicControllerResponse, int>(
-            //    route,
-            //    "NoControllers",
-            //    typeof(DynamicQueryByController<,,>)
-            //);
-
-            configs.AddController<DynamicControllerPostRequest, DynamicControllerPostResponse, int>(
-                new[] {"api/noControllers/{someId:int}/dynamicControllerResources"},
-                "NoControllers",
-                typeof(DynamicPostController<,,>)
+            var childAll = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
+                null,
+                "DynamicControllers",
+                "Children",
+                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
             );
+
+            var childDelete = factory.WriteDeleteByController<ChildByIdRequest>(
+                "{childId}",
+                "DynamicControllers",
+                "Children",
+                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+            );
+
+            var childPut = factory.WritePutController<ChildPutRequest>(
+                "{childId}",
+                "DynamicControllers",
+                "Children",
+                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+            );
+
+            var childPost = factory.WritePostController<ChildPostRequest, ChildResponse>(
+                null,
+                "DynamicControllers",
+                "Children",
+                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
+            );
+
+
+            factory.Compile(builder, @".\FullyDynamic", childDelete, childAll, childPut, childPost);
+
+            //if (!(factory.CompilationErrors is null) || !(factory.CompilationWarnings is null))
+            //{
+            //    dynamicControllersXmlFile = null;
+
+            //    return builder;
+            //}
+
+            var (_, _, xml) = factory.OutputFiles;
+
+            dynamicControllersXmlFile = xml;
+
+            return builder;
         }
     }
 }

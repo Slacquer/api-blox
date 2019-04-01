@@ -1,29 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using APIBlox.AspNetCore;
-using APIBlox.AspNetCore.Extensions;
 using APIBlox.NetCore.Types;
-using Examples.Resources;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-//
-//  This project is a clone of Examples.Features with additional bits for DynamicControllers.
-//
 namespace Examples
 {
     internal class Startup
     {
-        private const string dll =
-            @"D:\\Source\\Repos\\FKS\\api-blox\\SlnTests\\bin\\Debug\\netcoreapp2.2\\SuccessfullyCompileMultipleControllersAndAssemblyExists\\OutputFile.dll";
-
         private const string SiteTitle = "APIBlox Example: DynamiControllers";
         private const string Version = "v1";
         private readonly string[] _assemblyNames;
@@ -61,26 +50,13 @@ namespace Examples
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
                 .AddMvc()
 
-                //.AddApplicationPart(Assembly.LoadFile(dll))
-
                 //
                 //  DynamicControllers and configuration
-                //.AddDynamicControllersFeature(configs =>
-                //    {
-                //        //configs.AddFamilyDynamicControllersConfiguration();
-                //        configs.AddFullyDynamicConfiguration();
-                //    },
-                //    addPostLocationHeaderResultFilter: true
-                //)
-                .AddDynamicControllers()
+                .AddFullyDynamicConfiguration(_environment.IsProduction(), out var dynamicControllersXmlFile)
 
                 //
                 // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
-
-                //
-                // Fills in request objects for us.
-                .AddPopulateGenericRequestObjectActionFilter()
 
                 //
                 // Pagination
@@ -92,7 +68,7 @@ namespace Examples
                 .AddValidateResourceActionFilter()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSwaggerExampleFeatures(SiteTitle, Version);
+            services.AddSwaggerExampleFeatures(SiteTitle, Version, dynamicControllersXmlFile);
         }
 
         public void Configure(IApplicationBuilder app)
@@ -111,63 +87,6 @@ namespace Examples
             app.UseMvc();
 
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
-        }
-    }
-}
-
-// ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.DependencyInjection
-{
-    /// <summary>
-    ///     Class MvcBuilderExtensions.
-    /// </summary>
-    public static class MvcBuilderExtensionsDynamicControllers
-    {
-        public static IMvcBuilder AddDynamicControllers(this IMvcBuilder builder)
-        {
-            var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", true);
-
-            var childAll = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
-                null,
-                "DynamicControllers",
-                "Children",
-                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
-            );
-
-            var childDelete = factory.WriteDeleteByController<ChildByIdRequest>(
-                "{childId}",
-                "DynamicControllers",
-                "Children",
-                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
-            );
-
-            var childPut = factory.WritePutController<ChildPutRequest>(
-                "{childId}",
-                "DynamicControllers",
-                "Children",
-                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
-            );
-
-            var childPost = factory.WritePostController<ChildPostRequest, ChildResponse>(
-                null,
-                "DynamicControllers",
-                "Children",
-                "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children"
-            );
-
-            var ass = factory.Compile(@".\FullyDynamic", childDelete,childAll, childPut,childPost);
-
-            if (ass is null || factory.CompilationErrors != null)
-                throw new Exception(factory.CompilationErrors.First());
-
-            builder.ConfigureApplicationPartManager(pm =>
-                {
-                    var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
-                    pm.ApplicationParts.Add(part);
-                }
-            );
-            
-            return builder;
         }
     }
 }

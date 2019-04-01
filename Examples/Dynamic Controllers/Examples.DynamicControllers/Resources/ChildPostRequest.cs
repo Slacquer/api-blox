@@ -2,6 +2,9 @@
 
 namespace Examples.Resources
 {
+    /// <summary>
+    ///     Class ChildPostRequest.
+    /// </summary>
     public class ChildPostRequest
     {
         

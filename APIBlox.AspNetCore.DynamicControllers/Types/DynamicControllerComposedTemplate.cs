@@ -1,15 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using APIBlox.AspNetCore.Contracts;
-using APIBlox.NetCore.Extensions;
 
 namespace APIBlox.AspNetCore.Types
 {
+    /// <inheritdoc />
+    /// <summary>
+    ///     Class DynamicControllerComposedTemplate.
+    ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IComposedTemplate" />
+    /// </summary>
     [DebuggerDisplay("Controller: {Name} | {Route} - Action: {Action.Name} | {Action.Route}")]
     public class DynamicControllerComposedTemplate : IComposedTemplate
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DynamicControllerComposedTemplate" /> class.
+        /// </summary>
+        /// <param name="nameSpace">The name space.</param>
+        /// <param name="route">The route.</param>
+        /// <param name="action">The action.</param>
         public DynamicControllerComposedTemplate(string nameSpace, string route, DynamicAction action)
         {
             Namespace = nameSpace;
@@ -17,9 +24,28 @@ namespace APIBlox.AspNetCore.Types
             Action = action;
         }
 
-        public DynamicAction Action { get; set; }
+        /// <summary>
+        ///     Gets or sets the action.
+        /// </summary>
+        /// <value>The action.</value>
+        public DynamicAction Action { get; }
+
+        /// <summary>
+        ///     Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name { get; set; }
-        public string Route { get;  }
-        public string Namespace { get;  }
+
+        /// <summary>
+        ///     Gets the route.
+        /// </summary>
+        /// <value>The route.</value>
+        public string Route { get; }
+
+        /// <summary>
+        ///     Gets the namespace.
+        /// </summary>
+        /// <value>The namespace.</value>
+        public string Namespace { get; }
     }
 }

@@ -1,54 +1,49 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 
 namespace APIBlox.AspNetCore.Types
 {
-    [DebuggerDisplay("Controller: {Name} | {NameSpace} | {Route}")]
+    [DebuggerDisplay("Controller: {_name} | {_namespace} | {_route}")]
     internal class DynamicController
     {
-        private static readonly string ControllerDefaultContent = EmbeddedResourceReader<DynamicControllerFactory>.GetResource("DynamicController.txt");
+        private static readonly string ControllerContent =
+            EmbeddedResourceReader<DynamicControllerFactory>.GetResource("DynamicController.txt");
+
+        private readonly string _name;
+        private readonly string _namespace;
+        private readonly string _route;
 
         public DynamicController(string name, string nameSpace, string route)
         {
-            Content = ControllerDefaultContent;
-            Name = name;
-            NameSpace = nameSpace;
-            Route = route;
+            _name = name;
+            _namespace = nameSpace;
+            _route = route;
         }
+        
+        public List<string> Namespaces { get;  } = new List<string>();
 
-        public string Name { get; }
+        public List<string> Fields { get;  } = new List<string>();
 
-        public string NameSpace { get; }
+        public List<string> Ctors { get;  } = new List<string>();
 
-        public string Route { get; }
+        public List<string> Actions { get;  } = new List<string>();
 
-        public string Content { get; }
-
-        public List<string> Namespaces { get; set; } = new List<string>();
-
-        public List<string> Fields { get; set; } = new List<string>();
-
-        public List<string> Ctors { get; set; } = new List<string>();
-
-        public List<string> Actions { get; set; } = new List<string>();
-
-        public List<string> Methods { get; set; } = new List<string>();
+        public List<string> Methods { get;  } = new List<string>();
 
         public override string ToString()
         {
-            var ns = string.Join("\n", Namespaces.OrderBy(s=>s).GroupBy(g=> g).Select(s => $"using {s.Key.Trim()};"));
+            var ns = string.Join("\n", Namespaces.OrderBy(s => s).GroupBy(g => g).Select(s => $"using {s.Key.Trim()};"));
             var fields = string.Join("\n\n", Fields);
             var ctors = string.Join("\n\n", Ctors);
             var actions = string.Join("\n\n", Actions);
             var methods = string.Join("\n\n", Methods);
 
-            var ret = Content.Replace("[NAMESPACES]", ns)
-                .Replace("[CONTROLLERS_NAMESPACE]", NameSpace)
-                .Replace("[CONTROLLER_NAME]", Name)
-                .Replace("[CONTROLLER_ROUTE]", Route)
+            var ret = ControllerContent.Replace("[NAMESPACES]", ns)
+                .Replace("[CONTROLLERS_NAMESPACE]", _namespace)
+                .Replace("[CONTROLLER_NAME]", _name)
+                .Replace("[CONTROLLER_ROUTE]", _route)
                 .Replace("[FIELDS]", fields)
                 .Replace("[CTORS]", ctors)
                 .Replace("[ACTIONS]", actions)

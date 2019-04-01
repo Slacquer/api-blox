@@ -1,3 +1,12 @@
+_?, 2019_  **v2.0.???**  
+- DynamicControllers!  This was a big one, no longer are generic classes being used along with silly conventions.  Classes are generated on the fly and compiled.  Things like swashbuckle have no clue, therefore just work correctly out of the box!
+- AddEnsureResponseResultActionFilter, added onlyQueryActions option, allowing structure to overwrite how all http methods ruturn (IE: post result gets wrapped like new{ data=result }).
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 28th, 2019_  **v1.0.119**  
 - DynamicController(s) GET and GETALL, added overload for nothing more than a requestObject.
 - ValidateEnumerable, there technically is no restriction on the DynamicQueryAllController to prevent you from returning back a NON collection.  Meaninging you should have been using DynamicQueryByController.  This will now check for this and log a warning.

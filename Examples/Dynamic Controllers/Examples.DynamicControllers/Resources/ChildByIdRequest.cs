@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
+    /// <summary>
+    ///     Class ChildByIdRequest.
+    /// </summary>
     public class ChildByIdRequest
     {
         /// <summary>

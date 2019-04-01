@@ -21,7 +21,14 @@ namespace APIBlox.AspNetCore
     {
         private readonly string _assemblyName;
         private readonly bool _production;
-        private readonly PortableExecutableReference[] _references;
+
+        // Found the following piece of gold at...
+        // https://github.com/dotnet/roslyn/wiki/Runtime-code-generation-using-Roslyn-compilations-in-.NET-Core-App
+        private static readonly PortableExecutableReference[] _references = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
+            .ToString()
+            .Split(";", StringSplitOptions.RemoveEmptyEntries)
+            .Select(s => MetadataReference.CreateFromFile(s))
+            .ToArray();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicControllerFactory" /> class.
@@ -36,15 +43,6 @@ namespace APIBlox.AspNetCore
 
             _assemblyName = assemblyName;
             _production = production;
-
-            // Found the following piece of gold at...
-            // https://github.com/dotnet/roslyn/wiki/Runtime-code-generation-using-Roslyn-compilations-in-.NET-Core-App
-            _references = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
-                .ToString()
-                .Split(";", StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => MetadataReference.CreateFromFile(s))
-                .ToArray();
-
         }
 
         /// <summary>
@@ -64,6 +62,12 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <value>The controllers.</value>
         public IDictionary<string, string> Controllers { get; private set; }
+
+        /// <summary>
+        ///     Gets the output files when compiling with an assebly output path.
+        /// </summary>
+        /// <value>The output files.</value>
+        public (string, string, string) OutputFiles { get; private set; }
 
         /// <summary>
         ///     Compiles <see cref="IComposedTemplate" /> to the specified assemblyOutputPath.
@@ -432,16 +436,18 @@ namespace APIBlox.AspNetCore
 
             var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, _references, csOptions);
 
-            var dll = Path.Combine(outputFolder, $"{_assemblyName}.dll");
-            var pdb = Path.Combine(outputFolder, $"{_assemblyName}.pdb");
-            var xml = Path.Combine(outputFolder, $"{_assemblyName}.xml");
+            var dll = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.dll"));
+            var pdb = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.pdb"));
+            var xml = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.xml"));
 
-            var emitResult = compilation.Emit(dll, _production ? null : pdb, xml);
+            OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
+
+            var emitResult = compilation.Emit(dll.FullName, _production ? null : pdb.FullName, xml.FullName);
 
             if (emitResult.Success)
             {
                 CheckAndSetWarnings(emitResult);
-                return new FileInfo(dll);
+                return dll;
             }
 
             CheckAndSetFailures(emitResult);
@@ -454,6 +460,7 @@ namespace APIBlox.AspNetCore
             if (templates is null || !templates.Any())
                 throw new ArgumentNullException(nameof(templates));
 
+            OutputFiles = (null, null, null);
             CompilationErrors = null;
             CompilationWarnings = null;
 
@@ -523,7 +530,7 @@ namespace APIBlox.AspNetCore
                 $"{diagnostic.Id}: {diagnostic.GetMessage()}"
             ).ToArray();
 
-            CompilationErrors = failures;
+            CompilationErrors = failures.Any() ? failures : null;
         }
 
         private void CheckAndSetWarnings(EmitResult emitResult)
@@ -536,7 +543,7 @@ namespace APIBlox.AspNetCore
                 $"{diagnostic.Id}: {diagnostic.GetMessage()}"
             ).ToArray();
 
-            CompilationWarnings = warnings;
+            CompilationWarnings = warnings.Any() ? warnings : null;
         }
 
 

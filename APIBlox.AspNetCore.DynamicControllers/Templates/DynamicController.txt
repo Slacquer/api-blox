@@ -1,6 +1,4 @@
-﻿
-[NAMESPACES]
-
+﻿[NAMESPACES]
 
 namespace [CONTROLLERS_NAMESPACE].Controllers
 {

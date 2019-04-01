@@ -192,15 +192,19 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
         /// </summary>
         /// <param name="builder">IMvcCoreBuilder</param>
+        /// <param name="onlyQueryActions">When false, your structure will be applied to all http methods.</param>
         /// <param name="defineResponseFunc">Your user defined structure.</param>
         /// <returns>IMvcCoreBuilder.</returns>
         public static IMvcCoreBuilder AddEnsureResponseResultActionFilter(
             this IMvcCoreBuilder builder,
+            bool onlyQueryActions = true,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
             if (!(defineResponseFunc is null))
                 InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
+
+            InternalHelpers.ApplyEnsureResponseCompliesWithQueryActionsOnly = onlyQueryActions;
 
             builder.Services.Configure<MvcOptions>(o =>
                 {
@@ -221,15 +225,19 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
         /// </summary>
         /// <param name="builder">IMvcBuilder</param>
+        /// <param name="onlyQueryActions">When false, your structure will be applied to all http methods.</param>
         /// <param name="defineResponseFunc">Your user defined structure.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddEnsureResponseResultActionFilter(
             this IMvcBuilder builder,
+            bool onlyQueryActions = true,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
             if (!(defineResponseFunc is null))
                 InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
+
+            InternalHelpers.ApplyEnsureResponseCompliesWithQueryActionsOnly = onlyQueryActions;
 
             builder.Services.Configure<MvcOptions>(o =>
                 {

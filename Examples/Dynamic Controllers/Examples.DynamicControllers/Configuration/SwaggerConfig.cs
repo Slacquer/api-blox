@@ -6,14 +6,14 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     internal static class SwaggerConfig
     {
-        public static IServiceCollection AddSwaggerExampleFeatures(this IServiceCollection services, string siteTitle, string version)
+        public static IServiceCollection AddSwaggerExampleFeatures(this IServiceCollection services, string siteTitle, string version, string dynamicControllersXmlFile)
         {
             return services.AddSwaggerGen(c =>
                 {
                     c.DescribeAllEnumsAsStrings();
                     c.SwaggerDoc(version, new Info {Title = siteTitle, Version = version});
                     c.IncludeXmlComments(@".\Examples.DynamicControllers.xml", true);
-                    c.IncludeXmlComments(@".\FullyDynamic\ExampleDynamicControllersAssembly.xml");
+                    c.IncludeXmlComments(dynamicControllersXmlFile);
                 }
             );
         }

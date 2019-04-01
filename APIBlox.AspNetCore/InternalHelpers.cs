@@ -7,6 +7,8 @@ namespace APIBlox.AspNetCore
     {
         public static Action<RequestErrorObject> AlterRequestErrorObjectAction { get; set; }
 
+        public static bool ApplyEnsureResponseCompliesWithQueryActionsOnly { get; set; } = true;
+
         public static Func<object, object> EnsureResponseCompliesWithAction { get; set; } = objectResultValue => new { Data = objectResultValue };
 
         public static string ErrorResponseContentType { get; set; } = "application/problem+json";
