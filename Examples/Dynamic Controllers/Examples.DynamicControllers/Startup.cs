@@ -63,7 +63,7 @@ namespace Examples
                 .AddCamelCaseResultsOptions()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSwaggerExampleFeatures(SiteTitle, Version, dynamicControllersXmlFile);
+           services.AddSwaggerExampleFeatures(SiteTitle, Version, dynamicControllersXmlFile);
         }
 
         /// <summary>

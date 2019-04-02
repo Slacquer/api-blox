@@ -2,9 +2,12 @@
 using System.IO;
 using System.Reflection;
 using APIBlox.AspNetCore;
+using APIBlox.AspNetCore.Exceptions;
 using APIBlox.AspNetCore.Extensions;
+using Examples;
 using Examples.Resources;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable once CheckNamespace
@@ -70,19 +73,38 @@ namespace Microsoft.Extensions.DependencyInjection
                 controllerRoute
             );
 
-            var output = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var output = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DynamicControllers");
 
-            factory.Compile(builder,
-                output,
-                environment.IsProduction(),
-                childById,
+
+            var ass = factory.Compile(Assembly.GetAssembly(typeof(Startup)), output, environment.IsProduction(), childById,
                 childDelete,
                 childAll,
                 childPut,
                 childPatch,
-                childPostAccepted
+                childPostAccepted);
+
+            if (ass is null || factory.Errors != null)
+                throw new TemplateCompilationException(factory.Errors);
+
+            builder.ConfigureApplicationPartManager(pm =>
+                {
+                    var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
+                    pm.ApplicationParts.Add(part);
+                }
             );
 
+
+            //factory.Compile(builder,
+            //    output,
+            //    environment.IsProduction(),
+            //    childById,
+            //    childDelete,
+            //    childAll,
+            //    childPut,
+            //    childPatch,
+            //    childPostAccepted
+            //);
+            
             var (_, _, xml) = factory.OutputFiles;
 
             dynamicControllersXmlFile = xml;

@@ -18,7 +18,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="factory">The factory.</param>
         /// <param name="builder">The builder.</param>
         /// <param name="outputFile">The output file.</param>
-        /// <param name="useCache">if set to <c>true</c> [use cache].  <seealso cref="DynamicControllerFactory.Compile(string, bool, IComposedTemplate[])"/></param>
+        /// <param name="useCache">if set to <c>true</c> [use cache].  <seealso cref="DynamicControllerFactory.Compile(System.Reflection.Assembly,string,bool,APIBlox.AspNetCore.Contracts.IComposedTemplate[])"/></param>
         /// <param name="templates">The templates.</param>
         /// <returns>DynamicControllerFactory.</returns>
         /// <exception cref="TemplateCompilationException"></exception>
@@ -26,17 +26,17 @@ namespace APIBlox.AspNetCore.Extensions
             IMvcBuilder builder, string outputFile, bool useCache, params IComposedTemplate[] templates
         )
         {
-            var ass = factory.Compile(outputFile, useCache, templates);
+            //var ass = factory.Compile(outputFile, useCache, templates);
 
-            if (ass is null || factory.Errors != null)
-                throw new TemplateCompilationException(factory.Errors);
+            //if (ass is null || factory.Errors != null)
+            //    throw new TemplateCompilationException(factory.Errors);
 
-            builder.ConfigureApplicationPartManager(pm =>
-                {
-                    var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
-                    pm.ApplicationParts.Add(part);
-                }
-            );
+            //builder.ConfigureApplicationPartManager(pm =>
+            //    {
+            //        var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
+            //        pm.ApplicationParts.Add(part);
+            //    }
+            //);
 
             return factory;
         }
@@ -48,7 +48,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="factory">The factory.</param>
         /// <param name="builder">The builder.</param>
         /// <param name="outputFile">The output file.</param>
-        /// <param name="useCache">if set to <c>true</c> [use cache].  <seealso cref="DynamicControllerFactory.Compile(string, bool, IComposedTemplate[])"/></param>
+        /// <param name="useCache">if set to <c>true</c> [use cache].  <seealso cref="DynamicControllerFactory.Compile(System.Reflection.Assembly,string,bool,APIBlox.AspNetCore.Contracts.IComposedTemplate[])"/></param>
         /// <param name="templates">The templates.</param>
         /// <returns>DynamicControllerFactory.</returns>
         /// <exception cref="TemplateCompilationException"></exception>
@@ -56,17 +56,17 @@ namespace APIBlox.AspNetCore.Extensions
             IMvcCoreBuilder builder, string outputFile, bool useCache, params IComposedTemplate[] templates
         )
         {
-            var ass = factory.Compile(outputFile, useCache, templates);
+            //var ass = factory.Compile(outputFile, useCache, templates);
 
-            if (ass is null || factory.Errors != null)
-                throw new TemplateCompilationException(factory.Errors);
+            //if (ass is null || factory.Errors != null)
+            //    throw new TemplateCompilationException(factory.Errors);
 
-            builder.ConfigureApplicationPartManager(pm =>
-                {
-                    var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
-                    pm.ApplicationParts.Add(part);
-                }
-            );
+            //builder.ConfigureApplicationPartManager(pm =>
+            //    {
+            //        var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
+            //        pm.ApplicationParts.Add(part);
+            //    }
+            //);
 
             return factory;
         }

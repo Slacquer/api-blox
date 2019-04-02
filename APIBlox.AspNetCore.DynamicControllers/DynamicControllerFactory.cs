@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
+using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 
 namespace APIBlox.AspNetCore
@@ -31,6 +34,7 @@ namespace APIBlox.AspNetCore
         private readonly string _assemblyName;
         private readonly bool _production;
         private readonly ILogger<DynamicControllerFactory> _log;
+        private Assembly _ass;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicControllerFactory"/> class.
@@ -73,7 +77,6 @@ namespace APIBlox.AspNetCore
         /// <value>The output files.</value>
         public (string, string, string) OutputFiles { get; private set; }
 
-
         /// <summary>
         ///     Compiles 1 or more <see cref="IComposedTemplate" /> to the specified assemblyOutputPath.
         ///     <para>
@@ -84,13 +87,15 @@ namespace APIBlox.AspNetCore
         ///         already exist, then they will be returned without compiling anything.
         ///     </para>
         /// </summary>
+        /// <param name="ass"></param>
         /// <param name="assemblyOutputPath">The assembly output path.</param>
         /// <param name="useCache">if set to <c>true</c> [use cache].</param>
         /// <param name="templates">The templates.</param>
         /// <returns>FileInfo.</returns>
         /// <exception cref="ArgumentNullException">assemblyOutputPath</exception>
-        public FileInfo Compile(string assemblyOutputPath, bool useCache, params IComposedTemplate[] templates)
+        public FileInfo Compile(Assembly ass, string assemblyOutputPath, bool useCache, params IComposedTemplate[] templates)
         {
+            _ass = ass;
             if (assemblyOutputPath.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(assemblyOutputPath));
 
@@ -492,13 +497,28 @@ namespace APIBlox.AspNetCore
             var pdb = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.pdb"));
             var xml = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.xml"));
 
+            var lst = new List<PortableExecutableReference>();
+
+            using (var ass = new AssemblyResolver())
+            {
+                ass.LoadFromAssemblyPath(_ass.Location, out _);
+
+                var bar = ass.LoadedReferencedAssemblies
+                    .Where(an => File.Exists(an.Location))
+                    .Select(an => MetadataReference.CreateFromFile(an.Location));
+
+                lst.AddRange(bar);
+                lst.AddRange(References);
+            }
+
+            var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
+
             OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
 
             if (useCache && OutputsCheck(dll, pdb, xml))
                 return dll;
-
-            var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
-            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, References, csOptions);
+            
+            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, lst, csOptions);
 
             var emitResult = compilation.Emit(dll.FullName, _production ? null : pdb.FullName, xml.FullName);
 
@@ -538,7 +558,7 @@ namespace APIBlox.AspNetCore
 
             return false;
         }
-        
+
         private CSharpCompilationOptions ResetAndGetSyntaxTree(IComposedTemplate[] templates, out IEnumerable<SyntaxTree> csSyntaxTree)
         {
             if (templates is null || !templates.Any())

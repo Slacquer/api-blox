@@ -21,6 +21,15 @@ namespace APIBlox.NetCore.Types
         private bool _disposed;
         private Dictionary<string, Assembly> _loadedAssemblyCache = new Dictionary<string, Assembly>();
 
+
+        public IEnumerable<Assembly> LoadedReferencedAssemblies
+        {
+            get
+            {
+                return _loadedAssemblyCache?.Select(k => k.Value);
+            }
+        }
+
         /// <summary>
         ///     Loads an assembly and all its referenced assemblies.
         /// </summary>

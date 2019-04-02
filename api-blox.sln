@@ -54,6 +54,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AspNetCore", "AspNetCore", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIBlox.NetCore.EventStore.EfCore", "APIBlox.NetCore.EventStore.EfCore\APIBlox.NetCore.EventStore.EfCore.csproj", "{4417E5CE-18FD-4D38-A773-D28461215A95}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AEU.SwaggerGenerator", "..\..\AmWins\aeu-openapi\AEU.SwaggerGenerator\AEU.SwaggerGenerator.csproj", "{7875F664-60EB-44CE-9101-2174CA2D63FF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A1614E7-5E44-4FB2-8F69-134469ADB1F1} = {5A1614E7-5E44-4FB2-8F69-134469ADB1F1}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -132,6 +137,10 @@ Global
 		{4417E5CE-18FD-4D38-A773-D28461215A95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4417E5CE-18FD-4D38-A773-D28461215A95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4417E5CE-18FD-4D38-A773-D28461215A95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7875F664-60EB-44CE-9101-2174CA2D63FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7875F664-60EB-44CE-9101-2174CA2D63FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7875F664-60EB-44CE-9101-2174CA2D63FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7875F664-60EB-44CE-9101-2174CA2D63FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
