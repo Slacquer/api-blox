@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
         ///         be sure to use an ELSE block, otherwise I will take over, MUHAHAHA!.
         ///     </para>
         ///     <para>
-        ///         Be sure to call <see cref="ServiceCollectionExtensionsAspNetCore.AddServerFaults"/>
+        ///         Be sure to call <see cref="ServiceCollectionExtensionsAspNetCore.AddServerFaults" />
         ///         extension method during service configuration.
         ///     </para>
         /// </summary>

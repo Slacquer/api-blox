@@ -1,10 +1,7 @@
 ﻿using System;
-using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Options;
-using Newtonsoft.Json;
 using Raven.Client.Documents;
-using Raven.Client.Documents.Conventions;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Exceptions;
 using Raven.Client.Exceptions.Database;
@@ -15,8 +12,8 @@ namespace APIBlox.NetCore
 {
     internal class StoreContext : IDisposable
     {
-        private readonly IDocumentStore _store;
         private string _collection;
+        private readonly IDocumentStore _store;
 
         public StoreContext(RavenDbOptions options)
         {
@@ -29,7 +26,7 @@ namespace APIBlox.NetCore
                 Urls = opt.Urls ?? throw new ArgumentNullException(nameof(opt.Urls)),
                 Database = database
             };
-            
+
             _store.Conventions.FindCollectionName = EventStoreCollectionName;
 
             _store.Conventions.FindIdentityProperty = mi => mi.Name.EqualsEx("id");
@@ -37,12 +34,6 @@ namespace APIBlox.NetCore
             _store.Initialize();
 
             EnsureDatabaseExists(_store, database);
-        }
-
-
-        private string EventStoreCollectionName(Type arg)
-        {
-            return _collection;
         }
 
         public IDocumentStore Store(string collection)
@@ -55,6 +46,11 @@ namespace APIBlox.NetCore
         public void Dispose()
         {
             _store?.Dispose();
+        }
+
+        private string EventStoreCollectionName(Type arg)
+        {
+            return _collection;
         }
 
         private void EnsureDatabaseExists(IDocumentStore store, string database = null, bool createDatabaseIfNotExists = true)

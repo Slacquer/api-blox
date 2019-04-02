@@ -15,13 +15,14 @@ namespace APIBlox.NetCore
         where TModel : class
     {
         protected readonly IEventStoreRepository<TModel> Repository;
-        protected JsonSerializerSettings JsonSettings { get; }
 
         public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repository, JsonSerializerSettings serializerSettings)
         {
             Repository = repository;
             JsonSettings = serializerSettings ?? new JsonSerializerSettings();
         }
+
+        protected JsonSerializerSettings JsonSettings { get; }
 
         public async Task<(long, DateTimeOffset)> ReadEventStreamVersionAsync(string streamId, CancellationToken cancellationToken = default)
         {
@@ -53,67 +54,9 @@ namespace APIBlox.NetCore
             return ReadAsync(streamId, null, fromDate, toDate, cancellationToken);
         }
 
-
-        private async Task<EventStreamModel> ReadAsync(string streamId, long? fromVersion = null, DateTimeOffset? fromDate = null,
-            DateTimeOffset? toDate = null, CancellationToken cancellationToken = default)
-        {
-            if (streamId == null)
-                throw new ArgumentNullException(nameof(streamId));
-
-            Expression<Func<EventStoreDocument, bool>> predicate = e => e.StreamId == streamId;
-
-            if (fromVersion.HasValue && fromVersion > 0)
-                predicate = e => e.StreamId == streamId && e.Version >= fromVersion;
-            else if (fromDate.HasValue)
-            {
-                if (!toDate.HasValue)
-                    predicate = e => e.StreamId == streamId && e.TimeStamp >= fromDate.Value.Ticks;
-                else
-                    predicate = e => e.StreamId == streamId && e.TimeStamp >= fromDate.Value.Ticks && e.TimeStamp <= toDate.Value.Ticks;
-            }
-
-            var results = (await Repository.GetAsync<EventStoreDocument>(predicate, cancellationToken))
-                .OrderByDescending(d => d.DocumentType == DocumentType.Root)
-                .ThenByDescending(d => d.DocumentType == DocumentType.Snapshot)
-                .ThenBy(d => d.SortOrder)
-                .ToList();
-
-            if (results.Count == 0)
-                return null;
-
-            var rootDoc = results.First(d => d.DocumentType == DocumentType.Root);
-
-            var snapshot = fromVersion is null ? results
-                .OrderByDescending(d => d.SortOrder)
-                .Where(d => d.DocumentType == DocumentType.Snapshot)
-                .Select(BuildSnapshotModel).FirstOrDefault() : null;
-
-            var events = results.Where(d =>
-                    d.DocumentType == DocumentType.Event
-                    && (d.Version > snapshot?.Version || snapshot is null)
-                )
-                .Select(BuildEventModel)
-                .ToArray();
-
-            return BuildEventStreamModel(streamId, rootDoc, events, snapshot);
-        }
-
-
-        private static EventStreamModel BuildEventStreamModel(string streamId, EventStoreDocument rootDoc,
-            IEnumerable<EventModel> events = null, SnapshotModel snapshot = null)
-        {
-            return new EventStreamModel
-            {
-                StreamId = streamId,
-                Version = rootDoc.Version,
-                TimeStamp = DateTimeOffset.FromUnixTimeSeconds(rootDoc.TimeStamp),
-                Events = events?.ToArray(),
-                Snapshot = snapshot
-            };
-        }
-
         protected async Task<RootDocument> ReadRootAsync(string streamId,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default
+        )
         {
             var result = (await Repository.GetAsync<EventStoreDocument>(
                 d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
@@ -128,7 +71,8 @@ namespace APIBlox.NetCore
                     StreamId = result.StreamId,
                     TimeStamp = result.TimeStamp,
                     Version = result.Version
-                } : null;
+                }
+                : null;
 
             return doc;
         }
@@ -136,6 +80,7 @@ namespace APIBlox.NetCore
         protected virtual EventModel BuildEventModel(EventStoreDocument document)
         {
             object data;
+
             try
             {
                 data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings);
@@ -155,6 +100,7 @@ namespace APIBlox.NetCore
         protected virtual SnapshotModel BuildSnapshotModel(EventStoreDocument document)
         {
             object data;
+
             try
             {
                 data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings);
@@ -169,6 +115,69 @@ namespace APIBlox.NetCore
                 Data = data,
                 DataType = document.DataType,
                 Version = document.Version
+            };
+        }
+
+        private async Task<EventStreamModel> ReadAsync(string streamId, long? fromVersion = null, DateTimeOffset? fromDate = null,
+            DateTimeOffset? toDate = null, CancellationToken cancellationToken = default
+        )
+        {
+            if (streamId == null)
+                throw new ArgumentNullException(nameof(streamId));
+
+            Expression<Func<EventStoreDocument, bool>> predicate = e => e.StreamId == streamId;
+
+            if (fromVersion.HasValue && fromVersion > 0)
+            {
+                predicate = e => e.StreamId == streamId && e.Version >= fromVersion;
+            }
+            else if (fromDate.HasValue)
+            {
+                if (!toDate.HasValue)
+                    predicate = e => e.StreamId == streamId && e.TimeStamp >= fromDate.Value.Ticks;
+                else
+                    predicate = e => e.StreamId == streamId && e.TimeStamp >= fromDate.Value.Ticks && e.TimeStamp <= toDate.Value.Ticks;
+            }
+
+            var results = (await Repository.GetAsync<EventStoreDocument>(predicate, cancellationToken))
+                .OrderByDescending(d => d.DocumentType == DocumentType.Root)
+                .ThenByDescending(d => d.DocumentType == DocumentType.Snapshot)
+                .ThenBy(d => d.SortOrder)
+                .ToList();
+
+            if (results.Count == 0)
+                return null;
+
+            var rootDoc = results.First(d => d.DocumentType == DocumentType.Root);
+
+            var snapshot = fromVersion is null
+                ? results
+                    .OrderByDescending(d => d.SortOrder)
+                    .Where(d => d.DocumentType == DocumentType.Snapshot)
+                    .Select(BuildSnapshotModel).FirstOrDefault()
+                : null;
+
+            var events = results.Where(d =>
+                    d.DocumentType == DocumentType.Event
+                    && (d.Version > snapshot?.Version || snapshot is null)
+                )
+                .Select(BuildEventModel)
+                .ToArray();
+
+            return BuildEventStreamModel(streamId, rootDoc, events, snapshot);
+        }
+
+        private static EventStreamModel BuildEventStreamModel(string streamId, EventStoreDocument rootDoc,
+            IEnumerable<EventModel> events = null, SnapshotModel snapshot = null
+        )
+        {
+            return new EventStreamModel
+            {
+                StreamId = streamId,
+                Version = rootDoc.Version,
+                TimeStamp = DateTimeOffset.FromUnixTimeSeconds(rootDoc.TimeStamp),
+                Events = events?.ToArray(),
+                Snapshot = snapshot
             };
         }
     }

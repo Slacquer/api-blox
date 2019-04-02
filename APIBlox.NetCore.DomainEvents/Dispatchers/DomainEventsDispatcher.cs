@@ -51,7 +51,6 @@ namespace APIBlox.NetCore
                     }
                 );
             }
-            
         }
     }
 }

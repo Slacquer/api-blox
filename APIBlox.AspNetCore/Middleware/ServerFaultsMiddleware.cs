@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Exceptions;
 using APIBlox.AspNetCore.Extensions;
-using APIBlox.AspNetCore.Types.Errors;
+using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -54,22 +54,17 @@ namespace APIBlox.AspNetCore
                 ProblemResult result;
 
                 if (error.Error is HandledRequestException handled)
-                {
                     result = new ProblemResult(handled.RequestErrorObject)
                     {
-                        StatusCode = handled.RequestErrorObject.Status ?? (int)HttpStatusCode.InternalServerError
+                        StatusCode = handled.RequestErrorObject.Status ?? (int) HttpStatusCode.InternalServerError
                     };
-                }
                 else
-                {
                     result = new ProblemResult(BuildResponse(error.Error, context.Request.Path))
                     {
-                        StatusCode = (int)HttpStatusCode.InternalServerError
+                        StatusCode = (int) HttpStatusCode.InternalServerError
                     };
-                }
 
                 await context.WriteResultExecutorAsync(result);
-
             }
             catch (InvalidOperationException iex)
             {
@@ -93,6 +88,7 @@ namespace APIBlox.AspNetCore
         private ServerErrorObject BuildResponse(Exception err, string instance)
         {
             ServerErrorObject ret = null;
+
             try
             {
                 ret = BuildNonProdResponse(err, instance);
@@ -126,7 +122,7 @@ namespace APIBlox.AspNetCore
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
-                (int)HttpStatusCode.InternalServerError,
+                (int) HttpStatusCode.InternalServerError,
                 instance,
                 _referenceIdFunc()
             )
@@ -145,7 +141,7 @@ namespace APIBlox.AspNetCore
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
-                (int)HttpStatusCode.InternalServerError,
+                (int) HttpStatusCode.InternalServerError,
                 instance,
                 _referenceIdFunc()
             )

@@ -14,10 +14,7 @@ namespace APIBlox.AspNetCore.ActionResults
     /// <seealso cref="T:Microsoft.AspNetCore.Http.StatusCodes" />
     public class ProblemResult : ObjectResult
     {
-        /// <summary>
-        ///     The error
-        /// </summary>
-        protected readonly RequestErrorObject Error;
+        private readonly RequestErrorObject _error;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ProblemResult" /> class.  I will set the following:
@@ -35,10 +32,10 @@ namespace APIBlox.AspNetCore.ActionResults
         public ProblemResult(RequestErrorObject error)
             : base(error)
         {
-            Error = error;
-            StatusCode = Error.Status;
+            _error = error;
+            StatusCode = _error.Status;
             ContentTypes.Clear();
-            ContentTypes.Add(InternalHelpers.ErrorResponseContentType);
+            ContentTypes.Add(Constants.ResponseTypes.ErrorResponseContentType);
         }
 
         /// <inheritdoc />
@@ -48,14 +45,14 @@ namespace APIBlox.AspNetCore.ActionResults
         /// <param name="context">The context.</param>
         public override void OnFormatting(ActionContext context)
         {
-            Error.Instance = context.HttpContext.Request.Path;
+            _error.Instance = context.HttpContext.Request.Path;
 
-            if (Error.Status.HasValue)
-                context.HttpContext.Response.StatusCode = Error.Status.Value;
+            if (_error.Status.HasValue)
+                context.HttpContext.Response.StatusCode = _error.Status.Value;
             else
-                Error.Status = StatusCode;
+                _error.Status = StatusCode;
 
-            OnBeforeFormattingComplete(context, Error);
+            OnBeforeFormattingComplete(context, _error);
 
             base.OnFormatting(context);
         }

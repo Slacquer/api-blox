@@ -117,8 +117,8 @@ namespace Examples
         public async Task PublishChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = await _es.WriteToEventStreamAsync(_streamId,
-                DomainEvents.Select(e => new EventModel { Data = e }).ToArray(),
-                _myEventStream.Version > 0 ? _myEventStream.Version : (long?)null,
+                DomainEvents.Select(e => new EventModel {Data = e}).ToArray(),
+                _myEventStream.Version > 0 ? _myEventStream.Version : (long?) null,
                 cancellationToken
             );
 
@@ -127,7 +127,7 @@ namespace Examples
             if (result.Version % 10 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
-                    new SnapshotModel { Data = this },
+                    new SnapshotModel {Data = this},
                     cancellationToken: cancellationToken
                 );
 
@@ -146,7 +146,7 @@ namespace Examples
             if (!(_myEventStream is null))
                 return;
 
-            _myEventStream = await _es.ReadEventStreamAsync(_streamId, cancellationToken: cancellationToken);
+            _myEventStream = await _es.ReadEventStreamAsync(_streamId, cancellationToken);
 
             if (_myEventStream is null)
             {
@@ -158,7 +158,7 @@ namespace Examples
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (CosmosAggregate)_myEventStream.Snapshot.Data;
+                var data = (CosmosAggregate) _myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;
@@ -207,7 +207,7 @@ namespace Examples
                 throw new InvalidOperationException(s);
             }
 
-            info.Invoke(this, new[] { @event });
+            info.Invoke(this, new[] {@event});
         }
     }
 }

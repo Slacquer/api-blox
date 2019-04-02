@@ -18,12 +18,12 @@ namespace Examples.Controllers
     public class EventSourcingController : ControllerBase
     {
         private readonly IEventStoreService<CosmosAggregate> _cosmosSvc;
+        private readonly IEventStoreService<EfCoreSqlAggregate> _efCoreSqlSvc;
         private readonly IEventStoreService<MongoAggregate> _mongoSvc;
         private readonly IEventStoreService<RavenAggregate> _ravenSvc;
-        private readonly IEventStoreService<EfCoreSqlAggregate> _efCoreSqlSvc;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventSourcingController"/> class.
+        ///     Initializes a new instance of the <see cref="EventSourcingController" /> class.
         /// </summary>
         /// <param name="cosmosSvc">The cosmos SVC.</param>
         /// <param name="mongoSvc">The mongo SVC.</param>
@@ -55,7 +55,6 @@ namespace Examples.Controllers
             var r = new RavenAggregate(_ravenSvc, Reverse(firstName));
             var e = new EfCoreSqlAggregate(_efCoreSqlSvc, firstName);
 
-
             await Task.WhenAll(
                 c.Build(true),
                 m.Build(true),
@@ -63,7 +62,7 @@ namespace Examples.Controllers
                 e.Build(true)
             );
 
-            return Ok(new { CosmosAggregate = c, MongoAggregate = m, RavenAggregate = r, EfCoreSqlAggregate = e });
+            return Ok(new {CosmosAggregate = c, MongoAggregate = m, RavenAggregate = r, EfCoreSqlAggregate = e});
         }
 
         /// <summary>

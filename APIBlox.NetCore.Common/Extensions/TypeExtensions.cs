@@ -27,7 +27,7 @@ namespace APIBlox.NetCore.Extensions
         {
             var t = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
 
-            var safeValue = (qp == null) ? null : Convert.ChangeType(qp, t);
+            var safeValue = qp == null ? null : Convert.ChangeType(qp, t);
 
             prop.SetValue(obj, safeValue, null);
         }
@@ -126,15 +126,16 @@ namespace APIBlox.NetCore.Extensions
         }
 
         /// <summary>
-        ///     Gets all json property name values for a type that is using the <see cref="JsonPropertyAttribute"/>.
+        ///     Gets all json property name values for a type that is using the <see cref="JsonPropertyAttribute" />.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>Dictionary&lt;PropertyInfo, System.String&gt;.</returns>
         public static Dictionary<PropertyInfo, string> JsonPropertyNames(this Type type)
         {
-            var props = type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            var lst = new Dictionary<PropertyInfo,string>();
+            var lst = new Dictionary<PropertyInfo, string>();
+
             foreach (var pi in props)
             {
                 if (!(pi.GetCustomAttributes(typeof(JsonPropertyAttribute), false).FirstOrDefault() is JsonPropertyAttribute att))

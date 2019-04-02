@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensionsRavenDb
     {
         /// <summary>
-        ///     Adds the raven database repository for use with the <see cref="IEventStoreService{TModel}"/>.
+        ///     Adds the raven database repository for use with the <see cref="IEventStoreService{TModel}" />.
         /// </summary>
         /// <typeparam name="TModel">The type of the t model.</typeparam>
         /// <param name="services">The services.</param>
@@ -24,10 +24,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="serializerSettings">The serializer settings.</param>
         /// <param name="configSection">The configuration section.</param>
         /// <returns>IServiceCollection.</returns>
-        /// <exception cref="ArgumentException">In order to use the {nameof(MongoDbOptions)} you " +
-        ///                     $"will need to have an {configSection}</exception>
+        /// <exception cref="ArgumentException">
+        ///     In order to use the {nameof(MongoDbOptions)} you " +
+        ///     $"will need to have an {configSection}
+        /// </exception>
         public static IServiceCollection AddRavenDbRepository<TModel>(this IServiceCollection services, IConfiguration configuration,
-            JsonSerializerSettings serializerSettings = null, string configSection = "RavenDbOptions")
+            JsonSerializerSettings serializerSettings = null, string configSection = "RavenDbOptions"
+        )
             where TModel : class
         {
             var settings = serializerSettings ?? new CamelCaseSettings();
@@ -39,26 +42,28 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Configure<RavenDbOptions>(config);
 
             services.AddSingleton(x =>
-            {
-                var es = config.Get<RavenDbOptions>();
+                {
+                    var es = config.Get<RavenDbOptions>();
 
-                if (es is null)
-                    throw new ArgumentException(
-                        $"In order to use the {nameof(RavenDbOptions)} you " +
-                        $"will need to have an {configSection} configuration entry."
-                    );
+                    if (es is null)
+                        throw new ArgumentException(
+                            $"In order to use the {nameof(RavenDbOptions)} you " +
+                            $"will need to have an {configSection} configuration entry."
+                        );
 
-                return new StoreContext(es);
-            });
+                    return new StoreContext(es);
+                }
+            );
 
             services.AddScoped<IEventStoreRepository<TModel>, RavenDbRepository<TModel>>(x =>
-            {
-                var ret = new RavenDbRepository<TModel>(x.GetRequiredService<StoreContext>(),
-                    settings
-                );
+                {
+                    var ret = new RavenDbRepository<TModel>(x.GetRequiredService<StoreContext>(),
+                        settings
+                    );
 
-                return ret;
-            });
+                    return ret;
+                }
+            );
 
             return services;
         }

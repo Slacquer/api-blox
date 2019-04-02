@@ -1,19 +1,14 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Examples.Contracts;
 using Examples.Resources;
 using Microsoft.AspNetCore.Mvc;
-using Examples.Contracts;
-
 #if UseAPIBlox
-
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Enums;
-using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Types;
 
 #endif
@@ -36,20 +31,19 @@ namespace Examples.Controllers
         private readonly IRandomNumberGeneratorService _rndSvc;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ExamplesController"/> class.
+        ///     Initializes a new instance of the <see cref="ExamplesController" /> class.
         /// </summary>
         /// <param name="randomNumberGeneratorService">The random number generator service.</param>
         public ExamplesController(IRandomNumberGeneratorService randomNumberGeneratorService)
         {
             _rndSvc = randomNumberGeneratorService;
         }
-        
-        ///  <summary>
-        ///      app.UseSimulateWaitTime(_environment); example 
-        ///  </summary>
+
+        /// <summary>
+        ///     app.UseSimulateWaitTime(_environment); example
+        /// </summary>
         /// <param name="wait">if not null then simulate wait middleware will kick in.</param>
-        /// 
-        ///  <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
+        /// <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get(string wait = null)
         {
@@ -68,7 +62,7 @@ namespace Examples.Controllers
         /// <param name="description">The description, when empty no error details are displayed</param>
         /// <returns>ActionResult.</returns>
         [HttpGet("problemResult")]
-#if UseAPIBlox
+    #if UseAPIBlox
         public ActionResult GetProblemResultExample(CommonStatusCodes statusCode = CommonStatusCodes.Forbidden, string description = null)
         {
             if (statusCode == CommonStatusCodes.Ok || statusCode == CommonStatusCodes.NoResults)
@@ -78,13 +72,13 @@ namespace Examples.Controllers
             errObject.SetError(statusCode, description);
 
             return new ProblemResult(errObject);
-#else
+        #else
         public ActionResult GetErrorResponseExample(int statusCode, string description = null)
         {
             HttpContext.Response.StatusCode = statusCode;
 
             return new ObjectResult(description);
-#endif
+        #endif
         }
 
         /// <summary>
@@ -121,6 +115,7 @@ namespace Examples.Controllers
         public ActionResult ThrowExceptionForServerFaultExample(string exceptionMessage)
         {
             throw new Exception("Be sure to try this out in RELEASE mode"
+
                 //,
                 //new IndexOutOfRangeException("As most if not all of this",
                 //    new ArgumentException("error information is NOT displayed in production",
@@ -137,25 +132,29 @@ namespace Examples.Controllers
         /// </summary>
         /// <param name="requestResource">The request resource.</param>
         [HttpPost("{valueId:int}/subResources")]
-#if UseAPIBlox
+    #if UseAPIBlox
         public ActionResult Post(ExampleRequestObject requestResource)
-#else
+    #else
         public ActionResult Post(ExampleRequestObject requestResource)
-#endif
+    #endif
         {
             //
             //  SIDE NOTE:
             // we should be returning a route with id, but
             // I'm lazy and that's not the point of all this... :/
 
-            return Ok(new { Id = 1, requestResource.CoolNewValue, requestResource.ValueId });
+            return Ok(new {Id = 1, requestResource.CoolNewValue, requestResource.ValueId});
         }
 
         /// <summary>
         ///     services.AddOperationCanceledExceptionFilter() example
         /// </summary>
         /// <remarks>
-        ///     This method doesn't PUT anything, its actually an example that will show how the APIBlox OperationCanceledExceptionFilter will prevent errors from showing up in your logs when someone makes a call to one of your actions, doesn't bother to wait, and ends up going to YOUTUBE (or somewhere else).  If you don't know what i mean, be sure to comment out the  startup entry services.AddOperationCanceledExceptionFilter().  Then execute this action, and within 30 seconds browse to a new location.
+        ///     This method doesn't PUT anything, its actually an example that will show how the APIBlox
+        ///     OperationCanceledExceptionFilter will prevent errors from showing up in your logs when someone makes a call to one
+        ///     of your actions, doesn't bother to wait, and ends up going to YOUTUBE (or somewhere else).  If you don't know what
+        ///     i mean, be sure to comment out the  startup entry services.AddOperationCanceledExceptionFilter().  Then execute
+        ///     this action, and within 30 seconds browse to a new location.
         /// </remarks>
         /// <param name="id">The identifier.</param>
         /// <param name="value">The value.</param>

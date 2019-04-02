@@ -24,7 +24,8 @@ namespace APIBlox.NetCore
             _builder.Property(p => p.Data);
             _builder.Property(p => p.DataType).HasMaxLength(1024);
             _builder.Property(p => p.DocumentType).HasMaxLength(255);
-           // _builder.Property(p => p.SortOrder);
+
+            // _builder.Property(p => p.SortOrder);
             _builder.Property(p => p.StreamId).IsRequired().HasMaxLength(255);
             _builder.Property(p => p.TimeStamp).IsRequired();
             _builder.Property(p => p.Version).IsRequired();

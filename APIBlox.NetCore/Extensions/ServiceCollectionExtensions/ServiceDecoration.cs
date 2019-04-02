@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddServiceDecoration(
             this IServiceCollection services,
-             ILoggerFactory loggerFactory,
+            ILoggerFactory loggerFactory,
             Type serviceType, Type decoratorType
         )
         {

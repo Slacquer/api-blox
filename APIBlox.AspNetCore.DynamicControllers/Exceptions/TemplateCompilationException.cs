@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace APIBlox.AspNetCore.Extensions
+namespace APIBlox.AspNetCore.Exceptions
 {
     /// <inheritdoc />
     /// <summary>
@@ -11,11 +11,11 @@ namespace APIBlox.AspNetCore.Extensions
     public class TemplateCompilationException : Exception
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="TemplateCompilationException"/> class.
+        ///     Initializes a new instance of the <see cref="TemplateCompilationException" /> class.
         /// </summary>
         /// <param name="compilationErrors">The compilation errors.</param>
         public TemplateCompilationException(IEnumerable<string> compilationErrors)
-            : base($"Compilation Errors: \n{ string.Join(Environment.NewLine, compilationErrors)}")
+            : base($"Compilation Errors: \n{string.Join(Environment.NewLine, compilationErrors)}")
         {
         }
     }

@@ -14,7 +14,7 @@ namespace APIBlox.AspNetCore.Extensions
     public static class DynamicControllerFactoryExtensions
     {
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate"/> for querying resources by some value.
+        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <typeparam name="TResponse">The type of the t response.</typeparam>
@@ -50,7 +50,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(factory,
+            ParseAndReplace(
                 template,
                 typeof(TRequest),
                 typeof(TResponse),
@@ -62,7 +62,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate"/> for querying for all resources.
+        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for querying for all resources.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <typeparam name="TResponse">The type of the t response.</typeparam>
@@ -90,7 +90,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(factory,
+            ParseAndReplace(
                 template,
                 typeof(TRequest),
                 typeof(TResponse),
@@ -102,7 +102,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate"/> for deleting resources by some value.
+        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for deleting resources by some value.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <param name="factory">The factory.</param>
@@ -124,7 +124,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(factory,
+            ParseAndReplace(
                 template,
                 typeof(TRequest),
                 null,
@@ -136,7 +136,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate"/> for updating a resources via PUT.
+        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PUT.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <param name="factory">The factory.</param>
@@ -158,7 +158,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(factory,
+            ParseAndReplace(
                 template,
                 typeof(TRequest),
                 null,
@@ -170,7 +170,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate"/> for updating a resources via PATCH.
+        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PATCH.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <param name="factory">The factory.</param>
@@ -192,7 +192,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(factory,
+            ParseAndReplace(
                 template,
                 typeof(TRequest),
                 null,
@@ -204,7 +204,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate"/> for creating a resources.
+        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for creating a resources.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <typeparam name="TResponse">The type of the t response.</typeparam>
@@ -231,7 +231,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(factory,
+            ParseAndReplace(
                 template,
                 typeof(TRequest),
                 typeof(TResponse),
@@ -242,9 +242,9 @@ namespace APIBlox.AspNetCore.Extensions
             return template;
         }
 
-
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate"/> for creating a resources but NOT getting back an immediate result.
+        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for creating a resources but NOT getting back an
+        ///     immediate result.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <param name="factory">The factory.</param>
@@ -267,7 +267,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(factory,
+            ParseAndReplace(
                 template,
                 typeof(TRequest),
                 null,
@@ -279,7 +279,6 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         private static void ParseAndReplace(
-            DynamicControllerFactory factory,
             IComposedTemplate template,
             Type requestObj,
             Type responseObjectResult,
@@ -287,18 +286,18 @@ namespace APIBlox.AspNetCore.Extensions
             Func<string, string> buildControllerName
         )
         {
-            factory.ValidateRequestType(requestObj, requestObjMustHaveBody);
+            DynamicControllerFactory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
             if (!(responseObjectResult is null))
                 DynamicControllerFactory.ValidateResponseType(responseObjectResult);
 
-            var (reqObj, _, requestNs) = factory.WriteNameWithNamespaces(requestObj);
-            var (parameters, paramNs) = factory.WriteInputParamsWithNamespaces(requestObj);
-            var parameterComments = string.Join(Environment.NewLine, factory.WriteInputParamsXmlComments(requestObj));
+            var (reqObj, _, requestNs) = DynamicControllerFactory.WriteNameWithNamespaces(requestObj);
+            var (parameters, paramNs) = DynamicControllerFactory.WriteInputParamsWithNamespaces(requestObj);
+            var parameterComments = string.Join(Environment.NewLine, DynamicControllerFactory.WriteInputParamsXmlComments(requestObj));
             var (resObj, realResObject, resultObjNs) = responseObjectResult is null
                 ? ("", "", null)
-                : factory.WriteNameWithNamespaces(responseObjectResult);
-            var newReqObj = factory.WriteNewObject(requestObj);
+                : DynamicControllerFactory.WriteNameWithNamespaces(responseObjectResult);
+            var newReqObj = DynamicControllerFactory.WriteNewObject(requestObj);
 
             var ns = template.Action.Namespaces
                 .Union(paramNs)
@@ -324,7 +323,6 @@ namespace APIBlox.AspNetCore.Extensions
 
             template.Action.Compose();
         }
-
 
         // ReSharper disable once ClassNeverInstantiated.Local
         /// <summary>

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 
 // ReSharper disable once CheckNamespace
@@ -21,28 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class MvcBuilderExtensionsAspNetCore
     {
-        ///// <summary>
-        /////     Adds the MVC consumes produces json resource result filters for application/json" and
-        /////     "application/json-patch+json.  In addition will make sure that
-        /////     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
-        /////     set to use <see cref="CamelCasePropertyNamesContractResolver" />
-        /////     <para>
-        /////         I should be called as early as possible in the configure services chain.
-        /////     </para>
-        ///// </summary>
-        ///// <param name="builder">IMvcCoreBuilder</param>
-        ///// <returns>IMvcCoreBuilder.</returns>
-        //[Obsolete("Not strictly needed since 2.2, will be removed later.", true)]
-        //public static IMvcCoreBuilder AddConsumesProducesJsonResourceResultFilters(this IMvcCoreBuilder builder)
-        //{
-        //    ConsumesProducesCommon(builder.Services);
-        //    builder.AddJsonFormatters().AddDataAnnotations();
-
-        //    return builder;
-        //}
-
         /// <summary>
-        ///   Will make sure that
+        ///     Will make sure that
         ///     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
         ///     set to use <see cref="CamelCasePropertyNamesContractResolver" />
         /// </summary>
@@ -55,27 +36,8 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        ///// <summary>
-        /////     Adds the MVC consumes produces json resource result filters for application/json" and
-        /////     "application/json-patch+json.  In addition will make sure that
-        /////     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
-        /////     set to use <see cref="CamelCasePropertyNamesContractResolver" />
-        /////     <para>
-        /////         I should be called as early as possible in the configure services chain.
-        /////     </para>
-        ///// </summary>
-        ///// <param name="builder">IMvcBuilder</param>
-        ///// <returns>IMvcBuilder.</returns>
-        //[Obsolete("Not strictly needed since 2.2, will be removed later.")]
-        //public static IMvcBuilder AddConsumesProducesJsonResourceResultFilters(this IMvcBuilder builder)
-        //{
-        //    ConsumesProducesCommon(builder.Services);
-
-        //    return builder;
-        //}
-
         /// <summary>
-        ///   Will make sure that
+        ///     Will make sure that
         ///     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
         ///     set to use <see cref="CamelCasePropertyNamesContractResolver" />
         /// </summary>
@@ -129,55 +91,64 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         ///     This filter will ensure all results comply to a specific structure,
         ///     IE: {
-        ///     data:{ value } | data:[{ value }],
-        ///     pagination:{
-        ///     totalCount:number,
-        ///     nextPage:number,
-        ///     previousPage:number
-        ///     }
+        ///             data:{ value } | data:[{ value }],
+        ///             pagination:{
+        ///                 totalCount:number,
+        ///                 nextPage:number,
+        ///                 previousPage:number
+        ///             }
         ///     }
         ///     <para>Works independently of <see cref="EnsureResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
         /// </summary>
-        /// <param name="builder">IMvcCoreBuilder</param>
-        /// <param name="defaultPageSize">Default page size for pagination responses.</param>
-        /// <param name="defineResponseFunc">Your user defined structure.</param>
+        /// <param name="builder">The builder.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
+        /// <param name="defaultPageSize">Default size of the page.</param>
+        /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcCoreBuilder.</returns>
         public static IMvcCoreBuilder AddEnsurePaginationResultActionFilter(
             this IMvcCoreBuilder builder,
+            ILoggerFactory loggerFactory,
+            bool onlyQueryActions = true,
             int defaultPageSize = 1000,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            PaginationCommon(builder.Services, defaultPageSize, defineResponseFunc);
+            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defaultPageSize, defineResponseFunc);
 
             return builder;
         }
+
 
         /// <summary>
         ///     This filter will ensure all results comply to a specific structure,
         ///     IE: {
-        ///     data:{ value } | data:[{ value }],
-        ///     pagination:{
-        ///     totalCount:number,
-        ///     nextPage:number,
-        ///     previousPage:number
-        ///     }
+        ///             data:{ value } | data:[{ value }],
+        ///             pagination:{
+        ///                 totalCount:number,
+        ///                 nextPage:number,
+        ///                 previousPage:number
+        ///             }
         ///     }
         ///     <para>Works independently of <see cref="EnsureResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
         /// </summary>
-        /// <param name="builder">IMvcBuilder</param>
-        /// <param name="defaultPageSize">Default page size for pagination responses.</param>
-        /// <param name="defineResponseFunc">Your user defined structure.</param>
+        /// <param name="builder">The builder.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
+        /// <param name="defaultPageSize">Default size of the page.</param>
+        /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddEnsurePaginationResultActionFilter(
             this IMvcBuilder builder,
+            ILoggerFactory loggerFactory,
+            bool onlyQueryActions = true,
             int defaultPageSize = 1000,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            PaginationCommon(builder.Services, defaultPageSize, defineResponseFunc);
+            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defaultPageSize, defineResponseFunc);
 
             return builder;
         }
@@ -185,63 +156,58 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         ///     This filter will ensure all results comply to a structure, defined by you in the callback.
         ///     Defaults to: {
-        ///     data:{ value } | data:[{ value }]
-        ///     }
+        ///             data:{ value } | data:[{ value }]
+        ///         }
         ///     <para>Works independently of <see cref="EnsurePaginationResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
         /// </summary>
-        /// <param name="builder">IMvcCoreBuilder</param>
-        /// <param name="onlyQueryActions">When false, your structure will be applied to all http methods.</param>
-        /// <param name="defineResponseFunc">Your user defined structure.</param>
+        /// <param name="builder">The builder.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
+        /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcCoreBuilder.</returns>
         public static IMvcCoreBuilder AddEnsureResponseResultActionFilter(
             this IMvcCoreBuilder builder,
+            ILoggerFactory loggerFactory,
             bool onlyQueryActions = true,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            if (!(defineResponseFunc is null))
-                InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
-
-            InternalHelpers.ApplyEnsureResponseCompliesWithQueryActionsOnly = onlyQueryActions;
-
             builder.Services.Configure<MvcOptions>(o =>
                 {
                     FindExistingResultActionFilterAndThrow(o.Filters, nameof(EnsureResponseResultActionFilter));
-                    o.Filters.TryAdd<EnsureResponseResultActionFilter>();
+                    o.Filters.TryAdd(new EnsureResponseResultActionFilter(loggerFactory, onlyQueryActions, defineResponseFunc));
                 }
             );
 
             return builder;
         }
+
 
         /// <summary>
         ///     This filter will ensure all results comply to a structure, defined by you in the callback.
         ///     Defaults to: {
-        ///     data:{ value } | data:[{ value }]
-        ///     }
+        ///             data:{ value } | data:[{ value }]
+        ///         }
         ///     <para>Works independently of <see cref="EnsurePaginationResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
         /// </summary>
-        /// <param name="builder">IMvcBuilder</param>
-        /// <param name="onlyQueryActions">When false, your structure will be applied to all http methods.</param>
-        /// <param name="defineResponseFunc">Your user defined structure.</param>
+        /// <param name="builder">The builder.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
+        /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddEnsureResponseResultActionFilter(
             this IMvcBuilder builder,
+            ILoggerFactory loggerFactory,
             bool onlyQueryActions = true,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            if (!(defineResponseFunc is null))
-                InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
-
-            InternalHelpers.ApplyEnsureResponseCompliesWithQueryActionsOnly = onlyQueryActions;
-
             builder.Services.Configure<MvcOptions>(o =>
                 {
                     FindExistingResultActionFilterAndThrow(o.Filters, nameof(EnsureResponseResultActionFilter));
-                    o.Filters.TryAdd<EnsureResponseResultActionFilter>();
+                    o.Filters.TryAdd(new EnsureResponseResultActionFilter(loggerFactory, onlyQueryActions, defineResponseFunc));
                 }
             );
 
@@ -252,10 +218,17 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     Adds the e tag action filter.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <returns>IMvcCoreBuilder.</returns>
-        public static IMvcCoreBuilder AddETagActionFilter(this IMvcCoreBuilder builder)
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="maxAgeSeconds">The maximum age seconds.</param>
+        /// <param name="sharedMaxAgeSeconds">The shared maximum age seconds.</param>
+        /// <returns>IMvcBuilder.</returns>
+        public static IMvcCoreBuilder AddETagActionFilter(this IMvcCoreBuilder builder,
+            ILoggerFactory loggerFactory, int maxAgeSeconds = 600, int sharedMaxAgeSeconds = 84600)
         {
-            builder.AddFilter<ETagActionFilter>();
+            builder.AddFilter<ETagActionFilter>(o =>
+            {
+                o.Filters.TryAdd(new ETagActionFilter(loggerFactory, maxAgeSeconds, sharedMaxAgeSeconds));
+            });
 
             return builder;
         }
@@ -264,10 +237,17 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     Adds the e tag action filter.
         /// </summary>
         /// <param name="builder">The builder.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="maxAgeSeconds">The maximum age seconds.</param>
+        /// <param name="sharedMaxAgeSeconds">The shared maximum age seconds.</param>
         /// <returns>IMvcBuilder.</returns>
-        public static IMvcBuilder AddETagActionFilter(this IMvcBuilder builder)
+        public static IMvcBuilder AddETagActionFilter(this IMvcBuilder builder,
+            ILoggerFactory loggerFactory, int maxAgeSeconds = 600, int sharedMaxAgeSeconds = 84600)
         {
-            builder.AddFilter<ETagActionFilter>();
+            builder.AddFilter<ETagActionFilter>(o =>
+                {
+                    o.Filters.TryAdd(new ETagActionFilter(loggerFactory, maxAgeSeconds, sharedMaxAgeSeconds));
+                });
 
             return builder;
         }
@@ -347,7 +327,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return builder;
         }
-        
+
         /// <summary>
         ///     I MUST be added  after any and all APIBlox features in the builder chain.
         ///     <para>
@@ -436,21 +416,20 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder.AddFilter<ValidateResourceActionFilter>();
         }
 
-        private static void PaginationCommon(IServiceCollection services, int defaultPageSize = 100, Func<object, dynamic> defineResponseFunc = null)
+        private static void PaginationCommon(IServiceCollection services, ILoggerFactory loggerFactory, bool onlyQueryActions, int defaultPageSize = 100, Func<object, dynamic> defineResponseFunc = null)
         {
-            if (!(defineResponseFunc is null))
-                InternalHelpers.EnsureResponseCompliesWithAction = defineResponseFunc;
-
-            services.AddTransient<IPaginationMetadataBuilder, PaginationMetadataBuilder>(s =>
-                new PaginationMetadataBuilder(defaultPageSize)
-            );
-
             services.Configure<MvcOptions>(o =>
                 {
                     FindExistingResultActionFilterAndThrow(o.Filters,
                         nameof(EnsurePaginationResponseResultActionFilter)
                     );
-                    o.Filters.TryAdd<EnsurePaginationResponseResultActionFilter>();
+                    o.Filters.TryAdd(new EnsurePaginationResponseResultActionFilter(
+                            loggerFactory,
+                            new PaginationMetadataBuilder(defaultPageSize),
+                            onlyQueryActions,
+                            defineResponseFunc
+                        )
+                    );
                 }
             );
         }
@@ -474,14 +453,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return ret;
         }
 
-        //private static void ConsumesProducesCommon(IServiceCollection services)
-        //{
-        //    services.Configure<MvcOptions>(o =>
-        //        o.Filters.TryAdd(new ProducesAttribute("application/json"))
-        //            .TryAdd(new ConsumesAttribute("application/json", "application/json-patch+json"))
-        //    );
-        //}
-
         private static void CamelCaseResultsCommon(IServiceCollection services)
         {
             services.Configure<MvcJsonOptions>(s =>
@@ -503,8 +474,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     continue;
 
                 throw new ArgumentException(
-                    $"You have already added an {attr.ImplementationType.Name}, " +
-                    $"the {who} can not be used."
+                    $"You have already added an {attr.ImplementationType.Name}, the {who} can not be used."
                 );
             }
         }

@@ -57,7 +57,7 @@ namespace APIBlox.NetCore.Types
         /// <param name="value">The value.</param>
         public DynamicDataObject AddProperty<TModel, TType>(Expression<Func<TModel, TType>> func, TType value)
         {
-            var expression = (MemberExpression)func.Body;
+            var expression = (MemberExpression) func.Body;
             var pn = expression.Member.Name;
 
             if (Properties.Any(p => p.Key.EqualsEx(pn)))
@@ -102,7 +102,7 @@ namespace APIBlox.NetCore.Types
         /// <returns>TType when found, otherwise default(TType)</returns>
         public TType GetPropertyValue<TModel, TType>(Expression<Func<TModel, TType>> func)
         {
-            var expression = (MemberExpression)func.Body;
+            var expression = (MemberExpression) func.Body;
             var pn = expression.Member.Name;
 
             var kvp = Properties.FirstOrDefault(p =>
@@ -114,7 +114,7 @@ namespace APIBlox.NetCore.Types
 
             var success = Properties.TryGetValue(kvp.Key, out var value);
 
-            return (TType)(success
+            return (TType) (success
                 ? Convert.ChangeType(value.ToString(), typeof(TType))
                 : default(TType));
         }
@@ -136,7 +136,7 @@ namespace APIBlox.NetCore.Types
 
             var success = Properties.TryGetValue(kvp.Key, out var value);
 
-            return (TType)(success
+            return (TType) (success
                 ? Convert.ChangeType(value.ToString(), typeof(TType))
                 : default(TType));
         }
@@ -164,7 +164,7 @@ namespace APIBlox.NetCore.Types
         /// <returns><c>true</c> if the specified action has property; otherwise, <c>false</c>.</returns>
         public bool HasProperty<TModel, TType>(Expression<Func<TModel, TType>> action)
         {
-            var expression = (MemberExpression)action.Body;
+            var expression = (MemberExpression) action.Body;
             var pn = expression.Member.Name;
 
             return Properties.Any(p => p.Key.EqualsEx(pn));

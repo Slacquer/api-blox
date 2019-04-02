@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,20 +13,26 @@ namespace APIBlox.AspNetCore.Filters
 {
     internal class EnsureResponseResultActionFilter : IAsyncActionFilter
     {
+        private readonly bool _getsOnly;
+        private readonly Func<object, object> _action;
         private readonly ILogger<EnsureResponseResultActionFilter> _log;
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Filters.EnsureResponseResultActionFilter" />
-        ///     class.
+        ///     Initializes a new instance of the <see cref="EnsureResponseResultActionFilter"/> class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
-
-        // ReSharper disable once MemberCanBeProtected.Global
+        /// <param name="getsOnly">if set to <c>true</c> [gets only].</param>
+        /// <param name="ensureResponseCompliesWithAction">The ensure response complies with action.</param>
         public EnsureResponseResultActionFilter(
-            ILoggerFactory loggerFactory
+            ILoggerFactory loggerFactory,
+            bool getsOnly,
+            Func<object, object> ensureResponseCompliesWithAction
         )
         {
+            object DefaultFormat(object d) => new {Data = d};
+
+            _getsOnly = getsOnly;
+            _action = ensureResponseCompliesWithAction?? DefaultFormat;
             _log = loggerFactory.CreateLogger<EnsureResponseResultActionFilter>();
         }
 
@@ -38,8 +45,7 @@ namespace APIBlox.AspNetCore.Filters
             var action = await next().ConfigureAwait(false);
             var result = action.Result as ObjectResult;
 
-            if (result?.Value is null || !(result.StatusCode is null) 
-                && (result.StatusCode != StatusCodes.Status200OK || !InternalHelpers.ApplyEnsureResponseCompliesWithQueryActionsOnly))
+            if (result?.Value is null || !(result.StatusCode is null)  && (result.StatusCode != StatusCodes.Status200OK && _getsOnly))
             {
                 var sc = result != null
                     ? result.StatusCode
@@ -54,9 +60,9 @@ namespace APIBlox.AspNetCore.Filters
             var t = result.Value.GetType();
 
             ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable)) && !t.IsAssignableTo(typeof(string));
-            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>)result.Value).Count() : 0;
+            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>) result.Value).Count() : 0;
 
-            var retValue = InternalHelpers.EnsureResponseCompliesWithAction(result.Value);
+            var retValue = _action(result.Value);
 
             if (!(retValue is null))
                 result.Value = retValue;

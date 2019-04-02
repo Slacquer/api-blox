@@ -19,9 +19,6 @@ namespace APIBlox.AspNetCore
     /// </summary>
     public class DynamicControllerFactory
     {
-        private readonly string _assemblyName;
-        private readonly bool _production;
-
         // Found the following piece of gold at...
         // https://github.com/dotnet/roslyn/wiki/Runtime-code-generation-using-Roslyn-compilations-in-.NET-Core-App
         private static readonly PortableExecutableReference[] References = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
@@ -29,6 +26,9 @@ namespace APIBlox.AspNetCore
             .Split(";", StringSplitOptions.RemoveEmptyEntries)
             .Select(s => MetadataReference.CreateFromFile(s))
             .ToArray();
+
+        private readonly string _assemblyName;
+        private readonly bool _production;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicControllerFactory" /> class.
@@ -49,13 +49,13 @@ namespace APIBlox.AspNetCore
         ///     Gets the compilation errors.
         /// </summary>
         /// <value>The compilation errors.</value>
-        public IEnumerable<string> CompilationErrors { get; private set; }
+        public IEnumerable<string> Errors { get; private set; }
 
         /// <summary>
         ///     Gets the compilation warnings.
         /// </summary>
         /// <value>The compilation warnings.</value>
-        public IEnumerable<string> CompilationWarnings { get; private set; }
+        public IEnumerable<string> Warnings { get; private set; }
 
         /// <summary>
         ///     Gets the controllers used during compilation.
@@ -70,9 +70,9 @@ namespace APIBlox.AspNetCore
         public (string, string, string) OutputFiles { get; private set; }
 
         /// <summary>
-        ///     Compiles <see cref="IComposedTemplate" /> to the specified assemblyOutputPath.
+        ///     Compiles 1 or more <see cref="IComposedTemplate" /> to the specified assemblyOutputPath.
         ///     <para>
-        ///         When null is returned, then errors have been generated, check the <see cref="CompilationErrors" /> property.
+        ///         When null is returned, then errors have been generated, check the <see cref="Errors" /> property.
         ///     </para>
         /// </summary>
         /// <param name="assemblyOutputPath">The assembly output path.</param>
@@ -91,9 +91,9 @@ namespace APIBlox.AspNetCore
         }
 
         /// <summary>
-        ///     Compiles <see cref="IComposedTemplate" /> to an assembly in memory.
+        ///     Compiles 1 or more <see cref="IComposedTemplate" /> to an assembly in memory.
         ///     <para>
-        ///         When null is returned, then errors have been generated, check the <see cref="CompilationErrors" /> property.
+        ///         When null is returned, then errors have been generated, check the <see cref="Errors" /> property.
         ///     </para>
         /// </summary>
         /// <param name="templates">The templates.</param>
@@ -108,7 +108,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>System.ValueTuple&lt;System.String, System.String[]&gt;.</returns>
-        public (string, string[]) WriteInputParamsWithNamespaces(Type obj)
+        public static (string, string[]) WriteInputParamsWithNamespaces(Type obj)
         {
             const string template = "@space@att @p";
             var props = GetPublicReadWriteProperties(obj);
@@ -143,7 +143,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>List&lt;System.String&gt;.</returns>
-        public IEnumerable<string> WriteInputParamsXmlComments(Type obj)
+        public static IEnumerable<string> WriteInputParamsXmlComments(Type obj)
         {
             const string template = "@space/// <param name =\"@pName\">@pComment</param>";
             var props = GetPublicReadWriteProperties(obj);
@@ -173,7 +173,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>System.ValueTuple&lt;System.String, System.String, System.String[]&gt;.</returns>
-        public (string, string, string[]) WriteNameWithNamespaces(Type obj)
+        public static (string, string, string[]) WriteNameWithNamespaces(Type obj)
         {
             var name = GetNameWithoutGenericArity(obj);
             var ns = obj.Namespace;
@@ -211,7 +211,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>System.String.</returns>
-        public string WriteNewObject(Type obj)
+        public static string WriteNewObject(Type obj)
         {
             var props = GetPublicReadWriteProperties(obj);
 
@@ -228,19 +228,7 @@ namespace APIBlox.AspNetCore
         }
 
         /// <summary>
-        ///     Gets the name without generic arity.
-        /// </summary>
-        /// <param name="t">The t.</param>
-        /// <returns>System.String.</returns>
-        private static string GetNameWithoutGenericArity(Type t)
-        {
-            var name = t.Name;
-            var index = name.IndexOf('`');
-            return index == -1 ? name : name.Substring(0, index);
-        }
-
-        /// <summary>
-        /// Validates the type of the response.
+        ///     Validates the type of the response.
         /// </summary>
         /// <param name="response">The response.</param>
         /// <exception cref="ArgumentException"></exception>
@@ -253,13 +241,13 @@ namespace APIBlox.AspNetCore
         }
 
         /// <summary>
-        /// Validates the type of the request.
+        ///     Validates the type of the request.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="mustHaveBodyProperty">if set to <c>true</c> [must have body property].</param>
         /// <exception cref="ArgumentException">
         /// </exception>
-        public void ValidateRequestType(Type request, bool mustHaveBodyProperty = false)
+        public static void ValidateRequestType(Type request, bool mustHaveBodyProperty = false)
         {
             var readProps = request.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.CanRead)
                 .ToList();
@@ -276,12 +264,23 @@ namespace APIBlox.AspNetCore
                 throw new ArgumentException($"{request.Name} must have a public property that is decorated with a {nameof(FromBodyAttribute)}.");
         }
 
+        /// <summary>
+        ///     Gets the name without generic arity.
+        /// </summary>
+        /// <param name="t">The t.</param>
+        /// <returns>System.String.</returns>
+        private static string GetNameWithoutGenericArity(Type t)
+        {
+            var name = t.Name;
+            var index = name.IndexOf('`');
+            return index == -1 ? name : name.Substring(0, index);
+        }
+
         private static string GetPropertyTypeAndValue(ICollection<string> namespaces, Type prop, string propName)
         {
             var (nullable, name) = IsOfNullableType(prop);
 
             if (!nullable)
-            {
                 if (prop.IsGenericType)
                 {
                     var builder = new StringBuilder();
@@ -309,12 +308,9 @@ namespace APIBlox.AspNetCore
 
                     name = $"{GetNameWithoutGenericArity(prop)}{builder}";
                 }
-            }
 
             if (prop.IsGenericType)
-            {
                 return propName is null ? name : $"{name} {propName.ToCamelCase()}";
-            }
 
             return !nullable
                 ? $"{prop.Name} {propName.ToCamelCase()}"
@@ -408,6 +404,7 @@ namespace APIBlox.AspNetCore
                 .ToList();
 
             var argList = new List<string>();
+
             for (var index = 0; index < ctorArgs.Count; index++)
             {
                 var cp = ctorArgs[index];
@@ -438,6 +435,15 @@ namespace APIBlox.AspNetCore
                 .Where(p => p.CanRead && p.CanWrite)
                 .ToList();
         }
+
+        private static void AddExistingArray(List<string> dest, IEnumerable<string> src)
+        {
+            if (src is null)
+                return;
+
+            dest.AddRange(src);
+        }
+
 
         private Assembly EmitToAssembly(params IComposedTemplate[] templates)
         {
@@ -497,8 +503,8 @@ namespace APIBlox.AspNetCore
                 throw new ArgumentNullException(nameof(templates));
 
             OutputFiles = (null, null, null);
-            CompilationErrors = null;
-            CompilationWarnings = null;
+            Errors = null;
+            Warnings = null;
 
             var csOptions = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,
@@ -530,7 +536,7 @@ namespace APIBlox.AspNetCore
                 {
                     AddExistingArray(dc.Namespaces, da.Action.Namespaces);
                     AddExistingArray(dc.Fields, da.Action.Fields);
-                   
+
                     if (!da.Action.Methods.IsEmptyNullOrWhiteSpace())
                         dc.Methods.Add(da.Action.Methods);
 
@@ -548,14 +554,6 @@ namespace APIBlox.AspNetCore
             return csOptions;
         }
 
-        private static void AddExistingArray(List<string> dest, IEnumerable<string> src)
-        {
-            if (src is null)
-                return;
-
-            dest.AddRange(src);
-        }
-
         private void CheckAndSetFailures(EmitResult emitResult)
         {
             var diagnostics = emitResult.Diagnostics.Where(diagnostic =>
@@ -567,7 +565,7 @@ namespace APIBlox.AspNetCore
                 $"{diagnostic.Id}: {diagnostic.GetMessage()}"
             ).ToArray();
 
-            CompilationErrors = failures.Any() ? failures : null;
+            Errors = failures.Any() ? failures : null;
         }
 
         private void CheckAndSetWarnings(EmitResult emitResult)
@@ -580,7 +578,7 @@ namespace APIBlox.AspNetCore
                 $"{diagnostic.Id}: {diagnostic.GetMessage()}"
             ).ToArray();
 
-            CompilationWarnings = warnings.Any() ? warnings : null;
+            Warnings = warnings.Any() ? warnings : null;
         }
     }
 }

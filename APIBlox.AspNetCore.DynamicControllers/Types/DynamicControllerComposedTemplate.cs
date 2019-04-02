@@ -24,24 +24,28 @@ namespace APIBlox.AspNetCore.Types
             Action = action;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the action.
         /// </summary>
         /// <value>The action.</value>
         public DynamicAction Action { get; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets the route.
         /// </summary>
         /// <value>The route.</value>
         public string Route { get; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets the namespace.
         /// </summary>

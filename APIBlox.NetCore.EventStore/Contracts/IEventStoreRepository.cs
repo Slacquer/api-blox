@@ -38,7 +38,8 @@ namespace APIBlox.NetCore.Contracts
         /// <returns>Task&lt;IEnumerable&lt;TResultDocument&gt;&gt;.</returns>
         Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
-        )where TResultDocument : EventStoreDocument;
+        )
+            where TResultDocument : EventStoreDocument;
 
         /// <summary>
         ///     Updates the asynchronous.

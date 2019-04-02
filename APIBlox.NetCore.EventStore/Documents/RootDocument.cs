@@ -5,6 +5,5 @@
         public override string Id => StreamId;
 
         public override DocumentType DocumentType => DocumentType.Root;
-        
     }
 }

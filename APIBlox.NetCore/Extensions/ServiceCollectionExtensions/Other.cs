@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensionsNetCoreOther
     {
         private static ILogger _log;
+
         private static readonly List<KeyValuePair<bool, Type>>
             WorkingAssemblyTypes = new List<KeyValuePair<bool, Type>>();
 
@@ -135,7 +136,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
-        
+
         /// <summary>
         ///     Adds Startup like configurations that implement <see cref="IDependencyInvertedConfiguration" />
         ///     and calls <see cref="IDependencyInvertedConfiguration.Configure" /> for
@@ -191,7 +192,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-                /// <summary>
+        /// <summary>
         ///     Adds Startup like configurations that implement <see cref="IDependencyInvertedConfiguration" />
         ///     and calls <see cref="IDependencyInvertedConfiguration.Configure" /> for classes
         ///     that are referenced in the AppDomain
@@ -218,7 +219,7 @@ namespace Microsoft.Extensions.DependencyInjection
             FillWorkingAssemblyTypes(false, true);
 
             var inverted = WorkingAssemblyTypes.Where(kvp => kvp.Key).ToList();
-            
+
             if (!inverted.Any())
             {
                 _log.LogError(() =>
@@ -229,7 +230,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 );
                 return services;
             }
-            
+
             foreach (var kvp in inverted)
                 ConfigureInverted(kvp.Value, services, configuration, loggerFactory, environment);
 
@@ -303,6 +304,7 @@ namespace Microsoft.Extensions.DependencyInjection
             foreach (var p in paths)
             {
                 var path = including ? p : p.StartsWith("!") ? p.Substring(1) : p;
+
                 try
                 {
                     var absPath = Path.GetFullPath(path);
@@ -334,8 +336,10 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 ret.AddRange(di.GetFiles("*.dll")
                     .Where(s =>
+
                         // In include assembly names?
                         assemblyNamesLike.Any(name => s.Name.ContainsEx(name))
+
                         // Not already listed?
                         && ret.All(fi => !fi.FullName.EqualsEx(s.FullName))
                     )
@@ -468,16 +472,22 @@ namespace Microsoft.Extensions.DependencyInjection
                             descriptor = BuildDescriptor(decParams, type, lifetime);
                         }
                         else
+                        {
                             descriptor = BuildDescriptor(face, type, lifetime);
+                        }
                     }
                 }
 
                 // If interface doesn't have any generic args, then we will have nothing to pass
                 // to the implementation during creation for THIS INTERFACE, so we will not add it as a service.
                 else if (args == null || !args.Any() && type.IsGenericTypeDefinition)
+                {
                     continue;
+                }
                 else
+                {
                     descriptor = BuildDescriptor(face, type, lifetime);
+                }
 
                 services.Add(descriptor);
             }
@@ -504,7 +514,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return;
             }
 
-            ((IDependencyInvertedConfiguration)Activator.CreateInstance(type))
+            ((IDependencyInvertedConfiguration) Activator.CreateInstance(type))
                 .Configure(services, configuration, loggerFactory, environment);
         }
 

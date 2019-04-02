@@ -93,7 +93,9 @@ namespace APIBlox.AspNetCore.Types
                     throw new ArgumentException(msg, nameof(Detail));
             }
             else
+            {
                 Properties.TryAdd("Detail", Detail);
+            }
 
             if (Title.IsEmptyNullOrWhiteSpace())
             {
@@ -104,7 +106,9 @@ namespace APIBlox.AspNetCore.Types
                     throw new ArgumentException(msg, nameof(Title));
             }
             else
+            {
                 Properties.TryAdd("Title", Title);
+            }
 
             if (errors)
                 Properties.TryAdd("Errors", Errors);

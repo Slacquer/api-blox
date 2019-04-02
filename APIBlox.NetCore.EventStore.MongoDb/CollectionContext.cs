@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
-using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Options;
@@ -43,7 +42,7 @@ namespace APIBlox.NetCore
         private void IndexCheck<TDocument>(IMongoCollection<TDocument> collection)
             where TDocument : EventStoreDocument
         {
-            if(_options.CollectionProperties is null || !_options.CollectionProperties.Any())
+            if (_options.CollectionProperties is null || !_options.CollectionProperties.Any())
                 return;
 
             var cn = collection.CollectionNamespace.CollectionName;

@@ -23,6 +23,7 @@ namespace APIBlox.NetCore.Options
         ///     Gets or sets the collection properties.
         /// </summary>
         /// <value>The collection properties.</value>
-        public Dictionary<string, MongoDbCollectionProperties> CollectionProperties { get; set; } = new Dictionary<string, MongoDbCollectionProperties>();
+        public Dictionary<string, MongoDbCollectionProperties> CollectionProperties { get; set; } =
+            new Dictionary<string, MongoDbCollectionProperties>();
     }
 }

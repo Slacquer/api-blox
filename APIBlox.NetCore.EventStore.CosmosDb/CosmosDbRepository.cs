@@ -45,9 +45,7 @@ namespace APIBlox.NetCore
             CreateCollectionIfNotExistsAsync(colValue.UniqueKeys.ToList(), colValue.OfferThroughput).Wait();
         }
 
-
         public JsonSerializerSettings JsonSettings { get; }
-
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
             CancellationToken cancellationToken = default
@@ -66,15 +64,17 @@ namespace APIBlox.NetCore
                     cancellationToken
                 );
             }
+
             return documents.Length;
         }
 
         public async Task<IEnumerable<TResultDocument>> GetAsync<TResultDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
-        ) where TResultDocument : EventStoreDocument
+        )
+            where TResultDocument : EventStoreDocument
         {
             var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
-                    new FeedOptions { EnableCrossPartitionQuery = true }
+                    new FeedOptions {EnableCrossPartitionQuery = true}
                 )
                 .Where(predicate)
                 .OrderByDescending(d => d.SortOrder)
@@ -151,7 +151,6 @@ namespace APIBlox.NetCore
             return count;
         }
 
-
         private async Task CreateDatabaseIfNotExistsAsync()
         {
             var exists = await _client.CreateDatabaseQuery()
@@ -161,7 +160,7 @@ namespace APIBlox.NetCore
             if (exists)
                 return;
 
-            await _client.CreateDatabaseAsync(new Database { Id = _databaseId });
+            await _client.CreateDatabaseAsync(new Database {Id = _databaseId});
         }
 
         private async Task CreateCollectionIfNotExistsAsync(IReadOnlyCollection<string> keys, int offerThroughput)
@@ -179,16 +178,16 @@ namespace APIBlox.NetCore
             };
             documentCollection.PartitionKey.Paths.Add("/StreamId");
 
-            var p = new IncludedPath { Path = "/" };
+            var p = new IncludedPath {Path = "/"};
             var rng = Index.Range(DataType.String);
 
             documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
-            p = new IncludedPath { Path = "/StreamId/?" };
+            p = new IncludedPath {Path = "/StreamId/?"};
             p.Indexes.Add(rng);
             documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
-            p = new IncludedPath { Path = "/DocumentType/?" };
+            p = new IncludedPath {Path = "/DocumentType/?"};
             p.Indexes.Add(rng);
             documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
@@ -205,7 +204,7 @@ namespace APIBlox.NetCore
             await _client.CreateDocumentCollectionAsync(
                 UriFactory.CreateDatabaseUri(_databaseId),
                 documentCollection,
-                new RequestOptions { OfferThroughput = offerThroughput }
+                new RequestOptions {OfferThroughput = offerThroughput}
             );
         }
     }

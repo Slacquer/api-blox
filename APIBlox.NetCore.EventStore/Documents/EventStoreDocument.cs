@@ -1,5 +1,4 @@
 ﻿using System;
-using APIBlox.NetCore.Contracts;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -59,7 +58,6 @@ namespace APIBlox.NetCore.Documents
         /// </summary>
         /// <value>The data.</value>
         public string Data { get; set; }
-
 
         private static decimal GetOrderingFraction(DocumentType documentType)
         {

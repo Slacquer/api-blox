@@ -18,13 +18,13 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         public FilteredQuery()
         {
-            Map.TryAdd("Filter", new[] { "$Where", "Where", "$Filter" });
-            Map.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
+            Map.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
+            Map.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Sets the filter (where). Usage is determined by the API itself. 
+        ///     Sets the filter (where). Usage is determined by the API itself.
         /// </summary>
         /// <value>The filter.</value>
         [FromQuery(Name = "filter")]
@@ -32,7 +32,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Sets the select (projection).  Usage is determined by the API itself. 
+        ///     Sets the select (projection).  Usage is determined by the API itself.
         /// </summary>
         /// <value>The select.</value>
         [FromQuery(Name = "select")]

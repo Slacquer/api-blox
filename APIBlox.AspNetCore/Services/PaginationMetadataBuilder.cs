@@ -34,7 +34,7 @@ namespace APIBlox.AspNetCore
 
             var url = $"{req.Scheme}://{req.Host}{req.PathBase}{req.Path}{{0}}";
 
-            // Throwing or should we just log.
+            // Throwing or should we just log?
             if (resultCount > _defaultPageSize)
                 throw new IndexOutOfRangeException(
                     $"The result set of {resultCount} is larger than what " +
@@ -130,7 +130,7 @@ namespace APIBlox.AspNetCore
             return ret;
         }
 
-        private static void SetRunningCount(PaginationQuery requestQuery, int resultCount)
+        private static void SetRunningCount(IPaginationQuery requestQuery, int resultCount)
         {
             if (!requestQuery.RunningCount.HasValue || requestQuery.Skip.IsNullOrZero() || requestQuery.Top.IsNullOrZero())
                 requestQuery.RunningCount = 0;
@@ -138,7 +138,7 @@ namespace APIBlox.AspNetCore
             requestQuery.RunningCount += resultCount;
         }
 
-        private int? GetTop(PaginationQuery requestQuery)
+        private int? GetTop(IPaginationQuery requestQuery)
         {
             if (requestQuery.Top.IsNullOrZero())
                 return _defaultPageSize;
@@ -146,7 +146,7 @@ namespace APIBlox.AspNetCore
             return requestQuery.Top > _defaultPageSize ? _defaultPageSize : requestQuery.Top;
         }
 
-        private int? GetNextSkip(PaginationQuery query)
+        private int? GetNextSkip(IPaginationQuery query)
         {
             var top = query.Top.IsNullOrZero() || query.Top > _defaultPageSize ? _defaultPageSize : query.Top;
             var skip = query.Skip ?? query.RunningCount;
@@ -154,7 +154,7 @@ namespace APIBlox.AspNetCore
             return skip + top;
         }
 
-        private int? GetPreviousSkip(PaginationQuery query)
+        private int? GetPreviousSkip(IPaginationQuery query)
         {
             if (query.Skip.IsNullOrZero())
                 return null;

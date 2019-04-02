@@ -21,13 +21,15 @@ namespace APIBlox.AspNetCore.Types
         /// <param name="fields">The fields.</param>
         /// <param name="namespaces">The namespaces.</param>
         /// <param name="methods">The methods.</param>
-        public DynamicAction(string name, string route, string content, string ctorArgs, string ctorBody, string[] fields, string[] namespaces, string methods = null)
+        public DynamicAction(string name, string route, string content, string ctorArgs, 
+            string ctorBody, string[] fields, string[] namespaces, string methods = null
+        )
         {
             Name = name;
             Route = route;
             Content = content;
             CtorArgs = ctorArgs;
-            CtorBody= ctorBody;
+            CtorBody = ctorBody;
             Fields = fields;
             Namespaces = namespaces;
             Methods = methods;
@@ -58,7 +60,7 @@ namespace APIBlox.AspNetCore.Types
         public string CtorArgs { get; private set; }
 
         /// <summary>
-        /// Gets the ctor body.
+        ///     Gets the ctor body.
         /// </summary>
         /// <value>The ctor body.</value>
         public string CtorBody { get; private set; }
@@ -124,7 +126,6 @@ namespace APIBlox.AspNetCore.Types
                 .Replace("[ACTION_PARAMS]", Tokens["[ACTION_PARAMS]"])
                 .Replace("[NEW_REQ_OBJECT]", Tokens["[NEW_REQ_OBJECT]"])
                 .Replace("[CONTROLLER_NAME]", Tokens["[CONTROLLER_NAME]"])
-
                 .Replace("()]", "]")
                 .Replace("(\"\")", "");
         }

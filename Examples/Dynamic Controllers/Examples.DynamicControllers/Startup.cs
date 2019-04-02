@@ -15,8 +15,8 @@ namespace Examples
     {
         private const string SiteTitle = "APIBlox Example: DynamiControllers";
         private const string Version = "v1";
-        private readonly string[] _assemblyNames;
-        private readonly string[] _assemblyPaths;
+        //private readonly string[] _assemblyNames;
+        //private readonly string[] _assemblyPaths;
         private readonly IHostingEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
 
@@ -25,19 +25,19 @@ namespace Examples
             _environment = environment;
             _loggerFactory = loggerFactory;
 
-            _assemblyNames = new[]
-            {
-                "Examples."
-            };
+            //_assemblyNames = new[]
+            //{
+            //    "Examples."
+            //};
 
-            var excludeThese = PathParser.FindAllSubDirectories($"{environment.ContentRootPath}\\**\\obj")
-                .Select(di => $"!{di.FullName}").ToList();
+            //var excludeThese = PathParser.FindAllSubDirectories($"{environment.ContentRootPath}\\**\\obj")
+            //    .Select(di => $"!{di.FullName}").ToList();
 
-            _assemblyPaths = new List<string>(excludeThese)
-            {
-                _environment.ContentRootPath,
-                new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName
-            }.ToArray();
+            //_assemblyPaths = new List<string>(excludeThese)
+            //{
+            //    _environment.ContentRootPath,
+            //    new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName
+            //}.ToArray();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -47,7 +47,9 @@ namespace Examples
 
                 //
                 // Instead of having to manually add to service collection.
-                .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
+                //.AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
+                .AddReferencedInjectableServices(_loggerFactory)
+
                 .AddMvc()
 
                 //
@@ -60,8 +62,7 @@ namespace Examples
 
                 //
                 // Pagination
-                //.AddEnsurePaginationResultActionFilter(100)
-                .AddEnsureResponseResultActionFilter()
+                .AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 10)
 
                 //
                 // Resource Validator.

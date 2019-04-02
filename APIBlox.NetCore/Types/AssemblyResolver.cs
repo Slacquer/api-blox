@@ -18,8 +18,8 @@ namespace APIBlox.NetCore.Types
     public sealed class AssemblyResolver : IDisposable
     {
         private Dictionary<string, string> _assPathCache = new Dictionary<string, string>();
-        private Dictionary<string, Assembly> _loadedAssemblyCache = new Dictionary<string, Assembly>();
         private bool _disposed;
+        private Dictionary<string, Assembly> _loadedAssemblyCache = new Dictionary<string, Assembly>();
 
         /// <summary>
         ///     Loads an assembly and all its referenced assemblies.
@@ -88,7 +88,6 @@ namespace APIBlox.NetCore.Types
             Dispose(true);
         }
 
-
         private void Dispose(bool disposing)
         {
             if (!disposing || _disposed)
@@ -135,7 +134,6 @@ namespace APIBlox.NetCore.Types
                         continue;
 
                     LoadReferencedAssemblies(loadedAssembly, lfn, directory);
-
                 }
                 catch (FileLoadException)
                 {

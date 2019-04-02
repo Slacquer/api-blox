@@ -33,9 +33,9 @@ namespace Examples.Controllers
     [ApiController]
     public class CqrsController : ControllerBase
     {
-        private readonly IQueryHandler<IEnumerable<string>> _queryNoInputsHandler;
-        private readonly IQueryHandler<int, int> _queryInputsHandler;
         private readonly ICommandHandler<ExampleRequestObject> _commandHandler;
+        private readonly IQueryHandler<int, int> _queryInputsHandler;
+        private readonly IQueryHandler<IEnumerable<string>> _queryNoInputsHandler;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CqrsController" /> class.

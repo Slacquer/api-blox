@@ -9,9 +9,9 @@ namespace Examples.Resources
     {
         /// <summary>
         ///     Gets the parent value id.
-        /// <para>
-        ///     The action filter will populate private properties from query and route params.
-        /// </para>
+        ///     <para>
+        ///         The action filter will populate private properties from query and route params.
+        ///     </para>
         /// </summary>
         /// <value>The parent value id.</value>
         public int ValueId { get; private set; } // We can either do this or add FromRoute/FromQuery explicitly.

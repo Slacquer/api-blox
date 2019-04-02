@@ -14,18 +14,6 @@ namespace SlnTests.APIBlox.AspNetCore
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class PaginationTests
     {
-        private readonly ActionContext _actionContext;
-
-        private ActionExecutingContext GetActionExecutingContext()
-        {
-            return new ActionExecutingContext(
-                _actionContext,
-                new List<IFilterMetadata>(),
-                new Dictionary<string, object>(),
-                new Mock<Controller>().Object
-            );
-        }
-
         public PaginationTests()
         {
             var c = new DefaultHttpContext();
@@ -39,6 +27,18 @@ namespace SlnTests.APIBlox.AspNetCore
                 c,
                 new Mock<RouteData>().Object,
                 new Mock<ActionDescriptor>().Object
+            );
+        }
+
+        private readonly ActionContext _actionContext;
+
+        private ActionExecutingContext GetActionExecutingContext()
+        {
+            return new ActionExecutingContext(
+                _actionContext,
+                new List<IFilterMetadata>(),
+                new Dictionary<string, object>(),
+                new Mock<Controller>().Object
             );
         }
 
@@ -58,19 +58,21 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.Contains("runningCount=17", ret.Next);
             Assert.Contains("orderBy=foo.bar", ret.Next);
         }
-        
+
         [Fact]
-        public void NoResultsPaginationShouldBeEmpty()
+        public void IncomingTopButNoSkipAndNoRcSoFirstCallShouldHaveNextButNoPrevious()
         {
             var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?$top=2&$skip=5&rc=7");
+            ctx.HttpContext.Request.QueryString = new QueryString("?top=10");
 
-            var builder = new PaginationMetadataBuilder(10);
-            var ret = builder.Build(0, ctx);
+            var builder = new PaginationMetadataBuilder(100);
+            var ret = builder.Build(100, ctx);
 
             Assert.Null(ret.Previous);
-            Assert.Null(ret.Next);
-            Assert.True(ret.ResultCount == 0);
+            Assert.NotNull(ret.Next);
+            Assert.Contains("skip=10", ret.Next);
+            Assert.Contains("top=10", ret.Next);
+            Assert.Contains("runningCount=100", ret.Next);
         }
 
         [Fact]
@@ -90,19 +92,6 @@ namespace SlnTests.APIBlox.AspNetCore
         }
 
         [Fact]
-        public void ResultsLessThanMaxSoNextShouldBeNull()
-        {
-            var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("");
-
-            var builder = new PaginationMetadataBuilder(10);
-            var ret = builder.Build(9, ctx);
-
-            Assert.Null(ret.Previous);
-            Assert.Null(ret.Next);
-        }
-
-        [Fact]
         public void IncomingTopIsMoreThanSkipAndRcEqualsSkipSoNextValuesShouldBeCorrect()
         {
             var ctx = GetActionExecutingContext();
@@ -116,22 +105,6 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.Contains("skip=8", ret.Next);
             Assert.Contains("top=5", ret.Next);
             Assert.Contains("runningCount=13", ret.Next);
-        }
-
-        [Fact]
-        public void IncomingTopButNoSkipAndNoRcSoFirstCallShouldHaveNextButNoPrevious()
-        {
-            var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?top=10");
-
-            var builder = new PaginationMetadataBuilder(100);
-            var ret = builder.Build(100, ctx);
-
-            Assert.Null(ret.Previous);
-            Assert.NotNull(ret.Next);
-            Assert.Contains("skip=10", ret.Next);
-            Assert.Contains("top=10", ret.Next);
-            Assert.Contains("runningCount=100", ret.Next);
         }
 
         [Fact]
@@ -185,7 +158,34 @@ namespace SlnTests.APIBlox.AspNetCore
 
             Assert.Null(ret.Previous);
         }
-        
+
+        [Fact]
+        public void NoResultsPaginationShouldBeEmpty()
+        {
+            var ctx = GetActionExecutingContext();
+            ctx.HttpContext.Request.QueryString = new QueryString("?$top=2&$skip=5&rc=7");
+
+            var builder = new PaginationMetadataBuilder(10);
+            var ret = builder.Build(0, ctx);
+
+            Assert.Null(ret.Previous);
+            Assert.Null(ret.Next);
+            Assert.True(ret.ResultCount == 0);
+        }
+
+        [Fact]
+        public void ResultsLessThanMaxSoNextShouldBeNull()
+        {
+            var ctx = GetActionExecutingContext();
+            ctx.HttpContext.Request.QueryString = new QueryString("");
+
+            var builder = new PaginationMetadataBuilder(10);
+            var ret = builder.Build(9, ctx);
+
+            Assert.Null(ret.Previous);
+            Assert.Null(ret.Next);
+        }
+
         [Fact]
         public void ShouldContainExtraStuffSentInQuery()
         {

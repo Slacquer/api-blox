@@ -20,8 +20,6 @@ namespace APIBlox.AspNetCore.Enums
         [Metadata("No Content", "The request input parameters yielded no results.")]
         NoResults = StatusCodes.Status204NoContent,
 
-
-
         /// <summary>
         ///     400
         /// </summary>

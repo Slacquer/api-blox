@@ -1,16 +1,14 @@
 ﻿using System.Collections.ObjectModel;
-using APIBlox.AspNetCore.Types;
 
 namespace APIBlox.AspNetCore.Types
 {
     /// <summary>
-    ///     Metadata class for <see cref="RequestErrorObject"/>
+    ///     Metadata class for <see cref="RequestErrorObject" />
     /// </summary>
     public class RequestErrorResult //: RequestErrorObject
     {
         private RequestErrorResult()
         {
-
         }
 
         /// <summary>
@@ -38,7 +36,6 @@ namespace APIBlox.AspNetCore.Types
         ///     </para>
         /// </summary>
         public string Instance { get; }
-
 
         /// <summary>
         ///     [REQUIRED]

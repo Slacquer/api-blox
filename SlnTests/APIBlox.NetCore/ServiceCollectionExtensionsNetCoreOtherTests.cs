@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,13 +14,10 @@ namespace SlnTests.APIBlox.NetCore
 
     public class ServiceCollectionExtensionsNetCoreOtherTests
     {
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly List<string> _paths = new List<string>();
-
         public ServiceCollectionExtensionsNetCoreOtherTests()
         {
             _loggerFactory = new LoggerFactory();
-            
+
             var path = Path.GetTempPath();
             var root = Path.Combine(path, @"a\b\c\d\e\");
 
@@ -45,18 +41,20 @@ namespace SlnTests.APIBlox.NetCore
                 _paths.Add(Path.Combine(i % 2 == 0 ? "!" + root : root, i.ToString()));
         }
 
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly List<string> _paths = new List<string>();
+
         [Fact]
         public void LoggerOutputShouldComplainAboutAsterisksForInvalidPath()
         {
             var sc = new ServiceCollection();
 
-            var names = new[] { "SlnTests" };
+            var names = new[] {"SlnTests"};
             var paths = new List<string>(PathParser.FindAllSubDirectories(@"..\..\..\..\**\obj\").Select(di => $"!{di.FullName}"))
             {
                 @"..\..\..\..\",
                 @"C\Program Files\**"
             }.ToArray();
-
 
             _loggerFactory.AddProvider(new AssertLoggerProvider(msg =>
                     {
@@ -65,8 +63,8 @@ namespace SlnTests.APIBlox.NetCore
                     }
                 )
             );
-            
-           Assert.Throws<ArgumentException>(()=> sc.AddInjectableServices(_loggerFactory, names, paths));
+
+            Assert.Throws<ArgumentException>(() => sc.AddInjectableServices(_loggerFactory, names, paths));
         }
 
         //[Fact]

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
@@ -15,6 +16,12 @@ namespace Examples.CmdQueryHandlers
             var ret = new HandlerResponse();
 
             // if we do not return something then the controller will get mad at us!
+            var kids = new List<ChildResponse>();
+
+            for (var i = 0; i < 10; i++)
+                kids.Add(new ChildResponse {Age = i});
+
+            ret.Result = kids;
 
             return Task.FromResult(ret);
         }

@@ -29,6 +29,5 @@ namespace Examples.EventBits
 
             return Task.CompletedTask;
         }
-
     }
 }

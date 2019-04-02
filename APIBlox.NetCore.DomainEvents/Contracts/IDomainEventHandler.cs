@@ -11,7 +11,7 @@ namespace APIBlox.NetCore.Contracts
         where TDomainEvent : IDomainEvent
     {
         /// <summary>
-        /// Handles the event asynchronous.
+        ///     Handles the event asynchronous.
         /// </summary>
         /// <param name="domainEvent">The domain event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>

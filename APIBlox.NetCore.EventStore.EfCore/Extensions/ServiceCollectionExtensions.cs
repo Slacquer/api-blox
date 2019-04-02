@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensionsEfCore
     {
         /// <summary>
-        ///     Adds the ef core SQL repository for <see cref="IEventStoreService{TModel}"/>.
+        ///     Adds the ef core SQL repository for <see cref="IEventStoreService{TModel}" />.
         /// </summary>
         /// <typeparam name="TModel">The type of the t model.</typeparam>
         /// <param name="services">The services.</param>
@@ -66,7 +66,7 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
             services.AddScoped<IEventStoreRepository<TModel>, EfCoreSqlRepository<TModel>>(
-               x =>
+                x =>
                 {
                     var ctx = x.GetRequiredService<EventStoreDbContext>();
 

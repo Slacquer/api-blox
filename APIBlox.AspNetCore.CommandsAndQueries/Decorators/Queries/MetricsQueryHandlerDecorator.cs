@@ -55,32 +55,32 @@ namespace APIBlox.AspNetCore.Decorators.Queries
         }
     }
 
-    /// <inheritdoc cref="IQueryHandler{TRequestQuery, TResult}" />
+    /// <inheritdoc cref="IQueryHandler{TRequest, TResult}" />
     /// <summary>
     ///     Class MetricsQueryHandlerDecorator.
     /// </summary>
-    /// <typeparam name="TRequestQuery">The type of the t query.</typeparam>
+    /// <typeparam name="TRequest">The type of the t query.</typeparam>
     /// <typeparam name="TResult">The type of the t result.</typeparam>
     /// <seealso cref="T:APIBlox.NetCore.LoggingBase" />
     /// <seealso cref="T:APIBlox.AspNetCore.Contracts.IQueryHandler`2" />
     [DebuggerStepThrough]
-    public class MetricsQueryHandlerDecorator<TRequestQuery, TResult>
-        : IQueryHandler<TRequestQuery, TResult>
+    public class MetricsQueryHandlerDecorator<TRequest, TResult>
+        : IQueryHandler<TRequest, TResult>
     {
-        private readonly IQueryHandler<TRequestQuery, TResult> _decorated;
-        private readonly ILogger<MetricsQueryHandlerDecorator<TRequestQuery, TResult>> _log;
+        private readonly IQueryHandler<TRequest, TResult> _decorated;
+        private readonly ILogger<MetricsQueryHandlerDecorator<TRequest, TResult>> _log;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MetricsQueryHandlerDecorator{TRequestQuery, TResult}" /> class.
+        ///     Initializes a new instance of the <see cref="MetricsQueryHandlerDecorator{TRequest, TResult}" /> class.
         /// </summary>
         /// <param name="loggerFactory">The logger.</param>
         /// <param name="decorated">The decorated.</param>
         public MetricsQueryHandlerDecorator(
             ILoggerFactory loggerFactory,
-            IQueryHandler<TRequestQuery, TResult> decorated
+            IQueryHandler<TRequest, TResult> decorated
         )
         {
-            _log = loggerFactory.CreateLogger<MetricsQueryHandlerDecorator<TRequestQuery, TResult>>();
+            _log = loggerFactory.CreateLogger<MetricsQueryHandlerDecorator<TRequest, TResult>>();
             _decorated = decorated;
         }
 
@@ -89,7 +89,7 @@ namespace APIBlox.AspNetCore.Decorators.Queries
         ///     Handles the specified query.
         /// </summary>
         public async Task<TResult> HandleAsync(
-            TRequestQuery query,
+            TRequest query,
             CancellationToken cancellationToken
         )
         {

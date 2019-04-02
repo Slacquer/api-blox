@@ -4,7 +4,7 @@ using System.Linq;
 using APIBlox.NetCore.Extensions;
 using Microsoft.Extensions.Logging;
 
-namespace APIBlox.AspNetCore.Types.Errors
+namespace APIBlox.AspNetCore.Types
 {
     internal class ServerErrorObject : RequestErrorObject
     {
@@ -15,7 +15,7 @@ namespace APIBlox.AspNetCore.Types.Errors
         }
 
         private string ReferenceId { get; }
-        
+
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             if (ReferenceId.IsEmptyNullOrWhiteSpace())
@@ -29,7 +29,9 @@ namespace APIBlox.AspNetCore.Types.Errors
                     throw new ArgumentException(msg, nameof(ReferenceId));
             }
             else
+            {
                 Properties.TryAdd("ReferenceId", ReferenceId);
+            }
 
             if (!(Errors is null) && Errors.Any())
                 Properties.TryAdd("Errors", Errors);

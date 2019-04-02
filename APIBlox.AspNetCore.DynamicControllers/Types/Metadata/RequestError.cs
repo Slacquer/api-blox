@@ -1,10 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using APIBlox.AspNetCore.Types;
 
 namespace APIBlox.AspNetCore.Types
 {
     /// <summary>
-    ///     Metadata class for <see cref="DynamicErrorObject"/>
+    ///     Metadata class for <see cref="DynamicErrorObject" />
     /// </summary>
     public class RequestError //: DynamicErrorObject
     {
@@ -38,6 +37,5 @@ namespace APIBlox.AspNetCore.Types
         ///     </para>
         /// </summary>
         public string Title { get; }
-
     }
 }

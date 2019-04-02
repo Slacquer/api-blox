@@ -1,5 +1,4 @@
-﻿using System;
-using APIBlox.NetCore.Contracts;
+﻿using APIBlox.NetCore.Contracts;
 
 namespace Examples.EventBits
 {
@@ -21,7 +20,7 @@ namespace Examples.EventBits
             TheValueThatWasCreated = theValueThatWasCreated;
             SomeOtherDomainSpecificEventValueNeededForConsumption = someOtherDomainSpecificEventValueNeededForConsumption;
         }
-        
+
         /// <summary>
         ///     Gets the value that was created.
         /// </summary>

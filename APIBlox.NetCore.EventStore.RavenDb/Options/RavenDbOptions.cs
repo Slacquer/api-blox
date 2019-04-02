@@ -17,7 +17,8 @@ namespace APIBlox.NetCore.Options
         ///     Gets or sets the collection properties.
         /// </summary>
         /// <value>The collection properties.</value>
-        public Dictionary<string, RavenDbCollectionProperties> CollectionProperties { get; set; } = new Dictionary<string, RavenDbCollectionProperties>();
+        public Dictionary<string, RavenDbCollectionProperties> CollectionProperties { get; set; } =
+            new Dictionary<string, RavenDbCollectionProperties>();
 
         /// <summary>
         ///     Gets or sets the urls.

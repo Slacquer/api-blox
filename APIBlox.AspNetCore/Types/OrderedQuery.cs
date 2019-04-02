@@ -15,66 +15,6 @@ namespace APIBlox.AspNetCore.Types
     /// </summary>
     public class OrderedQuery : IOrderedQuery
     {
-        private PropertyInfo[] _props;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="OrderedQuery" /> class.
-        /// </summary>
-        public OrderedQuery()
-        {
-            Map.TryAdd("OrderBy", new[] { "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort" });
-        }
-
-        /// <summary>
-        ///     The in map for deciphering incoming query params.
-        /// </summary>
-        [JsonIgnore]
-        internal Dictionary<string, string[]> Map { get; } = new Dictionary<string, string[]>();
-
-        /// <summary>
-        ///     Gets or sets the undefined parameters.
-        /// </summary>
-        /// <value>The other.</value>
-        [JsonIgnore]
-        internal IDictionary<string, string> Undefined { get; set; } = new Dictionary<string, string>();
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Sets the order by.  Usage is determined by the API itself. 
-        /// </summary>
-        /// <value>The order by.</value>
-        [FromQuery(Name = "orderBy")]
-        public string OrderBy { get; set; }
-
-        /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
-        public override string ToString()
-        {
-            return BuildQuery().ToString();
-        }
-
-        /// <summary>
-        ///     Builds the query.
-        /// </summary>
-        /// <returns>QueryBuilder.</returns>
-        protected virtual QueryBuilder BuildQuery()
-        {
-            var qb = new QueryBuilder();
-
-            if (!OrderBy.IsEmptyNullOrWhiteSpace())
-                qb.Add("orderBy", OrderBy);
-
-            if (Undefined is null)
-                return qb;
-
-            foreach (var p in Undefined)
-                qb.Add(p.Key.ToCamelCase(), p.Value);
-
-            return qb;
-        }
-
         /// <summary>
         ///     Sets the aliases and values.
         /// </summary>
@@ -102,6 +42,66 @@ namespace APIBlox.AspNetCore.Types
                 if (!found)
                     Undefined.Add(qp);
             }
+        }
+
+        private PropertyInfo[] _props;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="OrderedQuery" /> class.
+        /// </summary>
+        public OrderedQuery()
+        {
+            Map.TryAdd("OrderBy", new[] {"$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort"});
+        }
+
+        /// <summary>
+        ///     The in map for deciphering incoming query params.
+        /// </summary>
+        [JsonIgnore]
+        internal Dictionary<string, string[]> Map { get; } = new Dictionary<string, string[]>();
+
+        /// <summary>
+        ///     Gets or sets the undefined parameters.
+        /// </summary>
+        /// <value>The other.</value>
+        [JsonIgnore]
+        internal IDictionary<string, string> Undefined { get; set; } = new Dictionary<string, string>();
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Sets the order by.  Usage is determined by the API itself.
+        /// </summary>
+        /// <value>The order by.</value>
+        [FromQuery(Name = "orderBy")]
+        public string OrderBy { get; set; }
+
+        /// <summary>
+        ///     Returns a <see cref="string" /> that represents this instance.
+        /// </summary>
+        /// <returns>A <see cref="string" /> that represents this instance.</returns>
+        public override string ToString()
+        {
+            return BuildQuery().ToString();
+        }
+
+        /// <summary>
+        ///     Builds the query.
+        /// </summary>
+        /// <returns>QueryBuilder.</returns>
+        protected virtual QueryBuilder BuildQuery()
+        {
+            var qb = new QueryBuilder();
+
+            if (!OrderBy.IsEmptyNullOrWhiteSpace())
+                qb.Add("orderBy", OrderBy);
+
+            if (Undefined is null)
+                return qb;
+
+            foreach (var p in Undefined)
+                qb.Add(p.Key.ToCamelCase(), p.Value);
+
+            return qb;
         }
     }
 }

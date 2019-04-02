@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
         ///         Designed for use with entities that manager their own events.
         ///     </para>
         ///     <para>
-        ///         This is not mutually exclusive with <see cref="AddQueuedDomainEventsDispatcher"/>.  Both can be used.
+        ///         This is not mutually exclusive with <see cref="AddQueuedDomainEventsDispatcher" />.  Both can be used.
         ///     </para>
         /// </summary>
         /// <param name="services">The services.</param>
@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
         ///         Designed to be used with commands or objects when entities do NOT manage their own events.
         ///     </para>
         ///     <para>
-        ///         This is not mutually exclusive with <see cref="AddDomainEventsDispatcher"/>.  Both can be used.
+        ///         This is not mutually exclusive with <see cref="AddDomainEventsDispatcher" />.  Both can be used.
         ///     </para>
         /// </summary>
         /// <param name="services">The services.</param>

@@ -176,7 +176,6 @@ namespace APIBlox.NetCore.Extensions
             var xmlDocument = new XmlDocument();
             xmlDocument.Load(streamReader);
             return xmlDocument;
-
         }
     }
 }

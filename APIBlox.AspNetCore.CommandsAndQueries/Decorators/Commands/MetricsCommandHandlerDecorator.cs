@@ -10,27 +10,27 @@ namespace APIBlox.AspNetCore.Decorators.Commands
     /// <summary>
     ///     Class MetricsCommandHandlerDecorator.
     /// </summary>
-    /// <typeparam name="TRequestCommand">The type of the t command.</typeparam>
+    /// <typeparam name="TRequest">The type of the t command.</typeparam>
     /// <seealso cref="T:APIBlox.AspNetCore.Decorators.CommandQueryDecoratorLoggingBase" />
     /// <seealso cref="T:APIBlox.AspNetCore.Contracts.ICommandHandler`1" />
     [DebuggerStepThrough]
-    public class MetricsCommandHandlerDecorator<TRequestCommand>
-        : ICommandHandler<TRequestCommand>
+    public class MetricsCommandHandlerDecorator<TRequest>
+        : ICommandHandler<TRequest>
     {
-        private readonly ICommandHandler<TRequestCommand> _decorated;
-        private readonly ILogger<MetricsCommandHandlerDecorator<TRequestCommand>> _log;
+        private readonly ICommandHandler<TRequest> _decorated;
+        private readonly ILogger<MetricsCommandHandlerDecorator<TRequest>> _log;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MetricsCommandHandlerDecorator{TRequestCommand}" /> class.
+        ///     Initializes a new instance of the <see cref="MetricsCommandHandlerDecorator{TRequest}" /> class.
         /// </summary>
         /// <param name="loggerFactory">The logger.</param>
         /// <param name="decorated">The decorated.</param>
         public MetricsCommandHandlerDecorator(
             ILoggerFactory loggerFactory,
-            ICommandHandler<TRequestCommand> decorated
+            ICommandHandler<TRequest> decorated
         )
         {
-            _log = loggerFactory.CreateLogger<MetricsCommandHandlerDecorator<TRequestCommand>>();
+            _log = loggerFactory.CreateLogger<MetricsCommandHandlerDecorator<TRequest>>();
             _decorated = decorated;
         }
 
@@ -41,7 +41,7 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         /// <param name="requestCommand">The incoming request command.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public async Task HandleAsync(TRequestCommand requestCommand, CancellationToken cancellationToken)
+        public async Task HandleAsync(TRequest requestCommand, CancellationToken cancellationToken)
         {
             var sw = Stopwatch.StartNew();
 
@@ -58,32 +58,32 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         }
     }
 
-    /// <inheritdoc cref="ICommandHandler{TRequestCommand, TResult}" />
+    /// <inheritdoc cref="ICommandHandler{TRequest, TResult}" />
     /// <summary>
     ///     Class MetricsCommandHandlerDecorator.
     /// </summary>
-    /// <typeparam name="TRequestCommand">The type of the t command.</typeparam>
+    /// <typeparam name="TRequest">The type of the t command.</typeparam>
     /// <typeparam name="TResult">The type of the t result.</typeparam>
     /// <seealso cref="T:APIBlox.NetCore.LoggingBase" />
     /// <seealso cref="T:APIBlox.AspNetCore.Contracts.ICommandHandler`2" />
     [DebuggerStepThrough]
-    public class MetricsCommandHandlerDecorator<TRequestCommand, TResult>
-        : ICommandHandler<TRequestCommand, TResult>
+    public class MetricsCommandHandlerDecorator<TRequest, TResult>
+        : ICommandHandler<TRequest, TResult>
     {
-        private readonly ICommandHandler<TRequestCommand, TResult> _decorated;
-        private readonly ILogger<MetricsCommandHandlerDecorator<TRequestCommand, TResult>> _log;
+        private readonly ICommandHandler<TRequest, TResult> _decorated;
+        private readonly ILogger<MetricsCommandHandlerDecorator<TRequest, TResult>> _log;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MetricsCommandHandlerDecorator{TRequestCommand, TResult}" /> class.
+        ///     Initializes a new instance of the <see cref="MetricsCommandHandlerDecorator{TRequest, TResult}" /> class.
         /// </summary>
         /// <param name="loggerFactory">The logger.</param>
         /// <param name="decorated">The decorated.</param>
         public MetricsCommandHandlerDecorator(
             ILoggerFactory loggerFactory,
-            ICommandHandler<TRequestCommand, TResult> decorated
+            ICommandHandler<TRequest, TResult> decorated
         )
         {
-            _log = loggerFactory.CreateLogger<MetricsCommandHandlerDecorator<TRequestCommand, TResult>>();
+            _log = loggerFactory.CreateLogger<MetricsCommandHandlerDecorator<TRequest, TResult>>();
             _decorated = decorated;
         }
 
@@ -94,7 +94,7 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         /// <param name="requestCommand">The incoming request command.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task{TResult}.</returns>
-        public async Task<TResult> HandleAsync(TRequestCommand requestCommand, CancellationToken cancellationToken)
+        public async Task<TResult> HandleAsync(TRequest requestCommand, CancellationToken cancellationToken)
         {
             var sw = Stopwatch.StartNew();
 

@@ -6,15 +6,17 @@
     public enum DocumentType
     {
         /// <summary>
-        /// The root
+        ///     The root
         /// </summary>
         Root = 1,
+
         /// <summary>
-        /// The event
+        ///     The event
         /// </summary>
         Event,
+
         /// <summary>
-        /// The snapshot
+        ///     The snapshot
         /// </summary>
         Snapshot
     }

@@ -19,12 +19,14 @@ namespace APIBlox.NetCore.Types
         /// <param name="filterAction">The filter action.</param>
         /// <returns>IEnumerable&lt;DirectoryInfo&gt;.</returns>
         /// <exception cref="NullReferenceException">Empty path!</exception>
-        public static IEnumerable<DirectoryInfo> FindAllSubDirectories(string searchPath, bool includeSearchPath = false, Func<string, bool> filterAction = null)
+        public static IEnumerable<DirectoryInfo> FindAllSubDirectories(string searchPath, bool includeSearchPath = false,
+            Func<string, bool> filterAction = null
+        )
         {
             if (searchPath.IsEmptyNullOrWhiteSpace())
                 throw new NullReferenceException("Empty path!");
 
-            var parts = searchPath.Split(new[] { "**" }, StringSplitOptions.RemoveEmptyEntries);
+            var parts = searchPath.Split(new[] {"**"}, StringSplitOptions.RemoveEmptyEntries);
 
             var root = parts[0];
             var excludes = parts.Except(new[] {root})
@@ -50,6 +52,5 @@ namespace APIBlox.NetCore.Types
 
             return ret;
         }
-
     }
 }

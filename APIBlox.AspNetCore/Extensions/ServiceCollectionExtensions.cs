@@ -1,5 +1,4 @@
 ﻿using System;
-using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -39,7 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddAlterRequestErrorObject(this IServiceCollection services, Action<RequestErrorObject> alterAction)
         {
             if (!(alterAction is null))
-                InternalHelpers.AlterRequestErrorObjectAction = alterAction;
+                RequestErrorObject.RequestErrorObjectAction = alterAction;
 
             return services;
         }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,11 @@ namespace APIBlox.AspNetCore.Filters
 
         public EnsurePaginationResponseResultActionFilter(
             ILoggerFactory loggerFactory,
-            IPaginationMetadataBuilder paginationBuilder
+            IPaginationMetadataBuilder paginationBuilder,
+            bool getsOnly,
+            Func<object, object> ensureResponseCompliesWithAction
         )
-            : base(loggerFactory)
+            : base(loggerFactory, getsOnly, ensureResponseCompliesWithAction)
         {
             _paginationBuilder = paginationBuilder;
         }
@@ -31,8 +34,10 @@ namespace APIBlox.AspNetCore.Filters
             var dynamicResult = new DynamicDataObject();
             var propValue = prop.GetValue(value);
 
-            dynamicResult.AddProperty(prop.Name, propValue)
-                .AddProperty("Pagination", _paginationBuilder.Build(ResultValueCount.Value, context));
+            dynamicResult.AddProperty(prop.Name, propValue).AddProperty(
+                "Pagination",
+                _paginationBuilder.Build(ResultValueCount.Value, context)
+            );
 
             result.Value = dynamicResult;
         }

@@ -16,9 +16,9 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         public PaginationQuery()
         {
-            Map.TryAdd("Skip", new[] { "$Skip", "Offset", "$Offset" });
-            Map.TryAdd("Top", new[] { "$Top", "Limit", "$Limit", "Take", "$Take" });
-            Map.TryAdd("RunningCount", new[] { "$Rc", "Rc", "Count", "$Count", "$RunningCount" });
+            Map.TryAdd("Skip", new[] {"$Skip", "Offset", "$Offset"});
+            Map.TryAdd("Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"});
+            Map.TryAdd("RunningCount", new[] {"$Rc", "Rc", "Count", "$Count", "$RunningCount"});
         }
 
         /// <inheritdoc />

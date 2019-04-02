@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensionsCosmosDb
     {
         /// <summary>
-        ///     Adds the cosmos database repository for use with the <see cref="IEventStoreService{TModel}"/>.
+        ///     Adds the cosmos database repository for use with the <see cref="IEventStoreService{TModel}" />.
         /// </summary>
         /// <typeparam name="TModel">The type of the t model.</typeparam>
         /// <param name="services">The services.</param>
@@ -25,10 +25,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="serializerSettings">The serializer settings.</param>
         /// <param name="configSection">The configuration section.</param>
         /// <returns>IServiceCollection.</returns>
-        /// <exception cref="ArgumentException">In order to use the {nameof(CosmosDbOptions)} you " +
-        ///                     $"will need to have an {configSection}</exception>
+        /// <exception cref="ArgumentException">
+        ///     In order to use the {nameof(CosmosDbOptions)} you " +
+        ///     $"will need to have an {configSection}
+        /// </exception>
         public static IServiceCollection AddCosmosDbRepository<TModel>(this IServiceCollection services, IConfiguration configuration,
-            JsonSerializerSettings serializerSettings = null, string configSection = "CosmosDbOptions")
+            JsonSerializerSettings serializerSettings = null, string configSection = "CosmosDbOptions"
+        )
             where TModel : class
         {
             var config = configuration.GetSection(configSection);
@@ -47,15 +50,16 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var settings = serializerSettings;
             services.AddScoped<IEventStoreRepository<TModel>, CosmosDbRepository<TModel>>(x =>
-            {
-                var opt = Microsoft.Extensions.Options.Options.Create(es);
-                var ret = new CosmosDbRepository<TModel>(x.GetRequiredService<IDocumentClient>(),
-                    settings ?? new CamelCaseSettings { ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver() },
-                    opt
-                );
+                {
+                    var opt = Options.Options.Create(es);
+                    var ret = new CosmosDbRepository<TModel>(x.GetRequiredService<IDocumentClient>(),
+                        settings ?? new CamelCaseSettings {ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()},
+                        opt
+                    );
 
-                return ret;
-            });
+                    return ret;
+                }
+            );
 
             return services;
         }

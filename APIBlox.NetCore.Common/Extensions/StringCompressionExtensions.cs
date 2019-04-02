@@ -23,7 +23,9 @@ namespace APIBlox.NetCore.Extensions
                 var memoryStream = new MemoryStream();
 
                 using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+                {
                     gZipStream.Write(buffer, 0, buffer.Length);
+                }
 
                 memoryStream.Position = 0;
 
@@ -56,7 +58,9 @@ namespace APIBlox.NetCore.Extensions
                     memoryStream.Position = 0;
 
                     using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+                    {
                         gZipStream.Read(buffer, 0, buffer.Length);
+                    }
 
                     return Encoding.UTF8.GetString(buffer);
                 }

@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.Exceptions;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
-
 
 namespace APIBlox.AspNetCore.Extensions
 {
@@ -12,21 +12,23 @@ namespace APIBlox.AspNetCore.Extensions
     public static class DynamicControllerFactoryExtensions
     {
         /// <summary>
-        ///     Compiles <see cref="IComposedTemplate"/> and adds a new <seealso cref="AssemblyPart"/> to the <seealso cref="IMvcBuilder.PartManager"/>
+        ///     Compiles <see cref="IComposedTemplate" /> and adds a new <seealso cref="AssemblyPart" /> to the
+        ///     <seealso cref="IMvcBuilder.PartManager" />
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="builder">The builder.</param>
         /// <param name="outputFile">The output file.</param>
         /// <param name="templates">The templates.</param>
         /// <returns>DynamicControllerFactory.</returns>
-        /// <exception cref="APIBlox.AspNetCore.Extensions.TemplateCompilationException"></exception>
-        public static DynamicControllerFactory Compile(this DynamicControllerFactory factory, 
-            IMvcBuilder builder, string outputFile, params IComposedTemplate[] templates)
+        /// <exception cref="TemplateCompilationException"></exception>
+        public static DynamicControllerFactory Compile(this DynamicControllerFactory factory,
+            IMvcBuilder builder, string outputFile, params IComposedTemplate[] templates
+        )
         {
             var ass = factory.Compile(outputFile, templates);
 
-            if (ass is null || factory.CompilationErrors != null)
-                throw new TemplateCompilationException(factory.CompilationErrors);
+            if (ass is null || factory.Errors != null)
+                throw new TemplateCompilationException(factory.Errors);
 
             builder.ConfigureApplicationPartManager(pm =>
                 {
@@ -34,26 +36,28 @@ namespace APIBlox.AspNetCore.Extensions
                     pm.ApplicationParts.Add(part);
                 }
             );
-
 
             return factory;
         }
 
         /// <summary>
-        ///     Compiles <see cref="IComposedTemplate"/> and adds a new <seealso cref="AssemblyPart"/> to the <seealso cref="IMvcCoreBuilder.PartManager"/>
+        ///     Compiles <see cref="IComposedTemplate" /> and adds a new <seealso cref="AssemblyPart" /> to the
+        ///     <seealso cref="IMvcCoreBuilder.PartManager" />
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="builder">The builder.</param>
         /// <param name="outputFile">The output file.</param>
         /// <param name="templates">The templates.</param>
         /// <returns>DynamicControllerFactory.</returns>
-        /// <exception cref="APIBlox.AspNetCore.Extensions.TemplateCompilationException"></exception>
-        public static DynamicControllerFactory Compile(this DynamicControllerFactory factory, IMvcCoreBuilder builder, string outputFile, params IComposedTemplate[] templates)
+        /// <exception cref="TemplateCompilationException"></exception>
+        public static DynamicControllerFactory Compile(this DynamicControllerFactory factory, IMvcCoreBuilder builder, string outputFile,
+            params IComposedTemplate[] templates
+        )
         {
             var ass = factory.Compile(outputFile, templates);
 
-            if (ass is null || factory.CompilationErrors != null)
-                throw new TemplateCompilationException(factory.CompilationErrors);
+            if (ass is null || factory.Errors != null)
+                throw new TemplateCompilationException(factory.Errors);
 
             builder.ConfigureApplicationPartManager(pm =>
                 {
@@ -61,7 +65,6 @@ namespace APIBlox.AspNetCore.Extensions
                     pm.ApplicationParts.Add(part);
                 }
             );
-
 
             return factory;
         }

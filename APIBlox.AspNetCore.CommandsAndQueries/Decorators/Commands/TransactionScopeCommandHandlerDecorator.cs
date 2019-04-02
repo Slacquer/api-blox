@@ -5,29 +5,29 @@ using APIBlox.AspNetCore.Contracts;
 
 namespace APIBlox.AspNetCore.Decorators.Commands
 {
-    /// <inheritdoc cref="ICommandHandler{TRequestCommand}" />
+    /// <inheritdoc cref="ICommandHandler{TRequest}" />
     /// <summary>
     ///     Class TransactionScopeCommandHandlerDecorator.
     /// </summary>
-    /// <typeparam name="TRequestCommand">The type of the t command.</typeparam>
+    /// <typeparam name="TRequest">The type of the t command.</typeparam>
     /// <seealso cref="T:APIBlox.AspNetCore.Decorators.CommandQueryDecoratorLoggingBase" />
     /// <seealso cref="T:APIBlox.AspNetCore.Contracts.ICommandHandler`1" />
-    public class TransactionScopeCommandHandlerDecorator<TRequestCommand>
-        : ICommandHandler<TRequestCommand>
+    public class TransactionScopeCommandHandlerDecorator<TRequest>
+        : ICommandHandler<TRequest>
     {
-        private readonly ICommandHandler<TRequestCommand> _decorated;
+        private readonly ICommandHandler<TRequest> _decorated;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="TransactionScopeCommandHandlerDecorator{TRequestCommand}" /> class.
+        ///     Initializes a new instance of the <see cref="TransactionScopeCommandHandlerDecorator{TRequest}" /> class.
         /// </summary>
         /// <param name="decorated">The decorated.</param>
-        public TransactionScopeCommandHandlerDecorator(ICommandHandler<TRequestCommand> decorated)
+        public TransactionScopeCommandHandlerDecorator(ICommandHandler<TRequest> decorated)
         {
             _decorated = decorated;
         }
 
         /// <inheritdoc />
-        public async Task HandleAsync(TRequestCommand requestCommand, CancellationToken cancellationToken)
+        public async Task HandleAsync(TRequest requestCommand, CancellationToken cancellationToken)
         {
             using (var scope = new TransactionScope())
             {
@@ -38,18 +38,18 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         }
     }
 
-    /// <inheritdoc cref="ICommandHandler{TRequestCommand}" />
+    /// <inheritdoc cref="ICommandHandler{TRequest}" />
     /// <summary>
     ///     Class TransactionScopeCommandHandlerDecorator.
     /// </summary>
-    /// <typeparam name="TRequestCommand">The type of the t command.</typeparam>
+    /// <typeparam name="TRequest">The type of the t command.</typeparam>
     /// <typeparam name="TResult"></typeparam>
     /// <seealso cref="T:APIBlox.AspNetCore.Decorators.CommandQueryDecoratorLoggingBase" />
     /// <seealso cref="T:APIBlox.AspNetCore.Contracts.ICommandHandler`1" />
-    public class TransactionScopeCommandHandlerDecorator<TRequestCommand, TResult>
-        : ICommandHandler<TRequestCommand, TResult>
+    public class TransactionScopeCommandHandlerDecorator<TRequest, TResult>
+        : ICommandHandler<TRequest, TResult>
     {
-        private readonly ICommandHandler<TRequestCommand, TResult> _decorated;
+        private readonly ICommandHandler<TRequest, TResult> _decorated;
 
         /// <inheritdoc />
         /// <summary>
@@ -57,13 +57,13 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         ///     <see cref="T:APIBlox.AspNetCore.Decorators.Commands.TransactionScopeCommandHandlerDecorator`2" /> class.
         /// </summary>
         /// <param name="decorated">The decorated.</param>
-        public TransactionScopeCommandHandlerDecorator(ICommandHandler<TRequestCommand, TResult> decorated)
+        public TransactionScopeCommandHandlerDecorator(ICommandHandler<TRequest, TResult> decorated)
         {
             _decorated = decorated;
         }
 
         /// <inheritdoc />
-        public async Task<TResult> HandleAsync(TRequestCommand requestCommand, CancellationToken cancellationToken)
+        public async Task<TResult> HandleAsync(TRequest requestCommand, CancellationToken cancellationToken)
         {
             TResult ret;
 

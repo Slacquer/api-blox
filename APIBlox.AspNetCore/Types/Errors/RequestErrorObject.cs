@@ -19,21 +19,19 @@ namespace APIBlox.AspNetCore.Types
         /// <summary>
         ///     The logger
         /// </summary>
-        [JsonIgnore]
-        protected readonly ILogger<RequestErrorObject> Logger = new LoggerFactory().CreateLogger<RequestErrorObject>();
+        [JsonIgnore] protected readonly ILogger<RequestErrorObject> Logger = new LoggerFactory().CreateLogger<RequestErrorObject>();
 
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.RequestErrorObject" /> class.
         /// </summary>
         public RequestErrorObject()
-        : this(null, null, null, null)
+            : this(null, null, null, null)
         {
-
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestErrorObject"/> class.
+        ///     Initializes a new instance of the <see cref="RequestErrorObject" /> class.
         /// </summary>
         /// <param name="title">The title.</param>
         /// <param name="detail">The detail.</param>
@@ -137,7 +135,9 @@ namespace APIBlox.AspNetCore.Types
                     throw new ArgumentException(msg, nameof(Title));
             }
             else
+            {
                 Properties.TryAdd("Title", Title);
+            }
 
             if (Detail.IsEmptyNullOrWhiteSpace())
             {
@@ -150,7 +150,9 @@ namespace APIBlox.AspNetCore.Types
                     throw new ArgumentException(msg, nameof(Detail));
             }
             else
+            {
                 Properties.TryAdd("Detail", Detail);
+            }
 
             if (Type.IsEmptyNullOrWhiteSpace())
                 Type = "about:blank";
@@ -168,7 +170,9 @@ namespace APIBlox.AspNetCore.Types
                     throw new ArgumentException(msg, nameof(Status));
             }
             else
+            {
                 Properties.TryAdd("Status", Status);
+            }
 
             if (Instance.IsEmptyNullOrWhiteSpace())
             {
@@ -181,7 +185,9 @@ namespace APIBlox.AspNetCore.Types
                     throw new ArgumentException(msg, nameof(Instance));
             }
             else
+            {
                 Properties.TryAdd("Instance", Instance);
+            }
 
             TryAlterRequestObjectAction();
 
@@ -191,11 +197,13 @@ namespace APIBlox.AspNetCore.Types
             return base.GetDynamicMemberNames();
         }
 
+        internal static Action<RequestErrorObject> RequestErrorObjectAction { get; set; }
+
         private void TryAlterRequestObjectAction()
         {
             try
             {
-                InternalHelpers.AlterRequestErrorObjectAction?.Invoke(this);
+                RequestErrorObjectAction?.Invoke(this);
             }
             catch (Exception ex)
             {

@@ -32,7 +32,7 @@ namespace APIBlox.NetCore
         public async Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
         {
-            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
+            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true}))
             {
                 foreach (var document in documents)
                     await session.StoreAsync(document, document.Id, cancellationToken);
@@ -50,12 +50,12 @@ namespace APIBlox.NetCore
         {
             IEnumerable<TResultDocument> ret;
 
-            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
+            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true}))
             {
                 ret = await session.Query<EventStoreDocument>(null, _colName)
                     .Where(predicate)
                     .OfType<TResultDocument>()
-                    .ToListAsync(token: cancellationToken);
+                    .ToListAsync(cancellationToken);
             }
 
             return ret;
@@ -64,10 +64,10 @@ namespace APIBlox.NetCore
         public async Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
         {
-            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
+            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true}))
             {
                 var doc = await session.Query<TDocument>(collectionName: _colName)
-                    .SingleAsync(x => x.Id == document.Id, token: cancellationToken);
+                    .SingleAsync(x => x.Id == document.Id, cancellationToken);
 
                 doc.Version = document.Version;
                 doc.TimeStamp = document.TimeStamp;
@@ -80,12 +80,12 @@ namespace APIBlox.NetCore
         {
             int ret;
 
-            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions { NoCaching = true }))
+            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true}))
             {
                 var ids = await session.Query<EventStoreDocument>(null, _colName)
                     .Where(predicate)
                     .Select(x => x.Id)
-                    .ToListAsync(token: cancellationToken);
+                    .ToListAsync(cancellationToken);
 
                 ret = ids.Count;
 

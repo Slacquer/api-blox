@@ -58,8 +58,9 @@ namespace Examples
 
                 //
                 // Pagination
-                //.AddEnsurePaginationResultActionFilter(100)
-                .AddEnsureResponseResultActionFilter()
+                //.AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 100)
+                .AddEnsureResponseResultActionFilter(_loggerFactory)
+
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
@@ -70,7 +71,7 @@ namespace Examples
             //
             // Handle any and all server (500) errors with a defined structure.
             app.UseServerFaults();
-            
+
             app.UseHsts();
 
             app.UseMvc();

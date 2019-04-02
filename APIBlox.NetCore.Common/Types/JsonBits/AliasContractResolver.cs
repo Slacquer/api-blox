@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using APIBlox.NetCore.Extensions;
@@ -51,7 +50,7 @@ namespace APIBlox.NetCore.Types.JsonBits
             var propName = _map.FirstOrDefault(kvp =>
                 kvp.Value.Any(s => s.EqualsEx(member.Name))
             );
-            
+
             if (!(propName.Value is null))
                 prop.PropertyName = propName.Key;
 

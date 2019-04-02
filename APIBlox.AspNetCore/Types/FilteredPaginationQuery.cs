@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using APIBlox.AspNetCore.Contracts;
+﻿using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -14,20 +12,19 @@ namespace APIBlox.AspNetCore.Types
     /// <seealso cref="T:APIBlox.AspNetCore.Types.PaginationQuery" />
     public class FilteredPaginationQuery : PaginationQuery, IFilteredQuery
     {
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.FilteredPaginationQuery" /> class.
         /// </summary>
         public FilteredPaginationQuery()
         {
-            Map.TryAdd("Filter", new[] { "$Where", "Where", "$Filter" });
-            Map.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
+            Map.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
+            Map.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
         }
 
         /// <inheritdoc />
         /// <summary>
-        ///     Sets the filter (where). Usage is determined by the API itself. 
+        ///     Sets the filter (where). Usage is determined by the API itself.
         /// </summary>
         /// <value>The filter.</value>
         [FromQuery(Name = "filter")]
@@ -35,7 +32,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Sets the select (projection).  Usage is determined by the API itself. 
+        ///     Sets the select (projection).  Usage is determined by the API itself.
         /// </summary>
         /// <value>The select.</value>
         [FromQuery(Name = "select")]

@@ -39,7 +39,7 @@ namespace APIBlox.AspNetCore.Types
             error.Title = attr.V1.ToString();
             error.Status = statusCode == CommonStatusCodes.DataConflictUpserts
                 ? 409
-                : (int?)statusCode;
+                : (int?) statusCode;
 
             return SetDetailAndAddErrorObject(error, attr.V2.ToString(), description);
         }
@@ -67,7 +67,7 @@ namespace APIBlox.AspNetCore.Types
         {
             if (Enum.IsDefined(typeof(CommonStatusCodes), statusCode))
             {
-                var enumValue = (CommonStatusCodes)statusCode;
+                var enumValue = (CommonStatusCodes) statusCode;
 
                 return SetError(error, enumValue, description);
             }
@@ -178,10 +178,10 @@ namespace APIBlox.AspNetCore.Types
         {
             return SetError(error, CommonStatusCodes.NotAcceptable, description);
         }
-        
+
         /// <summary>
         ///     Chainable, Adds a validation error to the internal errors collection.  It will also
-        ///     set the status code to <see cref="CommonStatusCodes.BadRequest"/>
+        ///     set the status code to <see cref="CommonStatusCodes.BadRequest" />
         /// </summary>
         /// <param name="errorObject">The error object.</param>
         /// <param name="property">The property.</param>
@@ -198,13 +198,11 @@ namespace APIBlox.AspNetCore.Types
 
             errorObject.Errors.Add(validationError);
 
-            errorObject.Status = (int)CommonStatusCodes.BadRequest;
+            errorObject.Status = (int) CommonStatusCodes.BadRequest;
 
             return errorObject;
         }
 
-
-        
         private static RequestErrorObject SetDetailAndAddErrorObject(RequestErrorObject error, string title, string description)
         {
             if (description.IsEmptyNullOrWhiteSpace())
@@ -218,6 +216,5 @@ namespace APIBlox.AspNetCore.Types
 
             return error;
         }
-
     }
 }

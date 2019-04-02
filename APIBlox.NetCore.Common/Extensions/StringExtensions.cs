@@ -37,7 +37,7 @@ namespace APIBlox.NetCore.Extensions
         {
             return value is null
                 ? defaultValue
-                : (T)Convert.ChangeType(value, typeof(T));
+                : (T) Convert.ChangeType(value, typeof(T));
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace APIBlox.NetCore.Extensions
             if (str.IsEmptyNullOrWhiteSpace())
                 return str;
 
-            var bits = str.Split(new[] { " ", "_" }, StringSplitOptions.RemoveEmptyEntries);
+            var bits = str.Split(new[] {" ", "_"}, StringSplitOptions.RemoveEmptyEntries);
             var sb = new StringBuilder();
             var ci = new CultureInfo(cultureName ?? CultureInfo.CurrentCulture.DisplayName, false).TextInfo;
 

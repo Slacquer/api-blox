@@ -69,7 +69,8 @@ namespace APIBlox.NetCore.Types
         /// <returns>TDest.</returns>
         public static TDest MapTo<TDest>(this object src, TDest dest,
             JsonSerializerSettings serializeSettings,
-            JsonSerializerSettings deserializerSettings)
+            JsonSerializerSettings deserializerSettings
+        )
             where TDest : new()
         {
             serializeSettings = serializeSettings ?? new JsonSerializerSettings
