@@ -14,7 +14,7 @@
 [HttpPost("[ACTION_ROUTE]")]
 [Produces("application/json", "application/problem+json")]
 [Consumes("application/json")]
-[ProducesErrorResponseType(typeof(RequestErrorResult))]
+[ProducesErrorResponseType(typeof(RequestErrorObject))]
 [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status201Created)]
 [ProducesResponseType(StatusCodes.Status204NoContent)]
 [ProducesResponseType(StatusCodes.Status401Unauthorized)]

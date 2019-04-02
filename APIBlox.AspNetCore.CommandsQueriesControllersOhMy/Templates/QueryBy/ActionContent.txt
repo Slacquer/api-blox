@@ -14,7 +14,7 @@
 [Produces("application/json", "application/problem+json")]
 // REMOVED for 2.2, until fix  https://github.com/aspnet/Mvc/issues/8174
 //[Consumes("application/json")]
-[ProducesErrorResponseType(typeof(RequestErrorResult))]
+[ProducesErrorResponseType(typeof(RequestErrorObject))]
 [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status200OK)]
 [ProducesResponseType(StatusCodes.Status204NoContent)]
 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
