@@ -56,7 +56,7 @@
 //            var ret = await _patchHandler.HandleAsync(request, patch, cancellationToken).ConfigureAwait(false);
 
 //            return ret.HasErrors
-//                ? (IActionResult) new ProblemResult(ret.Error)
+//                ? (IActionResult)new ProblemResult(ret.Error)
 //                : NoContent();
 //        }
 //    }

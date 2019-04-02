@@ -162,8 +162,42 @@ namespace APIBlox.AspNetCore.Extensions
                 template,
                 typeof(TRequest),
                 null,
-                false,
+                true,
                 req => controllerName.ToPascalCase() ?? $"PutBy{req}Controller"
+            );
+
+            return template;
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="DynamicControllerComposedTemplate"/> for updating a resources via PATCH.
+        /// </summary>
+        /// <typeparam name="TRequest">The type of the t request.</typeparam>
+        /// <param name="factory">The factory.</param>
+        /// <param name="actionRoute">The action route.</param>
+        /// <param name="nameSpace">The name space.</param>
+        /// <param name="controllerName">Name of the controller.</param>
+        /// <param name="controllerRoute">The controller route.</param>
+        /// <returns>DynamicControllerComposedTemplate.</returns>
+        public static DynamicControllerComposedTemplate WritePatchController<TRequest>(
+            this DynamicControllerFactory factory,
+            string actionRoute = null,
+            string nameSpace = "DynamicControllers",
+            string controllerName = null,
+            string controllerRoute = "api/[controller]"
+        )
+            where TRequest : new()
+        {
+            var action = Templates.GetDynamicAction("PatchBy", actionRoute);
+
+            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+
+            ParseAndReplace(factory,
+                template,
+                typeof(TRequest),
+                null,
+                true,
+                req => controllerName.ToPascalCase() ?? $"PatchBy{req}Controller"
             );
 
             return template;
@@ -201,7 +235,7 @@ namespace APIBlox.AspNetCore.Extensions
                 template,
                 typeof(TRequest),
                 typeof(TResponse),
-                false,
+                true,
                 req => controllerName.ToPascalCase() ?? $"Post{req}Controller"
             );
 

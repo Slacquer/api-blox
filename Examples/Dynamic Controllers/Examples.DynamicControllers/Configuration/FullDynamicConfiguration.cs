@@ -34,6 +34,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 controllerRoute
             );
 
+            var childPatch = factory.WritePatchController<ChildPatchRequest>(
+                "{childId}",
+                nameSpace,
+                "Children",
+                controllerRoute
+            );
+
             var childDelete = factory.WriteDeleteByController<ChildByIdRequest>(
                 "{childId}",
                 nameSpace,
@@ -57,15 +64,8 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
             var output = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            factory.Compile(builder, output, childById, childDelete, childAll, childPut, childPost);
-
-            if (!(factory.CompilationErrors is null) || !(factory.CompilationWarnings is null))
-            {
-                dynamicControllersXmlFile = null;
-
-                return builder;
-            }
+            
+            factory.Compile(builder, output, childById, childDelete, childAll, childPut,childPatch, childPost);
 
             var (_, _, xml) = factory.OutputFiles;
 

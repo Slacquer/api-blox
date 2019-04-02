@@ -49,7 +49,7 @@ namespace Examples
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
                 .AddMvc()
-
+                
                 //
                 //  DynamicControllers and configuration
                 .AddFullyDynamicConfiguration(_environment, out var dynamicControllersXmlFile)
@@ -66,7 +66,7 @@ namespace Examples
                 //
                 // Resource Validator.
                 .AddValidateResourceActionFilter()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version, dynamicControllersXmlFile);
         }

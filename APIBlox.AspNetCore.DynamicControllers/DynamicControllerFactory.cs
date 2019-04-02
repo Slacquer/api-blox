@@ -129,7 +129,7 @@ namespace APIBlox.AspNetCore
 
                 parameters.Add(temp
                     .Replace("@space", space)
-                    .Replace("@p", $"{GetPropertyTypeAndValue(pi.PropertyType, pi.Name)},")
+                    .Replace("@p", $"{GetPropertyTypeAndValue(namespaces, pi.PropertyType, pi.Name)},")
                 );
             }
 
@@ -197,7 +197,7 @@ namespace APIBlox.AspNetCore
 
                 result.Append(index == args.Length - 1 ? $"{tName}" : $"{tName},");
 
-                if (!namespaces.Contains(tNs))
+                if (!(namespaces is null) && !namespaces.Contains(tNs))
                     namespaces.Add(tNs);
             }
 
@@ -276,9 +276,45 @@ namespace APIBlox.AspNetCore
                 throw new ArgumentException($"{request.Name} must have a public property that is decorated with a {nameof(FromBodyAttribute)}.");
         }
 
-        private static string GetPropertyTypeAndValue(Type prop, string propName)
+        private string GetPropertyTypeAndValue(List<string> namespaces, Type prop, string propName)
         {
             var (nullable, name) = IsOfNullableType(prop);
+
+            if (!nullable)
+            {
+                if (prop.IsGenericType)
+                {
+                    var builder = new StringBuilder();
+
+                    builder.Append("<");
+
+                    var args = prop.GetGenericArguments();
+
+                    for (var index = 0; index < args.Length; index++)
+                    {
+                        var type = args[index];
+
+                        if (!namespaces.Contains(type.Namespace))
+                            namespaces.Add(type.Namespace);
+
+                        var tName = type.Name;
+
+                        if (type.IsGenericType)
+                            tName = GetPropertyTypeAndValue(namespaces, type, null);
+
+                        builder.Append(index == args.Length - 1 ? $"{tName}" : $"{tName},");
+                    }
+
+                    builder.Append(">");
+
+                    name = $"{GetNameWithoutGenericArity(prop)}{builder.ToString()}";
+                }
+            }
+
+            if (prop.IsGenericType)
+            {
+                return propName is null ? name : $"{name} {propName.ToCamelCase()}";
+            }
 
             return !nullable
                 ? $"{prop.Name} {propName.ToCamelCase()}"

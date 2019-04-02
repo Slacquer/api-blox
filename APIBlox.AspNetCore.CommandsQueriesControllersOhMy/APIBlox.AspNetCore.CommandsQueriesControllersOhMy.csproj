@@ -26,6 +26,10 @@
     <None Remove="Templates\DeleteBy\Fields.txt" />
     <None Remove="Templates\DeleteBy\Namespaces.txt" />
     <None Remove="Templates\DynamicQueryByController.txt" />
+    <None Remove="Templates\PatchBy\ActionContent.txt" />
+    <None Remove="Templates\PatchBy\Ctor.txt" />
+    <None Remove="Templates\PatchBy\Fields.txt" />
+    <None Remove="Templates\PatchBy\Namespaces.txt" />
     <None Remove="Templates\Post\ActionContent.txt" />
     <None Remove="Templates\Post\Ctor.txt" />
     <None Remove="Templates\Post\Fields.txt" />
@@ -49,6 +53,10 @@
     <EmbeddedResource Include="Templates\DeleteBy\Ctor.txt" />
     <EmbeddedResource Include="Templates\DeleteBy\Fields.txt" />
     <EmbeddedResource Include="Templates\DeleteBy\Namespaces.txt" />
+    <EmbeddedResource Include="Templates\PatchBy\ActionContent.txt" />
+    <EmbeddedResource Include="Templates\PatchBy\Ctor.txt" />
+    <EmbeddedResource Include="Templates\PatchBy\Fields.txt" />
+    <EmbeddedResource Include="Templates\PatchBy\Namespaces.txt" />
     <EmbeddedResource Include="Templates\Post\ActionContent.txt" />
     <EmbeddedResource Include="Templates\Post\Ctor.txt" />
     <EmbeddedResource Include="Templates\Post\Fields.txt" />

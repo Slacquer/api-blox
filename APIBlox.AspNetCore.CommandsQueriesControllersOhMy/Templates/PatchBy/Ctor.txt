@@ -1,0 +1,8 @@
+﻿/// <summary>
+///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
+/// </summary>
+/// <param name="patchBy[REQ_OBJECT]Handler">The handler used to for updating/patching a resource.</param>
+public [CONTROLLER_NAME](ICommandHandler<[REQ_OBJECT], HandlerResponse> patchBy[REQ_OBJECT]Handler)
+{
+    _patchBy[REQ_OBJECT]Handler = patchBy[REQ_OBJECT]Handler;
+}
