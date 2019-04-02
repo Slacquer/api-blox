@@ -71,7 +71,7 @@ namespace Examples
         /// <param name="someValue">Some value.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="DataAccessException">Aggregate with stream id {_streamId}</exception>
+        /// <exception cref="EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         public async Task AddSomeValue(string someValue, CancellationToken cancellationToken)
         {
             await Build(false, cancellationToken);
