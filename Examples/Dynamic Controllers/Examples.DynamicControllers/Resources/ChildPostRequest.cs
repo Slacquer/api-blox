@@ -7,7 +7,6 @@ namespace Examples.Resources
     /// </summary>
     public class ChildPostRequest
     {
-        
         /// <summary>
         ///     Gets or sets the parent identifier.
         /// </summary>
@@ -16,10 +15,10 @@ namespace Examples.Resources
         public int ParentId { get; set; }
 
         /// <summary>
-        /// Gets or sets the body.
+        ///     Gets or sets the body.
         /// </summary>
         /// <value>The body.</value>
         [FromBody]
-        public PersonModel Body { get; set; }
+        public PersonModel Child { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
@@ -10,7 +9,7 @@ namespace Examples.Resources
     public class ByIdRequest : AllRequest
     {
         /// <summary>
-        /// Gets or sets some identifier.
+        ///     Gets or sets some identifier.
         /// </summary>
         /// <value>Some identifier.</value>
         [FromRoute(Name = "someId")]

@@ -4,10 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace APIBlox.AspNetCore.Types.Errors
+namespace APIBlox.AspNetCore.Types
 {
     /// <inheritdoc />
     /// <summary>
@@ -16,12 +15,6 @@ namespace APIBlox.AspNetCore.Types.Errors
     /// <seealso cref="T:System.Dynamic.DynamicObject" />
     public class DynamicErrorObject : DynamicDataObject
     {
-        /// <summary>
-        ///     The logger
-        /// </summary>
-        [JsonIgnore] 
-        protected ILogger<DynamicErrorObject> Logger;
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicErrorObject" /> class.
         /// </summary>
@@ -32,7 +25,7 @@ namespace APIBlox.AspNetCore.Types.Errors
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.Errors.DynamicErrorObject" /> class.
+        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.DynamicErrorObject" /> class.
         /// </summary>
         /// <param name="title">The title.</param>
         /// <param name="detail">The detail.</param>
@@ -96,30 +89,22 @@ namespace APIBlox.AspNetCore.Types.Errors
                 var msg = "Although not required deeper than the root, we will require" +
                           $" {GetType().Name}.{nameof(Detail)} when errors is not empty.";
 
-                if (NoThrow)
-                    Logger.LogError(() => msg);
-                else
+                if (!NoThrow)
                     throw new ArgumentException(msg, nameof(Detail));
             }
             else
-            {
                 Properties.TryAdd("Detail", Detail);
-            }
 
             if (Title.IsEmptyNullOrWhiteSpace())
             {
                 var msg = "Although not required deeper than the root, we will require " +
                           $"{GetType().Name}.{nameof(Title)}";
 
-                if (NoThrow)
-                    Logger.LogError(() => msg);
-                else
+                if (!NoThrow)
                     throw new ArgumentException(msg, nameof(Title));
             }
             else
-            {
                 Properties.TryAdd("Title", Title);
-            }
 
             if (errors)
                 Properties.TryAdd("Errors", Errors);

@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
-using APIBlox.AspNetCore.Types;
-using APIBlox.AspNetCore.Types.Errors;
 
-namespace APIBlox.AspNetCore.Extensions
+// ReSharper disable once CheckNamespace
+namespace APIBlox.AspNetCore.Types
 {
     /// <summary>
     ///     Class HandlerResponseExtensions.

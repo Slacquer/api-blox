@@ -1,4 +1,4 @@
-﻿using APIBlox.AspNetCore.Types.Errors;
+﻿using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.ActionResults

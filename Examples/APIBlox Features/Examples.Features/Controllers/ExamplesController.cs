@@ -10,11 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 using Examples.Contracts;
 
 #if UseAPIBlox
+
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Attributes;
 using APIBlox.AspNetCore.Enums;
 using APIBlox.AspNetCore.Extensions;
-using APIBlox.AspNetCore.Types.Errors;
+using APIBlox.AspNetCore.Types;
+
 #endif
 
 namespace Examples.Controllers

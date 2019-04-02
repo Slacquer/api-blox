@@ -31,6 +31,9 @@ public async Task<IActionResult> Post(
         cancellationToken
     ).ConfigureAwait(false);
 
+	if (ret is null)
+		throw new ArgumentException($"You must return a {nameof(HandlerResponse)} instance!");
+
     var errorResult = ret.HasErrors ? new ProblemResult(ret.Error) : null;
 
     if (errorResult is null && ret.Result is null)

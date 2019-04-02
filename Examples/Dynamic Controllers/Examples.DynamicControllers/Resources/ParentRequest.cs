@@ -1,10 +1,6 @@
-﻿#region -    Using Statements    -
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace Examples.Resources
 {

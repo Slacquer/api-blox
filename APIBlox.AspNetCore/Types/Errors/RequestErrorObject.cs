@@ -7,13 +7,12 @@ using APIBlox.NetCore.Types;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace APIBlox.AspNetCore.Types.Errors
+namespace APIBlox.AspNetCore.Types
 {
     /// <inheritdoc />
     /// <summary>
     ///     Class ServerFaultResource.
     /// </summary>
-    /// <seealso cref="DynamicErrorObject" />
     [Serializable]
     public class RequestErrorObject : DynamicDataObject
     {
@@ -25,7 +24,7 @@ namespace APIBlox.AspNetCore.Types.Errors
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.Errors.RequestErrorObject" /> class.
+        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.RequestErrorObject" /> class.
         /// </summary>
         public RequestErrorObject()
         : this(null, null, null, null)

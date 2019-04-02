@@ -49,7 +49,6 @@ namespace Examples
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
                 .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
 
                 //
                 //  DynamicControllers and configuration
@@ -70,7 +69,8 @@ namespace Examples
 
                 //
                 // Make sure all results are camel cased.
-                .AddCamelCaseResultsOptions();
+                .AddCamelCaseResultsOptions()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version, dynamicControllersXmlFile);
         }

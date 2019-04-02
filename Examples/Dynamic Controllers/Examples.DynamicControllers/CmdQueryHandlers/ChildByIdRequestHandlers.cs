@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
-using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Attributes;
 using Examples.Resources;
@@ -11,7 +10,8 @@ using Examples.Resources;
 namespace Examples.CmdQueryHandlers
 {
     [InjectableService]
-    internal class ChildByIdQueryHandler : IQueryHandler<ChildByIdRequest, HandlerResponse>
+    internal class ChildByIdRequestHandlers :
+        IQueryHandler<ChildByIdRequest, HandlerResponse>
     {
         public Task<HandlerResponse> HandleAsync(ChildByIdRequest query, CancellationToken cancellationToken)
         {

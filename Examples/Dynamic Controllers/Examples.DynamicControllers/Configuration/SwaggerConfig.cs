@@ -6,7 +6,9 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     internal static class SwaggerConfig
     {
-        public static IServiceCollection AddSwaggerExampleFeatures(this IServiceCollection services, string siteTitle, string version, string dynamicControllersXmlFile)
+        public static IServiceCollection AddSwaggerExampleFeatures(this IServiceCollection services, string siteTitle, string version,
+            string dynamicControllersXmlFile
+        )
         {
             return services.AddSwaggerGen(c =>
                 {

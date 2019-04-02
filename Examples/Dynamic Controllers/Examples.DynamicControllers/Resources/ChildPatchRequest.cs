@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
     /// <summary>
-    /// Class ChildPutRequest.
+    ///     Class ChildPutRequest.
     /// </summary>
     public class ChildPatchRequest : ChildByIdRequest
     {
         /// <summary>
-        /// Gets or sets an query value we want.
+        ///     Gets or sets an query value we want.
         /// </summary>
         /// <value>An query value we want.</value>
         [FromQuery]

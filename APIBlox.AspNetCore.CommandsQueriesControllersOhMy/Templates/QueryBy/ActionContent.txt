@@ -12,7 +12,8 @@
 [PARAMS_COMMENTS]
 [HttpGet("[ACTION_ROUTE]")]
 [Produces("application/json", "application/problem+json")]
-[Consumes("application/json")]
+// REMOVED for 2.2, until fix  https://github.com/aspnet/Mvc/issues/8174
+//[Consumes("application/json")]
 [ProducesErrorResponseType(typeof(RequestErrorResult))]
 [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status200OK)]
 [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -27,6 +28,9 @@ public async Task<IActionResult> QueryBy(
         [NEW_REQ_OBJECT], 
         cancellationToken
     ).ConfigureAwait(false);
+
+	if (ret is null)
+		throw new ArgumentException($"You must return a {nameof(HandlerResponse)} instance!");
 
     if (ret.HasErrors)
         return new ProblemResult(ret.Error);

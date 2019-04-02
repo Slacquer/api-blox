@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
@@ -12,7 +8,7 @@ namespace Examples.Resources
     public class ChildByIdRequest
     {
         /// <summary>
-        /// Sets the child id.
+        ///     Sets the child id.
         /// </summary>
         [FromRoute(Name = "childId")]
         public int Id { get; set; }

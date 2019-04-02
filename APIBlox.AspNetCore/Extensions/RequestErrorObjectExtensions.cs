@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using APIBlox.AspNetCore.Enums;
-using APIBlox.AspNetCore.Types.Errors;
 using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Extensions;
 
-namespace APIBlox.AspNetCore.Extensions
+// ReSharper disable once CheckNamespace
+namespace APIBlox.AspNetCore.Types
 {
     /// <summary>
     ///     Class CommonResponseExtensions.

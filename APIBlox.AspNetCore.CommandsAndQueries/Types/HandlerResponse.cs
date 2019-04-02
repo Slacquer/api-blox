@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using APIBlox.AspNetCore.Enums;
 using APIBlox.AspNetCore.Extensions;
-using APIBlox.AspNetCore.Types.Errors;
+using APIBlox.AspNetCore.Types;
 
 namespace APIBlox.AspNetCore.Types
 {

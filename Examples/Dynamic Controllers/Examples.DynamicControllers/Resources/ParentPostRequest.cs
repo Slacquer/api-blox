@@ -8,7 +8,7 @@ namespace Examples.Resources
     public class ParentPostRequest
     {
         /// <summary>
-        /// Gets or sets the body.
+        ///     Gets or sets the body.
         /// </summary>
         /// <value>The body.</value>
         [FromBody]

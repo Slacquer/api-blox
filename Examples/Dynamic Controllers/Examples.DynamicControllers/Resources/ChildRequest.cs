@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using APIBlox.AspNetCore.Types;
+﻿using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Mvc;
-
-#endregion
 
 namespace Examples.Resources
 {

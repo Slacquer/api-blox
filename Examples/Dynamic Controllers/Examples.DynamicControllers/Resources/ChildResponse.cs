@@ -1,9 +1,5 @@
-﻿#region -    Using Statements    -
-
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using APIBlox.AspNetCore.Contracts;
-
-#endregion
 
 namespace Examples.Resources
 {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using APIBlox.AspNetCore.Types.Errors;
+using APIBlox.AspNetCore.Types;
 
 namespace APIBlox.AspNetCore.Types
 {

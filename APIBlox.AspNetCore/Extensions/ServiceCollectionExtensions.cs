@@ -1,7 +1,7 @@
 ﻿using System;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.ActionResults;
-using APIBlox.AspNetCore.Types.Errors;
+using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
