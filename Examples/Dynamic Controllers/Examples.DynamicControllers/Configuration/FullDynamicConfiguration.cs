@@ -65,7 +65,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var childPostAccepted = factory.WritePostAcceptedController<ChildPostRequest>(
                 null,
                 nameSpace,
-                "Parents",
+                "Children",
                 controllerRoute
             );
 
