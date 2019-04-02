@@ -100,21 +100,19 @@ namespace Examples
                 //
                 // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
-                //
-                // Automatically fill in request object(s) from query params and route data.
-                .AddPopulateRequestObjectActionFilter()
+
                 //
                 // Pagination
                 .AddEnsurePaginationResultActionFilter(100)
+
                 //
                 // No pagination
                 //.AddEnsureResponseResultActionFilter(data => new { NonPaginatedResources = data })
+
                 //
                 // Resource Validator.
                 .AddValidateResourceActionFilter()
-                //
-                // If using AddMvcCore then we need this one.
-                //.AddConsumesProducesJsonResourceResultFilters()
+
                 //
                 // Custom tokens, example has version
                 .AddRouteTokensConvention(_configuration, _environment, "ExampleTokens")

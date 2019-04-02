@@ -12,7 +12,6 @@ using Examples.Contracts;
 #if UseAPIBlox
 
 using APIBlox.AspNetCore.ActionResults;
-using APIBlox.AspNetCore.Attributes;
 using APIBlox.AspNetCore.Enums;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Types;
@@ -139,17 +138,11 @@ namespace Examples.Controllers
         /// <param name="requestResource">The request resource.</param>
         [HttpPost("{valueId:int}/subResources")]
 #if UseAPIBlox
-        public ActionResult Post([Populate] ExampleRequestObject requestResource)
+        public ActionResult Post(ExampleRequestObject requestResource)
 #else
         public ActionResult Post(ExampleRequestObject requestResource)
 #endif
         {
-            // You may be thinking... "Why would this be helpful, I mean I could just add
-            // the parameters to the method and they get filled in for me!"
-            //
-            // Imagine a dynamic post controller, that could potentially handle just about
-            // ANY post, have a look at the Dynamic Controllers example then you will
-            // understand just how powerful this can be.
             //
             //  SIDE NOTE:
             // we should be returning a route with id, but

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.ActionResults;
-using APIBlox.AspNetCore.Attributes;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Filters;
@@ -348,33 +347,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return builder;
         }
-
-        /// <summary>
-        ///     Use with <see cref="PopulateAttribute" /> to bind route and query params data to the request objects private
-        ///     properties.
-        /// </summary>
-        /// <param name="builder">The mvc core builder.</param>
-        /// <returns>IMvcCoreBuilder.</returns>
-        public static IMvcCoreBuilder AddPopulateRequestObjectActionFilter(this IMvcCoreBuilder builder)
-        {
-            builder.AddFilter<PopulateRequestObjectActionFilter>();
-
-            return builder;
-        }
-
-        /// <summary>
-        ///     Use with <see cref="PopulateAttribute" /> to bind route and query params data to the request objects private
-        ///     properties.
-        /// </summary>
-        /// <param name="builder">The mvc builder.</param>
-        /// <returns>IMvcBuilder.</returns>
-        public static IMvcBuilder AddPopulateRequestObjectActionFilter(this IMvcBuilder builder)
-        {
-            builder.AddFilter<PopulateRequestObjectActionFilter>();
-
-            return builder;
-        }
-
+        
         /// <summary>
         ///     I MUST be added  after any and all APIBlox features in the builder chain.
         ///     <para>
