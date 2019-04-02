@@ -39,6 +39,7 @@ namespace Examples
                 //
                 // Instead of having to manually add to service collection.
                 .AddReferencedInjectableServices(_loggerFactory)
+
                 .AddMvc()
 
                 //
