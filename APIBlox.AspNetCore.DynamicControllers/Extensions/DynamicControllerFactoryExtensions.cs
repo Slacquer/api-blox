@@ -18,14 +18,15 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="factory">The factory.</param>
         /// <param name="builder">The builder.</param>
         /// <param name="outputFile">The output file.</param>
+        /// <param name="useCache">if set to <c>true</c> [use cache].  <seealso cref="DynamicControllerFactory.Compile(string, bool, IComposedTemplate[])"/></param>
         /// <param name="templates">The templates.</param>
         /// <returns>DynamicControllerFactory.</returns>
         /// <exception cref="TemplateCompilationException"></exception>
         public static DynamicControllerFactory Compile(this DynamicControllerFactory factory,
-            IMvcBuilder builder, string outputFile, params IComposedTemplate[] templates
+            IMvcBuilder builder, string outputFile, bool useCache, params IComposedTemplate[] templates
         )
         {
-            var ass = factory.Compile(outputFile, templates);
+            var ass = factory.Compile(outputFile, useCache, templates);
 
             if (ass is null || factory.Errors != null)
                 throw new TemplateCompilationException(factory.Errors);
@@ -47,14 +48,15 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="factory">The factory.</param>
         /// <param name="builder">The builder.</param>
         /// <param name="outputFile">The output file.</param>
+        /// <param name="useCache">if set to <c>true</c> [use cache].  <seealso cref="DynamicControllerFactory.Compile(string, bool, IComposedTemplate[])"/></param>
         /// <param name="templates">The templates.</param>
         /// <returns>DynamicControllerFactory.</returns>
         /// <exception cref="TemplateCompilationException"></exception>
-        public static DynamicControllerFactory Compile(this DynamicControllerFactory factory, IMvcCoreBuilder builder, string outputFile,
-            params IComposedTemplate[] templates
+        public static DynamicControllerFactory Compile(this DynamicControllerFactory factory,
+            IMvcCoreBuilder builder, string outputFile, bool useCache, params IComposedTemplate[] templates
         )
         {
-            var ass = factory.Compile(outputFile, templates);
+            var ass = factory.Compile(outputFile, useCache, templates);
 
             if (ass is null || factory.Errors != null)
                 throw new TemplateCompilationException(factory.Errors);

@@ -44,7 +44,7 @@ namespace Examples
 
                 //
                 //  DynamicControllers and configuration
-                .AddFullyDynamicConfiguration(_environment, out var dynamicControllersXmlFile)
+                .AddFullyDynamicConfiguration(_loggerFactory, _environment, out var dynamicControllersXmlFile)
 
                 //
                 // Handles cancellation token cancelled.

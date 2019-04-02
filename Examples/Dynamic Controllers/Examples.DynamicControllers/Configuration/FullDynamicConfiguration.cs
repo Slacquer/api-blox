@@ -5,17 +5,18 @@ using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Extensions;
 using Examples.Resources;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
     internal static class FullDynamicConfiguration
     {
-        public static IMvcBuilder AddFullyDynamicConfiguration(this IMvcBuilder builder, IHostingEnvironment environment,
+        public static IMvcBuilder AddFullyDynamicConfiguration(this IMvcBuilder builder, ILoggerFactory loggerFactory, IHostingEnvironment environment,
             out string dynamicControllersXmlFile
         )
         {
-            var factory = new DynamicControllerFactory("ExampleDynamicControllersAssembly", environment.IsProduction());
+            var factory = new DynamicControllerFactory(loggerFactory, "ExampleDynamicControllersAssembly", environment.IsProduction());
 
             const string nameSpace = "Examples";
             const string controllerRoute = "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children";
@@ -71,7 +72,16 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var output = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            factory.Compile(builder, output, childById, childDelete, childAll, childPut, childPatch, childPostAccepted);
+            factory.Compile(builder,
+                output,
+                environment.IsProduction(),
+                childById,
+                childDelete,
+                childAll,
+                childPut,
+                childPatch,
+                childPostAccepted
+            );
 
             var (_, _, xml) = factory.OutputFiles;
 

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
+using Microsoft.Extensions.Logging;
 
 namespace APIBlox.AspNetCore
 {
@@ -29,20 +30,23 @@ namespace APIBlox.AspNetCore
 
         private readonly string _assemblyName;
         private readonly bool _production;
+        private readonly ILogger<DynamicControllerFactory> _log;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DynamicControllerFactory" /> class.
+        ///     Initializes a new instance of the <see cref="DynamicControllerFactory"/> class.
         /// </summary>
-        /// <param name="assemblyName">Name of the final assembly.</param>
-        /// <param name="production">if set to <c>true</c> [production] otherwise [debug].</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="assemblyName">Name of the assembly.</param>
+        /// <param name="production">if set to <c>true</c> [production].</param>
         /// <exception cref="ArgumentNullException">assemblyName</exception>
-        public DynamicControllerFactory(string assemblyName, bool production = false)
+        public DynamicControllerFactory(ILoggerFactory loggerFactory, string assemblyName, bool production = false)
         {
             if (assemblyName.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(assemblyName));
 
             _assemblyName = assemblyName;
             _production = production;
+            _log = loggerFactory.CreateLogger<DynamicControllerFactory>();
         }
 
         /// <summary>
@@ -69,17 +73,23 @@ namespace APIBlox.AspNetCore
         /// <value>The output files.</value>
         public (string, string, string) OutputFiles { get; private set; }
 
+
         /// <summary>
         ///     Compiles 1 or more <see cref="IComposedTemplate" /> to the specified assemblyOutputPath.
         ///     <para>
         ///         When null is returned, then errors have been generated, check the <see cref="Errors" /> property.
         ///     </para>
+        ///     <para>
+        ///         When useCache is true: If assembly, pdb (if not production) and xml file(s)
+        ///         already exist, then they will be returned without compiling anything.
+        ///     </para>
         /// </summary>
         /// <param name="assemblyOutputPath">The assembly output path.</param>
+        /// <param name="useCache">if set to <c>true</c> [use cache].</param>
         /// <param name="templates">The templates.</param>
         /// <returns>FileInfo.</returns>
         /// <exception cref="ArgumentNullException">assemblyOutputPath</exception>
-        public FileInfo Compile(string assemblyOutputPath, params IComposedTemplate[] templates)
+        public FileInfo Compile(string assemblyOutputPath, bool useCache, params IComposedTemplate[] templates)
         {
             if (assemblyOutputPath.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(assemblyOutputPath));
@@ -87,7 +97,7 @@ namespace APIBlox.AspNetCore
             if (!Directory.Exists(assemblyOutputPath))
                 Directory.CreateDirectory(assemblyOutputPath);
 
-            return EmitToFile(assemblyOutputPath, templates);
+            return EmitToFile(assemblyOutputPath, useCache, templates);
         }
 
         /// <summary>
@@ -463,8 +473,12 @@ namespace APIBlox.AspNetCore
 
                     var assembly = Assembly.Load(ms.ToArray());
 
+                    _log.LogInformation(() => $"Created dynamic controllers assembly: {assembly.FullName}");
+
                     return assembly;
                 }
+
+                _log.LogCritical(() => $"Could not create dynamic controllers assembly: {_assemblyName}");
 
                 CheckAndSetFailures(emitResult);
 
@@ -472,31 +486,59 @@ namespace APIBlox.AspNetCore
             }
         }
 
-        private FileInfo EmitToFile(string outputFolder, params IComposedTemplate[] templates)
+        private FileInfo EmitToFile(string outputFolder, bool useCache, params IComposedTemplate[] templates)
         {
-            var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
-
-            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, References, csOptions);
-
             var dll = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.dll"));
             var pdb = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.pdb"));
             var xml = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.xml"));
 
             OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
 
+            if (useCache && OutputsCheck(dll, pdb, xml))
+                return dll;
+
+            var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
+            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, References, csOptions);
+
             var emitResult = compilation.Emit(dll.FullName, _production ? null : pdb.FullName, xml.FullName);
 
             if (emitResult.Success)
             {
+                _log.LogInformation(() => $"Created dynamic controllers assembly file: {dll.FullName}");
+
                 CheckAndSetWarnings(emitResult);
                 return dll;
             }
+
+            _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dll.FullName}");
 
             CheckAndSetFailures(emitResult);
 
             return null;
         }
 
+        private bool OutputsCheck(FileSystemInfo dll, FileSystemInfo pdb, FileSystemInfo xml)
+        {
+            if (dll.Exists && xml.Exists)
+            {
+                if (_production)
+                {
+                    var dllName = dll.FullName;
+                    _log.LogInformation(() => $"Using cached dynamic controller assembly file: {dllName}");
+
+                    return true;
+                }
+
+                if (!pdb.Exists)
+                    _log.LogWarning(() => $"PDB Cache file {pdb.FullName} not found, cache not being used.");
+
+                return false;
+            }
+            _log.LogWarning(() => $"DLL {dll.FullName} or XML file {xml.FullName} not found, cache not being used.");
+
+            return false;
+        }
+        
         private CSharpCompilationOptions ResetAndGetSyntaxTree(IComposedTemplate[] templates, out IEnumerable<SyntaxTree> csSyntaxTree)
         {
             if (templates is null || !templates.Any())

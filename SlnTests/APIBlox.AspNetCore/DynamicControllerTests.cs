@@ -5,6 +5,7 @@ using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SlnTests.APIBlox.AspNetCore.SlnTests.APIBlox.AspNetCore.RequestObjects;
 using SlnTests.APIBlox.AspNetCore.SlnTests.APIBlox.AspNetCore.ResponseObjects;
 using Xunit;
@@ -18,7 +19,7 @@ namespace SlnTests.APIBlox.AspNetCore
         [Fact]
         internal void SuccessfullyCompileMultipleControllersAndAssemblyExists()
         {
-            var factory = new DynamicControllerFactory("OutputFile", false);
+            var factory = new DynamicControllerFactory( new LoggerFactory(),"OutputFile", false);
 
             var c1 = factory.WriteQueryByController<TestControllerParameters, TestResponseObject>(
                 "SuccessfullyCompileMultipleControllersAndAssemblyExists1"
@@ -28,7 +29,7 @@ namespace SlnTests.APIBlox.AspNetCore
             );
 
             var outfile = @".\SuccessfullyCompileMultipleControllersAndAssemblyExists";
-            var fi = factory.Compile(outfile, c1, c2);
+            var fi = factory.Compile(outfile,false, c1, c2);
 
             Assert.NotNull(fi);
 
@@ -39,7 +40,7 @@ namespace SlnTests.APIBlox.AspNetCore
         [Fact]
         internal void SuccessfullyCompileQueryAllController()
         {
-            var factory = new DynamicControllerFactory("fooAss", true);
+            var factory = new DynamicControllerFactory( new LoggerFactory(),"fooAss", true);
 
             var foo =
                 factory.WriteQueryAllController<TestControllerParameters, IEnumerable<TestResponseObject>>("SuccessfullyCompileQueryAllController");
@@ -66,7 +67,7 @@ namespace SlnTests.APIBlox.AspNetCore
         [Fact]
         internal void SuccessfullyCompileQueryByController()
         {
-            var factory = new DynamicControllerFactory("MyAss", false);
+            var factory = new DynamicControllerFactory( new LoggerFactory(),"MyAss", false);
 
             var foo = factory.WriteQueryByController<TestControllerParameters, TestResponseObject>("SuccessfullyCompileQueryByController"
             );
