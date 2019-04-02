@@ -56,7 +56,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 controllerRoute
             );
 
-            var childPost = factory.WritePostController<ChildPostRequest, ChildResponse>(
+            //var childPost = factory.WritePostController<ChildPostRequest, ChildResponse>(
+            //    null,
+            //    nameSpace,
+            //    "Children",
+            //    controllerRoute
+            //);
+
+            var childPostAccepted = factory.WritePostAcceptedController<ChildPostRequest>(
                 null,
                 nameSpace,
                 "Children",
@@ -65,7 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var output = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             
-            factory.Compile(builder, output, childById, childDelete, childAll, childPut,childPatch, childPost);
+            factory.Compile(builder, output, childById, childDelete, childAll, childPut,childPatch,  childPostAccepted);
 
             var (_, _, xml) = factory.OutputFiles;
 

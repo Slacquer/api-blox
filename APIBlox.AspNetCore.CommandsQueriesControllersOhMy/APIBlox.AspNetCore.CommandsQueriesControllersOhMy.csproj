@@ -30,6 +30,10 @@
     <None Remove="Templates\PatchBy\Ctor.txt" />
     <None Remove="Templates\PatchBy\Fields.txt" />
     <None Remove="Templates\PatchBy\Namespaces.txt" />
+    <None Remove="Templates\PostAccepted\ActionContent.txt" />
+    <None Remove="Templates\PostAccepted\Ctor.txt" />
+    <None Remove="Templates\PostAccepted\Fields.txt" />
+    <None Remove="Templates\PostAccepted\Namespaces.txt" />
     <None Remove="Templates\Post\ActionContent.txt" />
     <None Remove="Templates\Post\Ctor.txt" />
     <None Remove="Templates\Post\Fields.txt" />
@@ -57,6 +61,10 @@
     <EmbeddedResource Include="Templates\PatchBy\Ctor.txt" />
     <EmbeddedResource Include="Templates\PatchBy\Fields.txt" />
     <EmbeddedResource Include="Templates\PatchBy\Namespaces.txt" />
+    <EmbeddedResource Include="Templates\PostAccepted\ActionContent.txt" />
+    <EmbeddedResource Include="Templates\PostAccepted\Ctor.txt" />
+    <EmbeddedResource Include="Templates\PostAccepted\Fields.txt" />
+    <EmbeddedResource Include="Templates\PostAccepted\Namespaces.txt" />
     <EmbeddedResource Include="Templates\Post\ActionContent.txt" />
     <EmbeddedResource Include="Templates\Post\Ctor.txt" />
     <EmbeddedResource Include="Templates\Post\Fields.txt" />

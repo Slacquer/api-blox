@@ -243,6 +243,41 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
 
+        /// <summary>
+        ///     Creates a <see cref="DynamicControllerComposedTemplate"/> for creating a resources but NOT getting back an immediate result.
+        /// </summary>
+        /// <typeparam name="TRequest">The type of the t request.</typeparam>
+        /// <param name="factory">The factory.</param>
+        /// <param name="actionRoute">The action route.</param>
+        /// <param name="nameSpace">The name space.</param>
+        /// <param name="controllerName">Name of the controller.</param>
+        /// <param name="controllerRoute">The controller route.</param>
+        /// <returns>DynamicControllerComposedTemplate.</returns>
+        /// <exception cref="ArgumentException">Must be a single object type. - TResponse</exception>
+        public static DynamicControllerComposedTemplate WritePostAcceptedController<TRequest>(
+            this DynamicControllerFactory factory,
+            string actionRoute = null,
+            string nameSpace = "DynamicControllers",
+            string controllerName = null,
+            string controllerRoute = "api/[controller]"
+        )
+            where TRequest : new()
+        {
+            var action = Templates.GetDynamicAction("PostAccepted", actionRoute);
+
+            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+
+            ParseAndReplace(factory,
+                template,
+                typeof(TRequest),
+                null,
+                true,
+                req => controllerName.ToPascalCase() ?? $"PostAccepted{req}Controller"
+            );
+
+            return template;
+        }
+
         private static void ParseAndReplace(
             DynamicControllerFactory factory,
             IComposedTemplate template,
@@ -290,7 +325,7 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Compose();
         }
 
-        
+
         // ReSharper disable once ClassNeverInstantiated.Local
         /// <summary>
         ///     Class Templates.
