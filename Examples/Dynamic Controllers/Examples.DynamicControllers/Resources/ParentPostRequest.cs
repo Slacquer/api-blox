@@ -2,20 +2,16 @@
 
 namespace Examples.Resources
 {
-    internal class ParentPostRequest
+    /// <summary>
+    ///     Class ParentPostRequest.
+    /// </summary>
+    public class ParentPostRequest
     {
-        public int Age { get; set; }
-        
-        public string FirstName { get; set; }
-        
-        public string LastName { get; set; }
-
-        // This is private so that things like swashbuckle won't try to
-        // allow a user to fill it in, as we want it from the route.
-        [FromRoute(Name ="someRouteValueWeNeed")]
-        public int SomeRouteValueWeNeed { get;  set; }
-
-        [FromQuery(Name ="someRouteValueWeNeed2")]
-        public int SomeRouteValueWeNeed2 { get;  set; }
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
+        /// <value>The body.</value>
+        [FromBody]
+        public PersonModel Body { get; set; }
     }
 }

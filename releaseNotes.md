@@ -1,5 +1,6 @@
 _?, 2019_  **v2.0.???**  
 - DynamicControllers!  This was a big one, no longer are generic classes being used along with silly conventions.  Classes are generated on the fly and compiled.  Things like swashbuckle have no clue, therefore just work correctly out of the box!
+- Removed lots of things...  Mostly with DynamicForms, however I also nuked IPatchCommandHandler and IGenericPatchCommandHandler as they are no longer needed (they were born from dynamic controller input parameter issues).
 - AddEnsureResponseResultActionFilter, added onlyQueryActions option, allowing structure to overwrite how all http methods ruturn (IE: post result gets wrapped like new{ data=result }).
 Thanks,  
 _Slacquer_  

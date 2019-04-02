@@ -14,7 +14,7 @@ namespace Examples.Resources
         /// <summary>
         /// Sets the child id.
         /// </summary>
-        [FromRoute(Name ="childId")]
+        [FromRoute(Name = "childId")]
         public int Id { get; set; }
 
         /// <summary>

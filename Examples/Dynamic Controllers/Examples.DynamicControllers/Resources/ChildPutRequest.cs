@@ -10,22 +10,8 @@ namespace Examples.Resources
     /// <summary>
     /// Class ChildPutRequest.
     /// </summary>
-    public class ChildPutRequest
+    public class ChildPutRequest:ChildByIdRequest
     {
-        /// <summary>
-        /// Sets the child id.
-        /// </summary>
-        /// <value>The identifier.</value>
-        [FromRoute(Name ="childId")]
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the parent identifier.
-        /// </summary>
-        /// <value>The parent identifier.</value>
-        [FromRoute(Name = "parentId")]
-        public int ParentId { get; set; }
-
         /// <summary>
         /// Gets or sets an query value we want.
         /// </summary>

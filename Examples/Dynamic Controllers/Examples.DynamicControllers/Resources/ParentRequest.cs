@@ -25,7 +25,7 @@ namespace Examples.Resources
         ///     Gets or sets some route value we need.
         /// </summary>
         /// <value>Some route value we need.</value>
-        [FromRoute(Name = "someRouteValueWeNeed")]
+        [FromRoute]
         public int SomeRouteValueWeNeed { get; set; }
     }
 }
