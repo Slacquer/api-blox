@@ -22,25 +22,25 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class MvcBuilderExtensionsAspNetCore
     {
-        /// <summary>
-        ///     Adds the MVC consumes produces json resource result filters for application/json" and
-        ///     "application/json-patch+json.  In addition will make sure that
-        ///     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
-        ///     set to use <see cref="CamelCasePropertyNamesContractResolver" />
-        ///     <para>
-        ///         I should be called as early as possible in the configure services chain.
-        ///     </para>
-        /// </summary>
-        /// <param name="builder">IMvcCoreBuilder</param>
-        /// <returns>IMvcCoreBuilder.</returns>
-        [Obsolete("Not strictly needed since 2.2, will be removed later.", true)]
-        public static IMvcCoreBuilder AddConsumesProducesJsonResourceResultFilters(this IMvcCoreBuilder builder)
-        {
-            ConsumesProducesCommon(builder.Services);
-            builder.AddJsonFormatters().AddDataAnnotations();
+        ///// <summary>
+        /////     Adds the MVC consumes produces json resource result filters for application/json" and
+        /////     "application/json-patch+json.  In addition will make sure that
+        /////     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
+        /////     set to use <see cref="CamelCasePropertyNamesContractResolver" />
+        /////     <para>
+        /////         I should be called as early as possible in the configure services chain.
+        /////     </para>
+        ///// </summary>
+        ///// <param name="builder">IMvcCoreBuilder</param>
+        ///// <returns>IMvcCoreBuilder.</returns>
+        //[Obsolete("Not strictly needed since 2.2, will be removed later.", true)]
+        //public static IMvcCoreBuilder AddConsumesProducesJsonResourceResultFilters(this IMvcCoreBuilder builder)
+        //{
+        //    ConsumesProducesCommon(builder.Services);
+        //    builder.AddJsonFormatters().AddDataAnnotations();
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
         /// <summary>
         ///   Will make sure that
@@ -56,24 +56,24 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        /// <summary>
-        ///     Adds the MVC consumes produces json resource result filters for application/json" and
-        ///     "application/json-patch+json.  In addition will make sure that
-        ///     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
-        ///     set to use <see cref="CamelCasePropertyNamesContractResolver" />
-        ///     <para>
-        ///         I should be called as early as possible in the configure services chain.
-        ///     </para>
-        /// </summary>
-        /// <param name="builder">IMvcBuilder</param>
-        /// <returns>IMvcBuilder.</returns>
-        [Obsolete("Not strictly needed since 2.2, will be removed later.", true)]
-        public static IMvcBuilder AddConsumesProducesJsonResourceResultFilters(this IMvcBuilder builder)
-        {
-            ConsumesProducesCommon(builder.Services);
+        ///// <summary>
+        /////     Adds the MVC consumes produces json resource result filters for application/json" and
+        /////     "application/json-patch+json.  In addition will make sure that
+        /////     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
+        /////     set to use <see cref="CamelCasePropertyNamesContractResolver" />
+        /////     <para>
+        /////         I should be called as early as possible in the configure services chain.
+        /////     </para>
+        ///// </summary>
+        ///// <param name="builder">IMvcBuilder</param>
+        ///// <returns>IMvcBuilder.</returns>
+        //[Obsolete("Not strictly needed since 2.2, will be removed later.")]
+        //public static IMvcBuilder AddConsumesProducesJsonResourceResultFilters(this IMvcBuilder builder)
+        //{
+        //    ConsumesProducesCommon(builder.Services);
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
         /// <summary>
         ///   Will make sure that
@@ -434,7 +434,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IMvcCoreBuilder AddValidateResourceActionFilter(this IMvcCoreBuilder builder)
         {
             builder.Services.Configure<ApiBehaviorOptions>(o =>
-                o.SuppressModelStateInvalidFilter = true
+                {
+                    o.SuppressUseValidationProblemDetailsForInvalidModelStateResponses = true;
+                    o.SuppressModelStateInvalidFilter = true;
+                }
             );
 
             return builder.AddFilter<ValidateResourceActionFilter>();
@@ -451,7 +454,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IMvcBuilder AddValidateResourceActionFilter(this IMvcBuilder builder)
         {
             builder.Services.Configure<ApiBehaviorOptions>(o =>
-                o.SuppressModelStateInvalidFilter = true
+                {
+                    o.SuppressUseValidationProblemDetailsForInvalidModelStateResponses = true;
+                    o.SuppressModelStateInvalidFilter = true;
+                }
             );
 
             return builder.AddFilter<ValidateResourceActionFilter>();
@@ -495,13 +501,13 @@ namespace Microsoft.Extensions.DependencyInjection
             return ret;
         }
 
-        private static void ConsumesProducesCommon(IServiceCollection services)
-        {
-            services.Configure<MvcOptions>(o =>
-                o.Filters.TryAdd(new ProducesAttribute("application/json"))
-                    .TryAdd(new ConsumesAttribute("application/json", "application/json-patch+json"))
-            );
-        }
+        //private static void ConsumesProducesCommon(IServiceCollection services)
+        //{
+        //    services.Configure<MvcOptions>(o =>
+        //        o.Filters.TryAdd(new ProducesAttribute("application/json"))
+        //            .TryAdd(new ConsumesAttribute("application/json", "application/json-patch+json"))
+        //    );
+        //}
 
         private static void CamelCaseResultsCommon(IServiceCollection services)
         {

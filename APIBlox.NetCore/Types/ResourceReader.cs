@@ -40,7 +40,7 @@ namespace APIBlox.NetCore.Types
         }
 
         /// <summary>
-        /// Gets embedded resources.
+        ///     Gets embedded resources.
         /// </summary>
         /// <param name="templatePath">The template path.</param>
         /// <returns>Dictionary&lt;System.String, System.String&gt;.</returns>

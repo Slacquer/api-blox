@@ -5,3 +5,4 @@ Microsoft.AspNetCore.Mvc
 APIBlox.AspNetCore.ActionResults
 APIBlox.AspNetCore.Contracts
 APIBlox.AspNetCore.Types
+APIBlox.AspNetCore.Types.Errors

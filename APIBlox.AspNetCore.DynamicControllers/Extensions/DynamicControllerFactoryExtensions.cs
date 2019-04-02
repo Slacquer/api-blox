@@ -20,7 +20,8 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="templates">The templates.</param>
         /// <returns>DynamicControllerFactory.</returns>
         /// <exception cref="APIBlox.AspNetCore.Extensions.TemplateCompilationException"></exception>
-        public static DynamicControllerFactory Compile(this DynamicControllerFactory factory, IMvcBuilder builder, string outputFile, params IComposedTemplate[] templates)
+        public static DynamicControllerFactory Compile(this DynamicControllerFactory factory, 
+            IMvcBuilder builder, string outputFile, params IComposedTemplate[] templates)
         {
             var ass = factory.Compile(outputFile, templates);
 

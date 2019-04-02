@@ -4,11 +4,6 @@
         <name>Examples.DynamicControllers</name>
     </assembly>
     <members>
-        <member name="T:Microsoft.Extensions.DependencyInjection.MvcBuilderExtensionsDynamicControllers">
-            <summary>
-                Class MvcBuilderExtensions.
-            </summary>
-        </member>
         <member name="T:Examples.Contracts.IRandomNumberGeneratorService">
             <summary>
                 Interface IRandomNumberGeneratorService
@@ -48,6 +43,11 @@
             </summary>
             <value>Some identifier.</value>
         </member>
+        <member name="T:Examples.Resources.ChildByIdRequest">
+            <summary>
+                Class ChildByIdRequest.
+            </summary>
+        </member>
         <member name="P:Examples.Resources.ChildByIdRequest.Id">
             <summary>
             Sets the child id.
@@ -64,6 +64,22 @@
                 Gets or sets some route value we need.
             </summary>
             <value>Some route value we need.</value>
+        </member>
+        <member name="T:Examples.Resources.ChildPatchRequest">
+            <summary>
+            Class ChildPutRequest.
+            </summary>
+        </member>
+        <member name="P:Examples.Resources.ChildPatchRequest.Body">
+            <summary>
+                Sets the body (patch document).
+            </summary>
+            <value>The body.</value>
+        </member>
+        <member name="T:Examples.Resources.ChildPostRequest">
+            <summary>
+                Class ChildPostRequest.
+            </summary>
         </member>
         <member name="P:Examples.Resources.ChildPostRequest.ParentId">
             <summary>

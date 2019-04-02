@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     c.DescribeAllEnumsAsStrings();
                     c.SwaggerDoc(version, new Info {Title = siteTitle, Version = version});
                     c.IncludeXmlComments(@".\Examples.DynamicControllers.xml", true);
-                    c.IncludeXmlComments(dynamicControllersXmlFile);
+                    c.IncludeXmlComments(dynamicControllersXmlFile, true);
                 }
             );
         }

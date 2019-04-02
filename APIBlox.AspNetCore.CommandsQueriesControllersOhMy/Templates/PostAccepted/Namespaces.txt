@@ -7,3 +7,4 @@ APIBlox.AspNetCore.ActionResults
 APIBlox.AspNetCore.Contracts
 APIBlox.NetCore.Extensions
 APIBlox.AspNetCore.Types
+APIBlox.AspNetCore.Types.Errors

@@ -19,7 +19,8 @@ namespace APIBlox.AspNetCore.Types.Errors
         /// <summary>
         ///     The logger
         /// </summary>
-        [JsonIgnore] protected ILogger<DynamicErrorObject> Logger;
+        [JsonIgnore] 
+        protected ILogger<DynamicErrorObject> Logger;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicErrorObject" /> class.
@@ -125,17 +126,5 @@ namespace APIBlox.AspNetCore.Types.Errors
 
             return base.GetDynamicMemberNames();
         }
-
-        //private void CreateLogger()
-        //{
-        //    if (!(Logger is null))
-        //        return;
-
-        //    var factory = new LoggerFactory();
-
-        //    factory.AddConsole(true).AddDebug().AddEventSourceLogger();
-
-        //    Logger = factory.CreateLogger<DynamicErrorObject>();
-        //}
     }
 }
