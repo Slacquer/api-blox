@@ -1,0 +1,1 @@
+﻿IQueryHandler<[REQ_OBJECT], HandlerResponse> getBy[RES_OBJECT_INNER_RESULT]Handler

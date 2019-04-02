@@ -47,8 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 "Children",
                 controllerRoute
             );
-
-
+            
             var childAll = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
                 null,
                 nameSpace,

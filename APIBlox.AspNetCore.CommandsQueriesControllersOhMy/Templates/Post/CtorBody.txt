@@ -1,0 +1,2 @@
+﻿_postBy[REQ_OBJECT]Handler = postBy[REQ_OBJECT]Handler;
+_log = loggerFactory.CreateLogger<[CONTROLLER_NAME]>();

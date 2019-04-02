@@ -67,7 +67,10 @@ namespace Examples
                 //
                 // Resource Validator.
                 .AddValidateResourceActionFilter()
-                ;
+
+                //
+                // Make sure all results are camel cased.
+                .AddCamelCaseResultsOptions();
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version, dynamicControllersXmlFile);
         }

@@ -350,7 +350,8 @@ namespace APIBlox.AspNetCore.Extensions
                     templatePath,
                     actionRoute,
                     bits["ActionContent"],
-                    bits["Ctor"],
+                    bits["CtorArgs"],
+                    bits["CtorBody"],
                     bits["Fields"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
                     bits["Namespaces"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
                     methods

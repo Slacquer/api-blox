@@ -1,0 +1,1 @@
+﻿ICommandHandler<[REQ_OBJECT], HandlerResponse> patchBy[REQ_OBJECT]Handler

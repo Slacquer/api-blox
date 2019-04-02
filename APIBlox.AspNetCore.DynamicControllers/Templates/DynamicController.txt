@@ -14,8 +14,15 @@ namespace [CONTROLLERS_NAMESPACE].Controllers
         [FIELDS]
 
 
-        [CTORS]
-
+		/// <summary>
+		///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
+		/// </summary>
+		public [CONTROLLER_NAME](
+			[CTOR_ARGS]
+		)
+		{
+			[CTOR_BODY]
+		}
 
 		[ACTIONS]
 

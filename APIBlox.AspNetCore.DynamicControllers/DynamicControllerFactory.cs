@@ -24,7 +24,7 @@ namespace APIBlox.AspNetCore
 
         // Found the following piece of gold at...
         // https://github.com/dotnet/roslyn/wiki/Runtime-code-generation-using-Roslyn-compilations-in-.NET-Core-App
-        private static readonly PortableExecutableReference[] _references = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
+        private static readonly PortableExecutableReference[] References = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
             .ToString()
             .Split(";", StringSplitOptions.RemoveEmptyEntries)
             .Select(s => MetadataReference.CreateFromFile(s))
@@ -64,7 +64,7 @@ namespace APIBlox.AspNetCore
         public IDictionary<string, string> Controllers { get; private set; }
 
         /// <summary>
-        ///     Gets the output files when compiling with an assebly output path.
+        ///     Gets the output files when compiling with an assembly output path.
         /// </summary>
         /// <value>The output files.</value>
         public (string, string, string) OutputFiles { get; private set; }
@@ -197,7 +197,7 @@ namespace APIBlox.AspNetCore
 
                 result.Append(index == args.Length - 1 ? $"{tName}" : $"{tName},");
 
-                if (!(namespaces is null) && !namespaces.Contains(tNs))
+                if (!namespaces.Contains(tNs))
                     namespaces.Add(tNs);
             }
 
@@ -307,7 +307,7 @@ namespace APIBlox.AspNetCore
 
                     builder.Append(">");
 
-                    name = $"{GetNameWithoutGenericArity(prop)}{builder.ToString()}";
+                    name = $"{GetNameWithoutGenericArity(prop)}{builder}";
                 }
             }
 
@@ -443,7 +443,7 @@ namespace APIBlox.AspNetCore
         {
             var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
 
-            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, _references, csOptions);
+            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, References, csOptions);
 
             using (var ms = new MemoryStream())
             {
@@ -470,7 +470,7 @@ namespace APIBlox.AspNetCore
         {
             var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
 
-            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, _references, csOptions);
+            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, References, csOptions);
 
             var dll = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.dll"));
             var pdb = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.pdb"));
@@ -530,11 +530,12 @@ namespace APIBlox.AspNetCore
                 {
                     AddExistingArray(dc.Namespaces, da.Action.Namespaces);
                     AddExistingArray(dc.Fields, da.Action.Fields);
-
+                   
                     if (!da.Action.Methods.IsEmptyNullOrWhiteSpace())
                         dc.Methods.Add(da.Action.Methods);
 
-                    dc.Ctors.Add(da.Action.Ctor);
+                    dc.CtorArgs.Add(da.Action.CtorArgs);
+                    dc.CtorBody.Add(da.Action.CtorBody);
                     dc.Actions.Add(da.Action.Content);
                 }
 

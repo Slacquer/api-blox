@@ -1,8 +1,0 @@
-﻿/// <summary>
-///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
-/// </summary>
-/// <param name="putBy[REQ_OBJECT]Handler">The handler used to for updating a resource.</param>
-public [CONTROLLER_NAME](ICommandHandler<[REQ_OBJECT], HandlerResponse> putBy[REQ_OBJECT]Handler)
-{
-    _putBy[REQ_OBJECT]Handler = putBy[REQ_OBJECT]Handler;
-}

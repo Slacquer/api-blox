@@ -1,8 +1,0 @@
-﻿/// <summary>
-///     Initializes a new instance of the <see cref="[CONTROLLER_NAME]" /> class.
-/// </summary>
-/// <param name="getBy[RES_OBJECT_INNER_RESULT]Handler">The handler used to to receive a [RES_OBJECT_INNER_RESULT] resource.</param>
-public [CONTROLLER_NAME](IQueryHandler<[REQ_OBJECT], HandlerResponse> getBy[RES_OBJECT_INNER_RESULT]Handler)
-{
-	_getBy[RES_OBJECT_INNER_RESULT]Handler = getBy[RES_OBJECT_INNER_RESULT]Handler;
-}

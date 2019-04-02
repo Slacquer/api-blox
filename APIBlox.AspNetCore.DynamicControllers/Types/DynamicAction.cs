@@ -16,16 +16,18 @@ namespace APIBlox.AspNetCore.Types
         /// <param name="name">The name.</param>
         /// <param name="route">The route.</param>
         /// <param name="content">The content.</param>
-        /// <param name="ctor">The ctor.</param>
+        /// <param name="ctorArgs">The ctor arguments.</param>
+        /// <param name="ctorBody">The ctor body.</param>
         /// <param name="fields">The fields.</param>
         /// <param name="namespaces">The namespaces.</param>
         /// <param name="methods">The methods.</param>
-        public DynamicAction(string name, string route, string content, string ctor, string[] fields, string[] namespaces, string methods = null)
+        public DynamicAction(string name, string route, string content, string ctorArgs, string ctorBody, string[] fields, string[] namespaces, string methods = null)
         {
             Name = name;
             Route = route;
             Content = content;
-            Ctor = ctor;
+            CtorArgs = ctorArgs;
+            CtorBody= ctorBody;
             Fields = fields;
             Namespaces = namespaces;
             Methods = methods;
@@ -53,7 +55,13 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets the ctor.
         /// </summary>
         /// <value>The ctor.</value>
-        public string Ctor { get; private set; }
+        public string CtorArgs { get; private set; }
+
+        /// <summary>
+        /// Gets the ctor body.
+        /// </summary>
+        /// <value>The ctor body.</value>
+        public string CtorBody { get; private set; }
 
         /// <summary>
         ///     Gets the fields.
@@ -95,7 +103,8 @@ namespace APIBlox.AspNetCore.Types
         public void Compose()
         {
             Content = ParseTokens(Content);
-            Ctor = ParseTokens(Ctor);
+            CtorArgs = ParseTokens(CtorArgs);
+            CtorBody = ParseTokens(CtorBody);
             Fields = Fields.Select(ParseTokens).ToArray();
 
             if (Methods is null || !Methods.Any())
