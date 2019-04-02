@@ -232,7 +232,7 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="t">The t.</param>
         /// <returns>System.String.</returns>
-        public static string GetNameWithoutGenericArity(Type t)
+        private static string GetNameWithoutGenericArity(Type t)
         {
             var name = t.Name;
             var index = name.IndexOf('`');
@@ -276,7 +276,7 @@ namespace APIBlox.AspNetCore
                 throw new ArgumentException($"{request.Name} must have a public property that is decorated with a {nameof(FromBodyAttribute)}.");
         }
 
-        private string GetPropertyTypeAndValue(List<string> namespaces, Type prop, string propName)
+        private static string GetPropertyTypeAndValue(ICollection<string> namespaces, Type prop, string propName)
         {
             var (nullable, name) = IsOfNullableType(prop);
 
@@ -582,7 +582,5 @@ namespace APIBlox.AspNetCore
 
             CompilationWarnings = warnings.Any() ? warnings : null;
         }
-
-
     }
 }
