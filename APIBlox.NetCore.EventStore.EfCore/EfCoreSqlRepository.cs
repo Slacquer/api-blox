@@ -19,6 +19,7 @@ namespace APIBlox.NetCore
         public EfCoreSqlRepository(EventStoreDbContext context, JsonSerializerSettings jsonSerializerSettings)
         {
             _context = context;
+            JsonSettings = jsonSerializerSettings;
         }
 
         public JsonSerializerSettings JsonSettings { get; }

@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Documents;
-using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.Contracts
 {
@@ -14,12 +13,6 @@ namespace APIBlox.NetCore.Contracts
     public interface IEventStoreRepository<TModel>
         where TModel : class
     {
-        /// <summary>
-        ///     Gets or sets the json settings.
-        /// </summary>
-        /// <value>The json settings.</value>
-        JsonSerializerSettings JsonSettings { get; }
-
         /// <summary>
         ///     Adds the asynchronous.
         /// </summary>
