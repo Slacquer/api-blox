@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
             const string nameSpace = "Examples";
-            const string controllerRoute = "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children";
+            const string controllerRoute = "api/[controller]/parents/{parentId}/children";
 
             var childById = factory.WriteQueryByController<ChildByIdRequest, ChildResponse>(
                 "{childId}",

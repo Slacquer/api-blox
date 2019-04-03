@@ -16,12 +16,6 @@ namespace Examples.Resources
         [Required]
         [FromQuery]
         public string SomeOtherThingWeNeedToKnowWhenRequestingData { get; set; }
-
-        /// <summary>
-        ///     Gets or sets some route value we need.
-        /// </summary>
-        /// <value>Some route value we need.</value>
-        [FromRoute]
-        public int SomeRouteValueWeNeed { get; set; }
+        
     }
 }

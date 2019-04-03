@@ -16,12 +16,6 @@ namespace Examples.Resources
         /// <value>The parent identifier.</value>
         [FromRoute]
         public int ParentId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets some route value we need.
-        /// </summary>
-        /// <value>Some route value we need.</value>
-        [FromRoute]
-        public int SomeRouteValueWeNeed { get; set; }
+        
     }
 }
