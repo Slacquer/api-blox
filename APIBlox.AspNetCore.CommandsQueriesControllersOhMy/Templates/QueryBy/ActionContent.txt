@@ -1,5 +1,5 @@
 ﻿/// <summary>
-///     Action for getting a [RES_OBJECT_INNER_RESULT] resource.
+///     Action for getting a resource.
 /// </summary>
 /// <remarks>
 ///     Possible Response Status Codes: <a href="https://httpstatuses.com/200">200</a>, <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>

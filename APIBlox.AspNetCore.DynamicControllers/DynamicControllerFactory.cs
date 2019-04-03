@@ -104,8 +104,8 @@ namespace APIBlox.AspNetCore
                 Directory.CreateDirectory(assemblyOutputPath);
 
             var fi = EmitToFile(assemblyOutputPath, useCache, templates);
-
-            return fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
+            
+            return (fi is null || fi.Exists) ? Assembly.LoadFile(fi.FullName) : null;
         }
 
         /// <summary>
@@ -508,7 +508,7 @@ namespace APIBlox.AspNetCore
 
             if (useCache && OutputsCheck(dll, pdb, xml))
                 return dll;
-            
+
             var csOptions = GetSyntaxTree(templates, out var csSyntaxTree);
             var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, GetReferences(), csOptions);
 
