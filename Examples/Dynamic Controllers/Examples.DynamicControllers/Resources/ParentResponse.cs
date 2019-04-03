@@ -9,6 +9,7 @@ namespace Examples.Resources
     /// <inheritdoc />
     public class ParentResponse : IResource<int>
     {
+        /// <inheritdoc />
         /// <summary>
         ///     Gets or sets the Id.
         /// </summary>

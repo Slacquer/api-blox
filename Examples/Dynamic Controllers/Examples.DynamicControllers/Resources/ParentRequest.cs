@@ -10,12 +10,11 @@ namespace Examples.Resources
     public class ParentRequest : FilteredPaginationQuery
     {
         /// <summary>
-        ///     Gets or sets some other thing we need to know when requesting data.
+        /// Gets or sets the identifier.
         /// </summary>
-        /// <value>Some other thing we need to know when requesting data.</value>
-        [Required]
-        [FromQuery]
-        public string SomeOtherThingWeNeedToKnowWhenRequestingData { get; set; }
-        
+        /// <value>The identifier.</value>
+        [FromRoute(Name ="parentId")]
+        public int Id { get; set; }
+
     }
 }

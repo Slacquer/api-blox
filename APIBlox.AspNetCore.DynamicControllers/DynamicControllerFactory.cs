@@ -93,9 +93,9 @@ namespace APIBlox.AspNetCore
         /// <param name="assemblyOutputPath">The assembly output path.</param>
         /// <param name="useCache">if set to <c>true</c> [use cache].</param>
         /// <param name="templates">The templates.</param>
-        /// <returns>FileInfo.</returns>
+        /// <returns>Assembly.</returns>
         /// <exception cref="ArgumentNullException">assemblyOutputPath</exception>
-        public FileInfo Compile(string assemblyOutputPath, bool useCache, params IComposedTemplate[] templates)
+        public Assembly Compile(string assemblyOutputPath, bool useCache, params IComposedTemplate[] templates)
         {
             if (assemblyOutputPath.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(assemblyOutputPath));
@@ -103,7 +103,9 @@ namespace APIBlox.AspNetCore
             if (!Directory.Exists(assemblyOutputPath))
                 Directory.CreateDirectory(assemblyOutputPath);
 
-            return EmitToFile(assemblyOutputPath, useCache, templates);
+            var fi = EmitToFile(assemblyOutputPath, useCache, templates);
+
+            return fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
         }
 
         /// <summary>
@@ -501,7 +503,7 @@ namespace APIBlox.AspNetCore
             var dll = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.dll"));
             var pdb = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.pdb"));
             var xml = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.xml"));
-            
+
             OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
 
             if (useCache && OutputsCheck(dll, pdb, xml))
@@ -603,7 +605,7 @@ namespace APIBlox.AspNetCore
         {
             if (templates is null || !templates.Any())
                 throw new ArgumentNullException(nameof(templates));
-            
+
             var csOptions = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,
                 optimizationLevel: _production

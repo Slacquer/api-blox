@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
@@ -14,11 +15,11 @@ namespace APIBlox.AspNetCore.Extensions
     public static class DynamicControllerFactoryExtensions
     {
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value.
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <typeparam name="TResponse">The type of the t response.</typeparam>
-        /// <param name="factory">The factory.</param>
+        /// <param name="templates">Current list of templates.</param>
         /// <param name="actionRoute">The action route.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
@@ -29,8 +30,8 @@ namespace APIBlox.AspNetCore.Extensions
         ///     or
         ///     Must be a single object type. - TResponse
         /// </exception>
-        public static DynamicControllerComposedTemplate WriteQueryByController<TRequest, TResponse>(
-            this DynamicControllerFactory factory,
+        public static IEnumerable<IComposedTemplate> WriteQueryByController<TRequest, TResponse>(
+            this IEnumerable<IComposedTemplate> templates,
             string actionRoute,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
@@ -50,31 +51,31 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(
-                template,
-                typeof(TRequest),
-                typeof(TResponse),
-                false,
-                req => controllerName.ToPascalCase() ?? $"QueryBy{req}Controller"
-            );
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
+                 template,
+                 typeof(TRequest),
+                 typeof(TResponse),
+                 false,
+                 req => controllerName.ToPascalCase() ?? $"QueryBy{req}Controller"
+             ));
 
-            return template;
+            return templates;
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for querying for all resources.
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying for all resources.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <typeparam name="TResponse">The type of the t response.</typeparam>
-        /// <param name="factory">The factory.</param>
+        /// <param name="templates">Current list of templates.</param>
         /// <param name="actionRoute">The action route.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">Must be a enumerable object type. - TResponse</exception>
-        public static DynamicControllerComposedTemplate WriteQueryAllController<TRequest, TResponse>(
-            this DynamicControllerFactory factory,
+        public static IEnumerable<IComposedTemplate> WriteQueryAllController<TRequest, TResponse>(
+            this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
@@ -90,29 +91,29 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                 template,
                 typeof(TRequest),
                 typeof(TResponse),
                 false,
                 req => controllerName.ToPascalCase() ?? $"QueryAll{req}Controller"
-            );
+            ));
 
-            return template;
+            return templates;
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for deleting resources by some value.
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for deleting resources by some value.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
-        /// <param name="factory">The factory.</param>
+        /// <param name="templates">Current list of templates.</param>
         /// <param name="actionRoute">The action route.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
-        public static DynamicControllerComposedTemplate WriteDeleteByController<TRequest>(
-            this DynamicControllerFactory factory,
+        public static IEnumerable<IComposedTemplate> WriteDeleteByController<TRequest>(
+            this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
@@ -124,29 +125,28 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                 template,
                 typeof(TRequest),
                 null,
                 false,
                 req => controllerName.ToPascalCase() ?? $"DeleteBy{req}Controller"
-            );
-
-            return template;
+            ));
+            return templates;
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PUT.
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PUT.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
-        /// <param name="factory">The factory.</param>
+        /// <param name="templates">Current list of templates.</param>
         /// <param name="actionRoute">The action route.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
-        public static DynamicControllerComposedTemplate WritePutController<TRequest>(
-            this DynamicControllerFactory factory,
+        public static IEnumerable<IComposedTemplate> WritePutController<TRequest>(
+            this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
@@ -158,29 +158,28 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(
-                template,
-                typeof(TRequest),
-                null,
-                true,
-                req => controllerName.ToPascalCase() ?? $"PutBy{req}Controller"
-            );
-
-            return template;
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
+                 template,
+                 typeof(TRequest),
+                 null,
+                 true,
+                 req => controllerName.ToPascalCase() ?? $"PutBy{req}Controller"
+             ));
+            return templates;
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PATCH.
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PATCH.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
-        /// <param name="factory">The factory.</param>
+        /// <param name="templates">Current list of templates.</param>
         /// <param name="actionRoute">The action route.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
-        public static DynamicControllerComposedTemplate WritePatchController<TRequest>(
-            this DynamicControllerFactory factory,
+        public static IEnumerable<IComposedTemplate> WritePatchController<TRequest>(
+            this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
@@ -192,31 +191,30 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(
-                template,
-                typeof(TRequest),
-                null,
-                true,
-                req => controllerName.ToPascalCase() ?? $"PatchBy{req}Controller"
-            );
-
-            return template;
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
+                 template,
+                 typeof(TRequest),
+                 null,
+                 true,
+                 req => controllerName.ToPascalCase() ?? $"PatchBy{req}Controller"
+             ));
+            return templates;
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for creating a resources.
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <typeparam name="TResponse">The type of the t response.</typeparam>
-        /// <param name="factory">The factory.</param>
+        /// <param name="templates">Current list of templates.</param>
         /// <param name="actionRoute">The action route.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">Must be a single object type. - TResponse</exception>
-        public static DynamicControllerComposedTemplate WritePostController<TRequest, TResponse>(
-            this DynamicControllerFactory factory,
+        public static IEnumerable<IComposedTemplate> WritePostController<TRequest, TResponse>(
+            this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
@@ -231,31 +229,31 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(
-                template,
-                typeof(TRequest),
-                typeof(TResponse),
-                true,
-                req => controllerName.ToPascalCase() ?? $"Post{req}Controller"
-            );
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
+                   template,
+                   typeof(TRequest),
+                   typeof(TResponse),
+                   true,
+                   req => controllerName.ToPascalCase() ?? $"Post{req}Controller"
+               ));
 
-            return template;
+            return templates;
         }
 
         /// <summary>
-        ///     Creates a <see cref="DynamicControllerComposedTemplate" /> for creating a resources but NOT getting back an
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources but NOT getting back an
         ///     immediate result.
         /// </summary>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
-        /// <param name="factory">The factory.</param>
+        /// <param name="templates">Current list of templates.</param>
         /// <param name="actionRoute">The action route.</param>
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">Must be a single object type. - TResponse</exception>
-        public static DynamicControllerComposedTemplate WritePostAcceptedController<TRequest>(
-            this DynamicControllerFactory factory,
+        public static IEnumerable<IComposedTemplate> WritePostAcceptedController<TRequest>(
+            this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
@@ -267,18 +265,18 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
 
-            ParseAndReplace(
-                template,
-                typeof(TRequest),
-                null,
-                true,
-                req => controllerName.ToPascalCase() ?? $"PostAccepted{req}Controller"
-            );
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
+                   template,
+                   typeof(TRequest),
+                   null,
+                   true,
+                   req => controllerName.ToPascalCase() ?? $"PostAccepted{req}Controller"
+               ));
 
-            return template;
+            return templates;
         }
 
-        private static void ParseAndReplace(
+        private static IComposedTemplate ParseReplaceAndAddToCollection(
             IComposedTemplate template,
             Type requestObj,
             Type responseObjectResult,
@@ -322,6 +320,8 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Tokens["[CONTROLLER_NAME]"] = cn;
 
             template.Action.Compose();
+
+            return template;
         }
 
         // ReSharper disable once ClassNeverInstantiated.Local
