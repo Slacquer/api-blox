@@ -25,7 +25,7 @@ namespace Examples
         /// <param name="environment">The environment.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="assemblyFileAndName">Name of the assembly file and.</param>
-        protected StartupBase(IHostingEnvironment environment, ILoggerFactory loggerFactory, 
+        protected StartupBase(IHostingEnvironment environment, ILoggerFactory loggerFactory,
             string assemblyFileAndName = "DynamicControllersAssembly")
         {
             _environment = environment;
@@ -63,7 +63,12 @@ namespace Examples
                     }
                 )
 
+#if DEBUG
                 .AddMvc()
+#else
+                .AddMvcCore()
+#endif
+                .AddPostLocationHeaderResultFilter()
 
                 .AddApplicationPart(_dynamicControllersAssembly)
 
@@ -84,11 +89,9 @@ namespace Examples
                 .AddCamelCaseResultsOptions()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            #if DEBUG
-
+#if DEBUG
             services.AddSwaggerExampleFeatures(SiteTitle, Version, _dynamicControllersXmlFile);
-
-            #endif
+#endif
         }
 
         /// <summary>
@@ -106,16 +109,14 @@ namespace Examples
             //
             // Handle any and all server (500) errors with a defined structure.
             app.UseServerFaults();
-            
+
             app.UseHsts();
 
             app.UseMvc();
 
-            #if DEBUG
-
+#if DEBUG
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
-
-            #endif
+#endif
         }
 
 
