@@ -463,7 +463,9 @@ namespace APIBlox.AspNetCore
 
         private Assembly EmitToAssembly(params IComposedTemplate[] templates)
         {
-            var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
+            Reset();
+
+            var csOptions = GetSyntaxTree(templates, out var csSyntaxTree);
 
             var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, GetReferences(), csOptions);
 
@@ -494,17 +496,18 @@ namespace APIBlox.AspNetCore
 
         private FileInfo EmitToFile(string outputFolder, bool useCache, params IComposedTemplate[] templates)
         {
+            Reset();
+
             var dll = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.dll"));
             var pdb = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.pdb"));
             var xml = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.xml"));
-
-            var csOptions = ResetAndGetSyntaxTree(templates, out var csSyntaxTree);
-
+            
             OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
 
             if (useCache && OutputsCheck(dll, pdb, xml))
                 return dll;
 
+            var csOptions = GetSyntaxTree(templates, out var csSyntaxTree);
             var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, GetReferences(), csOptions);
 
             try
@@ -588,15 +591,19 @@ namespace APIBlox.AspNetCore
             return false;
         }
 
-        private CSharpCompilationOptions ResetAndGetSyntaxTree(IComposedTemplate[] templates, out IEnumerable<SyntaxTree> csSyntaxTree)
+        private void Reset()
         {
-            if (templates is null || !templates.Any())
-                throw new ArgumentNullException(nameof(templates));
-
             OutputFiles = (null, null, null);
             Errors = null;
             Warnings = null;
+            Controllers = null;
+        }
 
+        private CSharpCompilationOptions GetSyntaxTree(IComposedTemplate[] templates, out IEnumerable<SyntaxTree> csSyntaxTree)
+        {
+            if (templates is null || !templates.Any())
+                throw new ArgumentNullException(nameof(templates));
+            
             var csOptions = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,
                 optimizationLevel: _production
@@ -616,7 +623,8 @@ namespace APIBlox.AspNetCore
                 if (cg.GroupBy(r => r.Route).Count() > 1 || cg.GroupBy(r => r.Namespace).Count() > 1)
                     throw new ArgumentException(
                         $"Controller {cg.Key} has more " +
-                        "than one route or namespace specified. Name, Route and Namespace must be identical (if your intention is that this is ONE controller)",
+                        "than one route or namespace specified. Name, Route and Namespace must " +
+                        "be identical (if your intention is that this is ONE controller)",
                         nameof(IComposedTemplate.Route)
                     );
 

@@ -76,9 +76,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 controllerRoute
             );
 
-            var output = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DynamicControllers");
+            var myAss = Assembly.GetAssembly(typeof(Startup));
+            var output = Path.Combine(Path.GetDirectoryName(myAss.Location), "DynamicControllers");
 
-            factory.AdditionalAssemblyReferences.Add(Assembly.GetAssembly(typeof(Startup)));
+            factory.AdditionalAssemblyReferences.Add(myAss);
+            factory.AdditionalAssemblyReferences.Add(Assembly.GetCallingAssembly());
+            factory.AdditionalAssemblyReferences.Add(Assembly.GetEntryAssembly());
+            factory.AdditionalAssemblyReferences.Add(Assembly.GetExecutingAssembly());
 
             factory.Compile(builder,
                 output,
