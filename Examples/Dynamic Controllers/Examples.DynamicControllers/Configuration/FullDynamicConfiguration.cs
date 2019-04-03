@@ -19,82 +19,43 @@ namespace Microsoft.Extensions.DependencyInjection
             out string dynamicControllersXmlFile
         )
         {
-            var factory = new DynamicControllerFactory(loggerFactory,
-                "ExampleDynamicControllersAssembly",
-                environment.IsProduction()
-            );
+            builder.AddComposeControllers(loggerFactory, environment,
+                (f, t) =>
+                {
+                    const string nameSpace = "Examples";
+                    const string controllerRoute = "api/[controller]/parents/{parentId}/children";
 
-            const string nameSpace = "Examples";
-            const string controllerRoute = "api/[controller]/parents/{parentId}/children";
+                    t.Add(f.WriteQueryByController<ChildByIdRequest, ChildResponse>(
+                            "{childId}", nameSpace, "Children", controllerRoute)
+                    );
 
-            var childById = factory.WriteQueryByController<ChildByIdRequest, ChildResponse>(
-                "{childId}",
-                nameSpace,
-                "Children",
-                controllerRoute
-            );
+                    t.Add(f.WritePutController<ChildPutRequest>(
+                        "{childId}", nameSpace, "Children", controllerRoute)
+                    );
 
-            var childPut = factory.WritePutController<ChildPutRequest>(
-                "{childId}",
-                nameSpace,
-                "Children",
-                controllerRoute
-            );
+                    t.Add(f.WritePatchController<ChildPatchRequest>(
+                        "{childId}", nameSpace, "Children", controllerRoute)
+                    );
 
-            var childPatch = factory.WritePatchController<ChildPatchRequest>(
-                "{childId}",
-                nameSpace,
-                "Children",
-                controllerRoute
-            );
+                    t.Add(f.WriteDeleteByController<ChildByIdRequest>(
+                        "{childId}", nameSpace, "Children", controllerRoute)
+                    );
 
-            var childDelete = factory.WriteDeleteByController<ChildByIdRequest>(
-                "{childId}",
-                nameSpace,
-                "Children",
-                controllerRoute
-            );
+                    t.Add(f.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
+                        null, nameSpace, "Children", controllerRoute)
+                    );
 
-            var childAll = factory.WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
-                null,
-                nameSpace,
-                "Children",
-                controllerRoute
-            );
+                    //t.Add(f.WritePostController<ChildPostRequest, ChildResponse>(
+                    //    null, nameSpace, "Children", controllerRoute)
+                    //);
 
-            //var childPost = factory.WritePostController<ChildPostRequest, ChildResponse>(
-            //    null,
-            //    nameSpace,
-            //    "Children",
-            //    controllerRoute
-            //);
+                    t.Add(f.WritePostAcceptedController<ChildPostRequest>(
+                        null, nameSpace, "Children", controllerRoute)
+                    );
 
-            var childPostAccepted = factory.WritePostAcceptedController<ChildPostRequest>(
-                null,
-                nameSpace,
-                "Children",
-                controllerRoute
-            );
+                    f.AdditionalAssemblyReferences.Add(Assembly.GetAssembly(typeof(Startup)));
 
-            var myAss = Assembly.GetAssembly(typeof(Startup));
-            var output = Path.Combine(Path.GetDirectoryName(myAss.Location), "DynamicControllers");
-
-            factory.AdditionalAssemblyReferences.Add(myAss);
-
-            factory.Compile(builder,
-                output,
-                environment.IsProduction(),
-                childById,
-                childDelete,
-                childAll,
-                childPut,
-                childPatch,
-                childPostAccepted
-            );
-
-            var (_, _, xml) = factory.OutputFiles;
-
-            dynamicControllersXmlFile = xml;
+                }, out dynamicControllersXmlFile);
 
             return builder;
         }

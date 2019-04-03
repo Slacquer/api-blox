@@ -1,8 +1,13 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Exceptions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace APIBlox.AspNetCore.Extensions
 {
@@ -40,6 +45,57 @@ namespace APIBlox.AspNetCore.Extensions
             );
 
             return factory;
+        }
+
+
+        public static IMvcBuilder AddComposeControllers(this IMvcBuilder builder,
+            ILoggerFactory loggerFactory, IHostingEnvironment environment,
+            Action<DynamicControllerFactory, List<IComposedTemplate>> configure, 
+            out string dynamicControllersXmlFile,
+            string assemblyFileAndName = "DynamicControllersAssembly")
+        {
+            var factory = new DynamicControllerFactory(loggerFactory,
+                assemblyFileAndName,
+                environment.IsProduction()
+            );
+
+            var composed = new List<IComposedTemplate>();
+            configure(factory, composed);
+
+            var outputFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), assemblyFileAndName);
+
+            factory.Compile(builder, outputFile, environment.IsProduction(), composed.ToArray());
+
+            var (_, _, xml) = factory.OutputFiles;
+
+            dynamicControllersXmlFile = xml;
+
+            return builder;
+        }
+
+        public static IMvcCoreBuilder AddComposeControllers(this IMvcCoreBuilder builder,
+            ILoggerFactory loggerFactory, IHostingEnvironment environment,
+            Action<DynamicControllerFactory, List<IComposedTemplate>> configure, 
+            out string dynamicControllersXmlFile,
+            string assemblyFileAndName = "DynamicControllersAssembly")
+        {
+            var factory = new DynamicControllerFactory(loggerFactory,
+                assemblyFileAndName,
+                environment.IsProduction()
+            );
+
+            var composed = new List<IComposedTemplate>();
+            configure(factory, composed);
+
+            var outputFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), assemblyFileAndName);
+
+            factory.Compile(builder, outputFile, environment.IsProduction(), composed.ToArray());
+
+            var (_, _, xml) = factory.OutputFiles;
+
+            dynamicControllersXmlFile = xml;
+
+            return builder;
         }
 
         /// <summary>

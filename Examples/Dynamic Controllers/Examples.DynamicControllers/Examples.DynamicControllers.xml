@@ -54,12 +54,6 @@
             </summary>
             <value>The parent identifier.</value>
         </member>
-        <member name="P:Examples.Resources.ChildByIdRequest.SomeRouteValueWeNeed">
-            <summary>
-                Gets or sets some route value we need.
-            </summary>
-            <value>Some route value we need.</value>
-        </member>
         <member name="T:Examples.Resources.ChildPatchRequest">
             <summary>
                 Class ChildPutRequest.
@@ -124,12 +118,6 @@
             </summary>
             <value>The parent identifier.</value>
         </member>
-        <member name="P:Examples.Resources.ChildrenRequest.SomeRouteValueWeNeed">
-            <summary>
-                Gets or sets some route value we need.
-            </summary>
-            <value>Some route value we need.</value>
-        </member>
         <member name="T:Examples.Resources.ChildResponse">
             <summary>
                 Class ChildResponse.
@@ -186,12 +174,6 @@
                 Gets or sets some other thing we need to know when requesting data.
             </summary>
             <value>Some other thing we need to know when requesting data.</value>
-        </member>
-        <member name="P:Examples.Resources.ParentRequest.SomeRouteValueWeNeed">
-            <summary>
-                Gets or sets some route value we need.
-            </summary>
-            <value>Some route value we need.</value>
         </member>
         <member name="T:Examples.Resources.ParentResponse">
             <summary>
