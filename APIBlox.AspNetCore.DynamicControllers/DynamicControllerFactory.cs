@@ -508,7 +508,7 @@ namespace APIBlox.AspNetCore
 
             if (useCache && OutputsCheck(dll, pdb, xml))
                 return dll;
-
+            
             var csOptions = GetSyntaxTree(templates, out var csSyntaxTree);
             var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, GetReferences(), csOptions);
 

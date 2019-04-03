@@ -20,7 +20,7 @@
 [ProducesResponseType(StatusCodes.Status403Forbidden)]
 [ProducesResponseType(StatusCodes.Status404NotFound)]
 [ProducesResponseType(StatusCodes.Status409Conflict)]
-public async Task<IActionResult> PatchBy(
+public async Task<IActionResult> [CONTROLLER_NAME]PatchBy[REQ_OBJECT](
     [ACTION_PARAMS]
     CancellationToken cancellationToken
 )

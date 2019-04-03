@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        ///     Adds and configures dynamic controller configurations.
+        ///     Adds and configures dynamic controller configurations using the <see cref="DynamicControllerFactory"/>.
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="loggerFactory">The logger factory.</param>

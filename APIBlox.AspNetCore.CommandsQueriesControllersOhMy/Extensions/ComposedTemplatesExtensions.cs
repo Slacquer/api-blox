@@ -10,9 +10,9 @@ using APIBlox.NetCore.Types;
 namespace APIBlox.AspNetCore.Extensions
 {
     /// <summary>
-    ///     Class DynamicControllerFactoryExtensions.
+    ///     Class ComposedTemplatesExtensions.
     /// </summary>
-    public static class DynamicControllerFactoryExtensions
+    public static class ComposedTemplatesExtensions
     {
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value.
