@@ -19,7 +19,11 @@ namespace Microsoft.Extensions.DependencyInjection
             out string dynamicControllersXmlFile
         )
         {
-            var factory = new DynamicControllerFactory(loggerFactory, "ExampleDynamicControllersAssembly", environment.IsProduction());
+            var factory = new DynamicControllerFactory(loggerFactory,
+                Assembly.GetAssembly(typeof(Startup)),
+                "ExampleDynamicControllersAssembly",
+                environment.IsProduction()
+            );
 
             const string nameSpace = "Examples";
             const string controllerRoute = "api/[controller]/{someRouteValueWeNeed}/parents/{parentId}/children";
@@ -75,36 +79,17 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var output = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DynamicControllers");
 
-
-            var ass = factory.Compile(Assembly.GetAssembly(typeof(Startup)), output, environment.IsProduction(), childById,
+            factory.Compile(builder,
+                output,
+                environment.IsProduction(),
+                childById,
                 childDelete,
                 childAll,
                 childPut,
                 childPatch,
-                childPostAccepted);
-
-            if (ass is null || factory.Errors != null)
-                throw new TemplateCompilationException(factory.Errors);
-
-            builder.ConfigureApplicationPartManager(pm =>
-                {
-                    var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
-                    pm.ApplicationParts.Add(part);
-                }
+                childPostAccepted
             );
 
-
-            //factory.Compile(builder,
-            //    output,
-            //    environment.IsProduction(),
-            //    childById,
-            //    childDelete,
-            //    childAll,
-            //    childPut,
-            //    childPatch,
-            //    childPostAccepted
-            //);
-            
             var (_, _, xml) = factory.OutputFiles;
 
             dynamicControllersXmlFile = xml;

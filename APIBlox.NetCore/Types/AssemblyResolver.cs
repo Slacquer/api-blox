@@ -22,13 +22,11 @@ namespace APIBlox.NetCore.Types
         private Dictionary<string, Assembly> _loadedAssemblyCache = new Dictionary<string, Assembly>();
 
 
-        public IEnumerable<Assembly> LoadedReferencedAssemblies
-        {
-            get
-            {
-                return _loadedAssemblyCache?.Select(k => k.Value);
-            }
-        }
+        /// <summary>
+        ///     Gets the loaded referenced assemblies.
+        /// </summary>
+        /// <value>The loaded referenced assemblies.</value>
+        public IEnumerable<Assembly> LoadedReferencedAssemblies => _loadedAssemblyCache?.Select(k => k.Value);
 
         /// <summary>
         ///     Loads an assembly and all its referenced assemblies.
