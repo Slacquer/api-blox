@@ -29,25 +29,27 @@ namespace APIBlox.AspNetCore
             .Select(s => MetadataReference.CreateFromFile(s))
             .ToArray();
 
-        private readonly Assembly _parentAssembly;
         private readonly string _assemblyName;
         private readonly bool _production;
         private readonly ILogger<DynamicControllerFactory> _log;
+
+        /// <summary>
+        ///     A collection of additional assemblies they may be required when compiling.
+        /// </summary>
+        /// <value>The additional assembly references.</value>
+        public List<Assembly> AdditionalAssemblyReferences { get; } = new List<Assembly>();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicControllerFactory"/> class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="assemblyName">Name of the assembly.</param>
-        /// <param name="parentAssembly">Parent assembly (used for acquiring references).</param>
         /// <param name="production">if set to <c>true</c> [production].</param>
         /// <exception cref="ArgumentNullException">assemblyName</exception>
-        public DynamicControllerFactory(ILoggerFactory loggerFactory, Assembly parentAssembly, string assemblyName, bool production = false)
+        public DynamicControllerFactory(ILoggerFactory loggerFactory, string assemblyName, bool production = false)
         {
             if (assemblyName.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(assemblyName));
-
-            _parentAssembly = parentAssembly ?? throw new ArgumentNullException(nameof(parentAssembly));
 
             _assemblyName = assemblyName;
             _production = production;
@@ -542,17 +544,25 @@ namespace APIBlox.AspNetCore
 
         private IEnumerable<MetadataReference> GetReferences()
         {
+            if (!AdditionalAssemblyReferences.Any())
+                return References;
+
             var lst = new List<PortableExecutableReference>(References);
 
-            using (var ass = new AssemblyResolver())
+            foreach (var assembly in AdditionalAssemblyReferences)
             {
-                ass.LoadFromAssemblyPath(_parentAssembly.Location, out _);
+                if (References.Any(p => p.FilePath.EqualsEx(assembly.Location)))
+                    continue;
 
-                lst.AddRange(ass.LoadedReferencedAssemblies
-                    .Where(an => File.Exists(an.Location) && References.All(p => p.FilePath != an.Location))
-                    .Select(a => MetadataReference.CreateFromFile(a.Location)));
+                using (var ass = new AssemblyResolver())
+                {
+                    ass.LoadFromAssemblyPath(assembly.Location, out _);
+
+                    lst.AddRange(ass.LoadedReferencedAssemblies
+                        .Where(an => File.Exists(an.Location) && References.All(p => p.FilePath != an.Location))
+                        .Select(a => MetadataReference.CreateFromFile(a.Location)));
+                }
             }
-
             return lst;
         }
 

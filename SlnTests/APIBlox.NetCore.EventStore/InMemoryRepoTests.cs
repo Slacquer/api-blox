@@ -13,6 +13,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using Xunit;
+#pragma warning disable 1591
 
 namespace SlnTests.APIBlox.NetCore.EventStore
 {

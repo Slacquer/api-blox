@@ -1,6 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Exceptions;
+using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,6 +37,7 @@ namespace APIBlox.AspNetCore.Extensions
             builder.ConfigureApplicationPartManager(pm =>
                 {
                     var part = new AssemblyPart(Assembly.LoadFrom(ass.FullName));
+
                     pm.ApplicationParts.Add(part);
                 }
             );

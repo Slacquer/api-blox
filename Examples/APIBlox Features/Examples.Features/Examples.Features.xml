@@ -24,17 +24,16 @@
         </member>
         <member name="M:Examples.Controllers.ExamplesController.#ctor(Examples.Contracts.IRandomNumberGeneratorService)">
             <summary>
-                Initializes a new instance of the <see cref="T:Examples.Controllers.ExamplesController"/> class.
+                Initializes a new instance of the <see cref="T:Examples.Controllers.ExamplesController" /> class.
             </summary>
             <param name="randomNumberGeneratorService">The random number generator service.</param>
         </member>
         <member name="M:Examples.Controllers.ExamplesController.Get(System.String)">
-             <summary>
-                 app.UseSimulateWaitTime(_environment); example 
-             </summary>
+            <summary>
+                app.UseSimulateWaitTime(_environment); example
+            </summary>
             <param name="wait">if not null then simulate wait middleware will kick in.</param>
-            
-             <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
+            <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
         </member>
         <member name="M:Examples.Controllers.ExamplesController.GetProblemResultExample(APIBlox.AspNetCore.Enums.CommonStatusCodes,System.String)">
             <summary>
@@ -86,7 +85,11 @@
                 services.AddOperationCanceledExceptionFilter() example
             </summary>
             <remarks>
-                This method doesn't PUT anything, its actually an example that will show how the APIBlox OperationCanceledExceptionFilter will prevent errors from showing up in your logs when someone makes a call to one of your actions, doesn't bother to wait, and ends up going to YOUTUBE (or somewhere else).  If you don't know what i mean, be sure to comment out the  startup entry services.AddOperationCanceledExceptionFilter().  Then execute this action, and within 30 seconds browse to a new location.
+                This method doesn't PUT anything, its actually an example that will show how the APIBlox
+                OperationCanceledExceptionFilter will prevent errors from showing up in your logs when someone makes a call to one
+                of your actions, doesn't bother to wait, and ends up going to YOUTUBE (or somewhere else).  If you don't know what
+                i mean, be sure to comment out the  startup entry services.AddOperationCanceledExceptionFilter().  Then execute
+                this action, and within 30 seconds browse to a new location.
             </remarks>
             <param name="id">The identifier.</param>
             <param name="value">The value.</param>
@@ -106,9 +109,9 @@
         <member name="P:Examples.Resources.ExampleRequestObject.ValueId">
             <summary>
                 Gets the parent value id.
-            <para>
-                The action filter will populate private properties from query and route params.
-            </para>
+                <para>
+                    The action filter will populate private properties from query and route params.
+                </para>
             </summary>
             <value>The parent value id.</value>
         </member>

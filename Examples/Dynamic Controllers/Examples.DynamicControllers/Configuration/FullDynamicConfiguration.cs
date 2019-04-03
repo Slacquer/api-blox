@@ -20,7 +20,6 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             var factory = new DynamicControllerFactory(loggerFactory,
-                Assembly.GetAssembly(typeof(Startup)),
                 "ExampleDynamicControllersAssembly",
                 environment.IsProduction()
             );
@@ -78,6 +77,8 @@ namespace Microsoft.Extensions.DependencyInjection
             );
 
             var output = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DynamicControllers");
+
+            factory.AdditionalAssemblyReferences.Add(Assembly.GetAssembly(typeof(Startup)));
 
             factory.Compile(builder,
                 output,

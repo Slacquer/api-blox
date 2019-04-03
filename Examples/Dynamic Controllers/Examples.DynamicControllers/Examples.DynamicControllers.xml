@@ -17,29 +17,24 @@
         </member>
         <member name="T:Examples.Resources.AllRequest">
             <summary>
-            Class AllRequest.
+                Class AllRequest.
             </summary>
         </member>
         <member name="P:Examples.Resources.AllRequest.RequiredValueMustBeThreeCharacters">
             <summary>
-            The required value, and it must be three characters. please check out http://www.foo.com for more info.
+                The required value, and it must be three characters. please check out http://www.kids.com for more info.
             </summary>
             <value>The required value must be three characters.</value>
         </member>
         <member name="T:Examples.Resources.ByIdRequest">
+            <inheritdoc />
             <summary>
                 ByIdRequest.
             </summary>
         </member>
-        <member name="P:Examples.Resources.ByIdRequest.RequiredValueMustBeThreeCharacters">
+        <member name="P:Examples.Resources.ByIdRequest.Id">
             <summary>
-            The required value, and it must be three characters. please check out http://www.foo.com for more info.
-            </summary>
-            <value>The required value must be three characters.</value>
-        </member>
-        <member name="P:Examples.Resources.ByIdRequest.SomeId">
-            <summary>
-            Gets or sets some identifier.
+                Gets or sets some identifier.
             </summary>
             <value>Some identifier.</value>
         </member>
@@ -50,7 +45,7 @@
         </member>
         <member name="P:Examples.Resources.ChildByIdRequest.Id">
             <summary>
-            Sets the child id.
+                Sets the child id.
             </summary>
         </member>
         <member name="P:Examples.Resources.ChildByIdRequest.ParentId">
@@ -67,8 +62,14 @@
         </member>
         <member name="T:Examples.Resources.ChildPatchRequest">
             <summary>
-            Class ChildPutRequest.
+                Class ChildPutRequest.
             </summary>
+        </member>
+        <member name="P:Examples.Resources.ChildPatchRequest.AQueryValueWeWant">
+            <summary>
+                Gets or sets an query value we want.
+            </summary>
+            <value>An query value we want.</value>
         </member>
         <member name="P:Examples.Resources.ChildPatchRequest.Body">
             <summary>
@@ -87,38 +88,26 @@
             </summary>
             <value>The parent identifier.</value>
         </member>
-        <member name="P:Examples.Resources.ChildPostRequest.Body">
+        <member name="P:Examples.Resources.ChildPostRequest.Child">
             <summary>
-            Gets or sets the body.
+                Gets or sets the body.
             </summary>
             <value>The body.</value>
         </member>
         <member name="T:Examples.Resources.ChildPutRequest">
             <summary>
-            Class ChildPutRequest.
+                Class ChildPutRequest.
             </summary>
-        </member>
-        <member name="P:Examples.Resources.ChildPutRequest.Id">
-            <summary>
-            Sets the child id.
-            </summary>
-            <value>The identifier.</value>
-        </member>
-        <member name="P:Examples.Resources.ChildPutRequest.ParentId">
-            <summary>
-            Gets or sets the parent identifier.
-            </summary>
-            <value>The parent identifier.</value>
         </member>
         <member name="P:Examples.Resources.ChildPutRequest.AnQueryValueWeWant">
             <summary>
-            Gets or sets an query value we want.
+                Gets or sets an query value we want.
             </summary>
             <value>An query value we want.</value>
         </member>
         <member name="P:Examples.Resources.ChildPutRequest.Body">
             <summary>
-            Gets or sets the body.
+                Gets or sets the body.
             </summary>
             <value>The body.</value>
         </member>
@@ -176,20 +165,16 @@
             </summary>
             <value>The parents.</value>
         </member>
-        <member name="T:Examples.Resources.DynamicControllerResponse">
+        <member name="T:Examples.Resources.ParentPostRequest">
             <summary>
-                Class DynamicControllerResponse.
+                Class ParentPostRequest.
             </summary>
         </member>
-        <member name="P:Examples.Resources.DynamicControllerResponse.Id">
+        <member name="P:Examples.Resources.ParentPostRequest.Body">
             <summary>
-                Gets the Id.
+                Gets or sets the body.
             </summary>
-        </member>
-        <member name="P:Examples.Resources.DynamicControllerResponse.SomeValueThatHadToBeThreeCharacters">
-            <summary>
-                Gets some value that had to be three characters.
-            </summary>
+            <value>The body.</value>
         </member>
         <member name="T:Examples.Resources.ParentRequest">
             <summary>
@@ -246,24 +231,24 @@
         </member>
         <member name="T:Examples.Resources.PersonModel">
             <summary>
-            Class PersonModel.
+                Class PersonModel.
             </summary>
         </member>
         <member name="P:Examples.Resources.PersonModel.Age">
             <summary>
-            Gets or sets the age.
+                Gets or sets the age.
             </summary>
             <value>The age.</value>
         </member>
         <member name="P:Examples.Resources.PersonModel.FirstName">
             <summary>
-            Gets or sets the first name.
+                Gets or sets the first name.
             </summary>
             <value>The first name.</value>
         </member>
         <member name="P:Examples.Resources.PersonModel.LastName">
             <summary>
-            Gets or sets the last name.
+                Gets or sets the last name.
             </summary>
             <value>The last name.</value>
         </member>
@@ -280,6 +265,30 @@
                 Generates the number.
             </summary>
             <returns>System.Int32.</returns>
+        </member>
+        <member name="T:Examples.Startup">
+            <summary>
+                Class Startup.
+            </summary>
+        </member>
+        <member name="M:Examples.Startup.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Startup" /> class.
+            </summary>
+            <param name="environment">The environment.</param>
+            <param name="loggerFactory">The logger factory.</param>
+        </member>
+        <member name="M:Examples.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+                Configures the services.
+            </summary>
+            <param name="services">The services.</param>
+        </member>
+        <member name="M:Examples.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+                Configures the specified application.
+            </summary>
+            <param name="app">The application.</param>
         </member>
     </members>
 </doc>

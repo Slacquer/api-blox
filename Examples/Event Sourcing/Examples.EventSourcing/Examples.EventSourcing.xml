@@ -14,7 +14,7 @@
         </member>
         <member name="M:Examples.Controllers.EventSourcingController.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.CosmosAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.MongoAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.RavenAggregate},APIBlox.NetCore.Contracts.IEventStoreService{Examples.EfCoreSqlAggregate})">
             <summary>
-            Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingController"/> class.
+                Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingController" /> class.
             </summary>
             <param name="cosmosSvc">The cosmos SVC.</param>
             <param name="mongoSvc">The mongo SVC.</param>
@@ -173,7 +173,7 @@
             <param name="someValue">Some value.</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="!:DataAccessException">Aggregate with stream id {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         </member>
         <member name="M:Examples.EfCoreSqlAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
             <summary>
@@ -327,7 +327,7 @@
             <param name="someValue">Some value.</param>
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
-            <exception cref="!:DataAccessException">Aggregate with stream id {_streamId}</exception>
+            <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         </member>
         <member name="M:Examples.RavenAggregate.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
             <summary>
