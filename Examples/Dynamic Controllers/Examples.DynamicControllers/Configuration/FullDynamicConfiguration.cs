@@ -80,9 +80,6 @@ namespace Microsoft.Extensions.DependencyInjection
             var output = Path.Combine(Path.GetDirectoryName(myAss.Location), "DynamicControllers");
 
             factory.AdditionalAssemblyReferences.Add(myAss);
-            factory.AdditionalAssemblyReferences.Add(Assembly.GetCallingAssembly());
-            factory.AdditionalAssemblyReferences.Add(Assembly.GetEntryAssembly());
-            factory.AdditionalAssemblyReferences.Add(Assembly.GetExecutingAssembly());
 
             factory.Compile(builder,
                 output,
