@@ -1,9 +1,9 @@
-_?, 2019_  **v2.0.???**  
+_April 4th, 2019_  **v2.0.0**  
 - DynamicControllers!  This was a big one, no longer are generic classes being used along with silly conventions.  Classes are generated on the fly and compiled.  Things like swashbuckle have no clue, therefore just work correctly out of the box!
 - Removed PopulateAttribute and its extension methods.
 - Removed APIBlox.AspNetCore.Types.Errors namespace, now just APIBlox.AspNetCore.Types
 - Removed lots of things...  Mostly with DynamicForms, however I also nuked IPatchCommandHandler and IGenericPatchCommandHandler as they are no longer needed (they were born from dynamic controller input parameter issues).
-- AddEnsureResponseResultActionFilter, added onlyQueryActions option, allowing structure to overwrite how all http methods ruturn (IE: post result gets wrapped like new{ data=result }).
+- AddEnsureResponseResultActionFilter, added onlyQueryActions option, allowing structure to overwrite how all http methods ruturn (IE: POST result gets wrapped like GET).
 Thanks,  
 _Slacquer_  
 

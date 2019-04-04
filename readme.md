@@ -15,7 +15,9 @@
 ![:)][logo]   
 # API Blox
 
-_March 16th, 2019_  **v1.0.107** _[release notes][rn]_ 
+_April 4th, 2019_  **v2.0.0** _[release notes][rn]_ 
+
+__Dynamic Controllers are now created on the fly, rather than using generic bits!  This has made things (Swashbuckle for one) considerably easier to deal with.__
 
 <br>
 
