@@ -1,4 +1,4 @@
-_April 4th, 2019_  **v2.0.0**  
+_April 4th, 2019_  **v2.0.2**  
 - DynamicControllers!  This was a big one, no longer are generic classes being used along with silly conventions.  Classes are generated on the fly and compiled.  Things like swashbuckle have no clue, therefore just work correctly out of the box!
 - Removed PopulateAttribute and its extension methods.
 - Removed APIBlox.AspNetCore.Types.Errors namespace, now just APIBlox.AspNetCore.Types
