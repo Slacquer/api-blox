@@ -4,6 +4,21 @@
         <name>Examples.DynamicControllers</name>
     </assembly>
     <members>
+        <member name="T:Examples.Configuration.ChildPutRequestValidator">
+            <summary>
+                Class ChildPutRequestValidator.
+            </summary>
+        </member>
+        <member name="M:Examples.Configuration.ChildPutRequestValidator.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Configuration.ChildPutRequestValidator" /> class.
+            </summary>
+        </member>
+        <member name="M:Examples.Configuration.ChildPByIdRequestValidator.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Configuration.ChildPutRequestValidator" /> class.
+            </summary>
+        </member>
         <member name="T:Examples.Contracts.IRandomNumberGeneratorService">
             <summary>
                 Interface IRandomNumberGeneratorService
@@ -14,6 +29,117 @@
                 Generates the number.
             </summary>
             <returns>System.Int32.</returns>
+        </member>
+        <member name="T:Examples.Controllers.Children2">
+            <inheritdoc/>
+            <summary>
+                Class Children.
+            </summary>
+            <seealso cref = "T:Microsoft.AspNetCore.Mvc.ControllerBase"/>
+        </member>
+        <member name="M:Examples.Controllers.Children2.#ctor(APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.ChildByIdRequest,APIBlox.AspNetCore.Types.HandlerResponse},APIBlox.AspNetCore.Contracts.ICommandHandler{Examples.Resources.ChildPutRequest,APIBlox.AspNetCore.Types.HandlerResponse},APIBlox.AspNetCore.Contracts.ICommandHandler{Examples.Resources.ChildPatchRequest,APIBlox.AspNetCore.Types.HandlerResponse},APIBlox.AspNetCore.Contracts.ICommandHandler{Examples.Resources.ChildByIdRequest,APIBlox.AspNetCore.Types.HandlerResponse},APIBlox.AspNetCore.Contracts.IQueryHandler{Examples.Resources.ChildrenRequest,APIBlox.AspNetCore.Types.HandlerResponse},APIBlox.AspNetCore.Contracts.ICommandHandler{Examples.Resources.ChildPostRequest,APIBlox.AspNetCore.Types.HandlerResponse})">
+            <summary>
+                Initializes a new instance of the <see cref = "T:Examples.Controllers.Children2"/> class.
+            </summary>
+        </member>
+        <member name="M:Examples.Controllers.Children2.ChildrenQueryByChildByIdRequest(Examples.Resources.ChildByIdRequest,System.Threading.CancellationToken)">
+            <summary>
+                Action for getting a resource.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href = "https://httpstatuses.com/200">200</a>, <a href = "https://httpstatuses.com/204">204</a>, <a href = "https://httpstatuses.com/401">401</a>, <a href = "https://httpstatuses.com/403">403</a>
+            </remarks>
+            <response code = "200">Success, with a result.</response>
+            <response code = "204">Success, no results.</response>
+            <response code = "401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code = "403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <param name = "cancellationToken">The cancellation token.</param>
+            <param name = "id">Sets the child id.</param>
+            <param name = "parentId">Gets or sets the parent identifier.</param>
+        </member>
+        <member name="M:Examples.Controllers.Children2.ChildrenPutByChildPutRequest(Examples.Resources.ChildPutRequest,System.Threading.CancellationToken)">
+            <summary>
+                Action for updating a resource.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href = "https://httpstatuses.com/204">204</a>, <a href = "https://httpstatuses.com/401">401</a>, <a href = "https://httpstatuses.com/403">403</a>, <a href = "https://httpstatuses.com/404">404</a>, <a href = "https://httpstatuses.com/409">409</a>
+            </remarks>
+            <response code = "204">Success, no results.</response>
+            <response code = "401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code = "403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <response code = "404">NotFound, The resource was not found using the supplied input parameters.</response>
+            <response code = "409">Conflict, The supplied input parameters would cause a data violation.</response>
+            <param name = "cancellationToken">The cancellation token.</param>
+            <param name = "anQueryValueWeWant">Gets or sets an query value we want.</param>
+            <param name = "body">Gets or sets the body.</param>
+            <param name = "id">Sets the child id.</param>
+            <param name = "parentId">Gets or sets the parent identifier.</param>
+        </member>
+        <member name="M:Examples.Controllers.Children2.ChildrenPatchByChildPatchRequest(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{Examples.Resources.PersonModel},System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                Action for updating/patching a resource.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href = "https://httpstatuses.com/204">204</a>, <a href = "https://httpstatuses.com/401">401</a>, <a href = "https://httpstatuses.com/403">403</a>, <a href = "https://httpstatuses.com/404">404</a>, <a href = "https://httpstatuses.com/409">409</a>
+            </remarks>
+            <response code = "204">Success, no results.</response>
+            <response code = "401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code = "403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <response code = "404">NotFound, The resource was not found using the supplied input parameters.</response>
+            <response code = "409">Conflict, The supplied input parameters would cause a data violation.</response>
+            <param name = "cancellationToken">The cancellation token.</param>
+            <param name = "aQueryValueWeWant">Gets or sets an query value we want.</param>
+            <param name = "body">Sets the body (patch document).</param>
+            <param name = "id">Sets the child id.</param>
+            <param name = "parentId">Gets or sets the parent identifier.</param>
+        </member>
+        <member name="M:Examples.Controllers.Children2.ChildrenDeleteByChildByIdRequest(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                Action for deleting a resource.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href = "https://httpstatuses.com/204">204</a>, <a href = "https://httpstatuses.com/401">401</a>, <a href = "https://httpstatuses.com/403">403</a>, <a href = "https://httpstatuses.com/404">404</a>
+            </remarks>
+            <response code = "204">Success, no results.</response>
+            <response code = "401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code = "403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <response code = "404">NotFound, The resource was not found using the supplied input parameters.</response>
+            <param name = "cancellationToken">The cancellation token.</param>
+            <param name = "id">Sets the child id.</param>
+            <param name = "parentId">Gets or sets the parent identifier.</param>
+        </member>
+        <member name="M:Examples.Controllers.Children2.ChildrenQueryAllChildrenRequest(System.Int32,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+                Action for getting a collection of resources.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href = "https://httpstatuses.com/200">200</a>, <a href = "https://httpstatuses.com/204">204</a>, <a href = "https://httpstatuses.com/401">401</a>, <a href = "https://httpstatuses.com/403">403</a>
+            </remarks>
+            <response code = "200">Success, with an array of results.</response>
+            <response code = "204">Success, no results.</response>
+            <response code = "401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code = "403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <param name = "cancellationToken">The cancellation token.</param>
+            <param name = "parentId">Gets or sets the parent identifier.</param>
+            <param name = "filter">Sets the filter (where). Usage is determined by the API itself.</param>
+            <param name = "select">Sets the select (projection).  Usage is determined by the API itself.</param>
+            <param name = "orderBy">Sets the order by.  Usage is determined by the API itself.</param>
+        </member>
+        <member name="M:Examples.Controllers.Children2.ChildrenPostAcceptedChildPostRequest(System.Int32,Examples.Resources.PersonModel,System.Threading.CancellationToken)">
+            <summary>
+                Action for creating a resource.
+            </summary>
+            <remarks>
+                Possible Response Status Codes: <a href = "https://httpstatuses.com/202">202</a>, <a href = "https://httpstatuses.com/401">401</a>, <a href = "https://httpstatuses.com/403">403</a>, <a href = "https://httpstatuses.com/404">404</a>, <a href = "https://httpstatuses.com/409">409</a>
+            </remarks>
+            <response code = "202">Success,  created, but not finalized.</response>
+            <response code = "401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
+            <response code = "403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+            <response code = "404">NotFound, The resource was not found using the supplied input parameters.</response>
+            <response code = "409">Conflict, The supplied input parameters would cause a data violation.</response>
+            <param name = "cancellationToken">The cancellation token.</param>
+            <param name = "parentId">Gets or sets the parent identifier.</param>
+            <param name = "child">Gets or sets the body.</param>
         </member>
         <member name="T:Examples.Resources.AllRequest">
             <summary>
@@ -171,7 +297,7 @@
         </member>
         <member name="P:Examples.Resources.ParentRequest.Id">
             <summary>
-            Gets or sets the identifier.
+                Gets or sets the identifier.
             </summary>
             <value>The identifier.</value>
         </member>
@@ -256,7 +382,7 @@
         </member>
         <member name="M:Examples.StartupBase.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory,System.String)">
             <summary>
-                Initializes a new instance of the <see cref="T:Examples.StartupBase"/> class.
+                Initializes a new instance of the <see cref="T:Examples.StartupBase" /> class.
             </summary>
             <param name="environment">The environment.</param>
             <param name="loggerFactory">The logger factory.</param>
@@ -268,17 +394,17 @@
             </summary>
             <param name="services">The services.</param>
         </member>
-        <member name="M:Examples.StartupBase.BuildTemplates(System.Collections.Generic.List{APIBlox.AspNetCore.Contracts.IComposedTemplate})">
-            <summary>
-                Builds the templates.
-            </summary>
-            <returns>IEnumerable&lt;IComposedTemplate&gt;.</returns>
-        </member>
         <member name="M:Examples.StartupBase.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
                 Configures the specified application.
             </summary>
             <param name="app">The application.</param>
+        </member>
+        <member name="M:Examples.StartupBase.BuildTemplates(System.Collections.Generic.List{APIBlox.AspNetCore.Contracts.IComposedTemplate})">
+            <summary>
+                Builds the templates.
+            </summary>
+            <returns>IEnumerable&lt;IComposedTemplate&gt;.</returns>
         </member>
     </members>
 </doc>

@@ -74,4 +74,16 @@ namespace Examples.Configuration
             RuleFor(p => p.FirstName).NotEmpty();
         }
     }
+
+    public class ChildPByIdRequestValidator : AbstractValidator<ChildByIdRequest>
+    {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ChildPutRequestValidator" /> class.
+        /// </summary>
+        public ChildPByIdRequestValidator()
+        {
+            RuleFor(p => p.Id).NotEmpty();
+            RuleFor(p => p.Help).NotEmpty();
+        }
+    }
 }

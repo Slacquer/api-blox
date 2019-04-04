@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.Exceptions;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
@@ -427,7 +428,12 @@ namespace APIBlox.AspNetCore
             for (var index = 0; index < ctorArgs.Count; index++)
             {
                 var cp = ctorArgs[index];
-                var cpi = readProps.First(p => p.Name.EqualsEx(cp.Name));
+                var cpi = readProps.FirstOrDefault(p => p.Name.EqualsEx(cp.Name));
+
+                if (cpi is null)
+                    throw new TemplateCompilationException(
+                        new[] {$"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!"}
+                    );
 
                 var value = cpi.GetValue(attribute);
 
