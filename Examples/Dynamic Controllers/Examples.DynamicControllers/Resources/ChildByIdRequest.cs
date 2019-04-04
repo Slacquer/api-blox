@@ -20,7 +20,10 @@ namespace Examples.Resources
         [FromRoute]
         public int ParentId { get; set; }
 
-
+        /// <summary>
+        ///     Gets or sets a value indicating whether this <see cref="ChildByIdRequest"/> is help.
+        /// </summary>
+        /// <value><c>null</c> if [help] contains no value, <c>true</c> if [help]; otherwise, <c>false</c>.</value>
         [FromQuery] public bool? Help { get; set; }
     }
 }
