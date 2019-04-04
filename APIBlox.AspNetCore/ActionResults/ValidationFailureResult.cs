@@ -25,12 +25,12 @@ namespace APIBlox.AspNetCore.ActionResults
             string errorDocumentLocation = "about:blank"
         )
             : base(new RequestErrorObject
-                {
-                    Title = "One or more validation errors has occured.",
-                    Detail = "Please refer to the errors property for additional details",
-                    Type = errorDocumentLocation,
-                    Status = statusCode
-                }
+            {
+                Title = "One or more validation errors has occured.",
+                Detail = "Please refer to the errors property for additional details",
+                Type = errorDocumentLocation,
+                Status = statusCode
+            }
             )
         {
             StatusCode = statusCode;
@@ -73,10 +73,9 @@ namespace APIBlox.AspNetCore.ActionResults
 
             if (!errors.Any())
             {
-                obj.Errors = null;
-                obj.Detail = null;
-
-                return;
+                throw new ArgumentException(
+                    "The validation state is INVALID, however no errors were found in modelstate!  Start digging!"
+                );
             }
 
             foreach (var err in errors)
