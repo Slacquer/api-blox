@@ -33,9 +33,9 @@ namespace APIBlox.AspNetCore.Extensions
         public static IEnumerable<IComposedTemplate> WriteQueryByController<TRequest, TResponse>(
             this IEnumerable<IComposedTemplate> templates,
             string actionRoute,
-            string nameSpace = "DynamicControllers",
             string controllerName = null,
-            string controllerRoute = "api/[controller]"
+            string controllerRoute = "api/[controller]",
+            string nameSpace = "DynamicControllers"
         )
             where TRequest : new()
         {
@@ -77,9 +77,9 @@ namespace APIBlox.AspNetCore.Extensions
         public static IEnumerable<IComposedTemplate> WriteQueryAllController<TRequest, TResponse>(
             this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
-            string nameSpace = "DynamicControllers",
             string controllerName = null,
-            string controllerRoute = "api/[controller]"
+            string controllerRoute = "api/[controller]",
+            string nameSpace = "DynamicControllers"
         )
             where TRequest : new()
             where TResponse : IEnumerable
@@ -115,9 +115,9 @@ namespace APIBlox.AspNetCore.Extensions
         public static IEnumerable<IComposedTemplate> WriteDeleteByController<TRequest>(
             this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
-            string nameSpace = "DynamicControllers",
             string controllerName = null,
-            string controllerRoute = "api/[controller]"
+            string controllerRoute = "api/[controller]",
+            string nameSpace = "DynamicControllers"
         )
             where TRequest : new()
         {
@@ -148,9 +148,9 @@ namespace APIBlox.AspNetCore.Extensions
         public static IEnumerable<IComposedTemplate> WritePutController<TRequest>(
             this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
-            string nameSpace = "DynamicControllers",
             string controllerName = null,
-            string controllerRoute = "api/[controller]"
+            string controllerRoute = "api/[controller]",
+            string nameSpace = "DynamicControllers"
         )
             where TRequest : new()
         {
@@ -181,9 +181,9 @@ namespace APIBlox.AspNetCore.Extensions
         public static IEnumerable<IComposedTemplate> WritePatchController<TRequest>(
             this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
-            string nameSpace = "DynamicControllers",
             string controllerName = null,
-            string controllerRoute = "api/[controller]"
+            string controllerRoute = "api/[controller]",
+            string nameSpace = "DynamicControllers"
         )
             where TRequest : new()
         {
@@ -216,9 +216,9 @@ namespace APIBlox.AspNetCore.Extensions
         public static IEnumerable<IComposedTemplate> WritePostController<TRequest, TResponse>(
             this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
-            string nameSpace = "DynamicControllers",
             string controllerName = null,
-            string controllerRoute = "api/[controller]"
+            string controllerRoute = "api/[controller]",
+            string nameSpace = "DynamicControllers"
         )
             where TRequest : new()
         {

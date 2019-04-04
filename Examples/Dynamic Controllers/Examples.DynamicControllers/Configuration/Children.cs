@@ -16,31 +16,31 @@ namespace Examples.Configuration
             templates
                 .WriteQueryByController<ChildByIdRequest, ChildResponse>(
                     "{childId}",
-                    nameSpace,
                     "Children",
-                    controllerRoute
+                    controllerRoute,
+                     nameSpace
                 )
                 .WritePutController<ChildPutRequest>(
                     "{childId}",
-                    nameSpace,
                     "Children",
-                    controllerRoute
+                    controllerRoute,
+                     nameSpace
                 )
                 .WritePatchController<ChildPatchRequest>(
                     "{childId}",
-                    nameSpace,
                     "Children",
-                    controllerRoute
+                    controllerRoute,
+                     nameSpace
                 ).WriteDeleteByController<ChildByIdRequest>(
                     "{childId}",
-                    nameSpace,
                     "Children",
-                    controllerRoute
+                    controllerRoute,
+                     nameSpace
                 ).WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
                     null,
-                    nameSpace,
                     "Children",
-                    controllerRoute
+                    controllerRoute,
+                     nameSpace
                 )
 
                 //.WritePostController<ChildPostRequest, ChildResponse>(
