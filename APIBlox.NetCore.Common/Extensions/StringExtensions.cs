@@ -37,7 +37,7 @@ namespace APIBlox.NetCore.Extensions
         {
             return value is null
                 ? defaultValue
-                : (T) Convert.ChangeType(value, typeof(T));
+                : (T)Convert.ChangeType(value, typeof(T));
         }
 
         /// <summary>
@@ -92,13 +92,20 @@ namespace APIBlox.NetCore.Extensions
         /// <param name="str">The string.</param>
         /// <param name="value">The value.</param>
         /// <param name="comparisonType">Type of the comparison.</param>
+        /// <param name="trimmed">Trim first before comparing.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public static bool EqualsEx(
             this string str, string value,
-            StringComparison comparisonType = StringComparison.InvariantCultureIgnoreCase
+            StringComparison comparisonType = StringComparison.InvariantCultureIgnoreCase,
+            bool trimmed = true
         )
         {
-            return str.Equals(value, comparisonType);
+            if (str is null || value is null)
+                return false;
+            
+            return trimmed
+                ? str.Trim().Equals(value.Trim(), comparisonType)
+                : str.Equals(value, comparisonType);
         }
 
         /// <summary>
@@ -184,7 +191,7 @@ namespace APIBlox.NetCore.Extensions
             if (str.IsEmptyNullOrWhiteSpace())
                 return str;
 
-            var bits = str.Split(new[] {" ", "_"}, StringSplitOptions.RemoveEmptyEntries);
+            var bits = str.Split(new[] { " ", "_" }, StringSplitOptions.RemoveEmptyEntries);
             var sb = new StringBuilder();
             var ci = new CultureInfo(cultureName ?? CultureInfo.CurrentCulture.DisplayName, false).TextInfo;
 
