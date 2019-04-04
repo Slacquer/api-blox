@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -105,7 +106,7 @@ namespace APIBlox.AspNetCore
                 Directory.CreateDirectory(assemblyOutputPath);
 
             var fi = EmitToFile(assemblyOutputPath, useCache, templates);
-            
+
             return !(fi is null) && fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
         }
 
@@ -328,7 +329,7 @@ namespace APIBlox.AspNetCore
                     name = $"{GetNameWithoutGenericArity(prop)}{builder}";
                 }
 
-            if(nullable)
+            if (nullable)
                 return propName is null ? name : $"{name}? {propName.ToCamelCase()}";
 
             if (prop.IsGenericType)
@@ -432,7 +433,7 @@ namespace APIBlox.AspNetCore
 
                 if (cpi is null)
                     throw new TemplateCompilationException(
-                        new[] {$"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!"}
+                        new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
                     );
 
                 var value = cpi.GetValue(attribute);
@@ -446,6 +447,19 @@ namespace APIBlox.AspNetCore
                     value = b.ToString().ToLower();
 
                 var comma = index == ctorArgs.Count - 1 ? "" : ", ";
+
+                // TODO does not work with arrays dumb ass., IE: new[]{"ur", "dumb"}
+
+                // this is lame.
+                if (cp.ParameterType == typeof(IEnumerable))
+                {
+                    if (cp.ParameterType == typeof(string))
+                    {
+                        var v = (IEnumerable<string>)value;
+                        value = v.Select(s => $"\"{s}\"");
+                    }
+                    value = $"new[]{{{string.Join(",", value)}}}";
+                }
 
                 builder.Append(cp.ParameterType == typeof(string)
                     ? $"\"{value}\"{comma}"
