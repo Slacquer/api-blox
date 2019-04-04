@@ -19,6 +19,5 @@ namespace Examples.Resources
         /// <value>The parent identifier.</value>
         [FromRoute]
         public int ParentId { get; set; }
-        
     }
 }

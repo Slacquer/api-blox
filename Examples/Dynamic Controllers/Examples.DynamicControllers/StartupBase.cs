@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using APIBlox.AspNetCore.Contracts;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -19,23 +20,24 @@ namespace Examples
         private readonly IHostingEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
 
+        private readonly string _assemblyFileAndName;
+        private string _dynamicControllersXmlFile;
+        private Assembly _dynamicControllersAssembly;
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="StartupBase"/> class.
+        ///     Initializes a new instance of the <see cref="StartupBase" /> class.
         /// </summary>
         /// <param name="environment">The environment.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="assemblyFileAndName">Name of the assembly file and.</param>
         protected StartupBase(IHostingEnvironment environment, ILoggerFactory loggerFactory,
-            string assemblyFileAndName = "DynamicControllersAssembly")
+            string assemblyFileAndName = "DynamicControllersAssembly"
+        )
         {
             _environment = environment;
             _loggerFactory = loggerFactory;
             _assemblyFileAndName = assemblyFileAndName;
         }
-
-        private readonly string _assemblyFileAndName;
-        private string _dynamicControllersXmlFile;
-        private Assembly _dynamicControllersAssembly;
 
         /// <summary>
         ///     Configures the services.
@@ -56,20 +58,18 @@ namespace Examples
                     _environment.IsProduction(),
                     _assemblyFileAndName,
                     () => BuildTemplates(new List<IComposedTemplate>()),
-                    (xml, ass) =>
+                    (factory, xml, ass) =>
                     {
                         _dynamicControllersXmlFile = xml;
                         _dynamicControllersAssembly = ass;
                     }
                 )
-
-#if DEBUG
+            #if DEBUG
                 .AddMvc()
-#else
+            #else
                 .AddMvcCore()
-#endif
+            #endif
                 .AddPostLocationHeaderResultFilter()
-
                 .AddApplicationPart(_dynamicControllersAssembly)
 
                 //
@@ -87,18 +87,13 @@ namespace Examples
                 //
                 // Make sure all results are camel cased.
                 .AddCamelCaseResultsOptions()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()))
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-#if DEBUG
+        #if DEBUG
             services.AddSwaggerExampleFeatures(SiteTitle, Version, _dynamicControllersXmlFile);
-#endif
+        #endif
         }
-
-        /// <summary>
-        ///     Builds the templates.
-        /// </summary>
-        /// <returns>IEnumerable&lt;IComposedTemplate&gt;.</returns>
-        protected abstract IEnumerable<IComposedTemplate> BuildTemplates(List<IComposedTemplate> templates);
 
         /// <summary>
         ///     Configures the specified application.
@@ -114,12 +109,15 @@ namespace Examples
 
             app.UseMvc();
 
-#if DEBUG
+        #if DEBUG
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
-#endif
+        #endif
         }
 
-
-
+        /// <summary>
+        ///     Builds the templates.
+        /// </summary>
+        /// <returns>IEnumerable&lt;IComposedTemplate&gt;.</returns>
+        protected abstract IEnumerable<IComposedTemplate> BuildTemplates(List<IComposedTemplate> templates);
     }
 }

@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <exception cref="TemplateCompilationException"></exception>
         public static IServiceCollection AddDynamicControllerConfigurations(this IServiceCollection services,
             ILoggerFactory loggerFactory, bool useCached, string assemblyFileAndName,
-            Func<IEnumerable<IComposedTemplate>> configureTemplates, Action<string, Assembly> xmlResult
+            Func<IEnumerable<IComposedTemplate>> configureTemplates, Action<DynamicControllerFactory, string, Assembly> xmlResult
         )
         {
             var factory = new DynamicControllerFactory(loggerFactory,
@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var (_, _, xml) = factory.OutputFiles;
 
-            xmlResult(xml, outputAss);
+            xmlResult(factory, xml, outputAss);
 
             return services;
         }

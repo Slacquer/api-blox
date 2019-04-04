@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using APIBlox.AspNetCore.Contracts;
 using Examples.Configuration;
 using Microsoft.AspNetCore.Hosting;
@@ -14,14 +11,14 @@ namespace Examples
         public Startup(IHostingEnvironment environment, ILoggerFactory loggerFactory)
             : base(environment, loggerFactory, "ExampleControllers")
         {
-
         }
 
         protected override IEnumerable<IComposedTemplate> BuildTemplates(List<IComposedTemplate> templates)
         {
-            templates .AddChildrenControllerTemplates()
-                .AddParentsControllerTemplates();
-
+            templates
+                .AddChildrenControllerTemplates()
+                .AddParentsControllerTemplates()
+                ;
 
             return templates;
         }

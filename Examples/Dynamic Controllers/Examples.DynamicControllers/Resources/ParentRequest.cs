@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using APIBlox.AspNetCore.Types;
+﻿using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
@@ -10,11 +9,10 @@ namespace Examples.Resources
     public class ParentRequest : FilteredPaginationQuery
     {
         /// <summary>
-        /// Gets or sets the identifier.
+        ///     Gets or sets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        [FromRoute(Name ="parentId")]
+        [FromRoute(Name = "parentId")]
         public int Id { get; set; }
-
     }
 }

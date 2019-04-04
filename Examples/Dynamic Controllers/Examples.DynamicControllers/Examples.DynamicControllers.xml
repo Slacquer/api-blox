@@ -169,11 +169,11 @@
                 Class ParentRequest.
             </summary>
         </member>
-        <member name="P:Examples.Resources.ParentRequest.SomeOtherThingWeNeedToKnowWhenRequestingData">
+        <member name="P:Examples.Resources.ParentRequest.Id">
             <summary>
-                Gets or sets some other thing we need to know when requesting data.
+            Gets or sets the identifier.
             </summary>
-            <value>Some other thing we need to know when requesting data.</value>
+            <value>The identifier.</value>
         </member>
         <member name="T:Examples.Resources.ParentResponse">
             <summary>
@@ -182,6 +182,7 @@
             <inheritdoc />
         </member>
         <member name="P:Examples.Resources.ParentResponse.Id">
+            <inheritdoc />
             <summary>
                 Gets or sets the Id.
             </summary>
@@ -248,25 +249,32 @@
             </summary>
             <returns>System.Int32.</returns>
         </member>
-        <member name="T:Examples.Startup">
+        <member name="T:Examples.StartupBase">
             <summary>
                 Class Startup.
             </summary>
         </member>
-        <member name="M:Examples.Startup.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
+        <member name="M:Examples.StartupBase.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory,System.String)">
             <summary>
-                Initializes a new instance of the <see cref="T:Examples.Startup" /> class.
+                Initializes a new instance of the <see cref="T:Examples.StartupBase"/> class.
             </summary>
             <param name="environment">The environment.</param>
             <param name="loggerFactory">The logger factory.</param>
+            <param name="assemblyFileAndName">Name of the assembly file and.</param>
         </member>
-        <member name="M:Examples.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:Examples.StartupBase.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
                 Configures the services.
             </summary>
             <param name="services">The services.</param>
         </member>
-        <member name="M:Examples.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+        <member name="M:Examples.StartupBase.BuildTemplates(System.Collections.Generic.List{APIBlox.AspNetCore.Contracts.IComposedTemplate})">
+            <summary>
+                Builds the templates.
+            </summary>
+            <returns>IEnumerable&lt;IComposedTemplate&gt;.</returns>
+        </member>
+        <member name="M:Examples.StartupBase.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
                 Configures the specified application.
             </summary>

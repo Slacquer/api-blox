@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {
@@ -13,8 +12,7 @@ namespace Examples.Resources
         /// </summary>
         /// <value>An query value we want.</value>
         [FromQuery]
-        [Required]
-        public int AnQueryValueWeWant { get; set; }
+        public int? AnQueryValueWeWant { get; set; }
 
         /// <summary>
         ///     Gets or sets the body.

@@ -1,12 +1,8 @@
-﻿#region -    Using Statements    -
-
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Extensions;
 using Examples.Resources;
-
-#endregion
+using FluentValidation;
 
 namespace Examples.Configuration
 {
@@ -23,12 +19,14 @@ namespace Examples.Configuration
                     nameSpace,
                     "Children",
                     controllerRoute
-                ).WritePutController<ChildPutRequest>(
+                )
+                .WritePutController<ChildPutRequest>(
                     "{childId}",
                     nameSpace,
                     "Children",
                     controllerRoute
-                ).WritePatchController<ChildPatchRequest>(
+                )
+                .WritePatchController<ChildPatchRequest>(
                     "{childId}",
                     nameSpace,
                     "Children",
@@ -45,20 +43,35 @@ namespace Examples.Configuration
                     controllerRoute
                 )
 
-                //childTemplates.WritePostController<ChildPostRequest, ChildResponse>(
-                //    null,
-                //    nameSpace,
-                //    "Children",
-                //    controllerRoute
-                //);
+                //.WritePostController<ChildPostRequest, ChildResponse>(
+                //     null,
+                //     nameSpace,
+                //     "Children",
+                //     controllerRoute
+                // )
                 .WritePostAcceptedController<ChildPostRequest>(
                     null,
                     nameSpace,
                     "Children",
                     controllerRoute
-                );
+                )
+                ;
 
             return templates;
+        }
+    }
+
+    /// <summary>
+    ///     Class ChildPutRequestValidator.
+    /// </summary>
+    public class ChildPutRequestValidator : AbstractValidator<PersonModel>
+    {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ChildPutRequestValidator" /> class.
+        /// </summary>
+        public ChildPutRequestValidator()
+        {
+            RuleFor(p => p.FirstName).NotEmpty();
         }
     }
 }

@@ -1,12 +1,7 @@
-﻿#region -    Using Statements    -
-
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Extensions;
 using Examples.Resources;
-
-#endregion
 
 namespace Examples.Configuration
 {

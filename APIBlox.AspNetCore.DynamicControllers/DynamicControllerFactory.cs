@@ -105,7 +105,7 @@ namespace APIBlox.AspNetCore
 
             var fi = EmitToFile(assemblyOutputPath, useCache, templates);
             
-            return (fi is null || fi.Exists) ? Assembly.LoadFile(fi.FullName) : null;
+            return !(fi is null) && fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
         }
 
         /// <summary>
@@ -327,12 +327,13 @@ namespace APIBlox.AspNetCore
                     name = $"{GetNameWithoutGenericArity(prop)}{builder}";
                 }
 
+            if(nullable)
+                return propName is null ? name : $"{name}? {propName.ToCamelCase()}";
+
             if (prop.IsGenericType)
                 return propName is null ? name : $"{name} {propName.ToCamelCase()}";
 
-            return !nullable
-                ? $"{prop.Name} {propName.ToCamelCase()}"
-                : $"{name}? {propName.ToCamelCase()}";
+            return $"{prop.Name} {propName.ToCamelCase()}";
         }
 
         private static (bool, string) IsOfNullableType(Type o)

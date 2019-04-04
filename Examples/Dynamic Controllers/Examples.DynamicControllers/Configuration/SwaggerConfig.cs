@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using APIBlox.NetCore.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Swashbuckle.AspNetCore.Swagger;
 
 // ReSharper disable once CheckNamespace
@@ -15,7 +16,11 @@ namespace Microsoft.Extensions.DependencyInjection
                     c.DescribeAllEnumsAsStrings();
                     c.SwaggerDoc(version, new Info {Title = siteTitle, Version = version});
                     c.IncludeXmlComments(@".\Examples.DynamicControllers.xml", true);
-                    c.IncludeXmlComments(dynamicControllersXmlFile, true);
+
+                    if (!dynamicControllersXmlFile.IsEmptyNullOrWhiteSpace())
+                        c.IncludeXmlComments(dynamicControllersXmlFile, true);
+
+                    c.AddFluentValidationRules();
                 }
             );
         }
