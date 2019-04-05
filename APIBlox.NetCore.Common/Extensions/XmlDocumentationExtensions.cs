@@ -12,6 +12,12 @@ namespace APIBlox.NetCore.Extensions
     public static class XmlDocumentationExtensions
     {
         /// <summary>
+        ///     When set, xml searching will start with this assemblies path.
+        /// </summary>
+        /// <value>The root assembly.</value>
+        public static Assembly RootAssembly { get; set; }
+
+        /// <summary>
         ///     A cache used to remember Xml documentation for assemblies
         /// </summary>
         private static readonly Dictionary<Assembly, XmlDocument> Cache = new Dictionary<Assembly, XmlDocument>();
@@ -155,7 +161,7 @@ namespace APIBlox.NetCore.Extensions
         /// <returns>The XML document</returns>
         private static XmlDocument XmlFromAssemblyNonCached(Assembly assembly)
         {
-            var assemblyFilename = assembly.CodeBase;
+            var assemblyFilename = RootAssembly is null ? assembly.CodeBase : RootAssembly.CodeBase;
 
             const string prefix = "file:///";
 

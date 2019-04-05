@@ -38,6 +38,18 @@ namespace Examples
             _environment = environment;
             _loggerFactory = loggerFactory;
             _assemblyFileAndName = assemblyFileAndName;
+
+
+            var ass = Assembly.GetAssembly(GetType());
+            // Yet another fix, the APIBlox xml reader always looks in swaggerGens folder and shouldn't.
+            APIBlox.NetCore.Extensions.XmlDocumentationExtensions.RootAssembly = ass;
+
+            DynamicControllerFactory.PreCompile += (s, e) =>
+            {
+                var factory = ((DynamicControllerFactory)s);
+
+                factory.AdditionalAssemblyReferences.Add(ass);
+            };
         }
 
         /// <summary>
