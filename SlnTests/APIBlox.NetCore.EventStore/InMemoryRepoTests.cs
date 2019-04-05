@@ -19,48 +19,48 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 {
     public class InMemoryRepoTests
     {
-        private static IEventStoreService<DummyAggregate> GetCosmosbBackedEventStoreService()
-        {
-            var options = new CosmosDbOptions
-            {
-                DatabaseId = "testDb",
-                Endpoint = "https://localhost:8081",
-                Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
-            };
+        //private static IEventStoreService<DummyAggregate> GetCosmosbBackedEventStoreService()
+        //{
+        //    var options = new CosmosDbOptions
+        //    {
+        //        DatabaseId = "testDb",
+        //        Endpoint = "https://localhost:8081",
+        //        Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
+        //    };
 
-            options.CollectionProperties.Add("DummyAggregate", new CosmosDbCollectionProperties());
-            var opt = Options.Create(options);
+        //    options.CollectionProperties.Add("DummyAggregate", new CosmosDbCollectionProperties());
+        //    var opt = Options.Create(options);
 
-            var c = new DocumentClient(new Uri(options.Endpoint), options.Key);
+        //    var c = new DocumentClient(new Uri(options.Endpoint), options.Key);
 
-            var repo = new CosmosDbRepository<DummyAggregate>(c, new CamelCaseSettings(), opt);
+        //    var repo = new CosmosDbRepository<DummyAggregate>(c, new CamelCaseSettings(), opt);
 
-            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+        //    IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
 
-            return svc;
-        }
+        //    return svc;
+        //}
 
-        private static IEventStoreService<DummyAggregate> GetMongoDbBackedEventStoreService()
-        {
-            BsonClassMap.RegisterClassMap<DummyAggregate>();
-            BsonClassMap.RegisterClassMap<Child>();
+        //private static IEventStoreService<DummyAggregate> GetMongoDbBackedEventStoreService()
+        //{
+        //    BsonClassMap.RegisterClassMap<DummyAggregate>();
+        //    BsonClassMap.RegisterClassMap<Child>();
 
-            var ctx = new CollectionContext(new MongoDbOptions {CnnString = "mongodb://localhost:27017", DatabaseId = "testDb"});
-            var repo = new MongoDbRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
+        //    var ctx = new CollectionContext(new MongoDbOptions {CnnString = "mongodb://localhost:27017", DatabaseId = "testDb"});
+        //    var repo = new MongoDbRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
 
-            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+        //    IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
 
-            return svc;
-        }
+        //    return svc;
+        //}
 
-        private static IEventStoreService<DummyAggregate> GetRavenDbBackedEventStoreService()
-        {
-            var ctx = new StoreContext(new RavenDbOptions {DatabaseId = "testDb", Urls = new[] {"http://127.0.0.1:8080"}});
-            var repo = new RavenDbRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
+        //private static IEventStoreService<DummyAggregate> GetRavenDbBackedEventStoreService()
+        //{
+        //    var ctx = new StoreContext(new RavenDbOptions {DatabaseId = "testDb", Urls = new[] {"http://127.0.0.1:8080"}});
+        //    var repo = new RavenDbRepository<DummyAggregate>(ctx, new JsonSerializerSettings());
 
-            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
-            return svc;
-        }
+        //    IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+        //    return svc;
+        //}
 
         private static IEventStoreService<DummyAggregate> GetEfCoreSqlBackedEventStoreService()
         {
@@ -144,13 +144,13 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             Assert.True(result.Snapshot.Data.Equals("snapshot2"));
         }
 
-        [Fact]
-        public async Task CosmosDbFullTest()
-        {
-            var svc = GetCosmosbBackedEventStoreService();
+        //[Fact]
+        //public async Task CosmosDbFullTest()
+        //{
+        //    var svc = GetCosmosbBackedEventStoreService();
 
-            await RunCommon(svc);
-        }
+        //    await RunCommon(svc);
+        //}
 
         [Fact]
         public async Task EfCoreSqlServerFullTest()
@@ -160,21 +160,21 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             await RunCommon(svc);
         }
 
-        [Fact]
-        public async Task MongoDbFullTest()
-        {
-            var svc = GetMongoDbBackedEventStoreService();
+        //[Fact]
+        //public async Task MongoDbFullTest()
+        //{
+        //    var svc = GetMongoDbBackedEventStoreService();
 
-            await RunCommon(svc);
-        }
+        //    await RunCommon(svc);
+        //}
 
-        [Fact]
-        public async Task RavenDbFullTest()
-        {
-            var svc = GetRavenDbBackedEventStoreService();
+        //[Fact]
+        //public async Task RavenDbFullTest()
+        //{
+        //    var svc = GetRavenDbBackedEventStoreService();
 
-            await RunCommon(svc);
-        }
+        //    await RunCommon(svc);
+        //}
     }
 
     public class DummyAggregate
