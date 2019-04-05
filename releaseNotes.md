@@ -1,4 +1,5 @@
-_April 5th, 2019_  **v2.0.5**  
+_April 5th, 2019_  **v2.0.6**
+- Wow didnt add the PreCompile to Compile... \*sadface\*  
 - Added a PreCompile and PostCompile events to DynamicControllerFactory, essentially this was done to allow adding additional references prior to compiling.
  
 Thanks,  

@@ -116,6 +116,8 @@ namespace APIBlox.AspNetCore
             if (!Directory.Exists(assemblyOutputPath))
                 Directory.CreateDirectory(assemblyOutputPath);
 
+            PreCompile?.Invoke(this, new EventArgs());
+
             var fi = EmitToFile(assemblyOutputPath, useCache, templates);
 
             PostCompile?.Invoke(this, new EventArgs());
