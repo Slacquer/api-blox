@@ -35,6 +35,8 @@ namespace APIBlox.AspNetCore
         private readonly bool _production;
         private readonly ILogger<DynamicControllerFactory> _log;
 
+        public static EventHandler FactoryCreated;
+
         /// <summary>
         ///     A collection of additional assemblies they may be required when compiling.
         /// </summary>
@@ -56,6 +58,9 @@ namespace APIBlox.AspNetCore
             _assemblyName = assemblyName;
             _production = production;
             _log = loggerFactory.CreateLogger<DynamicControllerFactory>();
+
+
+            FactoryCreated?.Invoke(this, new EventArgs());
         }
 
         /// <summary>
@@ -254,7 +259,7 @@ namespace APIBlox.AspNetCore
         /// <exception cref="ArgumentException"></exception>
         public static void ValidateResponseType(Type response)
         {
-            if (response.IsPublic && !response.IsAbstract && response.GetConstructors(BindingFlags.Public | BindingFlags.Instance) !=null)
+            if (response.IsPublic && !response.IsAbstract && response.GetConstructors(BindingFlags.Public | BindingFlags.Instance) != null)
                 return;
 
             throw new ArgumentException($"{response.Name} must be public, non abstract and have a public parameterless constructor.");

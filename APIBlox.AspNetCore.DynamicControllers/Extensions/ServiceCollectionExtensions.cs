@@ -39,10 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var caller = Assembly.GetCallingAssembly();
             var outputFile = Path.Combine(Path.GetDirectoryName(caller.Location), assemblyFileAndName);
-
-            // Primarily when this app is being run by something else (swaggerGen).
-            factory.AdditionalAssemblyReferences.Add(caller);
-
+            
             var templates = configureTemplates().ToArray();
 
             var outputAss = factory.Compile(
