@@ -1,4 +1,5 @@
-_April 5th, 2019_  **v2.0.6**
+_April 5th, 2019_  **v2.0.7**
+- Issues with xml comments - Seems when another process runs an asseembly that is using our blox, then the xml comments are not being found.  Some error messages have been added to help facilitate why.  However, this is NOT the responsibility of APIBlox to fix.
 - Wow didnt add the PreCompile to Compile... \*sadface\*  
 - Added a PreCompile and PostCompile events to DynamicControllerFactory, essentially this was done to allow adding additional references prior to compiling.
  

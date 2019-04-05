@@ -194,15 +194,23 @@ namespace APIBlox.AspNetCore
             for (var index = 0; index < props.Count; index++)
             {
                 var pi = props[index];
-                var xml = pi.GetSummary();
 
-                var space = index == 0 ? "" : "        ";
+                try
+                {
+                    var xml = pi.GetSummary();
 
-                parameters.Add(template
-                    .Replace("@space", space)
-                    .Replace("@pName", pi.Name.ToCamelCase())
-                    .Replace("@pComment", xml)
-                );
+                    var space = index == 0 ? "" : "        ";
+
+                    parameters.Add(template
+                        .Replace("@space", space)
+                        .Replace("@pName", pi.Name.ToCamelCase())
+                        .Replace("@pComment", xml)
+                    );
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Could not get xml summary for type {obj.Name}.", ex);
+                }
             }
 
             return parameters;
@@ -218,7 +226,7 @@ namespace APIBlox.AspNetCore
         {
             var name = GetNameWithoutGenericArity(obj);
             var ns = obj.Namespace;
-            var namespaces = new List<string> {ns};
+            var namespaces = new List<string> { ns };
 
             var result = new StringBuilder();
             result.Append($"{name}");
@@ -455,7 +463,7 @@ namespace APIBlox.AspNetCore
 
                 if (cpi is null)
                     throw new TemplateCompilationException(
-                        new[] {$"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!"}
+                        new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
                     );
 
                 var value = cpi.GetValue(attribute);
@@ -477,7 +485,7 @@ namespace APIBlox.AspNetCore
                 {
                     if (cp.ParameterType == typeof(string))
                     {
-                        var v = (IEnumerable<string>) value;
+                        var v = (IEnumerable<string>)value;
                         value = v.Select(s => $"\"{s}\"");
                     }
 
@@ -575,12 +583,12 @@ namespace APIBlox.AspNetCore
             {
                 if (dll.Exists)
                 {
-                    Warnings = new List<string> {ioEx.Message};
+                    Warnings = new List<string> { ioEx.Message };
                     _log.LogWarning(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Its in use!");
                 }
                 else
                 {
-                    Errors = new List<string> {ioEx.Message};
+                    Errors = new List<string> { ioEx.Message };
                     _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Ex: {ioEx.Message}");
                 }
 

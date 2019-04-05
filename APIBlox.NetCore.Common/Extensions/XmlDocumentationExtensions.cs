@@ -160,7 +160,7 @@ namespace APIBlox.NetCore.Extensions
             const string prefix = "file:///";
 
             if (!assemblyFilename.StartsWith(prefix))
-                throw new Exception("Could not ascertain assembly filename", null);
+                throw new Exception($"Could not ascertain assembly filename using '{assemblyFilename}'", null);
 
             StreamReader streamReader;
 
@@ -170,7 +170,11 @@ namespace APIBlox.NetCore.Extensions
             }
             catch (FileNotFoundException exception)
             {
-                throw new Exception("XML documentation not present (make sure it is turned on in project properties when building)", exception);
+                throw new Exception(
+                    $"XML documentation not present (make sure it is turned on in " +
+                    $"project properties when building) for assembly file '{assemblyFilename}'.",
+                    exception
+                );
             }
 
             var xmlDocument = new XmlDocument();
