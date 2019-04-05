@@ -75,6 +75,10 @@ namespace Examples.Configuration
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    ///     Class ChildPByIdRequestValidator.
+    /// </summary>
     public class ChildPByIdRequestValidator : AbstractValidator<ChildByIdRequest>
     {
         /// <summary>

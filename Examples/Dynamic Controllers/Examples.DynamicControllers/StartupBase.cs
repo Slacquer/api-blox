@@ -46,7 +46,7 @@ namespace Examples
         /// <param name="services">The services.</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            DynamicControllerFactory.FactoryCreated += (s, e) =>
+            DynamicControllerFactory.PreCompile += (s, e) =>
                 ((DynamicControllerFactory) s).AdditionalAssemblyReferences.Add(Assembly.GetAssembly(GetType()));
 
             services
@@ -66,6 +66,9 @@ namespace Examples
                     {
                         _dynamicControllersXmlFile = xml;
                         _dynamicControllersAssembly = ass;
+
+                        if (factory.Errors != null)
+                            throw new System.Exception("arg");
                     }
                 )
             #if DEBUG

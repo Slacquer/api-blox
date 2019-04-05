@@ -23,6 +23,17 @@ namespace APIBlox.AspNetCore
     /// </summary>
     public class DynamicControllerFactory
     {
+        /// <summary>
+        ///     Event fired after compiling,
+        /// </summary>
+        public static EventHandler PostCompile;
+
+        /// <summary>
+        ///     Event fired prior to compiling, giving a chance to alter things first, IE: adding to
+        ///     <see cref="AdditionalAssemblyReferences" />.
+        /// </summary>
+        public static EventHandler PreCompile;
+
         // Found the following piece of gold at...
         // https://github.com/dotnet/roslyn/wiki/Runtime-code-generation-using-Roslyn-compilations-in-.NET-Core-App
         private static readonly PortableExecutableReference[] References = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
@@ -32,19 +43,11 @@ namespace APIBlox.AspNetCore
             .ToArray();
 
         private readonly string _assemblyName;
-        private readonly bool _production;
         private readonly ILogger<DynamicControllerFactory> _log;
-
-        public static EventHandler FactoryCreated;
-
-        /// <summary>
-        ///     A collection of additional assemblies they may be required when compiling.
-        /// </summary>
-        /// <value>The additional assembly references.</value>
-        public List<Assembly> AdditionalAssemblyReferences { get; } = new List<Assembly>();
+        private readonly bool _production;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DynamicControllerFactory"/> class.
+        ///     Initializes a new instance of the <see cref="DynamicControllerFactory" /> class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="assemblyName">Name of the assembly.</param>
@@ -58,10 +61,13 @@ namespace APIBlox.AspNetCore
             _assemblyName = assemblyName;
             _production = production;
             _log = loggerFactory.CreateLogger<DynamicControllerFactory>();
-
-
-            FactoryCreated?.Invoke(this, new EventArgs());
         }
+
+        /// <summary>
+        ///     A collection of additional assemblies they may be required when compiling.
+        /// </summary>
+        /// <value>The additional assembly references.</value>
+        public List<Assembly> AdditionalAssemblyReferences { get; } = new List<Assembly>();
 
         /// <summary>
         ///     Gets the compilation errors.
@@ -112,6 +118,8 @@ namespace APIBlox.AspNetCore
 
             var fi = EmitToFile(assemblyOutputPath, useCache, templates);
 
+            PostCompile?.Invoke(this, new EventArgs());
+
             return !(fi is null) && fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
         }
 
@@ -125,7 +133,13 @@ namespace APIBlox.AspNetCore
         /// <returns>IEnumerable&lt;Type&gt;.</returns>
         public Assembly Compile(params IComposedTemplate[] templates)
         {
-            return EmitToAssembly(templates);
+            PreCompile?.Invoke(this, new EventArgs());
+
+            var ret = EmitToAssembly(templates);
+
+            PostCompile?.Invoke(this, new EventArgs());
+
+            return ret;
         }
 
         /// <summary>
@@ -202,7 +216,7 @@ namespace APIBlox.AspNetCore
         {
             var name = GetNameWithoutGenericArity(obj);
             var ns = obj.Namespace;
-            var namespaces = new List<string> { ns };
+            var namespaces = new List<string> {ns};
 
             var result = new StringBuilder();
             result.Append($"{name}");
@@ -261,6 +275,7 @@ namespace APIBlox.AspNetCore
         {
             if (response.IsPublic && !response.IsAbstract && response.GetConstructors(BindingFlags.Public | BindingFlags.Instance) != null)
                 return;
+
             if (!response.IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException($"{response.Name} must be public, non abstract and have a public parameter-less constructor.");
         }
@@ -438,7 +453,7 @@ namespace APIBlox.AspNetCore
 
                 if (cpi is null)
                     throw new TemplateCompilationException(
-                        new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
+                        new[] {$"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!"}
                     );
 
                 var value = cpi.GetValue(attribute);
@@ -460,9 +475,10 @@ namespace APIBlox.AspNetCore
                 {
                     if (cp.ParameterType == typeof(string))
                     {
-                        var v = (IEnumerable<string>)value;
+                        var v = (IEnumerable<string>) value;
                         value = v.Select(s => $"\"{s}\"");
                     }
+
                     value = $"new[]{{{string.Join(",", value)}}}";
                 }
 
@@ -487,7 +503,6 @@ namespace APIBlox.AspNetCore
 
             dest.AddRange(src);
         }
-
 
         private Assembly EmitToAssembly(params IComposedTemplate[] templates)
         {
@@ -558,12 +573,12 @@ namespace APIBlox.AspNetCore
             {
                 if (dll.Exists)
                 {
-                    Warnings = new List<string> { ioEx.Message };
+                    Warnings = new List<string> {ioEx.Message};
                     _log.LogWarning(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Its in use!");
                 }
                 else
                 {
-                    Errors = new List<string> { ioEx.Message };
+                    Errors = new List<string> {ioEx.Message};
                     _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Ex: {ioEx.Message}");
                 }
 
@@ -591,9 +606,11 @@ namespace APIBlox.AspNetCore
 
                     lst.AddRange(ass.LoadedReferencedAssemblies
                         .Where(an => File.Exists(an.Location) && References.All(p => p.FilePath != an.Location))
-                        .Select(a => MetadataReference.CreateFromFile(a.Location)));
+                        .Select(a => MetadataReference.CreateFromFile(a.Location))
+                    );
                 }
             }
+
             return lst;
         }
 
@@ -614,6 +631,7 @@ namespace APIBlox.AspNetCore
 
                 return false;
             }
+
             _log.LogWarning(() => $"DLL {dll.FullName} or XML file {xml.FullName} not found, cache not being used.");
 
             return false;

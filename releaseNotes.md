@@ -1,3 +1,12 @@
+_April 5th, 2019_  **v2.0.5**  
+- Added a PreCompile and PostCompile events to DynamicControllerFactory, essentially this was done to allow adding additional references prior to compiling.
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 4th, 2019_  **v2.0.4**  
 - First bug, added a must be public check for responses but didnt' bother to consider if it was IEnumerable.  Doh!  
 - Going to be building with DEBUG on for now, so that SourceLink will hopefully work.
