@@ -9,15 +9,15 @@ namespace Examples.Configuration
     {
         public static List<IComposedTemplate> AddParentsControllerTemplates(this List<IComposedTemplate> templates)
         {
-            const string nameSpace = "Examples";
+            const string nameSpace = "Examples\\\\";
             const string controllerRoute = "api/[controller]/parents";
 
             templates
                 .WriteQueryByController<ParentRequest, ParentResponse>(
                     "{parentId}",
-                    nameSpace,
                     "Parents",
-                    controllerRoute
+                    controllerRoute,
+                    nameSpace
                 );
 
             return templates;

@@ -254,10 +254,10 @@ namespace APIBlox.AspNetCore
         /// <exception cref="ArgumentException"></exception>
         public static void ValidateResponseType(Type response)
         {
-            if (response.IsPublic && !response.IsAbstract && response.GetConstructors(BindingFlags.Public | BindingFlags.Instance) !=null)
+            if (response.IsPublic && !response.IsAbstract && response.GetConstructors(BindingFlags.Public | BindingFlags.Instance) != null)
                 return;
-
-            throw new ArgumentException($"{response.Name} must be public, non abstract and have a public parameterless constructor.");
+            if (!response.IsAssignableTo(typeof(IEnumerable)))
+                throw new ArgumentException($"{response.Name} must be public, non abstract and have a public parameter-less constructor.");
         }
 
         /// <summary>

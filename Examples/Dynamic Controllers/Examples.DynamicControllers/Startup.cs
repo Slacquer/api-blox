@@ -31,7 +31,7 @@ namespace Examples
         protected override IEnumerable<IComposedTemplate> BuildTemplates(List<IComposedTemplate> templates)
         {
             templates
-                .AddChildrenControllerTemplates()
+                //.AddChildrenControllerTemplates()
                 .AddParentsControllerTemplates()
                 ;
 

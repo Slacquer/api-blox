@@ -50,10 +50,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 useCached,
                 templates.ToArray()
             );
-
-            if (outputAss is null || factory.Errors != null)
-                throw new TemplateCompilationException(factory.Errors);
-
+            
             var (_, _, xml) = factory.OutputFiles;
 
             xmlResult(factory, xml, outputAss);
