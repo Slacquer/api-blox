@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Contracts;
@@ -42,7 +43,7 @@ namespace Examples
 
             var ass = Assembly.GetAssembly(GetType());
             // Yet another fix, the APIBlox xml reader always looks in swaggerGens folder and shouldn't.
-            APIBlox.NetCore.Extensions.XmlDocumentationExtensions.RootAssembly = ass;
+            APIBlox.NetCore.Extensions.XmlDocumentationExtensions.RootAssemblyPath = Path.GetDirectoryName(ass.Location);
 
             DynamicControllerFactory.PreCompile += (s, e) =>
             {
@@ -59,7 +60,7 @@ namespace Examples
         public virtual void ConfigureServices(IServiceCollection services)
         {
             DynamicControllerFactory.PreCompile += (s, e) =>
-                ((DynamicControllerFactory) s).AdditionalAssemblyReferences.Add(Assembly.GetAssembly(GetType()));
+                ((DynamicControllerFactory)s).AdditionalAssemblyReferences.Add(Assembly.GetAssembly(GetType()));
 
             services
                 .AddServerFaults()
@@ -83,11 +84,11 @@ namespace Examples
                             throw new System.Exception("arg");
                     }
                 )
-            #if DEBUG
+#if DEBUG
                 .AddMvc()
-            #else
+#else
                 .AddMvcCore()
-            #endif
+#endif
                 .AddPostLocationHeaderResultFilter()
                 .AddApplicationPart(_dynamicControllersAssembly)
 
@@ -109,9 +110,9 @@ namespace Examples
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-        #if DEBUG
+#if DEBUG
             services.AddSwaggerExampleFeatures(SiteTitle, Version, _dynamicControllersXmlFile);
-        #endif
+#endif
         }
 
         /// <summary>
@@ -128,9 +129,9 @@ namespace Examples
 
             app.UseMvc();
 
-        #if DEBUG
+#if DEBUG
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
-        #endif
+#endif
         }
 
         /// <summary>

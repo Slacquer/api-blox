@@ -15,7 +15,7 @@ namespace APIBlox.NetCore.Extensions
         ///     When set, xml searching will start with this assemblies path.
         /// </summary>
         /// <value>The root assembly.</value>
-        public static Assembly RootAssembly { get; set; }
+        public static string RootAssemblyPath { get; set; }
 
         /// <summary>
         ///     A cache used to remember Xml documentation for assemblies
@@ -161,7 +161,7 @@ namespace APIBlox.NetCore.Extensions
         /// <returns>The XML document</returns>
         private static XmlDocument XmlFromAssemblyNonCached(Assembly assembly)
         {
-            var assemblyFilename = RootAssembly is null ? assembly.CodeBase : RootAssembly.CodeBase;
+            var assemblyFilename = assembly.CodeBase;
 
             const string prefix = "file:///";
 
@@ -170,15 +170,19 @@ namespace APIBlox.NetCore.Extensions
 
             StreamReader streamReader;
 
+            var path = !RootAssemblyPath.IsEmptyNullOrWhiteSpace()
+                ? Path.Combine(RootAssemblyPath, $"{assembly.GetName().Name}.xml") 
+                : Path.ChangeExtension(assemblyFilename.Substring(prefix.Length), ".xml");
+
             try
             {
-                streamReader = new StreamReader(Path.ChangeExtension(assemblyFilename.Substring(prefix.Length), ".xml"));
+                streamReader = new StreamReader(path);
             }
             catch (FileNotFoundException exception)
             {
                 throw new Exception(
                     $"XML documentation not present (make sure it is turned on in " +
-                    $"project properties when building) for assembly file '{assemblyFilename}'.",
+                    $"project properties when building) for xml file '{path}'.",
                     exception
                 );
             }
