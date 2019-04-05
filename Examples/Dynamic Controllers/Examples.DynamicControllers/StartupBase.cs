@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Contracts;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -45,6 +46,9 @@ namespace Examples
         /// <param name="services">The services.</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            DynamicControllerFactory.FactoryCreated += (s, e) =>
+                ((DynamicControllerFactory) s).AdditionalAssemblyReferences.Add(Assembly.GetAssembly(GetType()));
+
             services
                 .AddServerFaults()
 
