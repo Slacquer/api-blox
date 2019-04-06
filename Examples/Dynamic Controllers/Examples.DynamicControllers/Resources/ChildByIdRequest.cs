@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region -    Using Statements    -
+
+using Microsoft.AspNetCore.Mvc;
+
+#endregion
 
 namespace Examples.Resources
 {
     /// <summary>
-    ///     Class ChildByIdRequest.
+    ///     This comment came from the first request object as part of the first
+    ///     action that was added to this controller.  The request object is the type ChildByIdRequest.
     /// </summary>
     public class ChildByIdRequest
     {
@@ -21,9 +26,10 @@ namespace Examples.Resources
         public int ParentId { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this <see cref="ChildByIdRequest"/> is help.
+        ///     Gets or sets a value indicating whether this <see cref="ChildByIdRequest" /> is help.
         /// </summary>
         /// <value><c>null</c> if [help] contains no value, <c>true</c> if [help]; otherwise, <c>false</c>.</value>
-        [FromQuery] public bool? Help { get; set; }
+        [FromQuery]
+        public bool? Help { get; set; }
     }
 }

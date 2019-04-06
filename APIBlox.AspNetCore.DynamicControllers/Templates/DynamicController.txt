@@ -4,7 +4,7 @@ namespace [CONTROLLERS_NAMESPACE].Controllers
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Class [CONTROLLER_NAME].
+    ///     [CONTROLLER_REQ_OBJ_SUMMARY]
     /// </summary>
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     [Route("[CONTROLLER_ROUTE]")]

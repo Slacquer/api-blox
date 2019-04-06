@@ -23,17 +23,6 @@ namespace APIBlox.AspNetCore
     /// </summary>
     public class DynamicControllerFactory
     {
-        /// <summary>
-        ///     Event fired after compiling,
-        /// </summary>
-        public static EventHandler PostCompile;
-
-        /// <summary>
-        ///     Event fired prior to compiling, giving a chance to alter things first, IE: adding to
-        ///     <see cref="AdditionalAssemblyReferences" />.
-        /// </summary>
-        public static EventHandler PreCompile;
-
         // Found the following piece of gold at...
         // https://github.com/dotnet/roslyn/wiki/Runtime-code-generation-using-Roslyn-compilations-in-.NET-Core-App
         private static readonly PortableExecutableReference[] References = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")
@@ -45,6 +34,7 @@ namespace APIBlox.AspNetCore
         private readonly string _assemblyName;
         private readonly ILogger<DynamicControllerFactory> _log;
         private readonly bool _production;
+        private readonly bool _addControllerComments;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DynamicControllerFactory" /> class.
@@ -52,14 +42,19 @@ namespace APIBlox.AspNetCore
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="assemblyName">Name of the assembly.</param>
         /// <param name="production">if set to <c>true</c> [production].</param>
+        /// <param name="addControllerComments">
+        ///     if set to <c>true</c> Summary comments from the request object of the first
+        ///     controller action added will be included as controller summary comments.
+        /// </param>
         /// <exception cref="ArgumentNullException">assemblyName</exception>
-        public DynamicControllerFactory(ILoggerFactory loggerFactory, string assemblyName, bool production = false)
+        public DynamicControllerFactory(ILoggerFactory loggerFactory, string assemblyName, bool production = false, bool addControllerComments = true)
         {
             if (assemblyName.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(assemblyName));
 
             _assemblyName = assemblyName;
             _production = production;
+            _addControllerComments = addControllerComments;
             _log = loggerFactory.CreateLogger<DynamicControllerFactory>();
         }
 
@@ -116,11 +111,7 @@ namespace APIBlox.AspNetCore
             if (!Directory.Exists(assemblyOutputPath))
                 Directory.CreateDirectory(assemblyOutputPath);
 
-            PreCompile?.Invoke(this, new EventArgs());
-
             var fi = EmitToFile(assemblyOutputPath, useCache, templates);
-
-            PostCompile?.Invoke(this, new EventArgs());
 
             return !(fi is null) && fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
         }
@@ -135,13 +126,7 @@ namespace APIBlox.AspNetCore
         /// <returns>IEnumerable&lt;Type&gt;.</returns>
         public Assembly Compile(params IComposedTemplate[] templates)
         {
-            PreCompile?.Invoke(this, new EventArgs());
-
-            var ret = EmitToAssembly(templates);
-
-            PostCompile?.Invoke(this, new EventArgs());
-
-            return ret;
+            return EmitToAssembly(templates);
         }
 
         /// <summary>
@@ -226,7 +211,7 @@ namespace APIBlox.AspNetCore
         {
             var name = GetNameWithoutGenericArity(obj);
             var ns = obj.Namespace;
-            var namespaces = new List<string> { ns };
+            var namespaces = new List<string> {ns};
 
             var result = new StringBuilder();
             result.Append($"{name}");
@@ -463,7 +448,7 @@ namespace APIBlox.AspNetCore
 
                 if (cpi is null)
                     throw new TemplateCompilationException(
-                        new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
+                        new[] {$"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!"}
                     );
 
                 var value = cpi.GetValue(attribute);
@@ -485,7 +470,7 @@ namespace APIBlox.AspNetCore
                 {
                     if (cp.ParameterType == typeof(string))
                     {
-                        var v = (IEnumerable<string>)value;
+                        var v = (IEnumerable<string>) value;
                         value = v.Select(s => $"\"{s}\"");
                     }
 
@@ -583,12 +568,12 @@ namespace APIBlox.AspNetCore
             {
                 if (dll.Exists)
                 {
-                    Warnings = new List<string> { ioEx.Message };
+                    Warnings = new List<string> {ioEx.Message};
                     _log.LogWarning(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Its in use!");
                 }
                 else
                 {
-                    Errors = new List<string> { ioEx.Message };
+                    Errors = new List<string> {ioEx.Message};
                     _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Ex: {ioEx.Message}");
                 }
 
@@ -685,7 +670,11 @@ namespace APIBlox.AspNetCore
                     );
 
                 var first = cg.First();
-                var dc = new DynamicController(first.Name, first.Namespace, first.Route);
+                var dc = new DynamicController(first.Name,
+                    first.Namespace,
+                    first.Route,
+                    _addControllerComments ? first.Comments : ""
+                );
 
                 foreach (var da in cg)
                 {

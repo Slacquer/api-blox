@@ -57,6 +57,7 @@ namespace Examples
                 .AddDynamicControllerConfigurations(_loggerFactory,
                     GetType(),
                     _environment.IsProduction(),
+                    true,
                     factory =>
                     {
                         factory.AdditionalAssemblyReferences.Add(startupAssembly);

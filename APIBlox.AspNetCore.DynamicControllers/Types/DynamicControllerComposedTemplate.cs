@@ -51,5 +51,12 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The namespace.</value>
         public string Namespace { get; }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Gets  the comments.
+        /// </summary>
+        /// <value>The comments.</value>
+        public string Comments { get; set;}
     }
 }

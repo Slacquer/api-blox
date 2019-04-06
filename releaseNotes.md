@@ -1,3 +1,12 @@
+_April 5th, 2019_  **v2.0.11**
+- Added summary comments for controllers.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 5th, 2019_  **v2.0.10**
 - Cleaned up what I did below, kept it all in the entension method.  Also allowed changed RootAssemblyPath to be a list rather than a single file.
 - Added RootAssemblyPath to XmlDocumentationExtensions, to allow fixing the below issue.  Its a workaround...

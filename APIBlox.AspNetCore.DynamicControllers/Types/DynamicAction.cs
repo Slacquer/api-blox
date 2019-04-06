@@ -21,7 +21,7 @@ namespace APIBlox.AspNetCore.Types
         /// <param name="fields">The fields.</param>
         /// <param name="namespaces">The namespaces.</param>
         /// <param name="methods">The methods.</param>
-        public DynamicAction(string name, string route, string content, string ctorArgs, 
+        public DynamicAction(string name, string route, string content, string ctorArgs,
             string ctorBody, string[] fields, string[] namespaces, string methods = null
         )
         {

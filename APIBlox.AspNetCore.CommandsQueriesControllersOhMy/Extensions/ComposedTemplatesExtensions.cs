@@ -292,6 +292,7 @@ namespace APIBlox.AspNetCore.Extensions
             var (reqObj, _, requestNs) = DynamicControllerFactory.WriteNameWithNamespaces(requestObj);
             var (parameters, paramNs) = DynamicControllerFactory.WriteInputParamsWithNamespaces(requestObj);
             var parameterComments = string.Join(Environment.NewLine, DynamicControllerFactory.WriteInputParamsXmlComments(requestObj));
+            var reqObjComments = requestObj.GetSummary();
             var (resObj, realResObject, resultObjNs) = responseObjectResult is null
                 ? ("", "", null)
                 : DynamicControllerFactory.WriteNameWithNamespaces(responseObjectResult);
@@ -304,6 +305,7 @@ namespace APIBlox.AspNetCore.Extensions
             if (!(resultObjNs is null))
                 ns = ns.Union(resultObjNs);
 
+            template.Comments = reqObjComments;
             template.Action.Namespaces = ns.ToArray();
 
             var cn = buildControllerName(realResObject);

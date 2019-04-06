@@ -30,5 +30,11 @@ namespace APIBlox.AspNetCore.Contracts
         /// </summary>
         /// <value>The namespace.</value>
         string Namespace { get; }
+
+        /// <summary>
+        ///     Gets  the comments.
+        /// </summary>
+        /// <value>The comments.</value>
+        string Comments { get; set;}
     }
 }

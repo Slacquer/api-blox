@@ -61,7 +61,8 @@
         </member>
         <member name="T:Examples.Resources.ChildByIdRequest">
             <summary>
-                Class ChildByIdRequest.
+                This comment came from the first request object as part of the first
+                action that was added to this controller.  The request object is the type ChildByIdRequest.
             </summary>
         </member>
         <member name="P:Examples.Resources.ChildByIdRequest.Id">
@@ -77,7 +78,7 @@
         </member>
         <member name="P:Examples.Resources.ChildByIdRequest.Help">
             <summary>
-                Gets or sets a value indicating whether this <see cref="T:Examples.Resources.ChildByIdRequest"/> is help.
+                Gets or sets a value indicating whether this <see cref="T:Examples.Resources.ChildByIdRequest" /> is help.
             </summary>
             <value><c>null</c> if [help] contains no value, <c>true</c> if [help]; otherwise, <c>false</c>.</value>
         </member>
@@ -302,13 +303,12 @@
                 Class Startup.
             </summary>
         </member>
-        <member name="M:Examples.StartupBase.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory,System.String)">
+        <member name="M:Examples.StartupBase.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
                 Initializes a new instance of the <see cref="T:Examples.StartupBase" /> class.
             </summary>
             <param name="environment">The environment.</param>
             <param name="loggerFactory">The logger factory.</param>
-            <param name="assemblyFileAndName">Name of the assembly file and.</param>
         </member>
         <member name="M:Examples.StartupBase.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 
 namespace APIBlox.AspNetCore.Types
@@ -14,12 +16,17 @@ namespace APIBlox.AspNetCore.Types
         private readonly string _name;
         private readonly string _namespace;
         private readonly string _route;
+        private readonly string _controllerComments;
 
-        public DynamicController(string name, string nameSpace, string route)
+        public DynamicController(string name, string nameSpace, string route, string controllerComments)
         {
             _name = name;
             _namespace = nameSpace;
             _route = route;
+            _controllerComments = controllerComments;
+
+            if (!_controllerComments.IsEmptyNullOrWhiteSpace())
+                _controllerComments = _controllerComments.Replace(Environment.NewLine, " ");
         }
 
         public List<string> Namespaces { get; } = new List<string>();
@@ -46,6 +53,7 @@ namespace APIBlox.AspNetCore.Types
             var ret = ControllerContent.Replace("[NAMESPACES]", ns)
                 .Replace("[CONTROLLERS_NAMESPACE]", _namespace)
                 .Replace("[CONTROLLER_NAME]", _name)
+                .Replace("[CONTROLLER_REQ_OBJ_SUMMARY]", _controllerComments)
                 .Replace("[CONTROLLER_ROUTE]", _route)
                 .Replace("[FIELDS]", fields)
                 .Replace("[CTOR_ARGS]", ctorArgs)
