@@ -19,7 +19,7 @@ namespace Examples
         /// <param name="environment">The environment.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         public Startup(IHostingEnvironment environment, ILoggerFactory loggerFactory)
-            : base(environment, loggerFactory, "ExampleControllers")
+            : base(environment, loggerFactory)
         {
         }
 

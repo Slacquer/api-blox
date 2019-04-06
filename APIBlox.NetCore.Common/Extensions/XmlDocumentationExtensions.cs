@@ -12,10 +12,9 @@ namespace APIBlox.NetCore.Extensions
     public static class XmlDocumentationExtensions
     {
         /// <summary>
-        ///     When set, xml searching will start with this assemblies path.
+        ///     Paths to look into when default implementation fails to find files.
         /// </summary>
-        /// <value>The root assembly.</value>
-        public static string RootAssemblyPath { get; set; }
+        public static List<string> FallbackPaths { get; set; }
 
         /// <summary>
         ///     A cache used to remember Xml documentation for assemblies
@@ -161,35 +160,53 @@ namespace APIBlox.NetCore.Extensions
         /// <returns>The XML document</returns>
         private static XmlDocument XmlFromAssemblyNonCached(Assembly assembly)
         {
-            var assemblyFilename = assembly.CodeBase;
-
             const string prefix = "file:///";
 
-            if (!assemblyFilename.StartsWith(prefix))
-                throw new Exception($"Could not ascertain assembly filename using '{assemblyFilename}'", null);
-
-            StreamReader streamReader;
-
-            var path = !RootAssemblyPath.IsEmptyNullOrWhiteSpace()
-                ? Path.Combine(RootAssemblyPath, $"{assembly.GetName().Name}.xml") 
-                : Path.ChangeExtension(assemblyFilename.Substring(prefix.Length), ".xml");
+            var assemblyFilename = assembly.CodeBase;
+            var doc = new XmlDocument();
+            var name = assembly.GetName().Name;
+            var path = Path.ChangeExtension(assemblyFilename.Substring(prefix.Length), ".xml");
 
             try
             {
-                streamReader = new StreamReader(path);
+                var streamReader = new StreamReader(path);
+
+                doc.Load(streamReader);
+                return doc;
             }
             catch (FileNotFoundException exception)
             {
+                if (!(FallbackPaths is null) && FallbackPaths.Count > 0)
+                {
+                    var searchFiles = new List<string>();
+                    
+                    foreach (var fPath in FallbackPaths)
+                    {
+                        var assPath = Path.Combine(fPath, $"{name}.xml");
+
+                        if (File.Exists(assPath))
+                        {
+                            doc.Load(new StreamReader(assPath));
+
+                            return doc;
+                        }
+
+                        searchFiles.Add(assPath);
+                    }
+                    throw new Exception(
+                        $"XML documentation not present (make sure it is turned on in " +
+                        $"project properties when building) for type {name}.  " +
+                        $"Looked for: '{string.Join(",", searchFiles)}'.",
+                        exception
+                    );
+                }
+
                 throw new Exception(
                     $"XML documentation not present (make sure it is turned on in " +
-                    $"project properties when building) for xml file '{path}'.",
+                    $"project properties when building) for for type {name}.  Looked for xml file '{path}'.",
                     exception
                 );
             }
-
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(streamReader);
-            return xmlDocument;
         }
     }
 }

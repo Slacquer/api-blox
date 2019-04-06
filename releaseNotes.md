@@ -1,4 +1,5 @@
-_April 5th, 2019_  **v2.0.9**
+_April 5th, 2019_  **v2.0.10**
+- Cleaned up what I did below, kept it all in the entension method.  Also allowed changed RootAssemblyPath to be a list rather than a single file.
 - Added RootAssemblyPath to XmlDocumentationExtensions, to allow fixing the below issue.  Its a workaround...
 - Issues with xml comments - Seems when another process runs an asseembly that is using our blox, then the xml comments are not being found.  Some error messages have been added to help facilitate why.  However, this is NOT the responsibility of APIBlox to fix.
 - Wow didnt add the PreCompile to Compile... \*sadface\*  

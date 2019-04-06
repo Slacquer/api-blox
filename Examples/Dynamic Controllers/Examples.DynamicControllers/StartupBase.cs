@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Contracts;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -22,7 +22,6 @@ namespace Examples
         private readonly IHostingEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
 
-        private readonly string _assemblyFileAndName;
         private string _dynamicControllersXmlFile;
         private Assembly _dynamicControllersAssembly;
 
@@ -31,26 +30,11 @@ namespace Examples
         /// </summary>
         /// <param name="environment">The environment.</param>
         /// <param name="loggerFactory">The logger factory.</param>
-        /// <param name="assemblyFileAndName">Name of the assembly file and.</param>
-        protected StartupBase(IHostingEnvironment environment, ILoggerFactory loggerFactory,
-            string assemblyFileAndName = "DynamicControllersAssembly"
+        protected StartupBase(IHostingEnvironment environment, ILoggerFactory loggerFactory
         )
         {
             _environment = environment;
             _loggerFactory = loggerFactory;
-            _assemblyFileAndName = assemblyFileAndName;
-
-
-            var ass = Assembly.GetAssembly(GetType());
-            // Yet another fix, the APIBlox xml reader always looks in swaggerGens folder and shouldn't.
-            APIBlox.NetCore.Extensions.XmlDocumentationExtensions.RootAssemblyPath = Path.GetDirectoryName(ass.Location);
-
-            DynamicControllerFactory.PreCompile += (s, e) =>
-            {
-                var factory = ((DynamicControllerFactory)s);
-
-                factory.AdditionalAssemblyReferences.Add(ass);
-            };
         }
 
         /// <summary>
@@ -59,8 +43,7 @@ namespace Examples
         /// <param name="services">The services.</param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            DynamicControllerFactory.PreCompile += (s, e) =>
-                ((DynamicControllerFactory)s).AdditionalAssemblyReferences.Add(Assembly.GetAssembly(GetType()));
+            var startupAssembly = Assembly.GetAssembly(GetType());
 
             services
                 .AddServerFaults()
@@ -72,17 +55,23 @@ namespace Examples
                 //
                 //  DynamicControllers and configuration
                 .AddDynamicControllerConfigurations(_loggerFactory,
+                    GetType(),
                     _environment.IsProduction(),
-                    _assemblyFileAndName,
-                    () => BuildTemplates(new List<IComposedTemplate>()),
+                    factory =>
+                    {
+                        factory.AdditionalAssemblyReferences.Add(startupAssembly);
+
+                        return BuildTemplates(new List<IComposedTemplate>());
+                    },
                     (factory, xml, ass) =>
                     {
                         _dynamicControllersXmlFile = xml;
                         _dynamicControllersAssembly = ass;
 
                         if (factory.Errors != null)
-                            throw new System.Exception("arg");
-                    }
+                            throw new Exception("arg");
+                    },
+                    Path.GetDirectoryName(startupAssembly.Location)
                 )
 #if DEBUG
                 .AddMvc()

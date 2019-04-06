@@ -6,6 +6,7 @@ using System.Reflection;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Exceptions;
+using APIBlox.NetCore.Extensions;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable once CheckNamespace
@@ -21,36 +22,40 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="loggerFactory">The logger factory.</param>
-        /// <param name="useCached">if set to <c>true</c> [use cached].</param>
-        /// <param name="assemblyFileAndName">Name of the assembly file and.</param>
-        /// <param name="configureTemplates">The configure.</param>
-        /// <param name="xmlResult">The XML result.</param>
+        /// <param name="startup">The startup type.</param>
+        /// <param name="useCached">if set to <c>true</c> [use caching].</param>
+        /// <param name="preCompile">The pre compile function.</param>
+        /// <param name="postCompile">The post compile action.</param>
+        /// <param name="xmlFallbackPaths">The XML fallback paths.</param>
         /// <returns>IServiceCollection.</returns>
-        /// <exception cref="TemplateCompilationException"></exception>
         public static IServiceCollection AddDynamicControllerConfigurations(this IServiceCollection services,
-            ILoggerFactory loggerFactory, bool useCached, string assemblyFileAndName,
-            Func<IEnumerable<IComposedTemplate>> configureTemplates, Action<DynamicControllerFactory, string, Assembly> xmlResult
+            ILoggerFactory loggerFactory, Type startup, bool useCached,
+            Func<DynamicControllerFactory, IEnumerable<IComposedTemplate>> preCompile,
+            Action<DynamicControllerFactory, string, Assembly> postCompile,
+            params string[] xmlFallbackPaths
         )
         {
+            var caller = Assembly.GetAssembly(startup);
+            var assemblyName = $"{caller.GetName().Name}.Controllers";
+            var outputFile = Path.Combine(Path.GetDirectoryName(caller.Location), "DynamicControllers");
+
+            XmlDocumentationExtensions.FallbackPaths = xmlFallbackPaths.ToList();
+
             var factory = new DynamicControllerFactory(loggerFactory,
-                assemblyFileAndName,
+                assemblyName,
                 useCached
             );
-
-            var caller = Assembly.GetCallingAssembly();
-            var outputFile = Path.Combine(Path.GetDirectoryName(caller.Location), assemblyFileAndName);
             
-            var templates = configureTemplates().ToArray();
+            var templates = preCompile?.Invoke(factory);
 
-            var outputAss = factory.Compile(
-                outputFile,
-                useCached,
-                templates.ToArray()
-            );
-            
+            if (templates is null)
+                throw new NullReferenceException("Nothing to do! no templates returned!  Why are you using this?!?!");
+
+            var outputAss = factory.Compile(outputFile, useCached, templates.ToArray());
+
             var (_, _, xml) = factory.OutputFiles;
 
-            xmlResult(factory, xml, outputAss);
+            postCompile?.Invoke(factory, xml, outputAss);
 
             return services;
         }
