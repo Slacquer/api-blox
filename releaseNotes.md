@@ -1,4 +1,5 @@
-_April 5th, 2019_  **v2.0.11**
+_April 6th, 2019_  **v2.0.12**
+- BUG: seems when DynamicControllerFactory.EmitToFile was called it would return null when possibly the file existed.
 - Added summary comments for controllers.
 
 Thanks,  

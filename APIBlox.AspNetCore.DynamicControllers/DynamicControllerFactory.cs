@@ -580,7 +580,7 @@ namespace APIBlox.AspNetCore
                 return dll;
             }
 
-            return null;
+            return dll;
         }
 
         private IEnumerable<MetadataReference> GetReferences()
