@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace APIBlox.AspNetCore
@@ -116,6 +115,9 @@ namespace APIBlox.AspNetCore
 
             var fi = EmitToFile(assemblyOutputPath, useCache, templates);
 
+            if (!(Errors is null))
+                return null;
+
             return !(fi is null) && fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
         }
 
@@ -132,25 +134,24 @@ namespace APIBlox.AspNetCore
             return EmitToAssembly(templates);
         }
 
-
-
-
-
-        public static string WriteGetQuery(Type type)
+        /// <summary>
+        ///     Given a type this will generate method input parameters in string form along with namespaces.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>System.ValueTuple&lt;System.String, System.String[]&gt;.</returns>
+        public static (string, string[]) WriteInputParamsWithNamespaces(Type obj)
         {
             // https://docs.microsoft.com/en-us/dotnet/api/system.codedom.compiler.codedomprovider?view=netframework-4.7.2
 
-            var method = new CodeMemberMethod
-            {
-                Name = "Get",
-                ReturnType = new CodeTypeReference(typeof(IActionResult)),
-                Attributes= (MemberAttributes) 24578 //MemberAttributes.Public | MemberAttributes.Final
-            };
-            
-            var properties = GetPublicReadWriteProperties(type);
+            var namespaces = new List<string> { obj.Namespace };
+            var method = new CodeMemberMethod { Name = "DummyMethod" };
+
+            var properties = GetPublicReadWriteProperties(obj);
 
             foreach (var pi in properties)
             {
+                namespaces.Add(pi.PropertyType.Namespace);
+
                 var attributes = pi.GetCustomAttributes();
 
                 var arg = new CodeParameterDeclarationExpression(pi.PropertyType, pi.Name.ToCamelCase());
@@ -159,140 +160,33 @@ namespace APIBlox.AspNetCore
                 {
                     var attType = att.GetType();
 
+                    namespaces.Add(attType.Namespace);
+
                     // Create the attribute declaration for the property.
                     var attr = new CodeAttributeDeclaration(new CodeTypeReference(attType));
 
-                    var attCtorArgs = GetConstructorCodeArguments(att);
-
-                    foreach (var codeAttributeArgument in attCtorArgs)
-                        attr.Arguments.Add(codeAttributeArgument);
-
-                    var attPropArgs = GetPropertyCodeArguments(att);
-
-                    foreach (var codeAttributeArgument in attPropArgs)
-                        attr.Arguments.Add(codeAttributeArgument);
+                    attr.Arguments.AddRange(GetConstructorCodeArguments(namespaces, att).ToArray());
+                    attr.Arguments.AddRange(GetPropertyCodeArguments(namespaces, att).ToArray());
 
                     arg.CustomAttributes.Add(attr);
-
                 }
-                
                 method.Parameters.Add(arg);
             }
-            
-            //var testClass = new CodeTypeDeclaration("TestClass");
-            //testClass.Members.Add(method);
 
-            string code;
+            namespaces = namespaces.Distinct().ToList();
+            var tmpNs = namespaces.OrderByDescending(s => s.Length).Select(s => $"{s}.").ToList();
 
-            using (var provider = CodeDomProvider.CreateProvider("CSharp"))
-            {
-                using (var stream = new MemoryStream())
-                {
-                    using (var writer = new StreamWriter(stream))
-                    {
-                        using (var reader = new StreamReader(stream))
-                        {
-                            var options = new CodeGeneratorOptions {BracingStyle = "C"};
+            var code = WriteMethod(method);
 
-                            //provider.GenerateCodeFromType(testClass, writer, options);
-                            provider.GenerateCodeFromMember(method, writer, options);
+            var ret = tmpNs.Aggregate(code, (cur, ns) => cur.Replace(ns, "")).Trim();
 
-                            writer.Flush();
-                            stream.Position = 0;
-                            code = reader.ReadToEnd();
-                        }
-                    }
-                }
-            }
+            // TOD: find regex for this.
+            var first = ret.IndexOfEx("(") + 1;
+            var last = ret.LastIndexOfEx(")");
+            var result = ret.Substring(first, last - first)
+                .Replace("()", "");
 
-            return code;
-        }
-
-        private static IEnumerable<CodeAttributeArgument> GetConstructorCodeArguments(Attribute attribute)
-        {
-            var type = attribute.GetType();
-            var ctor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault();
-
-            if (ctor is null)
-                yield break;
-
-            var ctorArgs = ctor.GetParameters().ToList();
-
-            if (!ctorArgs.Any())
-                yield break;
-
-            var readProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.GetValue(attribute) != default)
-                .ToList();
-
-            foreach (var cp in ctorArgs)
-            {
-                var cp1 = cp;
-                var cpi = readProps.FirstOrDefault(p => p.Name.EqualsEx(cp1.Name));
-
-                if (cpi is null)
-                    throw new TemplateCompilationException(
-                        new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
-                    );
-
-                var value = cpi.GetValue(attribute);
-
-                yield return new CodeAttributeArgument(new CodePrimitiveExpression(value));
-            }
-        }
-
-        private static IEnumerable<CodeAttributeArgument> GetPropertyCodeArguments(Attribute attribute)
-        {
-            var type = attribute.GetType();
-
-            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.CanWrite && p.GetValue(attribute) != default)
-                .ToList();
-
-            foreach (var pi in properties)
-            {
-                var value = pi.GetValue(attribute);
-
-                yield return new CodeAttributeArgument(pi.Name, new CodePrimitiveExpression(value));
-            }
-        }
-
-
-
-
-        /// <summary>
-        ///     Given a type this will generate method input parameters in string form along with namespaces.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>System.ValueTuple&lt;System.String, System.String[]&gt;.</returns>
-        public static (string, string[]) WriteInputParamsWithNamespaces(Type obj)
-        {
-            const string template = "@space@att @p";
-            var props = GetPublicReadWriteProperties(obj);
-
-            var namespaces = new List<string>();
-            var parameters = new List<string>();
-
-            for (var index = 0; index < props.Count; index++)
-            {
-                var pi = props[index];
-
-                var temp = template.Replace("@att", GetAttributesAndValues(namespaces, pi));
-
-                if (!namespaces.Contains(pi.PropertyType.Namespace))
-                    namespaces.Add(pi.PropertyType.Namespace);
-
-                var space = index == 0 ? "" : "            ";
-
-                parameters.Add(temp
-                    .Replace("@space", space)
-                    .Replace("@p", $"{GetPropertyTypeAndValue(namespaces, pi.PropertyType, pi.Name)},")
-                );
-            }
-
-            var paramsString = string.Join(Environment.NewLine, parameters);
-
-            return (paramsString, namespaces.ToArray());
+            return (result, namespaces.ToArray());
         }
 
         /// <summary>
@@ -429,6 +323,7 @@ namespace APIBlox.AspNetCore
             if (count != 1)
                 throw new ArgumentException($"{request.Name} must have a public property that is decorated with a {nameof(FromBodyAttribute)}.");
         }
+
 
 
 
@@ -668,184 +563,135 @@ namespace APIBlox.AspNetCore
 
 
 
-        private static string GetNameWithoutGenericArity(Type t)
+        private static string WriteMethod(CodeTypeMember method)
         {
-            var name = t.Name;
-            var index = name.IndexOf('`');
-            return index == -1 ? name : name.Substring(0, index);
-        }
-
-        private static string GetPropertyTypeAndValue(ICollection<string> namespaces, Type prop, string propName)
-        {
-            var (nullable, name) = IsOfNullableType(prop);
-
-            if (!nullable)
-                if (prop.IsGenericType)
+            using (var provider = CodeDomProvider.CreateProvider("CSharp"))
+            {
+                using (var stream = new MemoryStream())
                 {
-                    var builder = new StringBuilder();
-
-                    builder.Append("<");
-
-                    var args = prop.GetGenericArguments();
-
-                    for (var index = 0; index < args.Length; index++)
+                    using (var writer = new StreamWriter(stream))
                     {
-                        var type = args[index];
+                        using (var reader = new StreamReader(stream))
+                        {
+                            var options = new CodeGeneratorOptions { BracingStyle = "C" };
 
-                        if (!namespaces.Contains(type.Namespace))
-                            namespaces.Add(type.Namespace);
+                            provider.GenerateCodeFromMember(method, writer, options);
 
-                        var tName = type.Name;
+                            writer.Flush();
+                            stream.Position = 0;
 
-                        if (type.IsGenericType)
-                            tName = GetPropertyTypeAndValue(namespaces, type, null);
-
-                        builder.Append(index == args.Length - 1 ? $"{tName}" : $"{tName},");
+                            return reader.ReadToEnd();
+                        }
                     }
-
-                    builder.Append(">");
-
-                    name = $"{GetNameWithoutGenericArity(prop)}{builder}";
                 }
-
-            if (nullable)
-                return propName is null ? name : $"{name}? {propName.ToCamelCase()}";
-
-            if (prop.IsGenericType)
-                return propName is null ? name : $"{name} {propName.ToCamelCase()}";
-
-            return $"{prop.Name} {propName.ToCamelCase()}";
-        }
-
-        private static (bool, string) IsOfNullableType(Type o)
-        {
-            var nullable = o.IsGenericType && o.GetGenericTypeDefinition() == typeof(Nullable<>);
-
-            return !nullable
-                ? (false, o.Name)
-                : (true, o.GetGenericArguments().First().Name);
-        }
-
-        private static string GetAttributesAndValues(ICollection<string> namespaces, MemberInfo pi)
-        {
-            var builder = new StringBuilder();
-
-            var attributes = pi.GetCustomAttributes().ToList();
-
-            foreach (var attribute in attributes)
-            {
-                var attType = attribute.GetType();
-
-                if (!namespaces.Contains(attType.Namespace))
-                    namespaces.Add(attType.Namespace);
-
-                builder.Append("[");
-                builder.Append($"{attType.Name.Replace("Attribute", "")}(");
-                BuildAttributeConstructor(namespaces, attribute, builder);
-                BuildAttributeWriteProperties(attribute, builder);
-
-                builder.Append(")]");
-            }
-
-            var ret = builder.ToString();
-
-            return ret;
-        }
-
-        private static void BuildAttributeWriteProperties(Attribute attribute, StringBuilder builder)
-        {
-            var type = attribute.GetType();
-            var writeProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanWrite && p.GetValue(attribute) != default)
-                .ToList();
-
-            if (!writeProps.Any())
-                return;
-
-            if (!builder.ToString().EndsWith("("))
-                builder.Append(", ");
-
-            var argList = new List<string>();
-
-            for (var index = 0; index < writeProps.Count; index++)
-            {
-                var prop = writeProps[index];
-                var value = prop.GetValue(attribute);
-
-                argList.Add(value.ToString());
-
-                if (value is bool b)
-                    value = b.ToString().ToLower();
-
-                var comma = index == writeProps.Count - 1 ? "" : ", ";
-
-                builder.Append(prop.PropertyType == typeof(string)
-                    ? $"{prop.Name} = \"{value}\"{comma}"
-                    : $"{prop.Name} = {value}{comma}"
-                );
             }
         }
 
-        private static void BuildAttributeConstructor(ICollection<string> namespaces, Attribute attribute, StringBuilder builder)
+        private static IEnumerable<CodeAttributeArgument> GetConstructorCodeArguments(ICollection<string> namespaces, object obj)
         {
-            var type = attribute.GetType();
+            var type = obj.GetType();
+
+            namespaces.Add(type.Namespace);
+
             var ctor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault();
 
             if (ctor is null)
-                return;
+                yield break;
 
             var ctorArgs = ctor.GetParameters().ToList();
 
             if (!ctorArgs.Any())
-                return;
+                yield break;
 
             var readProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.GetValue(attribute) != default)
+                .Where(p => p.CanRead && p.GetValue(obj) != default)
                 .ToList();
 
-            var argList = new List<string>();
-
-            for (var index = 0; index < ctorArgs.Count; index++)
+            foreach (var cp in ctorArgs)
             {
-                var cp = ctorArgs[index];
-                var cpi = readProps.FirstOrDefault(p => p.Name.EqualsEx(cp.Name));
+                var cp1 = cp;
+                var cpi = readProps.FirstOrDefault(p => p.Name.EqualsEx(cp1.Name));
 
                 if (cpi is null)
                     throw new TemplateCompilationException(
                         new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
                     );
 
-                var value = cpi.GetValue(attribute);
+                namespaces.Add(cp.ParameterType.Namespace);
 
-                if (!namespaces.Contains(cp.ParameterType.Namespace))
-                    namespaces.Add(cp.ParameterType.Namespace);
+                var value = cpi.GetValue(obj);
+                var valType = value.GetType();
 
-                argList.Add(value.ToString());
-
-                if (value is bool b)
-                    value = b.ToString().ToLower();
-
-                var comma = index == ctorArgs.Count - 1 ? "" : ", ";
-
-                // TODO does not work with arrays dumb ass., IE: new[]{"ur", "dumb"}
-
-                // this is lame.
-                if (cp.ParameterType == typeof(IEnumerable))
+                if (valType.IsPrimitive || valType == typeof(string))
                 {
-                    if (cp.ParameterType == typeof(string))
+                    namespaces.Add(valType.Namespace);
+
+                    yield return new CodeAttributeArgument(new CodePrimitiveExpression(value));
+                }
+                else if (value is IEnumerable collection)
+                {
+                    namespaces.Add(collection.GetType().Namespace);
+
+                    foreach (var itm in collection)
                     {
-                        var v = (IEnumerable<string>)value;
-                        value = v.Select(s => $"\"{s}\"");
+                        namespaces.Add(itm.GetType().Namespace);
+
+                        yield return new CodeAttributeArgument(new CodePrimitiveExpression(itm));
                     }
 
-                    value = $"new[]{{{string.Join(",", value)}}}";
                 }
-
-                builder.Append(cp.ParameterType == typeof(string)
-                    ? $"\"{value}\"{comma}"
-                    : $"{value}{comma}"
-                );
             }
+        }
+
+        private static IEnumerable<CodeAttributeArgument> GetPropertyCodeArguments(ICollection<string> namespaces, object obj)
+        {
+            var type = obj.GetType();
+
+            namespaces.Add(type.Namespace);
+
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanRead && p.CanWrite && p.GetValue(obj) != default)
+                .ToList();
+
+            foreach (var pi in properties)
+            {
+                namespaces.Add(pi.DeclaringType.Namespace);
+
+                var value = pi.GetValue(obj);
+                var valType = value.GetType();
+
+                namespaces.Add(value.GetType().Namespace);
+
+                if (valType.IsPrimitive || valType == typeof(string))
+                {
+                    namespaces.Add(valType.Namespace);
+
+                    yield return new CodeAttributeArgument(pi.Name, new CodePrimitiveExpression(value));
+                }
+                else if (value is IEnumerable collection)
+                {
+                    namespaces.Add(collection.GetType().Namespace);
+
+                    foreach (var itm in collection)
+                    {
+                        namespaces.Add(itm.GetType().Namespace);
+
+                        yield return new CodeAttributeArgument(pi.Name, new CodePrimitiveExpression(itm));
+                    }
+
+                }
+            }
+        }
+
+
+
+
+
+        private static string GetNameWithoutGenericArity(Type t)
+        {
+            var name = t.Name;
+            var index = name.IndexOf('`');
+            return index == -1 ? name : name.Substring(0, index);
         }
 
         private static List<PropertyInfo> GetPublicReadWriteProperties(Type type)

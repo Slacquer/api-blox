@@ -24,7 +24,7 @@ namespace SlnTests.APIBlox.AspNetCore
         public void ShouldBuildInputParams()
         {
             var type = typeof(TestControllerParameters);
-            var ret = DynamicControllerFactory.WriteGetQuery(type);
+            var ret = DynamicControllerFactory.WriteInputParamsWithNamespaces(type);
 
             Assert.NotNull(ret);
         }
@@ -35,18 +35,37 @@ namespace SlnTests.APIBlox.AspNetCore
 
     public class TestControllerParameters
     {
+        //[Another(Fubars = new[] { "a" })]
         [FromRoute(Name = "id")]
+       // [MyCool(1, 2, 3)]
         public int Id { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "this is a better way to go?")]
-        [RegularExpression("some pattern", MatchTimeoutInMilliseconds = 5000)]
-        [FromBody]
-        public TestRequestObj Body { get; set; }
+        //[Required(AllowEmptyStrings = false, ErrorMessage = "this is a better way to go?")]
+        //[RegularExpression("some pattern", MatchTimeoutInMilliseconds = 5000)]
+        //[FromBody]
+        //public TestRequestObj Body { get; set; }
 
-        public IEnumerable<int?> BunchaNullableInts { get; set; }
+        //public IEnumerable<int?> BunchaNullableInts { get; set; }
     }
 
+    public class MyCoolAttribute : Attribute
+    {
+        public int[] Items { get; }
 
+        public MyCoolAttribute(params int[] items)
+        {
+            Items = items;
+        }
+    }
+
+    public class AnotherAttribute : Attribute
+    {
+        public string[] Fubars { get; set; }
+
+        public AnotherAttribute()
+        {
+        }
+    }
 
 
 

@@ -317,7 +317,7 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Tokens["[ACTION_ROUTE]"] = template.Action.Route ?? "";
             template.Action.Tokens["[PARAMS_COMMENTS]"] = parameterComments;
             template.Action.Tokens["[RES_OBJECT_RESULT]"] = resObj;
-            template.Action.Tokens["[ACTION_PARAMS]"] = parameters;
+            template.Action.Tokens["[ACTION_PARAMS]"] = $"{parameters},";
             template.Action.Tokens["[NEW_REQ_OBJECT]"] = newReqObj;
             template.Action.Tokens["[CONTROLLER_NAME]"] = cn;
 
