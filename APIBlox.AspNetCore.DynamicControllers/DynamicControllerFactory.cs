@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace APIBlox.AspNetCore
@@ -129,6 +132,98 @@ namespace APIBlox.AspNetCore
             return EmitToAssembly(templates);
         }
 
+
+        public static string MakeSomething(Type type)
+        {
+            var method = new CodeMethodReferenceExpression {MethodName = "SomeMethod", };
+
+            var properties = GetPublicReadWriteProperties(type);
+
+            foreach (var pi in properties)
+            {
+                var attributes = pi.GetCustomAttributes();
+
+                var arg = new CodeParameterDeclarationExpression(pi.PropertyType, pi.Name);
+
+                foreach (var att in attributes)
+                {
+                    var attType = att.GetType();
+
+                    // Create the attribute declaration for the property.
+                    var attr = new CodeAttributeDeclaration(new CodeTypeReference(attType));
+
+                    var attCtorArgs = GetConstructorCodeArguments(att);
+
+                    foreach (var codeAttributeArgument in attCtorArgs)
+                        attr.Arguments.Add(codeAttributeArgument);
+
+                    var attPropArgs = GetPropertyCodeArguments(att);
+
+                    foreach (var codeAttributeArgument in attPropArgs)
+                        attr.Arguments.Add(codeAttributeArgument);
+
+                    arg.CustomAttributes.Add(attr);
+                    
+                }
+
+                method.TypeArguments.Add(arg.Type);
+            }
+
+            return method.UserData.ToString();
+        }
+
+        private static IEnumerable<CodeAttributeArgument> GetConstructorCodeArguments(Attribute attribute)
+        {
+            var type = attribute.GetType();
+            var ctor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault();
+
+            if (ctor is null)
+                yield break;
+
+            var ctorArgs = ctor.GetParameters().ToList();
+
+            if (!ctorArgs.Any())
+                yield break;
+
+            var readProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanRead && p.GetValue(attribute) != default)
+                .ToList();
+
+            foreach (var cp in ctorArgs)
+            {
+                var cp1 = cp;
+                var cpi = readProps.FirstOrDefault(p => p.Name.EqualsEx(cp1.Name));
+
+                if (cpi is null)
+                    throw new TemplateCompilationException(
+                        new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
+                    );
+
+                var value = cpi.GetValue(type);
+
+                yield return new CodeAttributeArgument(new CodePrimitiveExpression(value));
+            }
+        }
+
+        private static IEnumerable<CodeAttributeArgument> GetPropertyCodeArguments(Attribute attribute)
+        {
+            var type = attribute.GetType();
+
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanRead && p.CanWrite && p.GetValue(attribute) != default)
+                .ToList();
+
+            foreach (var pi in properties)
+            {
+                var value = pi.GetValue(attribute);
+
+                yield return new CodeAttributeArgument(pi.Name, new CodePrimitiveExpression(value));
+            }
+        }
+
+
+
+
         /// <summary>
         ///     Given a type this will generate method input parameters in string form along with namespaces.
         /// </summary>
@@ -211,7 +306,7 @@ namespace APIBlox.AspNetCore
         {
             var name = GetNameWithoutGenericArity(obj);
             var ns = obj.Namespace;
-            var namespaces = new List<string> {ns};
+            var namespaces = new List<string> { ns };
 
             var result = new StringBuilder();
             result.Append($"{name}");
@@ -299,197 +394,7 @@ namespace APIBlox.AspNetCore
                 throw new ArgumentException($"{request.Name} must have a public property that is decorated with a {nameof(FromBodyAttribute)}.");
         }
 
-        /// <summary>
-        ///     Gets the name without generic arity.
-        /// </summary>
-        /// <param name="t">The t.</param>
-        /// <returns>System.String.</returns>
-        private static string GetNameWithoutGenericArity(Type t)
-        {
-            var name = t.Name;
-            var index = name.IndexOf('`');
-            return index == -1 ? name : name.Substring(0, index);
-        }
 
-        private static string GetPropertyTypeAndValue(ICollection<string> namespaces, Type prop, string propName)
-        {
-            var (nullable, name) = IsOfNullableType(prop);
-
-            if (!nullable)
-                if (prop.IsGenericType)
-                {
-                    var builder = new StringBuilder();
-
-                    builder.Append("<");
-
-                    var args = prop.GetGenericArguments();
-
-                    for (var index = 0; index < args.Length; index++)
-                    {
-                        var type = args[index];
-
-                        if (!namespaces.Contains(type.Namespace))
-                            namespaces.Add(type.Namespace);
-
-                        var tName = type.Name;
-
-                        if (type.IsGenericType)
-                            tName = GetPropertyTypeAndValue(namespaces, type, null);
-
-                        builder.Append(index == args.Length - 1 ? $"{tName}" : $"{tName},");
-                    }
-
-                    builder.Append(">");
-
-                    name = $"{GetNameWithoutGenericArity(prop)}{builder}";
-                }
-
-            if (nullable)
-                return propName is null ? name : $"{name}? {propName.ToCamelCase()}";
-
-            if (prop.IsGenericType)
-                return propName is null ? name : $"{name} {propName.ToCamelCase()}";
-
-            return $"{prop.Name} {propName.ToCamelCase()}";
-        }
-
-        private static (bool, string) IsOfNullableType(Type o)
-        {
-            var nullable = o.IsGenericType && o.GetGenericTypeDefinition() == typeof(Nullable<>);
-
-            return !nullable
-                ? (false, o.Name)
-                : (true, o.GetGenericArguments().First().Name);
-        }
-
-        private static string GetAttributesAndValues(ICollection<string> namespaces, MemberInfo pi)
-        {
-            var builder = new StringBuilder();
-
-            var attributes = pi.GetCustomAttributes().ToList();
-
-            foreach (var attribute in attributes)
-            {
-                var attType = attribute.GetType();
-
-                if (!namespaces.Contains(attType.Namespace))
-                    namespaces.Add(attType.Namespace);
-
-                builder.Append("[");
-                builder.Append($"{attType.Name.Replace("Attribute", "")}(");
-                BuildAttributeConstructor(namespaces, attribute, builder);
-                BuildAttributeWriteProperties(attribute, builder);
-
-                builder.Append(")]");
-            }
-
-            var ret = builder.ToString();
-
-            return ret;
-        }
-
-        private static void BuildAttributeWriteProperties(Attribute attribute, StringBuilder builder)
-        {
-            var type = attribute.GetType();
-            var writeProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanWrite && p.GetValue(attribute) != default)
-                .ToList();
-
-            if (!writeProps.Any())
-                return;
-
-            if (!builder.ToString().EndsWith("("))
-                builder.Append(", ");
-
-            var argList = new List<string>();
-
-            for (var index = 0; index < writeProps.Count; index++)
-            {
-                var prop = writeProps[index];
-                var value = prop.GetValue(attribute);
-
-                argList.Add(value.ToString());
-
-                if (value is bool b)
-                    value = b.ToString().ToLower();
-
-                var comma = index == writeProps.Count - 1 ? "" : ", ";
-
-                builder.Append(prop.PropertyType == typeof(string)
-                    ? $"{prop.Name} = \"{value}\"{comma}"
-                    : $"{prop.Name} = {value}{comma}"
-                );
-            }
-        }
-
-        private static void BuildAttributeConstructor(ICollection<string> namespaces, Attribute attribute, StringBuilder builder)
-        {
-            var type = attribute.GetType();
-            var ctor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault();
-
-            if (ctor is null)
-                return;
-
-            var ctorArgs = ctor.GetParameters().ToList();
-
-            if (!ctorArgs.Any())
-                return;
-
-            var readProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.GetValue(attribute) != default)
-                .ToList();
-
-            var argList = new List<string>();
-
-            for (var index = 0; index < ctorArgs.Count; index++)
-            {
-                var cp = ctorArgs[index];
-                var cpi = readProps.FirstOrDefault(p => p.Name.EqualsEx(cp.Name));
-
-                if (cpi is null)
-                    throw new TemplateCompilationException(
-                        new[] {$"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!"}
-                    );
-
-                var value = cpi.GetValue(attribute);
-
-                if (!namespaces.Contains(cp.ParameterType.Namespace))
-                    namespaces.Add(cp.ParameterType.Namespace);
-
-                argList.Add(value.ToString());
-
-                if (value is bool b)
-                    value = b.ToString().ToLower();
-
-                var comma = index == ctorArgs.Count - 1 ? "" : ", ";
-
-                // TODO does not work with arrays dumb ass., IE: new[]{"ur", "dumb"}
-
-                // this is lame.
-                if (cp.ParameterType == typeof(IEnumerable))
-                {
-                    if (cp.ParameterType == typeof(string))
-                    {
-                        var v = (IEnumerable<string>) value;
-                        value = v.Select(s => $"\"{s}\"");
-                    }
-
-                    value = $"new[]{{{string.Join(",", value)}}}";
-                }
-
-                builder.Append(cp.ParameterType == typeof(string)
-                    ? $"\"{value}\"{comma}"
-                    : $"{value}{comma}"
-                );
-            }
-        }
-
-        private static List<PropertyInfo> GetPublicReadWriteProperties(Type type)
-        {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.CanWrite)
-                .ToList();
-        }
 
         private static void AddExistingArray(List<string> dest, IEnumerable<string> src)
         {
@@ -568,12 +473,12 @@ namespace APIBlox.AspNetCore
             {
                 if (dll.Exists)
                 {
-                    Warnings = new List<string> {ioEx.Message};
+                    Warnings = new List<string> { ioEx.Message };
                     _log.LogWarning(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Its in use!");
                 }
                 else
                 {
-                    Errors = new List<string> {ioEx.Message};
+                    Errors = new List<string> { ioEx.Message };
                     _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Ex: {ioEx.Message}");
                 }
 
@@ -723,6 +628,195 @@ namespace APIBlox.AspNetCore
             ).ToArray();
 
             Warnings = warnings.Any() ? warnings : null;
+        }
+
+
+
+        private static string GetNameWithoutGenericArity(Type t)
+        {
+            var name = t.Name;
+            var index = name.IndexOf('`');
+            return index == -1 ? name : name.Substring(0, index);
+        }
+
+        private static string GetPropertyTypeAndValue(ICollection<string> namespaces, Type prop, string propName)
+        {
+            var (nullable, name) = IsOfNullableType(prop);
+
+            if (!nullable)
+                if (prop.IsGenericType)
+                {
+                    var builder = new StringBuilder();
+
+                    builder.Append("<");
+
+                    var args = prop.GetGenericArguments();
+
+                    for (var index = 0; index < args.Length; index++)
+                    {
+                        var type = args[index];
+
+                        if (!namespaces.Contains(type.Namespace))
+                            namespaces.Add(type.Namespace);
+
+                        var tName = type.Name;
+
+                        if (type.IsGenericType)
+                            tName = GetPropertyTypeAndValue(namespaces, type, null);
+
+                        builder.Append(index == args.Length - 1 ? $"{tName}" : $"{tName},");
+                    }
+
+                    builder.Append(">");
+
+                    name = $"{GetNameWithoutGenericArity(prop)}{builder}";
+                }
+
+            if (nullable)
+                return propName is null ? name : $"{name}? {propName.ToCamelCase()}";
+
+            if (prop.IsGenericType)
+                return propName is null ? name : $"{name} {propName.ToCamelCase()}";
+
+            return $"{prop.Name} {propName.ToCamelCase()}";
+        }
+
+        private static (bool, string) IsOfNullableType(Type o)
+        {
+            var nullable = o.IsGenericType && o.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+            return !nullable
+                ? (false, o.Name)
+                : (true, o.GetGenericArguments().First().Name);
+        }
+
+        private static string GetAttributesAndValues(ICollection<string> namespaces, MemberInfo pi)
+        {
+            var builder = new StringBuilder();
+
+            var attributes = pi.GetCustomAttributes().ToList();
+
+            foreach (var attribute in attributes)
+            {
+                var attType = attribute.GetType();
+
+                if (!namespaces.Contains(attType.Namespace))
+                    namespaces.Add(attType.Namespace);
+
+                builder.Append("[");
+                builder.Append($"{attType.Name.Replace("Attribute", "")}(");
+                BuildAttributeConstructor(namespaces, attribute, builder);
+                BuildAttributeWriteProperties(attribute, builder);
+
+                builder.Append(")]");
+            }
+
+            var ret = builder.ToString();
+
+            return ret;
+        }
+
+        private static void BuildAttributeWriteProperties(Attribute attribute, StringBuilder builder)
+        {
+            var type = attribute.GetType();
+            var writeProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanWrite && p.GetValue(attribute) != default)
+                .ToList();
+
+            if (!writeProps.Any())
+                return;
+
+            if (!builder.ToString().EndsWith("("))
+                builder.Append(", ");
+
+            var argList = new List<string>();
+
+            for (var index = 0; index < writeProps.Count; index++)
+            {
+                var prop = writeProps[index];
+                var value = prop.GetValue(attribute);
+
+                argList.Add(value.ToString());
+
+                if (value is bool b)
+                    value = b.ToString().ToLower();
+
+                var comma = index == writeProps.Count - 1 ? "" : ", ";
+
+                builder.Append(prop.PropertyType == typeof(string)
+                    ? $"{prop.Name} = \"{value}\"{comma}"
+                    : $"{prop.Name} = {value}{comma}"
+                );
+            }
+        }
+
+        private static void BuildAttributeConstructor(ICollection<string> namespaces, Attribute attribute, StringBuilder builder)
+        {
+            var type = attribute.GetType();
+            var ctor = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault();
+
+            if (ctor is null)
+                return;
+
+            var ctorArgs = ctor.GetParameters().ToList();
+
+            if (!ctorArgs.Any())
+                return;
+
+            var readProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanRead && p.GetValue(attribute) != default)
+                .ToList();
+
+            var argList = new List<string>();
+
+            for (var index = 0; index < ctorArgs.Count; index++)
+            {
+                var cp = ctorArgs[index];
+                var cpi = readProps.FirstOrDefault(p => p.Name.EqualsEx(cp.Name));
+
+                if (cpi is null)
+                    throw new TemplateCompilationException(
+                        new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
+                    );
+
+                var value = cpi.GetValue(attribute);
+
+                if (!namespaces.Contains(cp.ParameterType.Namespace))
+                    namespaces.Add(cp.ParameterType.Namespace);
+
+                argList.Add(value.ToString());
+
+                if (value is bool b)
+                    value = b.ToString().ToLower();
+
+                var comma = index == ctorArgs.Count - 1 ? "" : ", ";
+
+                // TODO does not work with arrays dumb ass., IE: new[]{"ur", "dumb"}
+
+                // this is lame.
+                if (cp.ParameterType == typeof(IEnumerable))
+                {
+                    if (cp.ParameterType == typeof(string))
+                    {
+                        var v = (IEnumerable<string>)value;
+                        value = v.Select(s => $"\"{s}\"");
+                    }
+
+                    value = $"new[]{{{string.Join(",", value)}}}";
+                }
+
+                builder.Append(cp.ParameterType == typeof(string)
+                    ? $"\"{value}\"{comma}"
+                    : $"{value}{comma}"
+                );
+            }
+        }
+
+        private static List<PropertyInfo> GetPublicReadWriteProperties(Type type)
+        {
+            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanRead && p.CanWrite)
+                .ToList();
         }
     }
 }
