@@ -1,3 +1,12 @@
+_April 7th, 2019_  **v2.0.13**
+- DynamicControllerFactroy, refactoring and using CodeDom instead of home grown code for input parameters.  In time I will likely remove templates altogether.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 6th, 2019_  **v2.0.12**
 - BUG: seems when DynamicControllerFactory.EmitToFile was called it would return null when possibly the file existed.
 - Added summary comments for controllers.
