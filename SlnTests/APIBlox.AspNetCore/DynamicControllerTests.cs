@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -23,10 +24,13 @@ namespace SlnTests.APIBlox.AspNetCore
         public void ShouldBuildInputParams()
         {
             var type = typeof(TestControllerParameters);
-            var ret = DynamicControllerFactory.MakeSomething(type);
-            
+            var ret = DynamicControllerFactory.WriteGetQuery(type);
+
             Assert.NotNull(ret);
         }
+
+
+
     }
 
     public class TestControllerParameters
@@ -34,9 +38,18 @@ namespace SlnTests.APIBlox.AspNetCore
         [FromRoute(Name = "id")]
         public int Id { get; set; }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "this is a better way to go?")]
+        [RegularExpression("some pattern", MatchTimeoutInMilliseconds = 5000)]
         [FromBody]
         public TestRequestObj Body { get; set; }
+
+        public IEnumerable<int?> BunchaNullableInts { get; set; }
     }
+
+
+
+
+
 
     namespace SlnTests.APIBlox.AspNetCore.RequestObjects
     {

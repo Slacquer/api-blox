@@ -133,17 +133,25 @@ namespace APIBlox.AspNetCore
         }
 
 
-        public static string MakeSomething(Type type)
-        {
-            var method = new CodeMethodReferenceExpression {MethodName = "SomeMethod", };
 
+
+
+        public static string WriteGetQuery(Type type)
+        {
+            var method = new CodeMemberMethod
+            {
+                Name = "Get",
+                ReturnType = new CodeTypeReference(typeof(IActionResult)),
+                Attributes= (MemberAttributes) 24578 //MemberAttributes.Public | MemberAttributes.Final
+            };
+            
             var properties = GetPublicReadWriteProperties(type);
 
             foreach (var pi in properties)
             {
                 var attributes = pi.GetCustomAttributes();
 
-                var arg = new CodeParameterDeclarationExpression(pi.PropertyType, pi.Name);
+                var arg = new CodeParameterDeclarationExpression(pi.PropertyType, pi.Name.ToCamelCase());
 
                 foreach (var att in attributes)
                 {
@@ -163,13 +171,39 @@ namespace APIBlox.AspNetCore
                         attr.Arguments.Add(codeAttributeArgument);
 
                     arg.CustomAttributes.Add(attr);
-                    
-                }
 
-                method.TypeArguments.Add(arg.Type);
+                }
+                
+                method.Parameters.Add(arg);
+            }
+            
+            //var testClass = new CodeTypeDeclaration("TestClass");
+            //testClass.Members.Add(method);
+
+            string code;
+
+            using (var provider = CodeDomProvider.CreateProvider("CSharp"))
+            {
+                using (var stream = new MemoryStream())
+                {
+                    using (var writer = new StreamWriter(stream))
+                    {
+                        using (var reader = new StreamReader(stream))
+                        {
+                            var options = new CodeGeneratorOptions {BracingStyle = "C"};
+
+                            //provider.GenerateCodeFromType(testClass, writer, options);
+                            provider.GenerateCodeFromMember(method, writer, options);
+
+                            writer.Flush();
+                            stream.Position = 0;
+                            code = reader.ReadToEnd();
+                        }
+                    }
+                }
             }
 
-            return method.UserData.ToString();
+            return code;
         }
 
         private static IEnumerable<CodeAttributeArgument> GetConstructorCodeArguments(Attribute attribute)
@@ -199,7 +233,7 @@ namespace APIBlox.AspNetCore
                         new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
                     );
 
-                var value = cpi.GetValue(type);
+                var value = cpi.GetValue(attribute);
 
                 yield return new CodeAttributeArgument(new CodePrimitiveExpression(value));
             }
