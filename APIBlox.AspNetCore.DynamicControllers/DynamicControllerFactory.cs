@@ -138,6 +138,8 @@ namespace APIBlox.AspNetCore
 
         public static string WriteGetQuery(Type type)
         {
+            // https://docs.microsoft.com/en-us/dotnet/api/system.codedom.compiler.codedomprovider?view=netframework-4.7.2
+
             var method = new CodeMemberMethod
             {
                 Name = "Get",
