@@ -1,4 +1,5 @@
-﻿using APIBlox.NetCore.Types;
+﻿using System;
+using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,15 +62,12 @@ namespace Examples
                 .AddAlterRequestErrorObject(err =>
                     {
                         err.Type = AboutErrorsUrl;
-                        err.AddProperty("Some Custom Property",
-                            new
-                            {
-                                SetInStartup = "Adding stuff like this MIGHT " +
-                                               "be something you need for your standards."
-                            }
+                        err.AddProperty("Stack-trace",
+                            Environment.StackTrace
                         );
                     }
                 )
+
 
                 //
                 // Too much for this project, take a look at the Example Clean Architecture
@@ -80,7 +78,7 @@ namespace Examples
                 //    _assemblyNames,
                 //    _assemblyPaths
                 //)
-            #else
+#else
                 // You may think to yourself... "This is no big deal, why would I need to do use your dumb InjectableServiceAttribute?
                 // In fact I could clean up this bit of code just by putting it in an extension method and all is good."...
                 //      Oh Really Tough guy? what happens when this presentation project does NOT have a reference to
@@ -89,7 +87,7 @@ namespace Examples
                 //          then what!
                 //                  huh!
                 .AddSingleton<IRandomNumberGeneratorService, RandomNumberGeneratorService>()
-            #endif
+#endif
                 .AddMvc()
             #if UseAPIBlox
                 .AddCamelCaseResultsOptions()
@@ -104,7 +102,7 @@ namespace Examples
 
                 //
                 // No pagination
-                .AddEnsureResponseResultActionFilter(_loggerFactory, defineResponseFunc: data => new { NonPaginatedResources = data })
+                //.AddEnsureResponseResultActionFilter(_loggerFactory,false, defineResponseFunc: data => new { NonPaginatedResources = data })
 
                 //
                 // Resource Validator.
@@ -125,7 +123,7 @@ namespace Examples
 
             //
             // Handle any and all server (500) errors with a defined structure.
-            app.UseServerFaults();
+            app.UseServerFaults(requestErrorObjectAction: o =>  o.AddProperty("stack-trace", Environment.StackTrace));
 
             //
             // Good for testing how things respond (when things go too

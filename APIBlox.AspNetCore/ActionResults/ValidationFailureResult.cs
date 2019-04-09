@@ -72,11 +72,7 @@ namespace APIBlox.AspNetCore.ActionResults
                 ).ToList();
 
             if (!errors.Any())
-            {
-                throw new ArgumentException(
-                    "The validation state is INVALID, however no errors were found in modelstate!  Start digging!"
-                );
-            }
+                obj.Detail = "Errors have occured.";
 
             foreach (var err in errors)
                 obj.Errors.Add(err);

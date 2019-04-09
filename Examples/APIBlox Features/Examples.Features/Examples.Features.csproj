@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Source\Repos\FKS\api-blox\Examples\APIBlox Features\Examples.Features\Examples.Features.xml</DocumentationFile>
     <DefineConstants>TRACE;UseAPIBlox</DefineConstants>
+    <DocumentationFile>C:\Source\Repos\Fks\api-blox\Examples\APIBlox Features\Examples.Features\Examples.Features.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

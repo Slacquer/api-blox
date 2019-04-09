@@ -1,3 +1,14 @@
+_April 7th, 2019_  **v2.0.14**
+- ServerFaultsMiddleware - removed stack trace from result.  However added callback to the extension method to allow consumer to do what they want with the error object prior to returning results, like add a stack trace :)
+- ValidationFailureResult - will no longer throw when errors are empty, it will just reset the "Detail" to "Errors have occured."
+- EnsureResponseResultActionFilter - Will not wrap when status codes are >= 300 or < 200.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 7th, 2019_  **v2.0.13**
 - DynamicControllerFactroy, refactoring and using CodeDom instead of home grown code for input parameters.  In time I will likely remove templates altogether.
 

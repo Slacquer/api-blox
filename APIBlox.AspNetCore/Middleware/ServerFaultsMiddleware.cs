@@ -21,11 +21,17 @@ namespace APIBlox.AspNetCore
         private readonly Func<string> _referenceIdFunc;
         private readonly string _typeUrl;
         private readonly bool _verboseProduction;
+        private readonly Action<RequestErrorObject> _resultAction;
+
 
         public ServerFaultsMiddleware(
-            RequestDelegate next, ILogger<ServerFaultsMiddleware> logger,
-            IHostingEnvironment env, string typeUrl, bool verboseProduction,
-            Func<string> referenceIdFunc
+            RequestDelegate next, 
+            ILogger<ServerFaultsMiddleware> logger,
+            IHostingEnvironment env, 
+            string typeUrl, 
+            bool verboseProduction,
+            Func<string> referenceIdFunc,
+            Action<RequestErrorObject> requestErrorObjectAction
         )
         {
             _next = next;
@@ -34,8 +40,9 @@ namespace APIBlox.AspNetCore
             _typeUrl = typeUrl;
             _verboseProduction = verboseProduction;
             _referenceIdFunc = referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString());
+            _resultAction = requestErrorObjectAction;
         }
-
+        
         public async Task InvokeAsync(HttpContext context)
         {
             var error = context.Features.Get<IExceptionHandlerFeature>();
@@ -51,18 +58,26 @@ namespace APIBlox.AspNetCore
 
             try
             {
-                ProblemResult result;
+                RequestErrorObject errorResult;
+                var statusCode = (int)HttpStatusCode.InternalServerError;
 
-                if (error.Error is HandledRequestException handled)
-                    result = new ProblemResult(handled.RequestErrorObject)
-                    {
-                        StatusCode = handled.RequestErrorObject.Status ?? (int) HttpStatusCode.InternalServerError
-                    };
+                if (error.Error is HandledRequestException exception)
+                {
+                    var handled = exception;
+                    errorResult = handled.RequestErrorObject;
+                    statusCode = handled.RequestErrorObject.Status ?? (int)HttpStatusCode.InternalServerError;
+                }
                 else
-                    result = new ProblemResult(BuildResponse(error.Error, context.Request.Path))
-                    {
-                        StatusCode = (int) HttpStatusCode.InternalServerError
-                    };
+                {
+                    errorResult = BuildResponse(error.Error, context.Request.Path);
+                }
+
+                _resultAction?.Invoke(errorResult);
+
+                var result = new ProblemResult(errorResult)
+                {
+                    StatusCode = statusCode
+                };
 
                 await context.WriteResultExecutorAsync(result);
             }
@@ -122,17 +137,15 @@ namespace APIBlox.AspNetCore
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
-                (int) HttpStatusCode.InternalServerError,
+                (int)HttpStatusCode.InternalServerError,
                 instance,
                 _referenceIdFunc()
             )
             {
                 Type = _typeUrl
             };
-
-            var er = err.ToDynamicDataObject();
-            er.AddProperty("StackTrace", err.StackTrace);
-            dto.Errors.Add(er);
+            
+            dto.Errors.Add(err.ToDynamicDataObject());
 
             return dto;
         }
@@ -141,7 +154,7 @@ namespace APIBlox.AspNetCore
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
-                (int) HttpStatusCode.InternalServerError,
+                (int)HttpStatusCode.InternalServerError,
                 instance,
                 _referenceIdFunc()
             )

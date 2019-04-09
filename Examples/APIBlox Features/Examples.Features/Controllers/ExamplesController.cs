@@ -143,7 +143,9 @@ namespace Examples.Controllers
             // we should be returning a route with id, but
             // I'm lazy and that's not the point of all this... :/
 
-            return Ok(new {Id = 1, requestResource.CoolNewValue, requestResource.ValueId});
+            return Conflict(new { detail="Please see errors property for more details", errors=new[]{new{detail="he userSettings does not exist for the supplied Id/Key.",title="The request method does not allow this functionality as upsert semantics are not supported."}}});
+
+          //  return Ok(new {Id = 1, requestResource.CoolNewValue, requestResource.ValueId});
         }
 
         /// <summary>

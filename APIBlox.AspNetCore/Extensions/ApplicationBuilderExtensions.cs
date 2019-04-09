@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using APIBlox.AspNetCore;
+using APIBlox.AspNetCore.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -36,21 +37,28 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     A callback function to set the reference number of the fault, by default this is
         ///     <see cref="DateTimeOffset.Now" />.Ticks
         /// </param>
+        /// <param name="requestErrorObjectAction">
+        ///     A callback action to allow editing the <see cref="RequestErrorObject"/> prior to returning results.
+        /// </param>
         /// <returns>IApplicationBuilder.</returns>
         public static IApplicationBuilder UseServerFaults(
             this IApplicationBuilder app,
-            string typeUrl = @"about:blank", bool verboseProduction = false, Func<string> referenceIdFunc = null
+            string typeUrl = @"about:blank",
+            bool verboseProduction = false,
+            Func<string> referenceIdFunc = null,
+            Action<RequestErrorObject> requestErrorObjectAction = null
         )
         {
             return app.UseExceptionHandler(c =>
                 c.UseMiddleware<ServerFaultsMiddleware>(
                     typeUrl,
                     verboseProduction,
-                    referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString())
+                    referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString()),
+                    requestErrorObjectAction??(p => { })
                 )
             );
         }
-
+        
         /// <summary>
         ///     Uses the <see cref="SimulateWaitTimeMiddleware" />.  This only works
         ///     in dev and the request path must contain query param wait.
