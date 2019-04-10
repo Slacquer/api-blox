@@ -374,7 +374,9 @@ namespace APIBlox.AspNetCore
         {
             Reset();
 
-            var dll = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.dll"));
+            var dllFile = Path.Combine(outputFolder, $"{_assemblyName}.dll");
+
+            var dll = new FileInfo(dllFile);
             var pdb = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.pdb"));
             var xml = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.xml"));
 
@@ -395,7 +397,10 @@ namespace APIBlox.AspNetCore
                     _log.LogInformation(() => $"Created dynamic controllers assembly file: {dll.FullName}");
 
                     CheckAndSetWarnings(emitResult);
-                    return dll;
+
+                    // BUG!  If we do NOT recreate the FileInfo, exists will be false on new creation!
+                    //return dll;
+                    return new FileInfo(dllFile);
                 }
 
                 _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dll.FullName}");

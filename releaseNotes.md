@@ -1,4 +1,5 @@
 _April 10th, 2019_  **v2.0.16**
+- BUG! DynamicControllerFactory.EmitToFile - was NOT returning the newly created FileInfo.
 - AddDynamicControllerConfigurations - No longer throws when templates is null, will simply log critical message.
  
 Thanks,  
