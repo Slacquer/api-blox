@@ -1,3 +1,12 @@
+_April 10th, 2019_  **v2.0.16**
+- AddDynamicControllerConfigurations - No longer throws when templates is null, will simply log critical message.
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 9th, 2019_  **v2.0.15**
 - DynamicDataObject - Added RemoveProperty overloads.
 - HandlerResponseExtensions - CreateError is obsolete, added direct extension methods for RequestErrorObjectExtensions.

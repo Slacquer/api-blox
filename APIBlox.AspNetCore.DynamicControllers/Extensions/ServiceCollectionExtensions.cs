@@ -52,16 +52,33 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var templates = preCompile?.Invoke(factory);
 
-            if (templates is null)
-                throw new NullReferenceException("Nothing to do! no templates returned!  Why are you using this?!?!");
+            var templatesToCompile = TemplatesCheck(loggerFactory, templates);
 
-            var outputAss = factory.Compile(outputFile, useCached, templates.ToArray());
+            if (templatesToCompile is null)
+                return services;
+
+            var outputAss = factory.Compile(outputFile, useCached, templatesToCompile);
 
             var (_, _, xml) = factory.OutputFiles;
 
             postCompile?.Invoke(factory, xml, outputAss);
 
             return services;
+        }
+
+        private static IComposedTemplate[] TemplatesCheck(ILoggerFactory loggerFactory, IEnumerable<IComposedTemplate> templates)
+        {
+            var composedTemplates = templates?.ToArray();
+
+            var invalid = composedTemplates is null || !composedTemplates.Any();
+
+            if (!invalid)
+                return composedTemplates;
+
+            loggerFactory.CreateLogger(nameof(AddDynamicControllerConfigurations))
+                .LogCritical(() => "Controller templates collection is empty.  Nothing to do!");
+
+            return null;
         }
     }
 }

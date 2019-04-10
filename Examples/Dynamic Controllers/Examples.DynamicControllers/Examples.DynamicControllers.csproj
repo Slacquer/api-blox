@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Source\Repos\FKS\api-blox\Examples\Dynamic Controllers\Examples.DynamicControllers\Examples.DynamicControllers.xml</DocumentationFile>
+    <DocumentationFile></DocumentationFile>
     <DefineConstants>TRACE;UseAPIBlox</DefineConstants>
   </PropertyGroup>
 
