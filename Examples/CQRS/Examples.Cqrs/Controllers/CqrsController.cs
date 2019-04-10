@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.Types;
 using Examples.Resources;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +35,7 @@ namespace Examples.Controllers
     [ApiController]
     public class CqrsController : ControllerBase
     {
-        private readonly ICommandHandler<ExampleRequestObject> _commandHandler;
+        private readonly ICommandHandler<ExampleRequestObject, HandlerResponse> _commandHandler;
         private readonly IQueryHandler<int, int> _queryInputsHandler;
         private readonly IQueryHandler<IEnumerable<string>> _queryNoInputsHandler;
 
@@ -46,7 +48,7 @@ namespace Examples.Controllers
         public CqrsController(
             IQueryHandler<IEnumerable<string>> queryNoInputsHandler,
             IQueryHandler<int, int> queryInputsHandler,
-            ICommandHandler<ExampleRequestObject> commandHandler
+            ICommandHandler<ExampleRequestObject, HandlerResponse> commandHandler
         )
         {
             _queryNoInputsHandler = queryNoInputsHandler;
@@ -83,7 +85,10 @@ namespace Examples.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(ExampleRequestObject requestResource)
         {
-            await _commandHandler.HandleAsync(requestResource, CancellationToken.None);
+           var ret = await _commandHandler.HandleAsync(requestResource, CancellationToken.None);
+
+           if (ret.HasErrors)
+               return new ProblemResult(ret.Error);
 
             return Ok();
         }
