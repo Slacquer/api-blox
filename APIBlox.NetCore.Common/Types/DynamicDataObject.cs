@@ -69,6 +69,26 @@ namespace APIBlox.NetCore.Types
         }
 
         /// <summary>
+        ///     Removes the property.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the t model.</typeparam>
+        /// <typeparam name="TType">The type of the t type.</typeparam>
+        /// <param name="func">The function.</param>
+        /// <returns>DynamicDataObject.</returns>
+        public DynamicDataObject RemoveProperty<TModel, TType>(Expression<Func<TModel, TType>> func)
+        {
+            var expression = (MemberExpression) func.Body;
+            var pn = expression.Member.Name;
+
+            if (!Properties.Any(p => p.Key.EqualsEx(pn)))
+                return this;
+
+            Properties.Remove(expression.Member.Name);
+
+            return this;
+        }
+
+        /// <summary>
         ///     Adds a property using a string.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
@@ -79,6 +99,21 @@ namespace APIBlox.NetCore.Types
                 return this;
 
             Properties.Add(propertyName, value);
+
+            return this;
+        }
+
+        /// <summary>
+        ///     Removes the property.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <returns>DynamicDataObject.</returns>
+        public DynamicDataObject RemoveProperty(string propertyName)
+        {
+            if (!Properties.Any(p => p.Key.EqualsEx(propertyName)))
+                return this;
+
+            Properties.Remove(propertyName);
 
             return this;
         }

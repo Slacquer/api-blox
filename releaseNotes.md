@@ -1,4 +1,5 @@
 _???, 2019_  **v2.0.15**
+- DynamicDataObject - Added RemoveProperty overloads.
 - HandlerResponseExtensions - CreateError is obsolete, added direct extension methods for RequestErrorObjectExtensions.
  
 Thanks,  
