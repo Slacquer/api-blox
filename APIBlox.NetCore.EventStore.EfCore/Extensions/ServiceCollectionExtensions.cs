@@ -72,6 +72,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
                     ctx.Database.EnsureCreated();
 
+                    ctx.Database.Migrate();
+
                     return new EfCoreSqlRepository<TModel>(ctx, settings);
                 }
             );
