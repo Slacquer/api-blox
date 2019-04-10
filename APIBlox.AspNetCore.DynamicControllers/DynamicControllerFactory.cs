@@ -567,6 +567,7 @@ namespace APIBlox.AspNetCore
 
         private static string WriteMethod(CodeTypeMember method)
         {
+            // https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/how-to-create-a-class-using-codedom
             using (var provider = CodeDomProvider.CreateProvider("CSharp"))
             {
                 using (var stream = new MemoryStream())

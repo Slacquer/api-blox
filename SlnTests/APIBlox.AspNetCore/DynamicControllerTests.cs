@@ -25,7 +25,7 @@ namespace SlnTests.APIBlox.AspNetCore
         {
             var type = typeof(TestControllerParameters);
             var ret = DynamicControllerFactory.WriteInputParamsWithNamespaces(type);
-
+            
             Assert.NotNull(ret);
         }
 
@@ -33,6 +33,9 @@ namespace SlnTests.APIBlox.AspNetCore
 
     }
 
+    /// <summary>
+    /// Class TestControllerParameters.
+    /// </summary>
     public class TestControllerParameters
     {
         //[Another(Fubars = new[] { "a" })]
