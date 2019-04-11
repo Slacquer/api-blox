@@ -69,9 +69,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 x =>
                 {
                     var ctx = x.GetRequiredService<EventStoreDbContext>();
-
-                    ctx.Database.EnsureCreated();
-
+                    
                     ctx.Database.Migrate();
 
                     return new EfCoreSqlRepository<TModel>(ctx, settings);

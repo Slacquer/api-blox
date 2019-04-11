@@ -1,8 +1,4 @@
-﻿#region -    Using Statements    -
-
-using Microsoft.AspNetCore.Mvc;
-
-#endregion
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {

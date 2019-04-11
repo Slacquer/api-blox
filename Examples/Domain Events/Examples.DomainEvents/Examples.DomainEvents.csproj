@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RootNamespace>Examples</RootNamespace> 
+    <RootNamespace>Examples</RootNamespace>
     <LangVersion>latest</LangVersion>
+
+    <DocumentationFile>.\Examples.DomainEvents.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Source\Repos\FKS\api-blox\Examples\Domain Events\Examples.DomainEvents\Examples.DomainEvents.xml</DocumentationFile>
+
   </PropertyGroup>
 
   <ItemGroup>

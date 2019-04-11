@@ -1,4 +1,6 @@
-﻿using Examples.Events;
+﻿using Examples.AggregateModels;
+using Examples.Configuration;
+using Examples.Events;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

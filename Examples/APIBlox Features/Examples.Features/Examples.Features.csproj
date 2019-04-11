@@ -4,11 +4,13 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>Examples</RootNamespace> 
     <LangVersion>latest</LangVersion>
+
+    <DocumentationFile>.\Examples.Features.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;UseAPIBlox</DefineConstants>
-    <DocumentationFile>C:\Source\Repos\Fks\api-blox\Examples\APIBlox Features\Examples.Features\Examples.Features.xml</DocumentationFile>
+   
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

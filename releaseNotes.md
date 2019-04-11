@@ -1,6 +1,7 @@
 _April 11th, 2019_  **v2.0.17**
 - DynamicControllerFactory - caching is no longer being used (here) it is now done soley in the AddDynamicControllerConfigurations extension method.
- 
+- EventStore EfCore  - Added create migration for EventStoreDocuments table.
+- Examples.EventSourcing - refactored.
 Thanks,  
 _Slacquer_  
 

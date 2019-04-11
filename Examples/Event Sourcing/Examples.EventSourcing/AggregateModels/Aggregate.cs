@@ -10,25 +10,26 @@ using APIBlox.NetCore.Models;
 using Examples.Events;
 using Newtonsoft.Json;
 
-namespace Examples
+namespace Examples.AggregateModels
 {
     /// <summary>
-    ///     Class EfCoreSqlAggregate.
+    ///     Class CosmosAggregate.
     /// </summary>
-    public class EfCoreSqlAggregate
+    public class Aggregate<TAggregate>
+        where TAggregate : class
     {
-        private readonly IEventStoreService<EfCoreSqlAggregate> _es;
+        private readonly IEventStoreService<TAggregate> _es;
         private EventStreamModel _myEventStream;
 
         private readonly string _streamId;
         private readonly IDictionary<Type, MethodInfo> _whenMethods;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EfCoreSqlAggregate" /> class.
+        ///     Initializes a new instance of the <see cref="CosmosAggregate" /> class.
         /// </summary>
         /// <param name="eventStoreService">The event store service.</param>
         /// <param name="streamId">The stream identifier.</param>
-        public EfCoreSqlAggregate(IEventStoreService<EfCoreSqlAggregate> eventStoreService, string streamId)
+        public Aggregate(IEventStoreService<TAggregate> eventStoreService, string streamId)
         {
             _es = eventStoreService;
 
@@ -77,7 +78,7 @@ namespace Examples
             await Build(false, cancellationToken);
 
             if (!(_myEventStream is null))
-                throw new EventStoreConcurrencyException($"Another Aggregate with stream id {_streamId} already exists!");
+                throw new EventStoreConcurrencyException($"Aggregate with stream id {_streamId} already exists!");
 
             _myEventStream = new EventStreamModel();
 
@@ -95,13 +96,13 @@ namespace Examples
         /// <param name="someValue">Some value.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="EventStoreNotFoundException">Aggregate with stream id {_streamId}</exception>
+        /// <exception cref="EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         public async Task UpdateSomeValue(string someValue, CancellationToken cancellationToken)
         {
             await Build(false, cancellationToken);
 
             if (_myEventStream is null)
-                throw new EventStoreNotFoundException($"Another Aggregate with stream id {_streamId} not found!");
+                throw new EventStoreConcurrencyException($"Aggregate with stream id {_streamId} not found!");
 
             // Validate and such
             SomeValue = someValue;
@@ -135,16 +136,6 @@ namespace Examples
         }
 
         /// <summary>
-        ///     Deletes me.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        public async Task DeleteMe(CancellationToken cancellationToken)
-        {
-            await _es.DeleteEventStreamAsync(_streamId, cancellationToken);
-        }
-
-        /// <summary>
         ///     Builds the specified fail not found.
         /// </summary>
         /// <param name="failNotFound">if set to <c>true</c> [fail not found].</param>
@@ -168,7 +159,7 @@ namespace Examples
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (EfCoreSqlAggregate) _myEventStream.Snapshot.Data;
+                var data = (CosmosAggregate) _myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;
@@ -177,6 +168,16 @@ namespace Examples
             ApplyPreviousEvents(_myEventStream.Events);
 
             MyVersion = _myEventStream.Version;
+        }
+
+        /// <summary>
+        ///     Deletes me.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public async Task DeleteMe(CancellationToken cancellationToken)
+        {
+            await _es.DeleteEventStreamAsync(_streamId, cancellationToken);
         }
 
         private void When(SomeValueAdded e)

@@ -4,10 +4,12 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>Examples</RootNamespace> 
     <LangVersion>latest</LangVersion>
+
+    <DocumentationFile>.\Examples.Cqrs.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Source\Repos\FKS\api-blox\Examples\CQRS\Examples.Cqrs\Examples.Cqrs.xml</DocumentationFile>
+    
     <DefineConstants>TRACE;UseAPIBlox</DefineConstants>
   </PropertyGroup>
 

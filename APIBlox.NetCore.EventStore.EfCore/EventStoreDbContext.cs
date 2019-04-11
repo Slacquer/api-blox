@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
 using APIBlox.NetCore.Documents;
+using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 
 namespace APIBlox.NetCore
 {
-    internal class EventStoreDbContext : DbContext
+    internal sealed class EventStoreDbContext : DbContext
     {
         public EventStoreDbContext(DbContextOptions<EventStoreDbContext> options)
             : base(options)
@@ -29,7 +30,7 @@ namespace APIBlox.NetCore
     {
         protected override EventStoreDbContext CreateNewInstance(DbContextOptions<EventStoreDbContext> options)
         {
-            return new EventStoreDbContext(options);
+            return  new EventStoreDbContext(options);
         }
     }
 
@@ -38,13 +39,11 @@ namespace APIBlox.NetCore
     {
         public TContext CreateDbContext(string[] args)
         {
-            return Create(
-                Directory.GetCurrentDirectory(),
-                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+            return Create(Directory.GetCurrentDirectory(), Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
         }
-        protected abstract TContext CreateNewInstance(
-            DbContextOptions<TContext> options);
-        
+
+        protected abstract TContext CreateNewInstance(DbContextOptions<TContext> options);
+
 
         private TContext Create(string basePath, string environmentName)
         {
@@ -54,40 +53,32 @@ namespace APIBlox.NetCore
                 .AddJsonFile("appSettings.json")
                 .AddJsonFile($"appSettings.{environmentName}.json", true);
 
-            var config = builder.Build();
+            var config = builder.Build().GetSection(nameof(EfCoreSqlOptions));
 
-            var connStr = config.GetConnectionString("default");
+            var es = config.Get<EfCoreSqlOptions>();
 
-            if (string.IsNullOrWhiteSpace(connStr))
-            {
-                throw new InvalidOperationException(
-                    "Could not find a connection string named 'default'.");
-            }
-
-            return Create(connStr);
-
-        }
-
-        private TContext Create(string connectionString)
-        {
-            if (string.IsNullOrEmpty(connectionString))
+            if (es is null)
                 throw new ArgumentException(
-             $"{nameof(connectionString)} is null or empty.",
-             nameof(connectionString));
+                    $"In order to use the {nameof(EfCoreSqlOptions)} you " +
+                    $"will need to have an {nameof(EfCoreSqlOptions)} configuration entry."
+                );
 
-            var optionsBuilder =
-                 new DbContextOptionsBuilder<TContext>();
+            return Create(es);
 
-            Console.WriteLine(
-                "MyDesignTimeDbContextFactory.Create(string): Connection string: {0}",
-                connectionString);
-
-            optionsBuilder.UseSqlServer(connectionString);
-
-            DbContextOptions<TContext> options = optionsBuilder.Options;
-
-            return CreateNewInstance(options);
         }
 
+        private TContext Create(EfCoreSqlOptions efCoreOptions)
+        {
+            if (efCoreOptions.CnnString.IsEmptyNullOrWhiteSpace())
+                throw new ArgumentException($"{nameof(efCoreOptions.CnnString)} is null or empty.", nameof(efCoreOptions.CnnString));
+
+            var optionsBuilder = new DbContextOptionsBuilder<TContext>();
+
+            Console.WriteLine($"---------------CNNSTR: {efCoreOptions.CnnString}");
+
+            optionsBuilder.UseSqlServer(efCoreOptions.CnnString);
+
+            return CreateNewInstance(optionsBuilder.Options);
+        }
     }
 }

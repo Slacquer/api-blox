@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Source\Repos\FKS\api-blox\Examples\Event Sourcing\Examples.EventSourcing\Examples.EventSourcing.xml</DocumentationFile>
+    <DocumentationFile>.\Examples.EventSourcing.xml</DocumentationFile>
     <DefineConstants>TRACE;UseAPIBlox</DefineConstants>
   </PropertyGroup>
 

@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
+using Examples.AggregateModels;
 using Examples.Resources;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,31 +15,20 @@ namespace Examples.Controllers
     /// <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
     [Route("api/[controller]")]
     [ApiController]
-    public class EventSourcingController : ControllerBase
+    public class EventSourcingController<TAggregate> : ControllerBase
+        where TAggregate : Aggregate<TAggregate>
     {
-        private readonly IEventStoreService<CosmosAggregate> _cosmosSvc;
-        private readonly IEventStoreService<EfCoreSqlAggregate> _efCoreSqlSvc;
-        private readonly IEventStoreService<MongoAggregate> _mongoSvc;
-        private readonly IEventStoreService<RavenAggregate> _ravenSvc;
+        private readonly IEventStoreService<TAggregate> _svc;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EventSourcingController" /> class.
+        ///     Initializes a new instance of the <see cref="EventSourcingRavenDbController" /> class.
         /// </summary>
-        /// <param name="cosmosSvc">The cosmos SVC.</param>
-        /// <param name="mongoSvc">The mongo SVC.</param>
-        /// <param name="ravenSvc">The raven SVC.</param>
-        /// <param name="efCoreSqlSvc">The ef core SQL SVC.</param>
+        /// <param name="svc">The SVC.</param>
         public EventSourcingController(
-            IEventStoreService<CosmosAggregate> cosmosSvc,
-            IEventStoreService<MongoAggregate> mongoSvc,
-            IEventStoreService<RavenAggregate> ravenSvc,
-            IEventStoreService<EfCoreSqlAggregate> efCoreSqlSvc
+            IEventStoreService<TAggregate> svc
         )
         {
-            _cosmosSvc = cosmosSvc;
-            _mongoSvc = mongoSvc;
-            _ravenSvc = ravenSvc;
-            _efCoreSqlSvc = efCoreSqlSvc;
+            _svc = svc;
         }
 
         /// <summary>
@@ -50,19 +39,11 @@ namespace Examples.Controllers
         [HttpGet]
         public async Task<ActionResult> Get(string firstName)
         {
-            var c = new CosmosAggregate(_cosmosSvc, firstName);
-            var m = new MongoAggregate(_mongoSvc, firstName);
-            var r = new RavenAggregate(_ravenSvc, Reverse(firstName));
-            var e = new EfCoreSqlAggregate(_efCoreSqlSvc, firstName);
+            var m = new Aggregate<TAggregate>(_svc, firstName);
 
-            await Task.WhenAll(
-                c.Build(true),
-                m.Build(true),
-                r.Build(true),
-                e.Build(true)
-            );
+            await m.Build(true);
 
-            return Ok(new {CosmosAggregate = c, MongoAggregate = m, RavenAggregate = r, EfCoreSqlAggregate = e});
+            return Ok(m);
         }
 
         /// <summary>
@@ -74,24 +55,10 @@ namespace Examples.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(AggregateResource resource, CancellationToken cancellationToken)
         {
-            var c = new CosmosAggregate(_cosmosSvc, resource.FirstName);
-            var m = new MongoAggregate(_mongoSvc, resource.FirstName);
-            var r = new RavenAggregate(_ravenSvc, Reverse(resource.FirstName));
-            var e = new EfCoreSqlAggregate(_efCoreSqlSvc, resource.FirstName);
+            var m = new Aggregate<TAggregate>(_svc, resource.FirstName);
 
-            await Task.WhenAll(
-                c.AddSomeValue(resource.SomeValue, cancellationToken),
-                m.AddSomeValue(resource.SomeValue, cancellationToken),
-                r.AddSomeValue(Reverse(resource.SomeValue), cancellationToken),
-                e.AddSomeValue(resource.SomeValue, cancellationToken)
-            );
-
-            await Task.WhenAll(
-                c.PublishChangesAsync(cancellationToken),
-                m.PublishChangesAsync(cancellationToken),
-                r.PublishChangesAsync(cancellationToken),
-                e.PublishChangesAsync(cancellationToken)
-            );
+            await m.AddSomeValue(resource.SomeValue, cancellationToken);
+            await m.PublishChangesAsync(cancellationToken);
 
             return Accepted();
         }
@@ -106,29 +73,12 @@ namespace Examples.Controllers
         [HttpPut("{firstName}")]
         public async Task<ActionResult> Put(string firstName, [FromBody] string someValue, CancellationToken cancellationToken)
         {
-            var c = new CosmosAggregate(_cosmosSvc, firstName);
-            var m = new MongoAggregate(_mongoSvc, firstName);
-            var r = new RavenAggregate(_ravenSvc, Reverse(firstName));
-            var e = new EfCoreSqlAggregate(_efCoreSqlSvc, firstName);
+            var m = new Aggregate<TAggregate>(_svc, firstName);
 
-            for (var i = 0; i < 10; i++)
-            {
-                await Task.WhenAll(
-                    c.UpdateSomeValue(someValue + i, cancellationToken),
-                    m.UpdateSomeValue(someValue + i, cancellationToken),
-                    r.UpdateSomeValue(Reverse(someValue + i), cancellationToken),
-                    e.UpdateSomeValue(someValue + i, cancellationToken)
-                );
+            await m.UpdateSomeValue(someValue, cancellationToken);
+            await m.PublishChangesAsync(cancellationToken);
 
-                await Task.WhenAll(
-                    c.PublishChangesAsync(cancellationToken),
-                    m.PublishChangesAsync(cancellationToken),
-                    r.PublishChangesAsync(cancellationToken),
-                    e.PublishChangesAsync(cancellationToken)
-                );
-            }
-
-            return Accepted();
+            return NoContent();
         }
 
         /// <summary>
@@ -140,24 +90,11 @@ namespace Examples.Controllers
         [HttpDelete("{firstName}")]
         public async Task<ActionResult> Delete(string firstName, CancellationToken cancellationToken)
         {
-            var c = new CosmosAggregate(_cosmosSvc, firstName);
-            var m = new MongoAggregate(_mongoSvc, firstName);
-            var r = new RavenAggregate(_ravenSvc, Reverse(firstName));
-            var e = new EfCoreSqlAggregate(_efCoreSqlSvc, firstName);
+            var m = new Aggregate<TAggregate>(_svc, firstName);
 
-            await Task.WhenAll(
-                c.DeleteMe(cancellationToken),
-                m.DeleteMe(cancellationToken),
-                r.DeleteMe(cancellationToken),
-                e.DeleteMe(cancellationToken)
-            );
+            await m.DeleteMe(cancellationToken);
 
             return NoContent();
-        }
-
-        private static string Reverse(string str)
-        {
-            return string.Join("", str.Reverse());
         }
     }
 }
