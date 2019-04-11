@@ -23,32 +23,37 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="startup">The startup type.</param>
         /// <param name="useCached">if set to <c>true</c> [use caching].</param>
+        /// <param name="releaseConfiguration">if set to <c>true</c> [release configuration].</param>
         /// <param name="addControllerComments">
         ///     if set to <c>true</c> Summary comments from the request object of the first
         ///     controller action added will be included as controller summary comments..
         /// </param>
-        /// <param name="preCompile">The pre compile function.</param>
+        /// <param name="preCompile">The pre compile function.  If caching and cache is found then this function will not be called.</param>
         /// <param name="postCompile">The post compile action.</param>
         /// <param name="xmlFallbackPaths">The XML fallback paths.</param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddDynamicControllerConfigurations(this IServiceCollection services,
-            ILoggerFactory loggerFactory, Type startup, bool useCached, bool addControllerComments,
+            ILoggerFactory loggerFactory, Type startup, bool useCached, bool releaseConfiguration, bool addControllerComments,
             Func<DynamicControllerFactory, IEnumerable<IComposedTemplate>> preCompile,
             Action<DynamicControllerFactory, string, Assembly> postCompile,
             params string[] xmlFallbackPaths
         )
         {
+            var log = loggerFactory.CreateLogger(nameof(AddDynamicControllerConfigurations));
             var caller = Assembly.GetAssembly(startup);
             var assemblyName = $"{caller.GetName().Name}.Controllers";
-            var outputFile = Path.Combine(Path.GetDirectoryName(caller.Location), "DynamicControllers");
+            var outputPath = Path.Combine(Path.GetDirectoryName(caller.Location), "DynamicControllers");
+            var dll = new FileInfo(Path.Combine(outputPath, $"{assemblyName}.dll"));
+            var xmlFile = new FileInfo(Path.Combine(outputPath, $"{assemblyName}.xml"));
+            var factory = new DynamicControllerFactory(loggerFactory, assemblyName, releaseConfiguration, addControllerComments);
 
             XmlDocumentationExtensions.FallbackPaths = xmlFallbackPaths.ToList();
 
-            var factory = new DynamicControllerFactory(loggerFactory,
-                assemblyName,
-                useCached,
-                addControllerComments
-            );
+            if (useCached && CacheFilesExist(log, dll, xmlFile))
+            {
+                postCompile?.Invoke(factory, xmlFile.FullName, Assembly.LoadFrom(dll.FullName));
+                return services;
+            }
 
             var templates = preCompile?.Invoke(factory);
 
@@ -57,13 +62,36 @@ namespace Microsoft.Extensions.DependencyInjection
             if (templatesToCompile is null)
                 return services;
 
-            var outputAss = factory.Compile(outputFile, useCached, templatesToCompile);
+            var outputAss = factory.Compile(outputPath, templatesToCompile);
 
             var (_, _, xml) = factory.OutputFiles;
 
             postCompile?.Invoke(factory, xml, outputAss);
 
             return services;
+        }
+
+        private static bool CacheFilesExist(ILogger log, FileSystemInfo dll, FileSystemInfo xml)
+        {
+            if (dll.Exists)
+            {
+                var dn = dll.FullName;
+                var xn = xml.FullName;
+
+                log.LogInformation(() => $"Using cached dynamic controller assembly file: '{dn}'");
+
+                if (!xml.Exists)
+                    log.LogWarning(() => $"Caching is being used however, XML file '{xn}' not found.");
+
+                return true;
+            }
+
+            log.LogWarning(() =>
+                "Configured to use caching, however dynamic controller assembly " +
+                $"file '{dll.FullName}' was not found, therefore cache will NOT be used."
+            );
+
+            return false;
         }
 
         private static IComposedTemplate[] TemplatesCheck(ILoggerFactory loggerFactory, IEnumerable<IComposedTemplate> templates)

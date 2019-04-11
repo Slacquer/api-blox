@@ -35,7 +35,7 @@ namespace APIBlox.AspNetCore
 
         private readonly string _assemblyName;
         private readonly ILogger<DynamicControllerFactory> _log;
-        private readonly bool _production;
+        private readonly bool _release;
         private readonly bool _addControllerComments;
 
         /// <summary>
@@ -43,19 +43,19 @@ namespace APIBlox.AspNetCore
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="assemblyName">Name of the assembly.</param>
-        /// <param name="production">if set to <c>true</c> [production].</param>
+        /// <param name="release">if set to <c>true</c> [release configuration].</param>
         /// <param name="addControllerComments">
         ///     if set to <c>true</c> Summary comments from the request object of the first
         ///     controller action added will be included as controller summary comments.
         /// </param>
         /// <exception cref="ArgumentNullException">assemblyName</exception>
-        public DynamicControllerFactory(ILoggerFactory loggerFactory, string assemblyName, bool production = false, bool addControllerComments = true)
+        public DynamicControllerFactory(ILoggerFactory loggerFactory, string assemblyName, bool release = false, bool addControllerComments = true)
         {
             if (assemblyName.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(assemblyName));
 
             _assemblyName = assemblyName;
-            _production = production;
+            _release = release;
             _addControllerComments = addControllerComments;
             _log = loggerFactory.CreateLogger<DynamicControllerFactory>();
         }
@@ -101,11 +101,10 @@ namespace APIBlox.AspNetCore
         ///     </para>
         /// </summary>
         /// <param name="assemblyOutputPath">The assembly output path.</param>
-        /// <param name="useCache">if set to <c>true</c> [use cache].</param>
         /// <param name="templates">The templates.</param>
         /// <returns>Assembly.</returns>
         /// <exception cref="ArgumentNullException">assemblyOutputPath</exception>
-        public Assembly Compile(string assemblyOutputPath, bool useCache, params IComposedTemplate[] templates)
+        public Assembly Compile(string assemblyOutputPath, params IComposedTemplate[] templates)
         {
             if (assemblyOutputPath.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(assemblyOutputPath));
@@ -113,7 +112,7 @@ namespace APIBlox.AspNetCore
             if (!Directory.Exists(assemblyOutputPath))
                 Directory.CreateDirectory(assemblyOutputPath);
 
-            var fi = EmitToFile(assemblyOutputPath, useCache, templates);
+            var fi = EmitToFile(assemblyOutputPath, templates);
 
             if (!(Errors is null))
                 return null;
@@ -370,60 +369,54 @@ namespace APIBlox.AspNetCore
             }
         }
 
-        private FileInfo EmitToFile(string outputFolder, bool useCache, params IComposedTemplate[] templates)
+        private FileInfo EmitToFile(string outputFolder, params IComposedTemplate[] templates)
         {
             Reset();
 
-            var dllFile = Path.Combine(outputFolder, $"{_assemblyName}.dll");
-
-            var dll = new FileInfo(dllFile);
-            var pdb = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.pdb"));
-            var xml = new FileInfo(Path.Combine(outputFolder, $"{_assemblyName}.xml"));
-
-            OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
-
-            if (useCache && OutputsCheck(dll, pdb, xml))
-                return dll;
-
             var csOptions = GetSyntaxTree(templates, out var csSyntaxTree);
             var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, GetReferences(), csOptions);
+            var dllFile = Path.Combine(outputFolder, $"{_assemblyName}.dll");
+            var pdbFile = Path.Combine(outputFolder, $"{_assemblyName}.pdb");
+            var xmlFile = Path.Combine(outputFolder, $"{_assemblyName}.xml");
 
             try
             {
-                var emitResult = compilation.Emit(dll.FullName, _production ? null : pdb.FullName, xml.FullName);
+                var emitResult = compilation.Emit(dllFile,  pdbFile, xmlFile);
 
                 if (emitResult.Success)
                 {
+                    var dll = new FileInfo(dllFile);
+
+                    // OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
+
                     _log.LogInformation(() => $"Created dynamic controllers assembly file: {dll.FullName}");
 
                     CheckAndSetWarnings(emitResult);
-
-                    // BUG!  If we do NOT recreate the FileInfo, exists will be false on new creation!
-                    //return dll;
-                    return new FileInfo(dllFile);
+                    
+                    return dll;
                 }
 
-                _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dll.FullName}");
+                _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dllFile}");
 
                 CheckAndSetFailures(emitResult);
             }
             catch (IOException ioEx)
             {
-                if (dll.Exists)
+                if (File.Exists(dllFile))
                 {
                     Warnings = new List<string> { ioEx.Message };
-                    _log.LogWarning(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Its in use!");
+                    _log.LogWarning(() => $"Could not create dynamic controllers assembly file: {dllFile}.  Its in use!");
                 }
                 else
                 {
                     Errors = new List<string> { ioEx.Message };
-                    _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dll.FullName}.  Ex: {ioEx.Message}");
+                    _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dllFile}.  Ex: {ioEx.Message}");
                 }
 
-                return dll;
+                return null;
             }
 
-            return dll;
+            return null;
         }
 
         private IEnumerable<MetadataReference> GetReferences()
@@ -452,29 +445,6 @@ namespace APIBlox.AspNetCore
             return lst;
         }
 
-        private bool OutputsCheck(FileSystemInfo dll, FileSystemInfo pdb, FileSystemInfo xml)
-        {
-            if (dll.Exists && xml.Exists)
-            {
-                if (_production)
-                {
-                    var dllName = dll.FullName;
-                    _log.LogInformation(() => $"Using cached dynamic controller assembly file: {dllName}");
-
-                    return true;
-                }
-
-                if (!pdb.Exists)
-                    _log.LogWarning(() => $"PDB Cache file {pdb.FullName} not found, cache not being used.");
-
-                return false;
-            }
-
-            _log.LogWarning(() => $"DLL {dll.FullName} or XML file {xml.FullName} not found, cache not being used.");
-
-            return false;
-        }
-
         private void Reset()
         {
             OutputFiles = (null, null, null);
@@ -490,7 +460,7 @@ namespace APIBlox.AspNetCore
 
             var csOptions = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,
-                optimizationLevel: _production
+                optimizationLevel: _release
                     ? OptimizationLevel.Release
                     : OptimizationLevel.Debug
             );

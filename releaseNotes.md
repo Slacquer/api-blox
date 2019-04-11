@@ -1,3 +1,12 @@
+_April 11th, 2019_  **v2.0.17**
+- DynamicControllerFactory - caching is no longer being used (here) it is now done soley in the AddDynamicControllerConfigurations extension method.
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 10th, 2019_  **v2.0.16**
 - BUG! DynamicControllerFactory.EmitToFile - was NOT returning the newly created FileInfo.
 - AddDynamicControllerConfigurations - No longer throws when templates is null, will simply log critical message.
