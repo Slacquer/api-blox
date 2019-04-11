@@ -386,8 +386,10 @@ namespace APIBlox.AspNetCore
                 if (emitResult.Success)
                 {
                     var dll = new FileInfo(dllFile);
+                    var pdb = new FileInfo(pdbFile);
+                    var xml = new FileInfo(xmlFile);
 
-                    // OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
+                    OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
 
                     _log.LogInformation(() => $"Created dynamic controllers assembly file: {dll.FullName}");
 
