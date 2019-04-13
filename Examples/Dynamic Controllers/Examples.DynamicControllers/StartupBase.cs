@@ -80,9 +80,12 @@ namespace Examples
 #else
                 .AddMvcCore()
 #endif
-                .AddPostLocationHeaderResultFilter()
                 .AddApplicationPart(_dynamicControllersAssembly)
-
+                
+                //
+                // Resource Validator.
+                .AddValidateResourceActionFilter()
+                
                 //
                 // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
@@ -90,10 +93,9 @@ namespace Examples
                 //
                 // Pagination
                 .AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 10)
-
-                //
-                // Resource Validator.
-                .AddValidateResourceActionFilter()
+                
+                // Location header
+                .AddPostLocationHeaderResultFilter()
 
                 //
                 // Make sure all results are camel cased.

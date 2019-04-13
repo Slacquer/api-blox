@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IMvcBuilder builder
         )
         {
-            return builder.AddFilter<PostLocationHeaderResultFilter>();
+            return builder.AddFilter<PostLocationHeaderResultFilter>(order: 100);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IMvcCoreBuilder builder
         )
         {
-            return builder.AddFilter<PostLocationHeaderResultFilter>();
+            return builder.AddFilter<PostLocationHeaderResultFilter>(order: 100);
         }
     }
 }

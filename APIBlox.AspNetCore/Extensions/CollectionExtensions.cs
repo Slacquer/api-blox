@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using APIBlox.NetCore.Extensions;
@@ -28,6 +29,26 @@ namespace APIBlox.AspNetCore.Extensions
         )
         {
             return col.TryAdd<FilterCollection, IFilterMetadata>((IFilterMetadata)value);
+        }
+
+        /// <summary>
+        ///     Adds an filter item to the collection if it doesn't already exist.
+        /// </summary>
+        /// <param name="col">The col.</param>
+        /// <param name="value">The value.</param>
+        /// /// <param name="order">Filter order</param>
+        /// <returns>TCollection.</returns>
+        public static FilterCollection TryAdd(this FilterCollection col, Type value, int? order = null)
+        {
+            if (col.Any(t => t.GetType() == value))
+                return col;
+
+            if (order.HasValue)
+                col.Add(value, order.Value);
+            else
+                col.Add(value);
+
+            return col;
         }
 
         /// <summary>
