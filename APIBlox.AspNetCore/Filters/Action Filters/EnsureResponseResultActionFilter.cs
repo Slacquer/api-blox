@@ -44,7 +44,10 @@ namespace APIBlox.AspNetCore.Filters
             var action = await next().ConfigureAwait(false);
             var result = action.Result as ObjectResult;
 
-            if (result?.Value is null || _getsOnly || result.StatusCode >= 300 || result.StatusCode < 200)
+            if (result?.Value is null 
+                || (_getsOnly && !action.HttpContext.Request.Method.EqualsEx("get")) 
+                || result.StatusCode >= 300 
+                || result.StatusCode < 200)
             {
                 var sc = result != null
                     ? result.StatusCode

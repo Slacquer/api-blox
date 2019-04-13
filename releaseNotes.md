@@ -1,3 +1,12 @@
+_April 13th, 2019_  **v2.0.20**
+- EnsureResponseResultActionFilter - failing when getsonly true.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 11th, 2019_  **v2.0.19**
 - DynamicControllerFactory - not correctly setting outputs on successful compile.
 - DynamicControllerFactory - caching is no longer being used (here) it is now done soley in the AddDynamicControllerConfigurations extension method.

@@ -28,10 +28,11 @@
             </summary>
             <param name="randomNumberGeneratorService">The random number generator service.</param>
         </member>
-        <member name="M:Examples.Controllers.ExamplesController.Get(System.String)">
+        <member name="M:Examples.Controllers.ExamplesController.Get(APIBlox.AspNetCore.Types.PaginationQuery,System.String)">
             <summary>
-                app.UseSimulateWaitTime(_environment); example
+                app.UseSimulateWaitTime(_environment); example, also shows pagination.
             </summary>
+            <param name="query">Pagination options</param>
             <param name="wait">if not null then simulate wait middleware will kick in.</param>
             <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
         </member>

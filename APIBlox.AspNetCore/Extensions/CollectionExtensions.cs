@@ -27,7 +27,7 @@ namespace APIBlox.AspNetCore.Extensions
             TType value
         )
         {
-            return col.TryAdd<FilterCollection, IFilterMetadata>((IFilterMetadata) value);
+            return col.TryAdd<FilterCollection, IFilterMetadata>((IFilterMetadata)value);
         }
 
         /// <summary>
@@ -35,8 +35,9 @@ namespace APIBlox.AspNetCore.Extensions
         /// </summary>
         /// <typeparam name="TType">The type of the t type.</typeparam>
         /// <param name="col">The col.</param>
+        /// <param name="order">Filter order</param>
         /// <returns>FilterCollection.</returns>
-        public static FilterCollection TryAdd<TType>(this FilterCollection col)
+        public static FilterCollection TryAdd<TType>(this FilterCollection col, int? order = null)
             where TType : IFilterMetadata
         {
             var vt = typeof(TType);
@@ -63,7 +64,10 @@ namespace APIBlox.AspNetCore.Extensions
                     }
                 }
             ))
-                col.Add(vt);
+                if (order.HasValue)
+                    col.Add(vt, order.Value);
+                else
+                    col.Add(vt);
 
             return col;
         }
@@ -81,7 +85,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
         {
             return col.TryAdd<IList<IApplicationFeatureProvider>,
-                IApplicationFeatureProvider>((IApplicationFeatureProvider) value);
+                IApplicationFeatureProvider>((IApplicationFeatureProvider)value);
         }
 
         /// <summary>

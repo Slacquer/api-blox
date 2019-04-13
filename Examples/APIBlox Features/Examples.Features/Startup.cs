@@ -24,7 +24,7 @@ namespace Examples
         private const string SiteTitle = "APIBlox Example: Features";
         private const string Version = "v1";
 
-    #if UseAPIBlox
+#if UseAPIBlox
         public Startup(IConfiguration configuration, IHostingEnvironment environment, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
@@ -45,12 +45,12 @@ namespace Examples
                 new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName
             }.ToArray();
         }
-    #endif
+#endif
 
         public void ConfigureServices(IServiceCollection services)
         {
             services
-            #if UseAPIBlox
+#if UseAPIBlox
                 .AddServerFaults()
 
                 //
@@ -89,7 +89,7 @@ namespace Examples
                 .AddSingleton<IRandomNumberGeneratorService, RandomNumberGeneratorService>()
 #endif
                 .AddMvc()
-            #if UseAPIBlox
+#if UseAPIBlox
                 .AddCamelCaseResultsOptions()
 
                 //
@@ -98,7 +98,7 @@ namespace Examples
 
                 //
                 // Pagination
-                .AddEnsurePaginationResultActionFilter(_loggerFactory)
+                .AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 10)
 
                 //
                 // No pagination
@@ -111,7 +111,7 @@ namespace Examples
                 //
                 // Custom tokens, example has version
                 .AddRouteTokensConvention(_configuration, _environment, "ExampleTokens")
-            #endif
+#endif
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
@@ -119,32 +119,32 @@ namespace Examples
 
         public void Configure(IApplicationBuilder app)
         {
-        #if UseAPIBlox
+#if UseAPIBlox
 
             //
             // Handle any and all server (500) errors with a defined structure.
-            app.UseServerFaults(requestErrorObjectAction: o =>  o.AddProperty("stack-trace", Environment.StackTrace));
+            app.UseServerFaults(requestErrorObjectAction: o => o.AddProperty("stack-trace", Environment.StackTrace));
 
             //
             // Good for testing how things respond (when things go too
             // quickly because your dev machine is such a monster!)
             app.UseSimulateWaitTime(_environment);
-        #else
+#else
             //app.UseDeveloperExceptionPage();
-        #endif
+#endif
             app.UseHsts();
 
             app.UseMvc();
 
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
         }
-    #if UseAPIBlox
+#if UseAPIBlox
         private readonly string[] _assemblyNames;
         private readonly string[] _assemblyPaths;
         private const string AboutErrorsUrl = "http://hey.look.at.me/errorcodes";
         private readonly IConfiguration _configuration;
         private readonly IHostingEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
-    #endif
+#endif
     }
 }

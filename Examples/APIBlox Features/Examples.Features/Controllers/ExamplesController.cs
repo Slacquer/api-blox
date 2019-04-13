@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Examples.Contracts;
@@ -40,19 +41,20 @@ namespace Examples.Controllers
         }
 
         /// <summary>
-        ///     app.UseSimulateWaitTime(_environment); example
+        ///     app.UseSimulateWaitTime(_environment); example, also shows pagination.
         /// </summary>
+        /// <param name="query">Pagination options</param>
         /// <param name="wait">if not null then simulate wait middleware will kick in.</param>
         /// <returns>ActionResult&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get(string wait = null)
+        public ActionResult<IEnumerable<string>> Get([FromQuery] PaginationQuery query = null, string wait = null)
         {
             var examples = new List<string>();
 
             for (var i = 0; i < _rndSvc.GenerateNumber(100); i++)
                 examples.Add($"FuBar {i}");
 
-            return Ok(examples);
+            return Ok(examples.Take(10));
         }
 
         /// <summary>
@@ -62,7 +64,7 @@ namespace Examples.Controllers
         /// <param name="description">The description, when empty no error details are displayed</param>
         /// <returns>ActionResult.</returns>
         [HttpGet("problemResult")]
-    #if UseAPIBlox
+#if UseAPIBlox
         public ActionResult GetProblemResultExample(CommonStatusCodes statusCode = CommonStatusCodes.Forbidden, string description = null)
         {
             if (statusCode == CommonStatusCodes.Ok || statusCode == CommonStatusCodes.NoResults)
@@ -72,13 +74,13 @@ namespace Examples.Controllers
             errObject.SetError(statusCode, description);
 
             return new ProblemResult(errObject);
-        #else
+#else
         public ActionResult GetErrorResponseExample(int statusCode, string description = null)
         {
             HttpContext.Response.StatusCode = statusCode;
 
             return new ObjectResult(description);
-        #endif
+#endif
         }
 
         /// <summary>
@@ -116,14 +118,14 @@ namespace Examples.Controllers
         {
             throw new Exception("Be sure to try this out in RELEASE mode"
 
-                //,
-                //new IndexOutOfRangeException("As most if not all of this",
-                //    new ArgumentException("error information is NOT displayed in production",
-                //        new FileNotFoundException("By the way here is your message",
-                //            new NullReferenceException(exceptionMessage)
-                //        )
-                //    )
-                //)
+            //,
+            //new IndexOutOfRangeException("As most if not all of this",
+            //    new ArgumentException("error information is NOT displayed in production",
+            //        new FileNotFoundException("By the way here is your message",
+            //            new NullReferenceException(exceptionMessage)
+            //        )
+            //    )
+            //)
             );
         }
 
@@ -132,20 +134,20 @@ namespace Examples.Controllers
         /// </summary>
         /// <param name="requestResource">The request resource.</param>
         [HttpPost("{valueId:int}/subResources")]
-    #if UseAPIBlox
+#if UseAPIBlox
         public ActionResult Post(ExampleRequestObject requestResource)
-    #else
+#else
         public ActionResult Post(ExampleRequestObject requestResource)
-    #endif
+#endif
         {
             //
             //  SIDE NOTE:
             // we should be returning a route with id, but
             // I'm lazy and that's not the point of all this... :/
 
-            return Conflict(new { detail="Please see errors property for more details", errors=new[]{new{detail="he userSettings does not exist for the supplied Id/Key.",title="The request method does not allow this functionality as upsert semantics are not supported."}}});
+            return Conflict(new { detail = "Please see errors property for more details", errors = new[] { new { detail = "he userSettings does not exist for the supplied Id/Key.", title = "The request method does not allow this functionality as upsert semantics are not supported." } } });
 
-          //  return Ok(new {Id = 1, requestResource.CoolNewValue, requestResource.ValueId});
+            //  return Ok(new {Id = 1, requestResource.CoolNewValue, requestResource.ValueId});
         }
 
         /// <summary>
