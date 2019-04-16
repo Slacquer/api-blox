@@ -56,7 +56,7 @@ namespace Examples
                 //  DynamicControllers and configuration
                 .AddDynamicControllerConfigurations(_loggerFactory,
                     GetType(),
-                    !_environment.IsProduction(),
+                    _environment.IsProduction(),
                     _environment.IsProduction(), 
                     true,
                     factory =>

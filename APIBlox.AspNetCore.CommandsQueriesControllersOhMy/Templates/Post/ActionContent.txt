@@ -29,7 +29,7 @@ public async Task<IActionResult> [CONTROLLER_NAME]Post[REQ_OBJECT](
     var ret = await _postBy[REQ_OBJECT]Handler.HandleAsync(
         [NEW_REQ_OBJECT], 
         cancellationToken
-    ).ConfigureAwait(false);
+    );
 
 	if (ret is null)
 		throw new ArgumentException($"You must return a {nameof(HandlerResponse)} instance!");

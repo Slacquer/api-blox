@@ -27,7 +27,7 @@ public async Task<IActionResult> [CONTROLLER_NAME]QueryBy[REQ_OBJECT](
     var ret = await _getBy[RES_OBJECT_INNER_RESULT]Handler.HandleAsync(
         [NEW_REQ_OBJECT], 
         cancellationToken
-    ).ConfigureAwait(false);
+    );
 
 	if (ret is null)
 		throw new ArgumentException($"You must return a {nameof(HandlerResponse)} instance!");
