@@ -2,7 +2,7 @@
 ///     Action for getting a collection of resources.
 /// </summary>
 /// <remarks>
-///     Possible Response Status Codes: <a href="https://httpstatuses.com/200">200</a>, <a href="https://httpstatuses.com/204">204</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>
+///     Possible Response Status Codes: [200](https://httpstatuses.com/200), [204](https://httpstatuses.com/204), [401](https://httpstatuses.com/401), [403](https://httpstatuses.com/403)
 /// </remarks>
 /// <response code="200">Success, with an array of results.</response>
 /// <response code="204">Success, no results.</response>

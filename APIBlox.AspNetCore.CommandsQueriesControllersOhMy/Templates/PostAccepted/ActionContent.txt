@@ -2,7 +2,7 @@
 ///     Action for creating a resource.
 /// </summary>
 /// <remarks>
-///     Possible Response Status Codes: <a href="https://httpstatuses.com/202">202</a>, <a href="https://httpstatuses.com/401">401</a>, <a href="https://httpstatuses.com/403">403</a>, <a href="https://httpstatuses.com/404">404</a>, <a href="https://httpstatuses.com/409">409</a>
+///     Possible Response Status Codes: [202](https://httpstatuses.com/202), [401](https://httpstatuses.com/401), [403](https://httpstatuses.com/403), [404](https://httpstatuses.com/404), [409](https://httpstatuses.com/409)
 /// </remarks>
 /// <response code="202">Success, [RES_OBJECT_RESULT] created, but not finalized.</response>
 /// <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>

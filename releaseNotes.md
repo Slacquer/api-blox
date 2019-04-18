@@ -1,3 +1,12 @@
+_? ?th, 2019_  **v2.0.??**
+- CommandsQueriesControllersOhMy - changed comments in templates to use markdwon syntax for possible response codes.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 13th, 2019_  **v2.0.21**
 - EnsureResponseResultActionFilter - failing when getsonly true.
 
