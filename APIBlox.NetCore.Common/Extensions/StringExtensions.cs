@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace APIBlox.NetCore.Extensions
@@ -24,6 +25,16 @@ namespace APIBlox.NetCore.Extensions
         )
         {
             return str.Contains(value, comparisonType);
+        }
+
+        /// <summary>
+        ///     Reverses the specified string.
+        /// </summary>
+        /// <param name="str">The string.</param>
+        /// <returns>System.String.</returns>
+        public static string Reverse(this string str)
+        {
+            return str.IsEmptyNullOrWhiteSpace() ? null : string.Join("", Enumerable.Reverse(str));
         }
 
         /// <summary>
@@ -102,7 +113,7 @@ namespace APIBlox.NetCore.Extensions
         {
             if (str is null || value is null)
                 return false;
-            
+
             return trimmed
                 ? str.Trim().Equals(value.Trim(), comparisonType)
                 : str.Equals(value, comparisonType);
