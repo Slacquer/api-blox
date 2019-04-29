@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using APIBlox.NetCore.Extensions;
+using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.Types
 {
@@ -35,7 +36,10 @@ namespace APIBlox.NetCore.Types
 
             var ret = dest == null ? new TDest() : dest;
 
-            JsonConvert.PopulateObject(JsonConvert.SerializeObject(src, settings), ret, settings);
+            if (src is string jsonString && jsonString.IsJson())
+                JsonConvert.PopulateObject(jsonString, ret, settings);
+            else
+                JsonConvert.PopulateObject(JsonConvert.SerializeObject(src, settings), ret, settings);
 
             return ret;
         }
@@ -86,8 +90,11 @@ namespace APIBlox.NetCore.Types
             };
 
             var ret = dest == null ? new TDest() : dest;
-
-            JsonConvert.PopulateObject(JsonConvert.SerializeObject(src, serializeSettings), ret, deserializerSettings);
+            
+            if (src is string jsonString && jsonString.IsJson())
+                JsonConvert.PopulateObject(jsonString, ret, serializeSettings);
+            else
+                JsonConvert.PopulateObject(JsonConvert.SerializeObject(src, serializeSettings), ret, serializeSettings);
 
             return ret;
         }

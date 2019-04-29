@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace APIBlox.NetCore.Extensions
 {
@@ -143,6 +145,24 @@ namespace APIBlox.NetCore.Extensions
         public static bool IsEmptyNullOrWhiteSpace(this string value)
         {
             return string.IsNullOrEmpty(value) || value.Trim().Length == 0;
+        }
+
+        /// <summary>
+        ///     Determines whether the specified string value is json.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns><c>true</c> if the specified value is json; otherwise, <c>false</c>.</returns>
+        public static bool IsJson(this string value)
+        {
+            try
+            {
+                JToken.Parse(value);
+                return true;
+            }
+            catch (JsonReaderException)
+            {
+                return false;
+            }
         }
 
         /// <summary>

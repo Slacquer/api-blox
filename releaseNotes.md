@@ -1,4 +1,5 @@
 _? ?th, 2019_  **v2.0.??**
+- SimpleMapper, needed to check if incoming src was already a json string.
 - CommandsQueriesControllersOhMy - changed comments in templates to use markdwon syntax for possible response codes.
 
 Thanks,  
