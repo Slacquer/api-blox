@@ -50,8 +50,8 @@ namespace APIBlox.AspNetCore
             requestQuery.SetAliasesAndValues(_queryParams);
 
             // If resultCount is 0 or empty then we are just going to display the structure.
-            // If resultCount is less than the max, no need to have anything either.
-            if (resultCount == 0 || resultCount < _defaultPageSize)
+            // If resultCount is less than the max, and no query params have been passed then no need to have anything either.
+            if (resultCount == 0 || resultCount < _defaultPageSize && !_queryParams.Any())
                 return new PaginationMetadata
                 {
                     ResultCount = resultCount
@@ -97,10 +97,14 @@ namespace APIBlox.AspNetCore
                 previousQuery.Skip = pre;
                 previousQuery.RunningCount = previousRc <= 0 ? null : previousRc;
 
-                nextQuery = Clone(requestQuery);
-                nextQuery.Skip = next;
-                nextQuery.Top = top;
-                nextQuery.RunningCount = nextRc;
+                // Do we need next?
+                if (resultCount >= _defaultPageSize)
+                {
+                    nextQuery = Clone(requestQuery);
+                    nextQuery.Skip = next;
+                    nextQuery.Top = top;
+                    nextQuery.RunningCount = nextRc;
+                }
             }
 
             if (!(nextQuery is null))

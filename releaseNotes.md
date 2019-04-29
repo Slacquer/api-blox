@@ -1,3 +1,12 @@
+_April 29th, 2019_  **v2.0.24**
+- PaginationResult, seems when the results coming back are LESS than the max allowed we were always returning null for next and previous, but we did not take into consideration that this may NOT have been the first call, therefore the PREVIOUS needed to be filled in.
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 29th, 2019_  **v2.0.23**
 - Added an EmptyStringToNullConverter
 - SimpleMapper, needed to check if incoming src was already a json string.  Removed overload.

@@ -174,6 +174,19 @@ namespace SlnTests.APIBlox.AspNetCore
         }
 
         [Fact]
+        public void ResultsLessThanMaxSoNextShouldBeNullButPreviousShouldHaveValue()
+        {
+            var ctx = GetActionExecutingContext();
+            ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&runningCount=10");
+
+            var builder = new PaginationMetadataBuilder(10);
+            var ret = builder.Build(3, ctx);
+
+            Assert.NotNull(ret.Previous);
+            Assert.Null(ret.Next);
+        }
+
+        [Fact]
         public void ResultsLessThanMaxSoNextShouldBeNull()
         {
             var ctx = GetActionExecutingContext();
