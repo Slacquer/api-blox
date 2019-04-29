@@ -18,7 +18,7 @@ namespace APIBlox.NetCore.Types.JsonBits
     /// <seealso cref="PopulateNonPublicSettersContractResolver" />
     public class AliasContractResolver : PopulateNonPublicSettersContractResolver
     {
-        private static readonly Dictionary<string, string> _aliases = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> Aliases = new Dictionary<string, string>();
 
         private readonly Dictionary<string, string[]> _map;
 
@@ -76,8 +76,8 @@ namespace APIBlox.NetCore.Types.JsonBits
 
             var aliasKey = $"{propName.Key}Alias";
 
-            if (!_aliases.ContainsKey(aliasKey))
-                _aliases.Add(aliasKey, propertyName);
+            if (!Aliases.ContainsKey(aliasKey))
+                Aliases.Add(aliasKey, propertyName);
 
             return propName.Key;
         }

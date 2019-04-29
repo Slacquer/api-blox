@@ -14,7 +14,7 @@ namespace APIBlox.NetCore.Types.JsonBits
     /// <seealso cref="Newtonsoft.Json.Serialization.DefaultContractResolver" />
     /// <inheritdoc cref="DefaultContractResolver" />
     /// <seealso cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver" />
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public class PopulateNonPublicSettersContractResolver : DefaultContractResolver
     {
         /// <inheritdoc />

@@ -1,5 +1,6 @@
 _? ?th, 2019_  **v2.0.??**
-- SimpleMapper, needed to check if incoming src was already a json string.
+- Added an EmptyStringToNullConverter
+- SimpleMapper, needed to check if incoming src was already a json string.  Removed overload.
 - CommandsQueriesControllersOhMy - changed comments in templates to use markdwon syntax for possible response codes.
 
 Thanks,  
