@@ -1,4 +1,4 @@
-_? ?th, 2019_  **v2.0.??**
+_April 29th, 2019_  **v2.0.22**
 - Added an EmptyStringToNullConverter
 - SimpleMapper, needed to check if incoming src was already a json string.  Removed overload.
 - CommandsQueriesControllersOhMy - changed comments in templates to use markdwon syntax for possible response codes.
