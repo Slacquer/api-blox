@@ -21,7 +21,7 @@ namespace APIBlox.AspNetCore.Filters
     ///     </para>
     /// <![CDATA[
     ///     //
-    ///     // Example used just to ensure a user is authenticated, this will be applied to all controllers.
+    ///     // Example: To ensure a user is authenticated, this will be applied to all controllers.
     ///     var builder = services.AddMvc(s=> s.Filters.Add(
     ///         new ProblemResultAuthorizationFilter(
     ///             new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()))

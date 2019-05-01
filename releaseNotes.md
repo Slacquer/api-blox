@@ -1,3 +1,12 @@
+_May ??, 2019_  **v2.0.25**
+- PostLocationHeaderResultFilter, had remnants of GENERIC controllers prevent it from ever populating location header.
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _April 29th, 2019_  **v2.0.24**
 - PaginationResult, seems when the results coming back are LESS than the max allowed we were always returning null for next and previous, but we did not take into consideration that this may NOT have been the first call, therefore the PREVIOUS needed to be filled in.
  

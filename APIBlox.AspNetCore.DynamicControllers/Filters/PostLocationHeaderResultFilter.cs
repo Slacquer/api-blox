@@ -72,10 +72,8 @@ namespace APIBlox.AspNetCore
 
                 return;
             }
-
-            var cti = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo;
-
-            if (!cti.IsGenericType || !(context.Result is ObjectResult result))
+            
+            if (!(context.Result is ObjectResult result))
                 return;
 
             // ReSharper disable once Mvc.ActionNotResolved
