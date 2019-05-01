@@ -19,6 +19,14 @@ namespace APIBlox.AspNetCore.Filters
     ///         <see cref="T:Microsoft.AspNetCore.Mvc.Authorization.IAllowAnonymousFilter" /> is used.  Otherwise sends
     ///         <see cref="T:APIBlox.AspNetCore.ActionResults.ProblemResult" />
     ///     </para>
+    /// <![CDATA[
+    ///     //
+    ///     // Example used just to ensure a user is authenticated, this will be applied to all controllers.
+    ///     var builder = services.AddMvc(s=> s.Filters.Add(
+    ///         new ProblemResultAuthorizationFilter(
+    ///             new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()))
+    ///     )
+    /// ]]>
     /// </summary>
     /// <seealso cref="T:Microsoft.AspNetCore.Mvc.Filters.IAsyncAuthorizationFilter" />
     public class ProblemResultAuthorizationFilter : IAsyncAuthorizationFilter
