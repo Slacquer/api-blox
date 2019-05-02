@@ -1,6 +1,5 @@
-_May ??, 2019_  **v2.0.25**
-- DynamicController templates, changed so that response codes and comments are editable.
-- PostLocationHeaderResultFilter, had remnants of GENERIC controllers which would prevent it from ever populating location header.
+_May 2nd, 2019_  **v2.0.26**
+- DynamicController templates, bug for whatever reason I was not compensating for OTHER codes.
  
 Thanks,  
 _Slacquer_  

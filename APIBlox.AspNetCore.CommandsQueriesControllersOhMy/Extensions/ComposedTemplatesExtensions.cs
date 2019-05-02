@@ -22,6 +22,7 @@ namespace APIBlox.AspNetCore.Extensions
         private static readonly Dictionary<int, string> CodeComments = new Dictionary<int, string>
         {
             {200, "/// <response code=\"200\">Success, with a single result or an array of results.</response>"},
+            {201, "/// <response code=\"201\">Success, resource was created successfully.</response>"},
             {202, "/// <response code=\"202\">Success, [RES_OBJECT_RESULT] created, but not finalized.</response>"},
             {204, "/// <response code=\"204\">Success, no results.</response>"},
             {401, "/// <response code=\"401\">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>"},
@@ -409,7 +410,11 @@ namespace APIBlox.AspNetCore.Extensions
             foreach (var sc in statusCodes)
             {
                 sbCodes.AppendFormat(sc == StatusCodes.Status200OK || sc == StatusCodes.Status201Created ? PrtResult : Prt, sc);
-                sbComments.AppendLine(CodeComments[sc]);
+
+                sbComments.AppendLine(CodeComments.ContainsKey(sc)
+                    ? CodeComments[sc]
+                    : $"/// <response code=\"{sc}\">Status code {sc}.</response>"
+                );
             }
 
             return (sbCodes.ToString(), sbComments.ToString());
