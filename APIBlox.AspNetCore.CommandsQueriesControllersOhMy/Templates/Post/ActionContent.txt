@@ -16,11 +16,7 @@
 [Consumes("application/json")]
 [ProducesErrorResponseType(typeof(RequestErrorObject))]
 [ProducesResponseType(typeof([RES_OBJECT_RESULT]), StatusCodes.Status201Created)]
-[ProducesResponseType(StatusCodes.Status204NoContent)]
-[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-[ProducesResponseType(StatusCodes.Status403Forbidden)]
-[ProducesResponseType(StatusCodes.Status404NotFound)]
-[ProducesResponseType(StatusCodes.Status409Conflict)]
+[RESPONSE_TYPES]
 public async Task<IActionResult> [CONTROLLER_NAME]Post[REQ_OBJECT](
     [ACTION_PARAMS]
     CancellationToken cancellationToken

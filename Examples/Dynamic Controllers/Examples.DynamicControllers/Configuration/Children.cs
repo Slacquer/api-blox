@@ -40,7 +40,7 @@ namespace Examples.Configuration
                     null,
                     "Children",
                     controllerRoute,
-                     nameSpace
+                     nameSpace, new List<int> { 200, 401, 403 }
                 )
 
                 //.WritePostController<ChildPostRequest, ChildResponse>(

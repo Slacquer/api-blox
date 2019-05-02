@@ -2,10 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
+using Microsoft.AspNetCore.Http;
 
 namespace APIBlox.AspNetCore.Extensions
 {
@@ -14,6 +16,9 @@ namespace APIBlox.AspNetCore.Extensions
     /// </summary>
     public static class ComposedTemplatesExtensions
     {
+        private const string Prt = "[ProducesResponseType({0})]\n";
+        private const string PrtResult = "[ProducesResponseType(typeof([RES_OBJECT_RESULT]), {0})]\n";
+
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value.
         /// </summary>
@@ -24,6 +29,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
+        /// <param name="statusCodes">Possible response codes.  Defaults to 200, 204, 401, 403</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">
         ///     QueryBy requires a route for the action, maybe something like {id}. - actionRoute
@@ -35,7 +41,8 @@ namespace APIBlox.AspNetCore.Extensions
             string actionRoute,
             string controllerName = null,
             string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers"
+            string nameSpace = "DynamicControllers",
+            IEnumerable<int> statusCodes = null
         )
             where TRequest : new()
         {
@@ -47,6 +54,11 @@ namespace APIBlox.AspNetCore.Extensions
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
+            var codes = (statusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
+
+            if (!codes.Any())
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+
             var action = Templates.GetDynamicAction("QueryBy", actionRoute);
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
@@ -56,7 +68,8 @@ namespace APIBlox.AspNetCore.Extensions
                  typeof(TRequest),
                  typeof(TResponse),
                  false,
-                 req => controllerName.ToPascalCase() ?? $"QueryBy{req}Controller"
+                 req => controllerName.ToPascalCase() ?? $"QueryBy{req}Controller",
+                 BuildResponseTypes(codes)
              ));
 
             return templates;
@@ -72,6 +85,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
+        /// <param name="statusCodes">Possible response codes.  Defaults to 200, 204, 401, 403</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">Must be a enumerable object type. - TResponse</exception>
         public static IEnumerable<IComposedTemplate> WriteQueryAllController<TRequest, TResponse>(
@@ -79,13 +93,19 @@ namespace APIBlox.AspNetCore.Extensions
             string actionRoute = null,
             string controllerName = null,
             string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers"
+            string nameSpace = "DynamicControllers",
+            IEnumerable<int> statusCodes = null
         )
             where TRequest : new()
             where TResponse : IEnumerable
         {
             if (!typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a enumerable object type.", nameof(TResponse));
+
+            var codes = (statusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
+
+            if (!codes.Any())
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
 
             var action = Templates.GetDynamicAction("QueryAll", actionRoute);
 
@@ -96,7 +116,8 @@ namespace APIBlox.AspNetCore.Extensions
                 typeof(TRequest),
                 typeof(TResponse),
                 false,
-                req => controllerName.ToPascalCase() ?? $"QueryAll{req}Controller"
+                req => controllerName.ToPascalCase() ?? $"QueryAll{req}Controller",
+               BuildResponseTypes(codes)
             ));
 
             return templates;
@@ -111,16 +132,23 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
+        /// <param name="statusCodes">Possible response codes.  Defaults to 204, 401, 403, 404</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         public static IEnumerable<IComposedTemplate> WriteDeleteByController<TRequest>(
             this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
             string controllerName = null,
             string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers"
+            string nameSpace = "DynamicControllers",
+            IEnumerable<int> statusCodes = null
         )
             where TRequest : new()
         {
+            var codes = (statusCodes ?? new List<int> { 204, 401, 403, 404 }).ToList();
+
+            if (!codes.Any())
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+
             var action = Templates.GetDynamicAction("DeleteBy", actionRoute);
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
@@ -130,7 +158,8 @@ namespace APIBlox.AspNetCore.Extensions
                 typeof(TRequest),
                 null,
                 false,
-                req => controllerName.ToPascalCase() ?? $"DeleteBy{req}Controller"
+                req => controllerName.ToPascalCase() ?? $"DeleteBy{req}Controller",
+                BuildResponseTypes(codes)
             ));
             return templates;
         }
@@ -144,16 +173,23 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
+        /// <param name="statusCodes">Possible response codes.  Defaults to 204, 401, 403, 404, 409</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         public static IEnumerable<IComposedTemplate> WritePutController<TRequest>(
             this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
             string controllerName = null,
             string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers"
+            string nameSpace = "DynamicControllers",
+            IEnumerable<int> statusCodes = null
         )
             where TRequest : new()
         {
+            var codes = (statusCodes ?? new List<int> { 204, 401, 403, 404, 409 }).ToList();
+
+            if (!codes.Any())
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+
             var action = Templates.GetDynamicAction("PutBy", actionRoute);
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
@@ -163,7 +199,8 @@ namespace APIBlox.AspNetCore.Extensions
                  typeof(TRequest),
                  null,
                  true,
-                 req => controllerName.ToPascalCase() ?? $"PutBy{req}Controller"
+                 req => controllerName.ToPascalCase() ?? $"PutBy{req}Controller",
+                 BuildResponseTypes(codes)
              ));
             return templates;
         }
@@ -177,16 +214,23 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
+        /// <param name="statusCodes">Possible response codes.  Defaults to 204, 401, 403, 404, 409</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         public static IEnumerable<IComposedTemplate> WritePatchController<TRequest>(
             this IEnumerable<IComposedTemplate> templates,
             string actionRoute = null,
             string controllerName = null,
             string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers"
+            string nameSpace = "DynamicControllers",
+            IEnumerable<int> statusCodes = null
         )
             where TRequest : new()
         {
+            var codes = (statusCodes ?? new List<int> { 204, 401, 403, 404, 409 }).ToList();
+
+            if (!codes.Any())
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+
             var action = Templates.GetDynamicAction("PatchBy", actionRoute);
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
@@ -196,7 +240,8 @@ namespace APIBlox.AspNetCore.Extensions
                  typeof(TRequest),
                  null,
                  true,
-                 req => controllerName.ToPascalCase() ?? $"PatchBy{req}Controller"
+                 req => controllerName.ToPascalCase() ?? $"PatchBy{req}Controller",
+                 BuildResponseTypes(codes)
              ));
             return templates;
         }
@@ -211,6 +256,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
+        /// <param name="statusCodes">Possible response codes.  Defaults to 201, 204, 401, 403, 404, 409</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">Must be a single object type. - TResponse</exception>
         public static IEnumerable<IComposedTemplate> WritePostController<TRequest, TResponse>(
@@ -218,12 +264,18 @@ namespace APIBlox.AspNetCore.Extensions
             string actionRoute = null,
             string controllerName = null,
             string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers"
+            string nameSpace = "DynamicControllers",
+            IEnumerable<int> statusCodes = null
         )
             where TRequest : new()
         {
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
+
+            var codes = (statusCodes ?? new List<int> { 201, 204, 401, 403, 404, 409 }).ToList();
+
+            if (!codes.Any())
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
 
             var action = Templates.GetDynamicAction("Post", actionRoute);
 
@@ -234,7 +286,8 @@ namespace APIBlox.AspNetCore.Extensions
                    typeof(TRequest),
                    typeof(TResponse),
                    true,
-                   req => controllerName.ToPascalCase() ?? $"Post{req}Controller"
+                   req => controllerName.ToPascalCase() ?? $"Post{req}Controller",
+                   BuildResponseTypes(codes)
                ));
 
             return templates;
@@ -250,6 +303,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="nameSpace">The name space.</param>
         /// <param name="controllerName">Name of the controller.</param>
         /// <param name="controllerRoute">The controller route.</param>
+        /// <param name="statusCodes">Possible response codes.  Defaults to 202, 401, 403, 404, 409</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">Must be a single object type. - TResponse</exception>
         public static IEnumerable<IComposedTemplate> WritePostAcceptedController<TRequest>(
@@ -257,10 +311,16 @@ namespace APIBlox.AspNetCore.Extensions
             string actionRoute = null,
             string nameSpace = "DynamicControllers",
             string controllerName = null,
-            string controllerRoute = "api/[controller]"
+            string controllerRoute = "api/[controller]",
+            IEnumerable<int> statusCodes = null
         )
             where TRequest : new()
         {
+            var codes = (statusCodes ?? new List<int> { 202, 401, 403, 404, 409 }).ToList();
+
+            if (!codes.Any())
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+
             var action = Templates.GetDynamicAction("PostAccepted", actionRoute);
 
             var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
@@ -270,7 +330,8 @@ namespace APIBlox.AspNetCore.Extensions
                    typeof(TRequest),
                    null,
                    true,
-                   req => controllerName.ToPascalCase() ?? $"PostAccepted{req}Controller"
+                   req => controllerName.ToPascalCase() ?? $"PostAccepted{req}Controller",
+                   BuildResponseTypes(codes)
                ));
 
             return templates;
@@ -281,7 +342,8 @@ namespace APIBlox.AspNetCore.Extensions
             Type requestObj,
             Type responseObjectResult,
             bool requestObjMustHaveBody,
-            Func<string, string> buildControllerName
+            Func<string, string> buildControllerName,
+            string producesResponseTypes
         )
         {
             DynamicControllerFactory.ValidateRequestType(requestObj, requestObjMustHaveBody);
@@ -320,11 +382,23 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Tokens["[ACTION_PARAMS]"] = $"{parameters},";
             template.Action.Tokens["[NEW_REQ_OBJECT]"] = newReqObj;
             template.Action.Tokens["[CONTROLLER_NAME]"] = cn;
+            template.Action.Tokens["[RESPONSE_TYPES]"] = producesResponseTypes;
 
             template.Action.Compose();
 
             return template;
         }
+
+        private static string BuildResponseTypes(IEnumerable<int> statusCodes)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var sc in statusCodes)
+                sb.AppendFormat(sc == StatusCodes.Status200OK || sc == StatusCodes.Status201Created ? PrtResult : Prt, sc);
+
+            return sb.ToString();
+        }
+
 
         // ReSharper disable once ClassNeverInstantiated.Local
         /// <summary>

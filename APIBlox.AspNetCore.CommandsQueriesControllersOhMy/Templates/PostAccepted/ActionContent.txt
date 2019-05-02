@@ -15,11 +15,7 @@
 [Produces("application/json", "application/problem+json")]
 [Consumes("application/json")]
 [ProducesErrorResponseType(typeof(RequestErrorObject))]
-[ProducesResponseType(StatusCodes.Status202Accepted)]
-[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-[ProducesResponseType(StatusCodes.Status403Forbidden)]
-[ProducesResponseType(StatusCodes.Status404NotFound)]
-[ProducesResponseType(StatusCodes.Status409Conflict)]
+[RESPONSE_TYPES]
 public async Task<IActionResult> [CONTROLLER_NAME]PostAccepted[REQ_OBJECT](
     [ACTION_PARAMS]
     CancellationToken cancellationToken
