@@ -19,6 +19,17 @@ namespace APIBlox.AspNetCore.Extensions
         private const string Prt = "[ProducesResponseType({0})]\n";
         private const string PrtResult = "[ProducesResponseType(typeof([RES_OBJECT_RESULT]), {0})]\n";
 
+        private static readonly Dictionary<int, string> CodeComments = new Dictionary<int, string>
+        {
+            {200, "/// <response code=\"200\">Success, with a single result or an array of results.</response>"},
+            {202, "/// <response code=\"202\">Success, [RES_OBJECT_RESULT] created, but not finalized.</response>"},
+            {204, "/// <response code=\"204\">Success, no results.</response>"},
+            {401, "/// <response code=\"401\">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>"},
+            {403, "/// <response code=\"403\">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>"},
+            {404, "/// <response code=\"404\">NotFound, The resource was not found using the supplied input parameters.</response>"},
+            {409, "/// <response code=\"409\">Conflict, The supplied input parameters would cause a data violation.</response>"}
+        };
+
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value.
         /// </summary>
@@ -343,7 +354,7 @@ namespace APIBlox.AspNetCore.Extensions
             Type responseObjectResult,
             bool requestObjMustHaveBody,
             Func<string, string> buildControllerName,
-            string producesResponseTypes
+            (string, string) producesResponseTypes
         )
         {
             DynamicControllerFactory.ValidateRequestType(requestObj, requestObjMustHaveBody);
@@ -382,21 +393,26 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Tokens["[ACTION_PARAMS]"] = $"{parameters},";
             template.Action.Tokens["[NEW_REQ_OBJECT]"] = newReqObj;
             template.Action.Tokens["[CONTROLLER_NAME]"] = cn;
-            template.Action.Tokens["[RESPONSE_TYPES]"] = producesResponseTypes;
+            template.Action.Tokens["[RESPONSE_TYPES]"] = producesResponseTypes.Item1;
+            template.Action.Tokens["[RESPONSE_TYPES_COMMENTS]"] = producesResponseTypes.Item2;
 
             template.Action.Compose();
 
             return template;
         }
 
-        private static string BuildResponseTypes(IEnumerable<int> statusCodes)
+        private static (string, string) BuildResponseTypes(IEnumerable<int> statusCodes)
         {
-            var sb = new StringBuilder();
+            var sbCodes = new StringBuilder();
+            var sbComments = new StringBuilder();
 
             foreach (var sc in statusCodes)
-                sb.AppendFormat(sc == StatusCodes.Status200OK || sc == StatusCodes.Status201Created ? PrtResult : Prt, sc);
+            {
+                sbCodes.AppendFormat(sc == StatusCodes.Status200OK || sc == StatusCodes.Status201Created ? PrtResult : Prt, sc);
+                sbComments.AppendLine(CodeComments[sc]);
+            }
 
-            return sb.ToString();
+            return (sbCodes.ToString(), sbComments.ToString());
         }
 
 

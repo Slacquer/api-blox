@@ -1,13 +1,7 @@
 ﻿/// <summary>
 ///     Action for getting a collection of resources.
 /// </summary>
-/// <remarks>
-///     Possible Response Status Codes: [200](https://httpstatuses.com/200), [204](https://httpstatuses.com/204), [401](https://httpstatuses.com/401), [403](https://httpstatuses.com/403)
-/// </remarks>
-/// <response code="200">Success, with an array of results.</response>
-/// <response code="204">Success, no results.</response>
-/// <response code="401">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>
-/// <response code="403">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>
+[RESPONSE_TYPES_COMMENTS]
 /// <param name="cancellationToken">The cancellation token.</param>
 [PARAMS_COMMENTS]
 [HttpGet("[ACTION_ROUTE]")]

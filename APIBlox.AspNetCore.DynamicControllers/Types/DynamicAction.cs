@@ -97,7 +97,8 @@ namespace APIBlox.AspNetCore.Types
             {"[ACTION_PARAMS]", ""},
             {"[NEW_REQ_OBJECT]", ""},
             {"[CONTROLLER_NAME]", ""},
-            {"[RESPONSE_TYPES]","" }
+            {"[RESPONSE_TYPES]","" },
+            {"[RESPONSE_TYPES_COMMENTS]","" }
         };
 
         /// <summary>
@@ -119,6 +120,7 @@ namespace APIBlox.AspNetCore.Types
         private string ParseTokens(string input)
         {
             return input
+                .Replace("[RESPONSE_TYPES_COMMENTS]", Tokens["[RESPONSE_TYPES_COMMENTS]"])
                 .Replace("[RESPONSE_TYPES]", Tokens["[RESPONSE_TYPES]"])
                 .Replace("[REQ_OBJECT]", Tokens["[REQ_OBJECT]"])
                 .Replace("[RES_OBJECT_INNER_RESULT]", Tokens["[RES_OBJECT_INNER_RESULT]"])

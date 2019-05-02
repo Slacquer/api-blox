@@ -1,5 +1,6 @@
 _May ??, 2019_  **v2.0.25**
-- PostLocationHeaderResultFilter, had remnants of GENERIC controllers prevent it from ever populating location header.
+- DynamicController templates, changed so that response codes and comments are editable.
+- PostLocationHeaderResultFilter, had remnants of GENERIC controllers which would prevent it from ever populating location header.
  
 Thanks,  
 _Slacquer_  
