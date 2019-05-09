@@ -44,16 +44,16 @@ namespace Examples.Configuration
                 )
 
                 //.WritePostController<ChildPostRequest, ChildResponse>(
-                //     null,
-                //     nameSpace,
-                //     "Children",
-                //     controllerRoute
+                //        null,
+                //        "Children",
+                //        controllerRoute,
+                //        nameSpace
                 // )
                 .WritePostAcceptedController<ChildPostRequest>(
                     null,
-                    nameSpace,
                     "Children",
-                    controllerRoute
+                    controllerRoute,
+                    nameSpace
                 )
                 ;
 

@@ -1,3 +1,12 @@
+_May 9th, 2019_  **v2.0.27**
+- DynamicController templates, Missing System namespace using statement, this has only been an issue when a request object does not contain anything other than something from body.
+ 
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _May 2nd, 2019_  **v2.0.26**
 - DynamicController templates, bug for whatever reason I was not compensating for OTHER codes.
  
