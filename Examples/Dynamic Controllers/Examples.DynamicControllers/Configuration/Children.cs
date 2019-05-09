@@ -49,13 +49,13 @@ namespace Examples.Configuration
                 //        controllerRoute,
                 //        nameSpace
                 // )
+
                 .WritePostAcceptedController<ChildPostRequest>(
                     null,
                     "Children",
                     controllerRoute,
                     nameSpace
-                )
-                ;
+                );
 
             return templates;
         }
