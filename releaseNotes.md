@@ -1,5 +1,6 @@
 _May 15th, 2019_  **v2.0.29**
 - DynamicControllerTemplateOptions, defaults for comments.
+- Nuget Packages update(s).
 
 Thanks,  
 _Slacquer_  
