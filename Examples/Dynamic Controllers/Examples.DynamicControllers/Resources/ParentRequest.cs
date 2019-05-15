@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Examples.Resources
 {
     /// <summary>
-    ///     Class ParentRequest.
+    ///     This is the summary shown since it is the FIRST template generated.
     /// </summary>
     public class ParentRequest : FilteredPaginationQuery
     {

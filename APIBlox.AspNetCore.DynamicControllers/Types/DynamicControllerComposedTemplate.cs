@@ -17,11 +17,13 @@ namespace APIBlox.AspNetCore.Types
         /// <param name="nameSpace">The name space.</param>
         /// <param name="route">The route.</param>
         /// <param name="action">The action.</param>
-        public DynamicControllerComposedTemplate(string nameSpace, string route, DynamicAction action)
+        /// <param name="comments">The comments.</param>
+        public DynamicControllerComposedTemplate(string nameSpace, string route, DynamicAction action, DynamicComments comments)
         {
             Namespace = nameSpace;
             Route = route;
             Action = action;
+            Comments = comments.ToString();
         }
 
         /// <inheritdoc />
@@ -57,6 +59,6 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets  the comments.
         /// </summary>
         /// <value>The comments.</value>
-        public string Comments { get; set;}
+        public string Comments { get; set; }
     }
 }

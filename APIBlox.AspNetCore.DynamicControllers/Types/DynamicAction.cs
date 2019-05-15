@@ -20,9 +20,10 @@ namespace APIBlox.AspNetCore.Types
         /// <param name="ctorBody">The ctor body.</param>
         /// <param name="fields">The fields.</param>
         /// <param name="namespaces">The namespaces.</param>
+        /// <param name="comments">The comments.</param>
         /// <param name="methods">The methods.</param>
         public DynamicAction(string name, string route, string content, string ctorArgs,
-            string ctorBody, string[] fields, string[] namespaces, string methods = null
+            string ctorBody, string[] fields, string[] namespaces, string comments, string methods = null
         )
         {
             Name = name;
@@ -32,6 +33,7 @@ namespace APIBlox.AspNetCore.Types
             CtorBody = ctorBody;
             Fields = fields;
             Namespaces = namespaces;
+            Comments = comments;
             Methods = methods;
         }
 
@@ -78,6 +80,12 @@ namespace APIBlox.AspNetCore.Types
         public string[] Namespaces { get; set; }
 
         /// <summary>
+        ///     Gets the comments.
+        /// </summary>
+        /// <value>The comments.</value>
+        public string Comments { get; }
+
+        /// <summary>
         ///     Gets the methods.
         /// </summary>
         /// <value>The methods.</value>
@@ -92,13 +100,14 @@ namespace APIBlox.AspNetCore.Types
             {"[REQ_OBJECT]", ""},
             {"[RES_OBJECT_INNER_RESULT]", ""},
             {"[ACTION_ROUTE]", ""},
+            {"[ACTION_COMMENTS]", ""},
             {"[PARAMS_COMMENTS]", ""},
             {"[RES_OBJECT_RESULT]", ""},
             {"[ACTION_PARAMS]", ""},
             {"[NEW_REQ_OBJECT]", ""},
             {"[CONTROLLER_NAME]", ""},
-            {"[RESPONSE_TYPES]","" },
-            {"[RESPONSE_TYPES_COMMENTS]","" }
+            {"[RESPONSE_TYPES]", ""},
+            {"[RESPONSE_TYPES_COMMENTS]", ""}
         };
 
         /// <summary>
@@ -124,6 +133,7 @@ namespace APIBlox.AspNetCore.Types
                 .Replace("[RESPONSE_TYPES]", Tokens["[RESPONSE_TYPES]"])
                 .Replace("[REQ_OBJECT]", Tokens["[REQ_OBJECT]"])
                 .Replace("[RES_OBJECT_INNER_RESULT]", Tokens["[RES_OBJECT_INNER_RESULT]"])
+                .Replace("[ACTION_COMMENTS]", Tokens["[ACTION_COMMENTS]"])
                 .Replace("[ACTION_ROUTE]", Tokens["[ACTION_ROUTE]"])
                 .Replace("[PARAMS_COMMENTS]", Tokens["[PARAMS_COMMENTS]"])
                 .Replace("[RES_OBJECT_RESULT]", Tokens["[RES_OBJECT_RESULT]"])

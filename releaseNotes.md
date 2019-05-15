@@ -1,3 +1,14 @@
+_May 15th, 2019_  **v2.0.28**
+- DynamicControllerTemplateOptions, makes extension methods cleaner.  Not to mention I will changing how comments are added to actions most likely through this class.
+- QueryalbExtensions, added.
+- REMARKS, added to controller/action templates.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _May 9th, 2019_  **v2.0.27**
 - DynamicController templates, Missing System namespace using statement, this has only been an issue when a request object does not contain anything other than something from body.
  

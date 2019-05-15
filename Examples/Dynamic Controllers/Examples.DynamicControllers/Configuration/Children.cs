@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Extensions;
+using APIBlox.AspNetCore.Types;
 using Examples.Resources;
 using FluentValidation;
 
@@ -10,52 +11,28 @@ namespace Examples.Configuration
     {
         public static List<IComposedTemplate> AddChildrenControllerTemplates(this List<IComposedTemplate> templates)
         {
-            const string nameSpace = "Examples";
-            const string controllerRoute = "api/[controller]/parents/{parentId}/children";
+            var options = new DynamicControllerTemplateOptions
+            {
+                ControllerRoute = "api/[controller]/parents/{parentId}/children",
+                NameSpace = "Examples",
+                ControllerName = "Children",
+                ControllerComments = new DynamicComments
+                {
+                    Summary = "# Kids are a PITA!",
+                    Remarks = " # We love them anyways!" // Useless in swashbuckle (it would seem).
+                }
+            };
 
             templates
-                .WriteQueryByController<ChildByIdRequest, ChildResponse>(
-                    "{childId}",
-                    "Children",
-                    controllerRoute,
-                     nameSpace
-                )
-                .WritePutController<ChildPutRequest>(
-                    "{childId}",
-                    "Children",
-                    controllerRoute,
-                     nameSpace
-                )
-                .WritePatchController<ChildPatchRequest>(
-                    "{childId}",
-                    "Children",
-                    controllerRoute,
-                     nameSpace
-                ).WriteDeleteByController<ChildByIdRequest>(
-                    "{childId}",
-                    "Children",
-                    controllerRoute,
-                     nameSpace
-                ).WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(
-                    null,
-                    "Children",
-                    controllerRoute,
-                     nameSpace, new List<int> { 200, 401, 403 }
-                )
+                .WriteQueryByController<ChildByIdRequest, ChildResponse>(options.Set(p => p.ActionRoute = "{childId}"))
+                .WritePutController<ChildPutRequest>(options)
+                .WritePatchController<ChildPatchRequest>(options)
+                .WriteDeleteByController<ChildByIdRequest>(options)
 
-                //.WritePostController<ChildPostRequest, ChildResponse>(
-                //        null,
-                //        "Children",
-                //        controllerRoute,
-                //        nameSpace
-                // )
-
-                .WritePostAcceptedController<ChildPostRequest>(
-                    null,
-                    "Children",
-                    controllerRoute,
-                    nameSpace
-                );
+                //.WritePostController<ChildPostRequest, ChildResponse>(options.Set(p => p.ActionRoute = null, p => p.StatusCodes = null))
+                .WritePostAcceptedController<ChildPostRequest>(options.Set(p => p.ActionRoute = null, p => p.StatusCodes = null))
+                .WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(options.Set(p => p.ActionRoute = null, p => p.StatusCodes = new List<int> { 200, 401, 403 }))
+                ;
 
             return templates;
         }

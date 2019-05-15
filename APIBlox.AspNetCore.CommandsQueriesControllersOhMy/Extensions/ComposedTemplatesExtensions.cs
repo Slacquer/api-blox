@@ -34,14 +34,13 @@ namespace APIBlox.AspNetCore.Extensions
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value.
         /// </summary>
+        /// <remarks>
+        ///     When not set, response codes defaults to 200, 204, 401, 403.
+        /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <typeparam name="TResponse">The type of the t response.</typeparam>
         /// <param name="templates">Current list of templates.</param>
-        /// <param name="actionRoute">The action route.</param>
-        /// <param name="nameSpace">The name space.</param>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <param name="controllerRoute">The controller route.</param>
-        /// <param name="statusCodes">Possible response codes.  Defaults to 200, 204, 401, 403</param>
+        /// <param name="options">The controller template options.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">
         ///     QueryBy requires a route for the action, maybe something like {id}. - actionRoute
@@ -49,38 +48,33 @@ namespace APIBlox.AspNetCore.Extensions
         ///     Must be a single object type. - TResponse
         /// </exception>
         public static IEnumerable<IComposedTemplate> WriteQueryByController<TRequest, TResponse>(
-            this IEnumerable<IComposedTemplate> templates,
-            string actionRoute,
-            string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers",
-            IEnumerable<int> statusCodes = null
+            this IEnumerable<IComposedTemplate> templates, DynamicControllerTemplateOptions options
         )
             where TRequest : new()
         {
-            if (actionRoute.IsEmptyNullOrWhiteSpace())
+            if (options.ActionRoute.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentException("QueryBy requires a route for the action, maybe something like {id}.",
-                    nameof(actionRoute)
+                    nameof(options.ActionRoute)
                 );
 
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
-            var codes = (statusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("QueryBy", actionRoute);
+            var action = Templates.GetDynamicAction("QueryBy", options.ActionRoute, options.ActionComments);
 
-            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                  template,
                  typeof(TRequest),
                  typeof(TResponse),
                  false,
-                 req => controllerName.ToPascalCase() ?? $"QueryBy{req}Controller",
+                 req => options.ControllerName ?? $"QueryBy{req}Controller",
                  BuildResponseTypes(codes)
              ));
 
@@ -90,23 +84,17 @@ namespace APIBlox.AspNetCore.Extensions
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying for all resources.
         /// </summary>
+        /// <remarks>
+        ///     When not set, response codes defaults to 200, 204, 401, 403.
+        /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <typeparam name="TResponse">The type of the t response.</typeparam>
         /// <param name="templates">Current list of templates.</param>
-        /// <param name="actionRoute">The action route.</param>
-        /// <param name="nameSpace">The name space.</param>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <param name="controllerRoute">The controller route.</param>
-        /// <param name="statusCodes">Possible response codes.  Defaults to 200, 204, 401, 403</param>
+        /// <param name="options">The controller template options.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">Must be a enumerable object type. - TResponse</exception>
         public static IEnumerable<IComposedTemplate> WriteQueryAllController<TRequest, TResponse>(
-            this IEnumerable<IComposedTemplate> templates,
-            string actionRoute = null,
-            string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers",
-            IEnumerable<int> statusCodes = null
+            this IEnumerable<IComposedTemplate> templates, DynamicControllerTemplateOptions options
         )
             where TRequest : new()
             where TResponse : IEnumerable
@@ -114,21 +102,21 @@ namespace APIBlox.AspNetCore.Extensions
             if (!typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a enumerable object type.", nameof(TResponse));
 
-            var codes = (statusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("QueryAll", actionRoute);
+            var action = Templates.GetDynamicAction("QueryAll", options.ActionRoute, options.ActionComments);
 
-            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                 template,
                 typeof(TRequest),
                 typeof(TResponse),
                 false,
-                req => controllerName.ToPascalCase() ?? $"QueryAll{req}Controller",
+                req => options.ControllerName ?? $"QueryAll{req}Controller",
                BuildResponseTypes(codes)
             ));
 
@@ -138,39 +126,33 @@ namespace APIBlox.AspNetCore.Extensions
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for deleting resources by some value.
         /// </summary>
+        /// <remarks>
+        ///     When not set, response codes defaults to 204, 401, 403, 404.
+        /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <param name="templates">Current list of templates.</param>
-        /// <param name="actionRoute">The action route.</param>
-        /// <param name="nameSpace">The name space.</param>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <param name="controllerRoute">The controller route.</param>
-        /// <param name="statusCodes">Possible response codes.  Defaults to 204, 401, 403, 404</param>
+        /// <param name="options">The controller template options.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         public static IEnumerable<IComposedTemplate> WriteDeleteByController<TRequest>(
-            this IEnumerable<IComposedTemplate> templates,
-            string actionRoute = null,
-            string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers",
-            IEnumerable<int> statusCodes = null
+            this IEnumerable<IComposedTemplate> templates, DynamicControllerTemplateOptions options
         )
             where TRequest : new()
         {
-            var codes = (statusCodes ?? new List<int> { 204, 401, 403, 404 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 204, 401, 403, 404 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("DeleteBy", actionRoute);
+            var action = Templates.GetDynamicAction("DeleteBy", options.ActionRoute, options.ActionComments);
 
-            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                 template,
                 typeof(TRequest),
                 null,
                 false,
-                req => controllerName.ToPascalCase() ?? $"DeleteBy{req}Controller",
+                req => options.ControllerName ?? $"DeleteBy{req}Controller",
                 BuildResponseTypes(codes)
             ));
             return templates;
@@ -179,39 +161,33 @@ namespace APIBlox.AspNetCore.Extensions
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PUT.
         /// </summary>
+        /// <remarks>
+        ///     When not set, response codes defaults to 204, 401, 403, 404, 409.
+        /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <param name="templates">Current list of templates.</param>
-        /// <param name="actionRoute">The action route.</param>
-        /// <param name="nameSpace">The name space.</param>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <param name="controllerRoute">The controller route.</param>
-        /// <param name="statusCodes">Possible response codes.  Defaults to 204, 401, 403, 404, 409</param>
+        /// <param name="options">The controller template options.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         public static IEnumerable<IComposedTemplate> WritePutController<TRequest>(
-            this IEnumerable<IComposedTemplate> templates,
-            string actionRoute = null,
-            string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers",
-            IEnumerable<int> statusCodes = null
+            this IEnumerable<IComposedTemplate> templates, DynamicControllerTemplateOptions options
         )
             where TRequest : new()
         {
-            var codes = (statusCodes ?? new List<int> { 204, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 204, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("PutBy", actionRoute);
+            var action = Templates.GetDynamicAction("PutBy", options.ActionRoute, options.ActionComments);
 
-            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                  template,
                  typeof(TRequest),
                  null,
                  true,
-                 req => controllerName.ToPascalCase() ?? $"PutBy{req}Controller",
+                 req => options.ControllerName ?? $"PutBy{req}Controller",
                  BuildResponseTypes(codes)
              ));
             return templates;
@@ -220,39 +196,33 @@ namespace APIBlox.AspNetCore.Extensions
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PATCH.
         /// </summary>
+        /// <remarks>
+        ///     When not set, response codes defaults to 204, 401, 403, 404, 409.
+        /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <param name="templates">Current list of templates.</param>
-        /// <param name="actionRoute">The action route.</param>
-        /// <param name="nameSpace">The name space.</param>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <param name="controllerRoute">The controller route.</param>
-        /// <param name="statusCodes">Possible response codes.  Defaults to 204, 401, 403, 404, 409</param>
+        /// <param name="options">The controller template options.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         public static IEnumerable<IComposedTemplate> WritePatchController<TRequest>(
-            this IEnumerable<IComposedTemplate> templates,
-            string actionRoute = null,
-            string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers",
-            IEnumerable<int> statusCodes = null
+            this IEnumerable<IComposedTemplate> templates, DynamicControllerTemplateOptions options
         )
             where TRequest : new()
         {
-            var codes = (statusCodes ?? new List<int> { 204, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 204, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("PatchBy", actionRoute);
+            var action = Templates.GetDynamicAction("PatchBy", options.ActionRoute, options.ActionComments);
 
-            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                  template,
                  typeof(TRequest),
                  null,
                  true,
-                 req => controllerName.ToPascalCase() ?? $"PatchBy{req}Controller",
+                 req => options.ControllerName ?? $"PatchBy{req}Controller",
                  BuildResponseTypes(codes)
              ));
             return templates;
@@ -261,44 +231,38 @@ namespace APIBlox.AspNetCore.Extensions
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources.
         /// </summary>
+        /// <remarks>
+        ///     When not set, response codes defaults to 201, 204, 401, 403, 404, 409
+        /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <typeparam name="TResponse">The type of the t response.</typeparam>
         /// <param name="templates">Current list of templates.</param>
-        /// <param name="actionRoute">The action route.</param>
-        /// <param name="nameSpace">The name space.</param>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <param name="controllerRoute">The controller route.</param>
-        /// <param name="statusCodes">Possible response codes.  Defaults to 201, 204, 401, 403, 404, 409</param>
+        /// <param name="options">The controller template options.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
         /// <exception cref="ArgumentException">Must be a single object type. - TResponse</exception>
         public static IEnumerable<IComposedTemplate> WritePostController<TRequest, TResponse>(
-            this IEnumerable<IComposedTemplate> templates,
-            string actionRoute = null,
-            string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            string nameSpace = "DynamicControllers",
-            IEnumerable<int> statusCodes = null
+            this IEnumerable<IComposedTemplate> templates, DynamicControllerTemplateOptions options
         )
             where TRequest : new()
         {
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
-            var codes = (statusCodes ?? new List<int> { 201, 204, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 201, 204, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("Post", actionRoute);
+            var action = Templates.GetDynamicAction("Post", options.ActionRoute, options.ActionComments);
 
-            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                    template,
                    typeof(TRequest),
                    typeof(TResponse),
                    true,
-                   req => controllerName.ToPascalCase() ?? $"Post{req}Controller",
+                   req => options.ControllerName ?? $"Post{req}Controller",
                    BuildResponseTypes(codes)
                ));
 
@@ -306,43 +270,35 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         /// <summary>
-        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources but NOT getting back an
-        ///     immediate result.
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources but NOT getting back an immediate result.
         /// </summary>
+        /// <remarks>
+        ///     When not set, response codes defaults to 202, 401, 403, 404, 409
+        /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
         /// <param name="templates">Current list of templates.</param>
-        /// <param name="actionRoute">The action route.</param>
-        /// <param name="nameSpace">The name space.</param>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <param name="controllerRoute">The controller route.</param>
-        /// <param name="statusCodes">Possible response codes.  Defaults to 202, 401, 403, 404, 409</param>
-        /// <returns>DynamicControllerComposedTemplate.</returns>
+        /// <param name="options">The controller template options.</param>
         /// <exception cref="ArgumentException">Must be a single object type. - TResponse</exception>
         public static IEnumerable<IComposedTemplate> WritePostAcceptedController<TRequest>(
-            this IEnumerable<IComposedTemplate> templates,
-            string actionRoute = null,
-            string nameSpace = "DynamicControllers",
-            string controllerName = null,
-            string controllerRoute = "api/[controller]",
-            IEnumerable<int> statusCodes = null
+            this IEnumerable<IComposedTemplate> templates, DynamicControllerTemplateOptions options
         )
             where TRequest : new()
         {
-            var codes = (statusCodes ?? new List<int> { 202, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 202, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(statusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("PostAccepted", actionRoute);
+            var action = Templates.GetDynamicAction("PostAccepted", options.ActionRoute, options.ActionComments);
 
-            var template = new DynamicControllerComposedTemplate(nameSpace, controllerRoute, action);
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                    template,
                    typeof(TRequest),
                    null,
                    true,
-                   req => controllerName.ToPascalCase() ?? $"PostAccepted{req}Controller",
+                   req => options.ControllerName ?? $"PostAccepted{req}Controller",
                    BuildResponseTypes(codes)
                ));
 
@@ -379,7 +335,7 @@ namespace APIBlox.AspNetCore.Extensions
             if (!(resultObjNs is null))
                 ns = ns.Union(resultObjNs);
 
-            template.Comments = reqObjComments;
+            template.Comments = template.Comments ?? reqObjComments;
             template.Action.Namespaces = ns.ToArray();
 
             var cn = buildControllerName(realResObject);
@@ -388,6 +344,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             template.Action.Tokens["[REQ_OBJECT]"] = reqObj;
             template.Action.Tokens["[RES_OBJECT_INNER_RESULT]"] = realResObject ?? resObj;
+            template.Action.Tokens["[ACTION_COMMENTS]"] = template.Action.Comments ?? "";
             template.Action.Tokens["[ACTION_ROUTE]"] = template.Action.Route ?? "";
             template.Action.Tokens["[PARAMS_COMMENTS]"] = parameterComments;
             template.Action.Tokens["[RES_OBJECT_RESULT]"] = resObj;
@@ -432,8 +389,9 @@ namespace APIBlox.AspNetCore.Extensions
             /// </summary>
             /// <param name="templatePath">The template path.</param>
             /// <param name="actionRoute">The action route.</param>
+            /// <param name="comments">The action comments.</param>
             /// <returns>DynamicAction.</returns>
-            public static DynamicAction GetDynamicAction(string templatePath, string actionRoute)
+            public static DynamicAction GetDynamicAction(string templatePath, string actionRoute, DynamicComments comments)
             {
                 var bits = EmbeddedResourceReader<Templates>.GetResources(templatePath);
 
@@ -449,6 +407,7 @@ namespace APIBlox.AspNetCore.Extensions
                     bits["CtorBody"],
                     bits["Fields"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
                     bits["Namespaces"].Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries),
+                    comments.ToString(),
                     methods
                 );
             }
