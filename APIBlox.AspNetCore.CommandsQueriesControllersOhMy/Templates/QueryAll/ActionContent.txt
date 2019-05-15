@@ -1,6 +1,4 @@
-﻿/// <summary>
-///     Action for getting a collection of resources.
-/// </summary>
+﻿[ACTION_COMMENTS]
 [RESPONSE_TYPES_COMMENTS]
 /// <param name="cancellationToken">The cancellation token.</param>
 [PARAMS_COMMENTS]

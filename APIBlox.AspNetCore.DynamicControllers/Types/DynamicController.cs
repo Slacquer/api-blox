@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 
 namespace APIBlox.AspNetCore.Types
@@ -13,10 +11,11 @@ namespace APIBlox.AspNetCore.Types
         private static readonly string ControllerContent =
             EmbeddedResourceReader<DynamicControllerFactory>.GetResource("DynamicController.txt");
 
+        private readonly string _controllerComments;
+
         private readonly string _name;
         private readonly string _namespace;
         private readonly string _route;
-        private readonly string _controllerComments;
 
         public DynamicController(string name, string nameSpace, string route, string controllerComments)
         {
@@ -25,8 +24,8 @@ namespace APIBlox.AspNetCore.Types
             _route = route;
             _controllerComments = controllerComments;
 
-            if (!_controllerComments.IsEmptyNullOrWhiteSpace())
-                _controllerComments = _controllerComments.Replace(Environment.NewLine, " ");
+            //if (!_controllerComments.IsEmptyNullOrWhiteSpace())
+            //    _controllerComments = _controllerComments.Replace(Environment.NewLine, " ");
         }
 
         public List<string> Namespaces { get; } = new List<string>();

@@ -3,9 +3,7 @@
 namespace [CONTROLLERS_NAMESPACE].Controllers
 {
     /// <inheritdoc />
-    /// <summary>
-    ///     [CONTROLLER_REQ_OBJ_SUMMARY]
-    /// </summary>
+    [CONTROLLER_REQ_OBJ_SUMMARY]
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     [Route("[CONTROLLER_ROUTE]")]
     [ApiController]
