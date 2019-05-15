@@ -663,10 +663,6 @@ namespace APIBlox.AspNetCore
             }
         }
 
-
-
-
-
         private static string GetNameWithoutGenericArity(Type t)
         {
             var name = t.Name;

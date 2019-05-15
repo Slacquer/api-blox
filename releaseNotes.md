@@ -1,3 +1,12 @@
+_May 15th, 2019_  **v2.0.29**
+- DynamicControllerTemplateOptions, defaults for comments.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _May 15th, 2019_  **v2.0.28**
 - DynamicControllerTemplateOptions, makes extension methods cleaner.  Not to mention I will changing how comments are added to actions most likely through this class.
 - QueryalbExtensions, added.

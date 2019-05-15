@@ -150,6 +150,9 @@
             <summary>
                 Class ChildResponse.
             </summary>
+            <remarks>
+            Child
+            </remarks>
         </member>
         <member name="P:Examples.Resources.ChildResponse.Age">
             <summary>

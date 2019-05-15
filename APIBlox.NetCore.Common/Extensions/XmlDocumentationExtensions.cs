@@ -17,17 +17,17 @@ namespace APIBlox.NetCore.Extensions
         public static List<string> FallbackPaths { get; set; }
 
         /// <summary>
-        ///     A cache used to remember Xml documentation for assemblies
+        ///     A cache used to remember Xml documentation for assemblies.
         /// </summary>
         private static readonly Dictionary<Assembly, XmlDocument> Cache = new Dictionary<Assembly, XmlDocument>();
 
         /// <summary>
-        ///     A cache used to store failure exceptions for assembly lookups
+        ///     A cache used to store failure exceptions for assembly lookups.
         /// </summary>
         private static readonly Dictionary<Assembly, Exception> FailCache = new Dictionary<Assembly, Exception>();
 
         /// <summary>
-        ///     Provides the documentation comments for a specific method
+        ///     Provides the documentation comments for a specific method.
         /// </summary>
         /// <param name="methodInfo">The MethodInfo (reflection data ) of the member to find documentation for</param>
         /// <returns>The XML fragment describing the method</returns>
@@ -52,7 +52,7 @@ namespace APIBlox.NetCore.Extensions
         }
 
         /// <summary>
-        ///     Provides the documentation comments for a specific member
+        ///     Provides the documentation comments for a specific member.
         /// </summary>
         /// <param name="memberInfo">The MemberInfo (reflection data) or the member to find documentation for</param>
         /// <returns>The XML fragment describing the member</returns>
@@ -63,7 +63,7 @@ namespace APIBlox.NetCore.Extensions
         }
 
         /// <summary>
-        ///     Returns the Xml documentation summary comment for this member
+        ///     Returns the Xml documentation summary comment for this member.
         /// </summary>
         /// <param name="memberInfo"></param>
         /// <returns></returns>
@@ -76,7 +76,20 @@ namespace APIBlox.NetCore.Extensions
         }
 
         /// <summary>
-        ///     Provides the documentation comments for a specific type
+        ///     Returns the Xml documentation remarks comment for this member.
+        /// </summary>
+        /// <param name="memberInfo"></param>
+        /// <returns></returns>
+        public static string GetRemarks(this MemberInfo memberInfo)
+        {
+            var element = memberInfo.GetDocumentation();
+            var remarksElm = element?.SelectSingleNode("remarks");
+
+            return remarksElm == null ? "" : remarksElm.InnerText.Trim();
+        }
+
+        /// <summary>
+        ///     Provides the documentation comments for a specific type.
         /// </summary>
         /// <param name="type">Type to find the documentation for</param>
         /// <returns>The XML fragment that describes the type</returns>
@@ -87,7 +100,7 @@ namespace APIBlox.NetCore.Extensions
         }
 
         /// <summary>
-        ///     Gets the summary portion of a type's documentation or returns an empty string if not available
+        ///     Gets the summary portion of a type's documentation or returns an empty string if not available.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -95,14 +108,25 @@ namespace APIBlox.NetCore.Extensions
         {
             var element = type.GetDocumentation();
             var summaryElm = element?.SelectSingleNode("summary");
-            if (summaryElm == null)
-                return "";
 
-            return summaryElm.InnerText.Trim();
+            return summaryElm == null ? "" : summaryElm.InnerText.Trim();
         }
 
         /// <summary>
-        ///     Obtains the documentation file for the specified assembly
+        ///     Gets the remarks portion of a type's documentation or returns an empty string if not available.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string GetRemarks(this Type type)
+        {
+            var element = type.GetDocumentation();
+            var remarksElm = element?.SelectSingleNode("remarks");
+
+            return remarksElm == null ? "" : remarksElm.InnerText.Trim();
+        }
+
+        /// <summary>
+        ///     Obtains the documentation file for the specified assembly.
         /// </summary>
         /// <param name="assembly">The assembly to find the XML document for</param>
         /// <returns>The XML document</returns>
@@ -154,7 +178,7 @@ namespace APIBlox.NetCore.Extensions
         }
 
         /// <summary>
-        ///     Loads and parses the documentation file for the specified assembly
+        ///     Loads and parses the documentation file for the specified assembly.
         /// </summary>
         /// <param name="assembly">The assembly to find the XML document for</param>
         /// <returns>The XML document</returns>

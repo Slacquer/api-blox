@@ -65,9 +65,11 @@ namespace APIBlox.AspNetCore.Extensions
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("QueryBy", options.ActionRoute, options.ActionComments);
+            var (ac, cc) = GetComments(options, "Get a specific resource.");
 
-            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
+            var action = Templates.GetDynamicAction("QueryBy", options.ActionRoute, ac);
+
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                  template,
@@ -106,10 +108,12 @@ namespace APIBlox.AspNetCore.Extensions
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
+            
+            var (ac, cc) = GetComments(options, "Get all resources.");
 
-            var action = Templates.GetDynamicAction("QueryAll", options.ActionRoute, options.ActionComments);
+            var action = Templates.GetDynamicAction("QueryAll", options.ActionRoute, ac);
 
-            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                 template,
@@ -143,9 +147,11 @@ namespace APIBlox.AspNetCore.Extensions
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("DeleteBy", options.ActionRoute, options.ActionComments);
+            var (ac, cc) = GetComments(options, "Delete a specific resource.");
 
-            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
+            var action = Templates.GetDynamicAction("DeleteBy", options.ActionRoute, ac);
+
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                 template,
@@ -178,9 +184,11 @@ namespace APIBlox.AspNetCore.Extensions
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("PutBy", options.ActionRoute, options.ActionComments);
+            var (ac, cc) = GetComments(options, "Update a specific resource.");
 
-            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
+            var action = Templates.GetDynamicAction("PutBy", options.ActionRoute, ac);
+
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                  template,
@@ -213,9 +221,11 @@ namespace APIBlox.AspNetCore.Extensions
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("PatchBy", options.ActionRoute, options.ActionComments);
+            var (ac, cc) = GetComments(options, "Update a specific resource.");
 
-            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
+            var action = Templates.GetDynamicAction("PatchBy", options.ActionRoute, ac);
+
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                  template,
@@ -253,9 +263,11 @@ namespace APIBlox.AspNetCore.Extensions
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("Post", options.ActionRoute, options.ActionComments);
+            var (ac, cc) = GetComments(options, "Create a new resource.");
 
-            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
+            var action = Templates.GetDynamicAction("Post", options.ActionRoute, ac);
+
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                    template,
@@ -289,9 +301,11 @@ namespace APIBlox.AspNetCore.Extensions
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
 
-            var action = Templates.GetDynamicAction("PostAccepted", options.ActionRoute, options.ActionComments);
+            var (ac, cc) = GetComments(options, "Create a new resource.");
 
-            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, options.ControllerComments);
+            var action = Templates.GetDynamicAction("PostAccepted", options.ActionRoute, ac);
+
+            var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
             ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                    template,
@@ -357,6 +371,29 @@ namespace APIBlox.AspNetCore.Extensions
             template.Action.Compose();
 
             return template;
+        }
+
+        private static (DynamicComments, DynamicComments) GetComments(DynamicControllerTemplateOptions options, string summary)
+        {
+            var ac = new DynamicComments
+            {
+                Summary = options.ActionComments.Summary.IsEmptyNullOrWhiteSpace()
+                    ? summary
+                    : options.ActionComments.Summary,
+                Remarks = options.ActionComments.Remarks.IsEmptyNullOrWhiteSpace()
+                    //? @"![](https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true) _Dynamic Controller Action_"
+                    ? @"_Dynamic Controller Action_"
+                    : options.ActionComments.Remarks
+            };
+
+            var cc = new DynamicComments
+            {
+                Summary = options.ControllerComments.Summary.IsEmptyNullOrWhiteSpace()
+                    ? $"{options.ControllerName} endpoint(s)."
+                    : options.ControllerComments.Summary
+            };
+
+            return (ac, cc);
         }
 
         private static (string, string) BuildResponseTypes(IEnumerable<int> statusCodes)

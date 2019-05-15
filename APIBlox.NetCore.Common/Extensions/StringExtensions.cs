@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -11,7 +12,7 @@ namespace APIBlox.NetCore.Extensions
     /// <summary>
     ///     Class StringExtensions.
     /// </summary>
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public static class StringExtensions
     {
         /// <summary>
@@ -233,6 +234,35 @@ namespace APIBlox.NetCore.Extensions
                 );
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        ///     Attempts to convert a string into a phrase.
+        /// </summary>
+        /// <param name="str">The string.</param>
+        /// <param name="onlyFirstCapitalized">Convert all words (except the first) to lowerCase.</param>
+        /// <returns>System.String.</returns>
+        public static string ToPhrase(this string str, bool onlyFirstCapitalized = true)
+        {
+            if (str.IsEmptyNullOrWhiteSpace())
+                return str;
+
+            var result = Regex.Replace(
+                Regex.Replace(
+                    str,
+                    @"(\P{Ll})(\P{Ll}\p{Ll})",
+                    "$1 $2"
+                ),
+                @"(\p{Ll})(\P{Ll})",
+                "$1 $2"
+            );
+
+            if (!onlyFirstCapitalized)
+                return result;
+
+            result = result.ToLower();
+
+            return $"{result.Substring(0, 1).ToUpper()}{result.Substring(1)}";
         }
 
         /// <summary>
