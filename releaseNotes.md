@@ -1,3 +1,12 @@
+_June 10th, 2019_  **v2.0.??**
+- DynamicControllerTemplateOptions, routes are camel cased when set.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _May 15th, 2019_  **v2.0.29**
 - DynamicControllerTemplateOptions, defaults for comments.
 - Nuget Packages update(s).

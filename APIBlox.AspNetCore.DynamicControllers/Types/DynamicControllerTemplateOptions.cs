@@ -33,13 +33,13 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the controller route.
         /// </summary>
         /// <remarks>
-        ///     The value will be converted to Pascal case.
+        ///     The value will be converted to camel case.
         /// </remarks>
         /// <value>The controller route.</value>
         public string ControllerRoute
         {
             get => _controllerRoute;
-            set => _controllerRoute = value?.ToPascalCase();
+            set => _controllerRoute = value?.ToCamelCase();
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using APIBlox.NetCore.Extensions;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -27,7 +28,7 @@ namespace APIBlox.AspNetCore.Types
         )
         {
             Name = name;
-            Route = route;
+            Route = route?.ToCamelCase();
             Content = content;
             CtorArgs = ctorArgs;
             CtorBody = ctorBody;
