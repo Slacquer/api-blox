@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
@@ -18,7 +19,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <remarks>
         ///     Your handler CAN implement more than one <see cref="ICommandHandler{TResult}"/> or
-        ///     <seealso cref="ICommandHandler{TRequestQuery, TResult}"/>, and each will be wrapped with each decorator.
+        ///     <seealso cref="ICommandHandler{TRequestQuery, TResult}"/>, and each will be wrapped
+        ///     with each decorator, this also holds true with the decorator itself.
         /// </remarks>
         /// <typeparam name="THandler">The type of the t handler.</typeparam>
         /// <param name="services">The services.</param>
@@ -35,32 +37,21 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
 
             var type = typeof(THandler);
-
-            var qis = type.GetInterfaces()
-                .Where(t =>
-                    t.IsAssignableTo(typeof(ICommandHandler<>))
-                    || t.IsAssignableTo(typeof(ICommandHandler<,>))
-                ).ToList();
-
-            if (!qis.Any())
-                throw new ArgumentException(
-                    $"The {type} must be an generic type of IQueryHandler<>, " +
-                    "IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
-                );
+            var qis = type.GetCommandHandlerList();
 
             foreach (var decorator in decorators.Reverse())
             {
                 foreach (var qi in qis)
                 {
                     if (decorator.IsGenericType)
-                    {
-                        var p = qi.GetGenericArguments();
-                        var decParams = decorator.MakeGenericType(p);
-                        services.AddServiceDecoration(loggerFactory, qi, decParams);
-                    }
+                        services.AddServiceDecoration(loggerFactory, qi, qi.CreateGenericType(decorator));
                     else
                     {
-                        services.AddServiceDecoration(loggerFactory, qi, decorator);
+                        // Not a generic decorator, so lets find the handler bits and fill them in.
+                        var decoratorQis = decorator.GetCommandHandlerList();
+
+                        foreach (var decoratorQi in decoratorQis)
+                            services.AddServiceDecoration(loggerFactory, qi, decoratorQi.CreateGenericType(decorator));
                     }
                 }
             }
@@ -74,7 +65,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <remarks>
         ///     Your handler CAN implement more than one <see cref="IQueryHandler{TResult}"/> or
-        ///     <seealso cref="IQueryHandler{TRequestQuery, TResult}"/>, and each will be wrapped with each decorator.
+        ///     <seealso cref="IQueryHandler{TRequestQuery, TResult}"/>, and each will be wrapped
+        ///     with each decorator, this also holds true with the decorator itself.
         /// </remarks>
         /// <typeparam name="THandler">The type of the t handler.</typeparam>
         /// <param name="services">The services.</param>
@@ -93,38 +85,67 @@ namespace Microsoft.Extensions.DependencyInjection
                     "Why would you decorate a handler with nothing?"
                 );
 
-            var ths = typeof(THandler);
-
-            var qis = ths.GetInterfaces()
-                .Where(t =>
-                    t.IsAssignableTo(typeof(IQueryHandler<,>))
-                    || t.IsAssignableTo(typeof(IQueryHandler<>))
-                ).ToList();
-
-            if (!qis.Any())
-                throw new ArgumentException(
-                    $"The {ths} must be an generic type of " +
-                    "IQueryHandler<>, IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
-                );
+            var type = typeof(THandler);
+            var qis = type.GetQueryHandlerList();
 
             foreach (var decorator in decorators.Reverse())
             {
                 foreach (var qi in qis)
                 {
                     if (decorator.IsGenericType)
-                    {
-                        var p = qi.GetGenericArguments();
-                        var decParams = decorator.MakeGenericType(p);
-                        services.AddServiceDecoration(loggerFactory, qi, decParams);
-                    }
+                        services.AddServiceDecoration(loggerFactory, qi, qi.CreateGenericType(decorator));
                     else
                     {
-                        services.AddServiceDecoration(loggerFactory, qi, decorator);
+                        // Not a generic decorator, so lets find the handler bits and fill them in.
+                        var decoratorQis = decorator.GetQueryHandlerList();
+
+                        foreach (var decoratorQi in decoratorQis)
+                            services.AddServiceDecoration(loggerFactory, qi, decoratorQi.CreateGenericType(decorator));
                     }
                 }
             }
 
             return services;
+        }
+
+        private static Type CreateGenericType(this Type decorated, Type decorator)
+        {
+            var p = decorated.GetGenericArguments();
+            var decParams = decorator.MakeGenericType(p);
+
+            return decParams;
+        }
+
+        private static List<Type> GetQueryHandlerList(this Type type)
+        {
+            var ret = type.GetInterfaces()
+                .Where(t =>
+                    t.IsAssignableTo(typeof(IQueryHandler<>))
+                    || t.IsAssignableTo(typeof(IQueryHandler<,>))
+                ).ToList();
+
+            if (!ret.Any())
+                throw new ArgumentException(
+                    $"The {type} must implement IQueryHandler<> or IQueryHandler<,>."
+                );
+
+            return ret;
+        }
+
+        private static List<Type> GetCommandHandlerList(this Type type)
+        {
+            var ret = type.GetInterfaces()
+                .Where(t =>
+                    t.IsAssignableTo(typeof(ICommandHandler<>))
+                    || t.IsAssignableTo(typeof(ICommandHandler<,>))
+                ).ToList();
+
+            if (!ret.Any())
+                throw new ArgumentException(
+                    $"The {type} must implement ICommandHandler<> or ICommandHandler<,>."
+                );
+
+            return ret;
         }
     }
 }
