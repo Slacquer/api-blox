@@ -16,6 +16,10 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     Decorates a REGISTERED command handler service.  Note that
         ///     decorations are executed in the order they are added.
         /// </summary>
+        /// <remarks>
+        ///     Your handler CAN implement more than one <see cref="ICommandHandler{TResult}"/> or
+        ///     <seealso cref="ICommandHandler{TRequestQuery, TResult}"/>, and each will be wrapped with each decorator.
+        /// </remarks>
         /// <typeparam name="THandler">The type of the t handler.</typeparam>
         /// <param name="services">The services.</param>
         /// <param name="loggerFactory">The logger factory.</param>
@@ -32,13 +36,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var type = typeof(THandler);
 
-            var qi = type.GetInterfaces()
-                .FirstOrDefault(t =>
+            var qis = type.GetInterfaces()
+                .Where(t =>
                     t.IsAssignableTo(typeof(ICommandHandler<>))
                     || t.IsAssignableTo(typeof(ICommandHandler<,>))
-                );
+                ).ToList();
 
-            if (qi is null)
+            if (!qis.Any())
                 throw new ArgumentException(
                     $"The {type} must be an generic type of IQueryHandler<>, " +
                     "IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
@@ -46,15 +50,18 @@ namespace Microsoft.Extensions.DependencyInjection
 
             foreach (var decorator in decorators.Reverse())
             {
-                if (decorator.IsGenericType)
+                foreach (var qi in qis)
                 {
-                    var p = qi.GetGenericArguments();
-                    var decParams = decorator.MakeGenericType(p);
-                    services.AddServiceDecoration(loggerFactory, qi, decParams);
-                }
-                else
-                {
-                    services.AddServiceDecoration(loggerFactory, qi, decorator);
+                    if (decorator.IsGenericType)
+                    {
+                        var p = qi.GetGenericArguments();
+                        var decParams = decorator.MakeGenericType(p);
+                        services.AddServiceDecoration(loggerFactory, qi, decParams);
+                    }
+                    else
+                    {
+                        services.AddServiceDecoration(loggerFactory, qi, decorator);
+                    }
                 }
             }
 
@@ -65,6 +72,10 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     Decorates a REGISTERED query handler service.  Note that
         ///     decorations are executed in the order they are added.
         /// </summary>
+        /// <remarks>
+        ///     Your handler CAN implement more than one <see cref="IQueryHandler{TResult}"/> or
+        ///     <seealso cref="IQueryHandler{TRequestQuery, TResult}"/>, and each will be wrapped with each decorator.
+        /// </remarks>
         /// <typeparam name="THandler">The type of the t handler.</typeparam>
         /// <param name="services">The services.</param>
         /// <param name="loggerFactory">The logger factory.</param>
@@ -84,13 +95,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var ths = typeof(THandler);
 
-            var qi = ths.GetInterfaces()
-                .FirstOrDefault(t =>
+            var qis = ths.GetInterfaces()
+                .Where(t =>
                     t.IsAssignableTo(typeof(IQueryHandler<,>))
                     || t.IsAssignableTo(typeof(IQueryHandler<>))
-                );
+                ).ToList();
 
-            if (qi is null)
+            if (!qis.Any())
                 throw new ArgumentException(
                     $"The {ths} must be an generic type of " +
                     "IQueryHandler<>, IQueryHandler<,>, ICommandHandler<> or ICommandHandler<,>) "
@@ -98,15 +109,18 @@ namespace Microsoft.Extensions.DependencyInjection
 
             foreach (var decorator in decorators.Reverse())
             {
-                if (decorator.IsGenericType)
+                foreach (var qi in qis)
                 {
-                    var p = qi.GetGenericArguments();
-                    var decParams = decorator.MakeGenericType(p);
-                    services.AddServiceDecoration(loggerFactory, qi, decParams);
-                }
-                else
-                {
-                    services.AddServiceDecoration(loggerFactory, qi, decorator);
+                    if (decorator.IsGenericType)
+                    {
+                        var p = qi.GetGenericArguments();
+                        var decParams = decorator.MakeGenericType(p);
+                        services.AddServiceDecoration(loggerFactory, qi, decParams);
+                    }
+                    else
+                    {
+                        services.AddServiceDecoration(loggerFactory, qi, decorator);
+                    }
                 }
             }
 
