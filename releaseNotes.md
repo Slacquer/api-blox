@@ -1,5 +1,6 @@
 _June 10th, 2019_  **v2.0.??**
 - DynamicControllerTemplateOptions, routes are camel cased when set.
+- ComposedTemplatesExtensions, it was not exactly clear but by design ALL actions generated return a HandlerResponse, therefore the enduser MUST have query/command handlers that return HandlerResponse.
 
 Thanks,  
 _Slacquer_  

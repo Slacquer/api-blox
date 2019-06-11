@@ -33,12 +33,15 @@ namespace APIBlox.AspNetCore.Extensions
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value.
+        ///     <para>
+        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///     </para>
         /// </summary>
         /// <remarks>
         ///     When not set, response codes defaults to 200, 204, 401, 403.
         /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
-        /// <typeparam name="TResponse">The type of the t response.</typeparam>
+        /// <typeparam name="TResponse">The type of the t response</typeparam>
         /// <param name="templates">Current list of templates.</param>
         /// <param name="options">The controller template options.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
@@ -85,12 +88,15 @@ namespace APIBlox.AspNetCore.Extensions
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying for all resources.
+        ///     <para>
+        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///     </para>
         /// </summary>
         /// <remarks>
         ///     When not set, response codes defaults to 200, 204, 401, 403.
         /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
-        /// <typeparam name="TResponse">The type of the t response.</typeparam>
+        /// <typeparam name="TResponse">The type of the t response</typeparam>
         /// <param name="templates">Current list of templates.</param>
         /// <param name="options">The controller template options.</param>
         /// <returns>DynamicControllerComposedTemplate.</returns>
@@ -129,6 +135,9 @@ namespace APIBlox.AspNetCore.Extensions
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for deleting resources by some value.
+        ///     <para>
+        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///     </para>
         /// </summary>
         /// <remarks>
         ///     When not set, response codes defaults to 204, 401, 403, 404.
@@ -166,6 +175,9 @@ namespace APIBlox.AspNetCore.Extensions
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PUT.
+        ///     <para>
+        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///     </para>
         /// </summary>
         /// <remarks>
         ///     When not set, response codes defaults to 204, 401, 403, 404, 409.
@@ -203,6 +215,9 @@ namespace APIBlox.AspNetCore.Extensions
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PATCH.
+        ///     <para>
+        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///     </para>
         /// </summary>
         /// <remarks>
         ///     When not set, response codes defaults to 204, 401, 403, 404, 409.
@@ -240,6 +255,9 @@ namespace APIBlox.AspNetCore.Extensions
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources.
+        ///     <para>
+        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///     </para>
         /// </summary>
         /// <remarks>
         ///     When not set, response codes defaults to 201, 204, 401, 403, 404, 409
@@ -283,6 +301,9 @@ namespace APIBlox.AspNetCore.Extensions
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources but NOT getting back an immediate result.
+        ///     <para>
+        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///     </para>
         /// </summary>
         /// <remarks>
         ///     When not set, response codes defaults to 202, 401, 403, 404, 409
