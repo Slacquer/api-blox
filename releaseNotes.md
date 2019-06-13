@@ -1,5 +1,5 @@
 _June 10th, 2019_  **v2.0.??**
-- IReadOnlyEventStoreService.ReadEventStreamVersionAsync, will now return NULL when not found.
+- IReadOnlyEventStoreService.ReadEventStreamVersionAsync, will now return NULL when a stream is not found.
 
 Thanks,  
 _Slacquer_  
