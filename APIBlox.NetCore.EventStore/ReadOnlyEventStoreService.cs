@@ -24,14 +24,13 @@ namespace APIBlox.NetCore
 
         protected JsonSerializerSettings JsonSettings { get; }
 
-        public async Task<(long, DateTimeOffset)> ReadEventStreamVersionAsync(string streamId, CancellationToken cancellationToken = default)
+        public async Task<(long?, DateTimeOffset?)> ReadEventStreamVersionAsync(string streamId, CancellationToken cancellationToken = default)
         {
             var root = await ReadRootAsync(streamId, cancellationToken);
 
-            if (root is null)
-                return (0, default(DateTime));
-
-            return (root.Version, DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp));
+            return root is null
+                ? ((long?, DateTimeOffset?)) (null, null)
+                : (root.Version, DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp));
         }
 
         public Task<EventStreamModel> ReadEventStreamAsync(string streamId, CancellationToken cancellationToken = default)

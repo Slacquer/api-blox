@@ -1,3 +1,13 @@
+_June 10th, 2019_  **v2.0.??**
+- IReadOnlyEventStoreService.ReadEventStreamVersionAsync, will now return NULL when not found.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _June 10th, 2019_  **v2.0.30**
 - DynamicControllerTemplateOptions, routes are camel cased when set.
 - ComposedTemplatesExtensions, it was not exactly clear but by design ALL actions generated return a HandlerResponse, therefore the enduser MUST have query/command handlers that return HandlerResponse.
