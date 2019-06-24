@@ -1,4 +1,4 @@
-_June 10th, 2019_  **v2.0.31**
+_June 10th, 2019_  **v2.0.32**
 - IReadOnlyEventStoreService.ReadEventStreamVersionAsync, will now return NULL when a stream is not found.
 - ComposedTemplatesExtensions.WriteQueryByController, was too restrictive, as it required an actionRoute with tokens.
   
