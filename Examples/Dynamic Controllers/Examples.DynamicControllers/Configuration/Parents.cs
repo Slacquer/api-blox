@@ -12,7 +12,7 @@ namespace Examples.Configuration
         {
             templates.WriteQueryByController<ParentRequest, ParentResponse>(new DynamicControllerTemplateOptions
                 {
-                    ActionRoute = "{parentId}",
+                    //ActionRoute = "{parentId}",
                     ActionComments = new DynamicComments
                     {
                         Summary = "Get all parents action",

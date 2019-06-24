@@ -8,11 +8,11 @@ namespace Examples.Resources
     /// </summary>
     public class ParentRequest : FilteredPaginationQuery
     {
-        /// <summary>
-        ///     Gets or sets the identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
-        [FromRoute(Name = "parentId")]
-        public int Id { get; set; }
+        ///// <summary>
+        /////     Gets or sets the identifier.
+        ///// </summary>
+        ///// <value>The identifier.</value>
+        //[FromRoute(Name = "parentId")]
+        //public int Id { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace APIBlox.AspNetCore.Extensions
         };
 
         /// <summary>
-        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value.
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value(s).
         ///     <para>
         ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
         ///     </para>
@@ -41,24 +41,24 @@ namespace APIBlox.AspNetCore.Extensions
         ///     When not set, response codes defaults to 200, 204, 401, 403.
         /// </remarks>
         /// <typeparam name="TRequest">The type of the t request.</typeparam>
-        /// <typeparam name="TResponse">The type of the t response</typeparam>
-        /// <param name="templates">Current list of templates.</param>
-        /// <param name="options">The controller template options.</param>
-        /// <returns>DynamicControllerComposedTemplate.</returns>
+        /// <typeparam name="TResponse">The type of the t response.</typeparam>
+        /// <param name="templates">The templates.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>IEnumerable&lt;IComposedTemplate&gt;.</returns>
         /// <exception cref="ArgumentException">
-        ///     QueryBy requires a route for the action, maybe something like {id}. - actionRoute
-        ///     or
-        ///     Must be a single object type. - TResponse
+        /// Must be a single object type. - TResponse
+        /// or
+        /// When providing status codes you must not use an empty list! - StatusCodes
         /// </exception>
         public static IEnumerable<IComposedTemplate> WriteQueryByController<TRequest, TResponse>(
             this IEnumerable<IComposedTemplate> templates, DynamicControllerTemplateOptions options
         )
             where TRequest : new()
         {
-            if (options.ActionRoute.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException("QueryBy requires a route for the action, maybe something like {id}.",
-                    nameof(options.ActionRoute)
-                );
+            //if (options.ActionRoute.IsEmptyNullOrWhiteSpace())
+            //    throw new ArgumentException("QueryBy requires a route for the action, maybe something like {id}.",
+            //        nameof(options.ActionRoute)
+            //    );
 
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
