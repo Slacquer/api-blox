@@ -15,7 +15,7 @@
     }
     catch (Exception ex)
     {
-        _log.LogError(() => $"Could not determine ID for CreatedAtRoute result!  Ex: {ex.Message}");
+        _log.LogWarning(() => $"Could not determine ID for CreatedAtRoute result!  Ex: {ex.Message}");
 
         return -1;
     }

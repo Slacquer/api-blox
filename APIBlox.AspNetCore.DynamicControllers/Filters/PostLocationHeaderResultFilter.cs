@@ -30,7 +30,7 @@ namespace APIBlox.AspNetCore
                     }
                     catch (Exception ex)
                     {
-                        _log.LogCritical(() => $"Could not generate post location header.  Ex: {ex.Message}");
+                        _log.LogWarning(() => $"Could not generate post location header.  Ex: {ex.Message}");
                     }
 
                     return Task.CompletedTask;
@@ -48,8 +48,7 @@ namespace APIBlox.AspNetCore
             if (id is null)
                 throw new NullReferenceException(
                     "Response result does not appear to contain an " +
-                    "ID property, therefore an GET url can not be created.  " +
-                    "Hopefully this is your fault and not mine..."
+                    "ID property, therefore an GET url can not be created."
                 );
 
             return id.Value.ToString();
