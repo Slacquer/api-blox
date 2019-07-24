@@ -9,7 +9,7 @@ using Examples.Resources;
 namespace Examples.Commands
 {
     [InjectableService]
-    internal class SimplePostCommand : ICommandHandler<ExampleRequestObject,HandlerResponse>
+    internal class SimplePostCommand : ICommandHandler<ExampleRequestObject, HandlerResponse>
     {
         public Task<HandlerResponse> HandleAsync(ExampleRequestObject requestCommand, CancellationToken cancellationToken)
         {

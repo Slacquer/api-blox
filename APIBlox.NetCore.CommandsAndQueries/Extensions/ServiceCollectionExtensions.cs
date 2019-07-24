@@ -51,7 +51,7 @@ namespace APIBlox.NetCore.Extensions
                         var decoratorQis = decorator.GetCommandHandlerList();
 
                         foreach (var decoratorQi in decoratorQis)
-                            services.AddServiceDecoration(loggerFactory, qi, decoratorQi.CreateGenericType(decorator));
+                            services.AddServiceDecoration(loggerFactory, decoratorQi, decorator);
                     }
                 }
             }
@@ -100,7 +100,7 @@ namespace APIBlox.NetCore.Extensions
                         var decoratorQis = decorator.GetQueryHandlerList();
 
                         foreach (var decoratorQi in decoratorQis)
-                            services.AddServiceDecoration(loggerFactory, qi, decoratorQi.CreateGenericType(decorator));
+                            services.AddServiceDecoration(loggerFactory, decoratorQi, decorator);
                     }
                 }
             }

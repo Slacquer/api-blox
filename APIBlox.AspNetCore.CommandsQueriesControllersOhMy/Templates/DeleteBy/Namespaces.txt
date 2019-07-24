@@ -3,6 +3,7 @@ System.Threading
 System.Threading.Tasks
 Microsoft.AspNetCore.Http
 Microsoft.AspNetCore.Mvc
+APIBlox.NetCore.Contracts
 APIBlox.AspNetCore.ActionResults
 APIBlox.AspNetCore.Contracts
 APIBlox.AspNetCore.Types
