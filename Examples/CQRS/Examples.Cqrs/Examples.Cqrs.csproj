@@ -28,8 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ApiBlox.AspNetCore.CommandsAndQueries\APIBlox.AspNetCore.CommandsAndQueries.csproj" />
     <ProjectReference Include="..\..\..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\APIBlox.NetCore.CommandsAndQueries\APIBlox.NetCore.CommandsAndQueries.csproj" />
   </ItemGroup>
 
 </Project>

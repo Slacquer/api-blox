@@ -5,15 +5,15 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <!-- <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> -->
 
-    <RootNamespace>APIBlox.AspNetCore</RootNamespace>
+    <RootNamespace>APIBlox.NetCore</RootNamespace>
 
-    <AssemblyName>APIBlox.AspNetCore.CommandsAndQueries</AssemblyName>
+    <AssemblyName>APIBlox.NetCore.CommandsAndQueries</AssemblyName>
 
     <Description>Simple CQRS implementation that utilizes the decorator pattern.  SourceLink is enabled.</Description>
 
-    <Product>APIBlox.AspNetCore.CommandsAndQueries</Product>
+    <Product>APIBlox.NetCore.CommandsAndQueries</Product>
 
-    <PackageId>APIBlox.AspNetCore.CommandsAndQueries</PackageId>
+    <PackageId>APIBlox.NetCore.CommandsAndQueries</PackageId>
 
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -37,7 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ApiBlox.AspNetCore\APIBlox.AspNetCore.csproj" />
     <ProjectReference Include="..\ApiBlox.NetCore\APIBlox.NetCore.csproj" />
   </ItemGroup>
 

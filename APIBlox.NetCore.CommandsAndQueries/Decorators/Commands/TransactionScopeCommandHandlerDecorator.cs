@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
-using APIBlox.AspNetCore.Contracts;
+using APIBlox.NetCore.Contracts;
 
-namespace APIBlox.AspNetCore.Decorators.Commands
+namespace APIBlox.NetCore.Decorators.Commands
 {
     /// <inheritdoc cref="ICommandHandler{TRequest}" />
     /// <summary>
@@ -54,7 +54,7 @@ namespace APIBlox.AspNetCore.Decorators.Commands
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the
-        ///     <see cref="T:APIBlox.AspNetCore.Decorators.Commands.TransactionScopeCommandHandlerDecorator`2" /> class.
+        ///     <see cref="T:APIBlox.NetCore.Decorators.Commands.TransactionScopeCommandHandlerDecorator`2" /> class.
         /// </summary>
         /// <param name="decorated">The decorated.</param>
         public TransactionScopeCommandHandlerDecorator(ICommandHandler<TRequest, TResult> decorated)

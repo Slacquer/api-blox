@@ -1,4 +1,5 @@
-﻿using APIBlox.AspNetCore.Decorators.Commands;
+﻿using APIBlox.NetCore.Decorators.Commands;
+using APIBlox.NetCore.Extensions;
 using Examples.Commands;
 using Microsoft.Extensions.Logging;
 

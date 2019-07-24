@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace APIBlox.AspNetCore.Contracts
+namespace APIBlox.NetCore.Contracts
 {
     /// <summary>
     ///     Interface ICommandHandler, designed to RETURN a result.  Returning anything from a

@@ -10,11 +10,8 @@ namespace APIBlox.AspNetCore.Types
     [DebuggerStepThrough]
     public static class HandlerResponseExtensions
     {
-
-        
         /// <summary>
-        ///     Factory method to create a new <see cref="RequestErrorObject" />
-        ///     for the <see cref="HandlerResponse" /> instance.
+        ///     Factory method to create a new <see cref="RequestErrorObject" /> for the <see cref="HandlerResponse" /> instance.
         /// </summary>
         /// <param name="response">The response.</param>
         /// <returns>HandlerResponse.</returns>

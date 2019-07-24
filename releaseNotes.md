@@ -1,3 +1,13 @@
+_July 24th, 2019_  **v2.0.34**
+- APIBlox.AspNetCore.CommandsAndQueries, all ASPNET dependencies have been removed/moved, as technically this should NEVER have been an ASPNET project, its a .NETCORE thing.
+- It now has the name **APIBlox.NetCore.CommandsAndQueries**
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _June 10th, 2019_  **v2.0.33**
 - PostLocationHeaderResultFilter - Changed Critical message to warning.
 - APIBlox.AspNetCore.CommandsQueriesControllersOhMy.Templates.Post - Changed fail message to warning.

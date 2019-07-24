@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
+using APIBlox.NetCore.Contracts;
 using Examples.Resources;
 using Microsoft.AspNetCore.Mvc;
 

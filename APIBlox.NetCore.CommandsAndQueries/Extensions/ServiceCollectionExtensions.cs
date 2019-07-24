@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using APIBlox.AspNetCore.Contracts;
-using APIBlox.NetCore.Extensions;
+using APIBlox.NetCore.Contracts;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.DependencyInjection
+namespace APIBlox.NetCore.Extensions
 {
     /// <summary>
     ///     Class ServiceCollectionExtensions.

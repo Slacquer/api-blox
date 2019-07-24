@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace APIBlox.AspNetCore.Contracts
+namespace APIBlox.NetCore.Contracts
 {
     /// <summary>
     ///     Interface IQueryHandler, used when your QUERY requires input parameters, IE: GetSomething(requirements)

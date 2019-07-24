@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Attributes;
+using APIBlox.NetCore.Contracts;
 
 namespace Examples.Queries
 {

@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using APIBlox.AspNetCore.Contracts;
+using APIBlox.NetCore.Contracts;
 using Microsoft.Extensions.Logging;
 
-namespace APIBlox.AspNetCore.Decorators.Queries
+namespace APIBlox.NetCore.Decorators.Queries
 {
     /// <inheritdoc cref="IQueryHandler{TResult}" />
     /// <summary>

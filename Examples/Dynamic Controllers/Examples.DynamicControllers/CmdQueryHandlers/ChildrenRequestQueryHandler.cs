@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Attributes;
+using APIBlox.NetCore.Contracts;
 using Examples.Resources;
 
 namespace Examples.CmdQueryHandlers

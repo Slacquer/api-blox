@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using APIBlox.AspNetCore.Contracts;
+using APIBlox.NetCore.Contracts;
 using Microsoft.Extensions.Logging;
 
-namespace APIBlox.AspNetCore.Decorators.Commands
+namespace APIBlox.NetCore.Decorators.Commands
 {
     /// <inheritdoc />
     /// <summary>
