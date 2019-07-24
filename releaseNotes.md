@@ -1,4 +1,4 @@
-_July 24th, 2019_  **v2.0.34**
+_July 24th, 2019_  **v2.1.0**
 - APIBlox.AspNetCore.CommandsAndQueries, all ASPNET dependencies have been removed/moved, as technically this should NEVER have been an ASPNET project, its a .NETCORE thing.
 - It now has the name **APIBlox.NetCore.CommandsAndQueries**
 - This also means that the templates in *APIBlox.AspNetCore.CommandsQueriesControllersOhMy* had to be changed (namespace changes only).  Therefore if using dyncamic controllers, then be sure to let them get regenerated (turn off cache).
