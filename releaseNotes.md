@@ -1,4 +1,4 @@
-_July 24th, 2019_  **v2.1.4**
+_July 24th, 2019_  **v2.1.5**
 - APIBlox.AspNetCore.CommandsQueriesControllersOhMy, missing namespace in template.
 - Packages updates.
 
