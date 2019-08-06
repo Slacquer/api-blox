@@ -6,6 +6,12 @@
     public class CosmosDbCollectionProperties
     {
         /// <summary>
+        ///     Gets or sets the name of the collection.
+        /// </summary>
+        /// <value>The name of the collection.</value>
+        public string CollectionName { get; set; }
+
+        /// <summary>
         ///     Gets or sets the unique keys.
         /// </summary>
         /// <value>The unique keys.</value>

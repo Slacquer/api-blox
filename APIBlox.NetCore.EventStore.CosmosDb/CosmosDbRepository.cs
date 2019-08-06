@@ -35,7 +35,7 @@ namespace APIBlox.NetCore
                                $"CollectionProperty value for '{typeof(TModel).Name}' was not found!"
                            );
 
-            _collectionId = typeof(TModel).Name;
+            _collectionId = col.CollectionName ?? throw new ArgumentNullException(nameof(col.CollectionName));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _databaseId = opt.DatabaseId ?? throw new ArgumentNullException(nameof(opt.DatabaseId));
             _docCollectionUri = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
