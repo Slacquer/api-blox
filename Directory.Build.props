@@ -7,7 +7,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <PackageIconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</PackageIconUrl>
+    <IconUrl>https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true</IconUrl>
     <PackageReleaseNotes>Public Production Release</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/Slacquer/api-blox</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
