@@ -1,3 +1,12 @@
+_August 7th, 2019_  **v2.1.8**
+- APIBlox.NetCore.EventStore, method BuildEventModel was being used incorrectly thus causing deserialization to occur twice.  Sadly the Data element of the event store document is of type string becuase of EFCore requiring a type OTHER than object.  I need to move this functionality OUT, or better yet require the providers to provide their own document object.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _August 5th, 2019_  **v2.1.7**
 - APIBlox.NetCore.EventStore.CosmosDb, changed configuration options to allow using a name for the collection id.
 
