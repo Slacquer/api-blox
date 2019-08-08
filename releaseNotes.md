@@ -1,3 +1,12 @@
+_August 8th, 2019_  **v2.1.10**
+- APIBlox.AspNetCore.DynamicControllers DynamicController, was allowing duplicate entries in templates, added distinct.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _August 8th, 2019_  **v2.1.9**
 - MetricsCommandHandlerDecorator(s), Changed logger to reflect WHAT its wrapping.
 - RetryCommandHandlerDecorator, Added, simply retry twice with a 1 second delay.

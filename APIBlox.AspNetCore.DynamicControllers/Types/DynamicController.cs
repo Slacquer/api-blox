@@ -42,12 +42,12 @@ namespace APIBlox.AspNetCore.Types
 
         public override string ToString()
         {
-            var ns = string.Join("\n", Namespaces.OrderBy(s => s).GroupBy(g => g).Select(s => $"using {s.Key.Trim()};"));
-            var fields = string.Join("\n\n", Fields.Select(s => s.Trim().EndsWith(";") ? s : $"{s};"));
-            var ctorArgs = string.Join(",\n\n", CtorArgs);
-            var ctorBody = string.Join("\n\n", CtorBody.Select(s => s.Trim().EndsWith(";") ? s : $"{s};"));
-            var actions = string.Join("\n\n", Actions);
-            var methods = string.Join("\n\n", Methods);
+            var ns = string.Join("\n", Namespaces.Distinct().OrderBy(s => s).GroupBy(g => g).Select(s => $"using {s.Key.Trim()};"));
+            var fields = string.Join("\n\n", Fields.Distinct().Select(s => s.Trim().EndsWith(";") ? s : $"{s};"));
+            var ctorArgs = string.Join(",\n\n", CtorArgs.Distinct());
+            var ctorBody = string.Join("\n\n", CtorBody.Distinct().Select(s => s.Trim().EndsWith(";") ? s : $"{s};"));
+            var actions = string.Join("\n\n", Actions.Distinct());
+            var methods = string.Join("\n\n", Methods.Distinct());
 
             var ret = ControllerContent.Replace("[NAMESPACES]", ns)
                 .Replace("[CONTROLLERS_NAMESPACE]", _namespace)
