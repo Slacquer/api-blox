@@ -1,7 +1,8 @@
-_August 7th, 2019_  **v2.1.??**
+_August 8th, 2019_  **v2.1.9**
 - MetricsCommandHandlerDecorator(s), Changed logger to reflect WHAT its wrapping.
 - RetryCommandHandlerDecorator, Added, simply retry twice with a 1 second delay.
-
+- APIBlox.AspNetCore.CommandsQueriesControllersOhMy Post/CtorBody template, had a log decleration and should not have!
+ 
 Thanks,  
 _Slacquer_  
 

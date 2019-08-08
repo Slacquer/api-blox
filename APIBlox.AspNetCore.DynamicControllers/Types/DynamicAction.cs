@@ -121,7 +121,7 @@ namespace APIBlox.AspNetCore.Types
             CtorBody = ParseTokens(CtorBody);
             Fields = Fields.Select(ParseTokens).ToArray();
 
-            if (Methods is null || !Methods.Any())
+            if (Methods is null)
                 return;
 
             Methods = ParseTokens(Methods);

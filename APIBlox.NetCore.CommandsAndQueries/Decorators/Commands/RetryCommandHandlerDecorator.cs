@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 
 namespace APIBlox.NetCore.Decorators.Commands
 {
     /// <summary>
-    ///     Class RetryCommandHandlerDecorator.  Simple retries twice, with a 1 second delay.
+    ///     Class RetryCommandHandlerDecorator.  Simply retries twice, with a 1 second delay.
     /// </summary>
     /// <typeparam name="TRequest">The type of the t request.</typeparam>
     /// <typeparam name="TResult">The type of the t result.</typeparam>
@@ -19,7 +16,7 @@ namespace APIBlox.NetCore.Decorators.Commands
         private readonly ICommandHandler<TRequest, TResult> _decorated;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RetryCommandHandlerDecorator{TRequest, TResult}"/> class.
+        ///     Initializes a new instance of the <see cref="RetryCommandHandlerDecorator{TRequest, TResult}" /> class.
         /// </summary>
         /// <param name="decorated">The decorated command.</param>
         public RetryCommandHandlerDecorator(ICommandHandler<TRequest, TResult> decorated)
@@ -38,7 +35,6 @@ namespace APIBlox.NetCore.Decorators.Commands
             TResult ret = default;
 
             for (var i = 0; i < 3; i++)
-            {
                 try
                 {
                     ret = await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
@@ -50,7 +46,6 @@ namespace APIBlox.NetCore.Decorators.Commands
 
                     await Task.Delay(1000, cancellationToken);
                 }
-            }
 
             return ret;
         }
@@ -67,7 +62,7 @@ namespace APIBlox.NetCore.Decorators.Commands
         private readonly ICommandHandler<TRequest> _decorated;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RetryCommandHandlerDecorator{TRequest, TResult}"/> class.
+        ///     Initializes a new instance of the <see cref="RetryCommandHandlerDecorator{TRequest, TResult}" /> class.
         /// </summary>
         /// <param name="decorated">The decorated command.</param>
         public RetryCommandHandlerDecorator(ICommandHandler<TRequest> decorated)
@@ -84,7 +79,6 @@ namespace APIBlox.NetCore.Decorators.Commands
         public async Task HandleAsync(TRequest requestCommand, CancellationToken cancellationToken)
         {
             for (var i = 0; i < 3; i++)
-            {
                 try
                 {
                     await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
@@ -96,7 +90,6 @@ namespace APIBlox.NetCore.Decorators.Commands
 
                     await Task.Delay(1000, cancellationToken);
                 }
-            }
         }
     }
 }
