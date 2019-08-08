@@ -18,7 +18,7 @@ namespace APIBlox.NetCore.Decorators.Commands
         : ICommandHandler<TRequest>
     {
         private readonly ICommandHandler<TRequest> _decorated;
-        private readonly ILogger<MetricsCommandHandlerDecorator<TRequest>> _log;
+        private readonly ILogger _log;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MetricsCommandHandlerDecorator{TRequest}" /> class.
@@ -30,7 +30,7 @@ namespace APIBlox.NetCore.Decorators.Commands
             ICommandHandler<TRequest> decorated
         )
         {
-            _log = loggerFactory.CreateLogger<MetricsCommandHandlerDecorator<TRequest>>();
+            _log = loggerFactory.CreateLogger($"APIBlox MetricsCommandHandlerDecorator<{typeof(TRequest).Name}>");
             _decorated = decorated;
         }
 
@@ -71,7 +71,7 @@ namespace APIBlox.NetCore.Decorators.Commands
         : ICommandHandler<TRequest, TResult>
     {
         private readonly ICommandHandler<TRequest, TResult> _decorated;
-        private readonly ILogger<MetricsCommandHandlerDecorator<TRequest, TResult>> _log;
+        private readonly ILogger _log;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MetricsCommandHandlerDecorator{TRequest, TResult}" /> class.
@@ -83,7 +83,7 @@ namespace APIBlox.NetCore.Decorators.Commands
             ICommandHandler<TRequest, TResult> decorated
         )
         {
-            _log = loggerFactory.CreateLogger<MetricsCommandHandlerDecorator<TRequest, TResult>>();
+            _log = loggerFactory.CreateLogger($"APIBlox MetricsCommandHandlerDecorator<{typeof(TRequest).Name},{typeof(TResult).Name}>");
             _decorated = decorated;
         }
 

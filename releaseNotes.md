@@ -1,3 +1,13 @@
+_August 7th, 2019_  **v2.1.??**
+- MetricsCommandHandlerDecorator(s), Changed logger to reflect WHAT its wrapping.
+- RetryCommandHandlerDecorator, Added, simply retry twice with a 1 second delay.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _August 7th, 2019_  **v2.1.8**
 - APIBlox.NetCore.EventStore, method BuildEventModel was being used incorrectly thus causing deserialization to occur twice.  Sadly the Data element of the event store document is of type string becuase of EFCore requiring a type OTHER than object.  I need to move this functionality OUT, or better yet require the providers to provide their own document object.
 
