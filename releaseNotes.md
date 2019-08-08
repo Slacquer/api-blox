@@ -1,3 +1,12 @@
+_August 8th, 2019_  **v2.1.11**
+- APIBlox.AspNetCore.DynamicControllers DynamicController, Turns out the templates for POST were causing this issue, it had bits it shouldnt have had!
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _August 8th, 2019_  **v2.1.10**
 - APIBlox.AspNetCore.DynamicControllers DynamicController, was allowing duplicate entries in templates, added distinct.
 

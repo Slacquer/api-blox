@@ -32,7 +32,8 @@ namespace Examples
         {
             templates
                 .AddChildrenControllerTemplates()
-                .AddParentsControllerTemplates();
+                .AddParentsControllerTemplates()
+                ;
 
             return templates;
         }

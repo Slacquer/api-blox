@@ -24,8 +24,9 @@ namespace APIBlox.AspNetCore.Types
             _route = route;
             _controllerComments = controllerComments;
 
-            //if (!_controllerComments.IsEmptyNullOrWhiteSpace())
-            //    _controllerComments = _controllerComments.Replace(Environment.NewLine, " ");
+            Namespaces.Add(@"Microsoft.Extensions.Logging");
+            CtorArgs.Add(@"ILoggerFactory loggerFactory");
+            Fields.Add($@"private readonly ILogger<{_name}> _log;");
         }
 
         public List<string> Namespaces { get; } = new List<string>();
