@@ -103,7 +103,7 @@ namespace APIBlox.AspNetCore.Types
         }
 
         /// <summary>
-        ///     Sets the error to bad request.
+        ///     Sets the error to bad request (400).
         /// </summary>
         /// <param name="response"> The <see cref="HandlerResponse" />. </param>
         /// <param name="description">The description.</param>
@@ -118,7 +118,7 @@ namespace APIBlox.AspNetCore.Types
         }
 
         /// <summary>
-        ///     Sets the error to not acceptable.
+        ///     Sets the error to not acceptable (406).
         /// </summary>
         /// <param name="response"> The <see cref="HandlerResponse" />. </param>
         /// <param name="description">The description.</param>

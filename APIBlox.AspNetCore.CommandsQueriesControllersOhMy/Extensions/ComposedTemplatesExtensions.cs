@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.Enums;
 using APIBlox.AspNetCore.Types;
+using APIBlox.NetCore.Attributes;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
-using Microsoft.AspNetCore.Http;
 
 namespace APIBlox.AspNetCore.Extensions
 {
@@ -18,18 +19,6 @@ namespace APIBlox.AspNetCore.Extensions
     {
         private const string Prt = "[ProducesResponseType({0})]\n";
         private const string PrtResult = "[ProducesResponseType(typeof([RES_OBJECT_RESULT]), {0})]\n";
-
-        private static readonly Dictionary<int, string> CodeComments = new Dictionary<int, string>
-        {
-            {200, "/// <response code=\"200\">Success, with a single result or an array of results.</response>"},
-            {201, "/// <response code=\"201\">Success, resource was created successfully.</response>"},
-            {202, "/// <response code=\"202\">Success, [RES_OBJECT_RESULT] created, but not finalized.</response>"},
-            {204, "/// <response code=\"204\">Success, no results.</response>"},
-            {401, "/// <response code=\"401\">Unauthorized, You are not authenticated, meaning not authenticated at all or authenticated incorrectly.</response>"},
-            {403, "/// <response code=\"403\">Forbidden, You have successfully been authenticated, yet you do not have permission (authorization) to access the requested resource.</response>"},
-            {404, "/// <response code=\"404\">NotFound, The resource was not found using the supplied input parameters.</response>"},
-            {409, "/// <response code=\"409\">Conflict, The supplied input parameters would cause a data violation.</response>"}
-        };
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value(s).
@@ -55,11 +44,6 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            //if (options.ActionRoute.IsEmptyNullOrWhiteSpace())
-            //    throw new ArgumentException("QueryBy requires a route for the action, maybe something like {id}.",
-            //        nameof(options.ActionRoute)
-            //    );
-
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
@@ -114,7 +98,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
-            
+
             var (ac, cc) = GetComments(options, "Get all resources.");
 
             var action = Templates.GetDynamicAction("QueryAll", options.ActionRoute, ac);
@@ -191,7 +175,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> { 204, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 204, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -231,7 +215,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> { 204, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 204, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -276,7 +260,7 @@ namespace APIBlox.AspNetCore.Extensions
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
-            var codes = (options.StatusCodes ?? new List<int> { 201, 204, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 201, 204, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -317,7 +301,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> { 202, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 202, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -424,12 +408,21 @@ namespace APIBlox.AspNetCore.Extensions
 
             foreach (var sc in statusCodes)
             {
-                sbCodes.AppendFormat(sc == StatusCodes.Status200OK || sc == StatusCodes.Status201Created ? PrtResult : Prt, sc);
+                sbCodes.AppendFormat((CommonStatusCodes)sc == CommonStatusCodes.Status200Ok || (CommonStatusCodes)sc == CommonStatusCodes.Status201Created ? PrtResult : Prt, sc);
 
-                sbComments.AppendLine(CodeComments.ContainsKey(sc)
-                    ? CodeComments[sc]
-                    : $"/// <response code=\"{sc}\">Status code {sc}.</response>"
-                );
+                if (Enum.IsDefined(typeof(CommonStatusCodes), sc))
+                {
+                    var statusCode = (CommonStatusCodes)sc;
+
+                    var attr = statusCode.GetAttributeOfType<MetadataAttribute>();
+
+                    var codeTitle = attr.V1.ToString();
+                    var codeDesc = attr.V2.ToString();
+
+                    sbComments.AppendLine($"/// <response code=\"{sc}\">{codeTitle}, {codeDesc}</response>");
+                }
+                else
+                    sbComments.AppendLine($"/// <response code=\"{sc}\">{sc}.</response>");
             }
 
             return (sbCodes.ToString(), sbComments.ToString());

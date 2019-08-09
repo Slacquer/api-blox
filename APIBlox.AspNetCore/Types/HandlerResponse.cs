@@ -20,10 +20,10 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets a value indicating whether this instance has errors.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if the <see cref="Error" /> is not null OR a Status that is NOT <see cref="CommonStatusCodes.Ok" />;
+        ///     <c>true</c> if the <see cref="Error" /> is not null OR a Status that is NOT <see cref="CommonStatusCodes.Status200Ok" />;
         ///     otherwise,<c>false</c>.
         /// </value>
-        public bool HasErrors => !(Error is null) || Status != CommonStatusCodes.Ok;
+        public bool HasErrors => !(Error is null) || Status != CommonStatusCodes.Status200Ok;
 
         /// <summary>
         ///     Gets or sets the result.
@@ -35,6 +35,6 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the status.
         /// </summary>
         /// <value>The status.</value>
-        public CommonStatusCodes Status { get; set; } = CommonStatusCodes.Ok;
+        public CommonStatusCodes Status { get; set; } = CommonStatusCodes.Status200Ok;
     }
 }

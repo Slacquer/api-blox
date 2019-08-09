@@ -37,7 +37,7 @@ namespace APIBlox.AspNetCore.Types
             var attr = statusCode.GetAttributeOfType<MetadataAttribute>();
 
             error.Title = attr.V1.ToString();
-            error.Status = statusCode == CommonStatusCodes.DataConflictUpserts
+            error.Status = statusCode == CommonStatusCodes.Status409ConflictUpserts
                 ? 409
                 : (int?) statusCode;
 
@@ -96,7 +96,7 @@ namespace APIBlox.AspNetCore.Types
             string description = null
         )
         {
-            return SetError(error, CommonStatusCodes.DataConflict, description);
+            return SetError(error, CommonStatusCodes.Status409Conflict, description);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace APIBlox.AspNetCore.Types
             string description = null
         )
         {
-            return SetError(error, CommonStatusCodes.DataConflictUpserts, description ?? "");
+            return SetError(error, CommonStatusCodes.Status409ConflictUpserts, description ?? "");
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace APIBlox.AspNetCore.Types
             string description = null
         )
         {
-            return SetError(error, CommonStatusCodes.Forbidden, description);
+            return SetError(error, CommonStatusCodes.Status403Forbidden, description);
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace APIBlox.AspNetCore.Types
             string description = null
         )
         {
-            return SetError(error, CommonStatusCodes.NotFound, description);
+            return SetError(error, CommonStatusCodes.Status404NotFound, description);
         }
 
         /// <summary>
@@ -150,11 +150,11 @@ namespace APIBlox.AspNetCore.Types
             string description = null
         )
         {
-            return SetError(error, CommonStatusCodes.UnAuthorized, description);
+            return SetError(error, CommonStatusCodes.Status401Unauthorized, description);
         }
 
         /// <summary>
-        ///     Sets the error to bad request.
+        ///     Sets the error to bad request (400).
         /// </summary>
         /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
         /// <param name="description">The description.</param>
@@ -163,11 +163,11 @@ namespace APIBlox.AspNetCore.Types
             string description = null
         )
         {
-            return SetError(error, CommonStatusCodes.BadRequest, description);
+            return SetError(error, CommonStatusCodes.Status400BadRequest, description);
         }
 
         /// <summary>
-        ///     Sets the error to not acceptable.
+        ///     Sets the error to not acceptable (406).
         /// </summary>
         /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
         /// <param name="description">The description.</param>
@@ -176,12 +176,12 @@ namespace APIBlox.AspNetCore.Types
             string description = null
         )
         {
-            return SetError(error, CommonStatusCodes.NotAcceptable, description);
+            return SetError(error, CommonStatusCodes.Status406NotAcceptable, description);
         }
 
         /// <summary>
         ///     Chainable, Adds a validation error to the internal errors collection.  It will also
-        ///     set the status code to <see cref="CommonStatusCodes.BadRequest" />
+        ///     set the status code to <see cref="CommonStatusCodes.Status400BadRequest" />
         /// </summary>
         /// <param name="errorObject">The error object.</param>
         /// <param name="property">The property.</param>
@@ -198,7 +198,7 @@ namespace APIBlox.AspNetCore.Types
 
             errorObject.Errors.Add(validationError);
 
-            errorObject.Status = (int) CommonStatusCodes.BadRequest;
+            errorObject.Status = (int) CommonStatusCodes.Status400BadRequest;
 
             return errorObject;
         }

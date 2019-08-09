@@ -65,9 +65,9 @@ namespace Examples.Controllers
         /// <returns>ActionResult.</returns>
         [HttpGet("problemResult")]
 #if UseAPIBlox
-        public ActionResult GetProblemResultExample(CommonStatusCodes statusCode = CommonStatusCodes.Forbidden, string description = null)
+        public ActionResult GetProblemResultExample(CommonStatusCodes statusCode = CommonStatusCodes.Status403Forbidden, string description = null)
         {
-            if (statusCode == CommonStatusCodes.Ok || statusCode == CommonStatusCodes.NoResults)
+            if (statusCode == CommonStatusCodes.Status200Ok || statusCode == CommonStatusCodes.Status204NoContent)
                 return Ok("Try one that isn't a success code :)");
 
             var errObject = new RequestErrorObject();

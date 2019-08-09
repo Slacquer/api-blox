@@ -1,3 +1,13 @@
+_August 8th, 2019_  **v2.1.12**
+- APIBlox.AspNetCore, changed CommonStatusCode, names and attributes.
+- APIBlox.AspNetCore.CommandsQueriesControllersOhMy, Added 400 to response codes for POST, POSTACCEPTED, PUT, PATCH
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _August 8th, 2019_  **v2.1.11**
 - APIBlox.AspNetCore.DynamicControllers DynamicController, Turns out the templates for POST were causing this issue, it had bits it shouldnt have had!
 
