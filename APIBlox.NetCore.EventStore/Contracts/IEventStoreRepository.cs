@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Documents;
+using Newtonsoft.Json;
 
 namespace APIBlox.NetCore.Contracts
 {
@@ -50,5 +51,11 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;System.Int32&gt;.</returns>
         Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        ///     Gets the json settings.
+        /// </summary>
+        /// <value>The json settings.</value>
+        JsonSerializerSettings JsonSettings { get; }
     }
 }

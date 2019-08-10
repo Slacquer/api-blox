@@ -46,7 +46,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.Configure<CosmosDbOptions>(config);
 
-            services.AddSingleton<IDocumentClient>(x => new DocumentClient(new Uri(es.Endpoint), es.Key));
+            var client = new DocumentClient(new Uri(es.Endpoint), es.Key);
+
+            // Microsoft Suggested...
+            // https://docs.microsoft.com/en-us/azure/cosmos-db/performance-tips
+            client.OpenAsync();
+
+            services.AddSingleton<IDocumentClient>(client);
 
             var settings = serializerSettings;
             services.AddScoped<IEventStoreRepository<TModel>, CosmosDbRepository<TModel>>(x =>

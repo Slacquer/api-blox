@@ -1,4 +1,13 @@
 _August 8th, 2019_  **v2.1.12**
+- APIBlox.NetCore.EventStore, Added default contract resolver to be _APIBlox.NetCore.Types.JsonBits.PopulateNonPublicSettersContractResolver_, and updated extension method(s).
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+_August 8th, 2019_  **v2.1.12**
 - APIBlox.AspNetCore, changed CommonStatusCode, names and attributes.
 - APIBlox.AspNetCore.CommandsQueriesControllersOhMy, Added 400 to response codes for POST, POSTACCEPTED, PUT, PATCH
 

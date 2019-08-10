@@ -19,7 +19,7 @@ namespace APIBlox.NetCore
         public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repository, JsonSerializerSettings serializerSettings)
         {
             Repository = repository;
-            JsonSettings = serializerSettings ?? new JsonSerializerSettings();
+            JsonSettings = serializerSettings ?? repository.JsonSettings ?? new JsonSerializerSettings();
         }
 
         protected JsonSerializerSettings JsonSettings { get; }
