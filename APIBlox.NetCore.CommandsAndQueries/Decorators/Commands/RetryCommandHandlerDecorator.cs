@@ -38,6 +38,8 @@ namespace APIBlox.NetCore.Decorators.Commands
                 try
                 {
                     ret = await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
+
+                    break;
                 }
                 catch
                 {
@@ -82,6 +84,8 @@ namespace APIBlox.NetCore.Decorators.Commands
                 try
                 {
                     await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
+
+                    break;
                 }
                 catch
                 {

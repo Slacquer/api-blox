@@ -1,3 +1,12 @@
+_August 8th, 2019_  **v2.1.??**
+- APIBlox.NetCore.Decorators.Commands.RetryCommandHandlerDecorator, WoW! did not break if successful.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _August 8th, 2019_  **v2.1.13**
 - APIBlox.NetCore.EventStore, Added default contract resolver to be _APIBlox.NetCore.Types.JsonBits.PopulateNonPublicSettersContractResolver_, and updated extension method(s).
 
