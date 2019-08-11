@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,6 +18,7 @@ namespace APIBlox.AspNetCore
 {
     internal class ServerFaultsMiddleware
     {
+        private static readonly Regex StackTraceRegex = new Regex(@"([^\)]*\)) in (.*):line (\d)*$");
         private readonly IHostingEnvironment _env;
         private readonly ILogger<ServerFaultsMiddleware> _log;
         private readonly RequestDelegate _next;
@@ -28,12 +28,11 @@ namespace APIBlox.AspNetCore
         private readonly bool _addUserStackTrace;
         private readonly Action<RequestErrorObject> _resultAction;
 
-
         public ServerFaultsMiddleware(
-            RequestDelegate next, 
+            RequestDelegate next,
             ILogger<ServerFaultsMiddleware> logger,
-            IHostingEnvironment env, 
-            string typeUrl, 
+            IHostingEnvironment env,
+            string typeUrl,
             bool verboseProduction,
             bool addUserStackTrace,
             Func<string> referenceIdFunc,
@@ -49,7 +48,7 @@ namespace APIBlox.AspNetCore
             _referenceIdFunc = referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString());
             _resultAction = requestErrorObjectAction;
         }
-        
+
         public async Task InvokeAsync(HttpContext context)
         {
             var error = context.Features.Get<IExceptionHandlerFeature>();
@@ -75,7 +74,9 @@ namespace APIBlox.AspNetCore
                     statusCode = handled.RequestErrorObject.Status ?? (int)HttpStatusCode.InternalServerError;
                 }
                 else
+                {
                     errorResult = BuildResponse(error.Error, context.Request.Path);
+                }
 
                 if (_addUserStackTrace)
                     AddUserStackTrace(errorResult, error.Error);
@@ -152,7 +153,7 @@ namespace APIBlox.AspNetCore
             {
                 Type = _typeUrl
             };
-            
+
             dto.Errors.Add(err.ToDynamicDataObject());
 
             return dto;
@@ -179,15 +180,14 @@ namespace APIBlox.AspNetCore
 
         private static void AddUserStackTrace(DynamicDataObject errResult, Exception ex)
         {
-            var regex = new Regex(@"([^\)]*\)) in (.*):line (\d)*$");
-
             var stackTraceLines = (ex.StackTrace ?? Environment.StackTrace)
-                .Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+                .Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
             var sb = new StringBuilder();
+
             foreach (var ln in stackTraceLines)
             {
-                if (!regex.IsMatch(ln))
+                if (!StackTraceRegex.IsMatch(ln))
                     continue;
 
                 sb.AppendLine(ln);
