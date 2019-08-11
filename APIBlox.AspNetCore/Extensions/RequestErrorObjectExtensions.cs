@@ -85,32 +85,31 @@ namespace APIBlox.AspNetCore.Types
             return SetDetailAndAddErrorObject(error, titleDetail, description);
         }
 
+
         /// <summary>
-        ///     Sets the error to data conflict (409).
+        ///     Sets the error to bad request (400).
         /// </summary>
         /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
         /// <param name="description">The description.</param>
-        /// <returns>CommonResponse.</returns>
-        public static RequestErrorObject SetErrorToDataConflict(
+        public static RequestErrorObject SetErrorTo400BadRequest(
             this RequestErrorObject error,
             string description = null
         )
         {
-            return SetError(error, CommonStatusCodes.Status409Conflict, description);
+            return SetError(error, CommonStatusCodes.Status400BadRequest, description);
         }
 
         /// <summary>
-        ///     Sets the error to data conflict upsert (409).
+        ///     Sets the error to un authorized (401).
         /// </summary>
         /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
         /// <param name="description">The description.</param>
-        /// <returns>CommonResponse.</returns>
-        public static RequestErrorObject SetErrorToDataConflictUpserts(
+        public static RequestErrorObject SetErrorTo401UnAuthorized(
             this RequestErrorObject error,
             string description = null
         )
         {
-            return SetError(error, CommonStatusCodes.Status409ConflictUpserts, description ?? "");
+            return SetError(error, CommonStatusCodes.Status401Unauthorized, description);
         }
 
         /// <summary>
@@ -118,7 +117,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
         /// <param name="description">The description.</param>
-        public static RequestErrorObject SetErrorToForbidden(
+        public static RequestErrorObject SetErrorTo403Forbidden(
             this RequestErrorObject error,
             string description = null
         )
@@ -132,7 +131,7 @@ namespace APIBlox.AspNetCore.Types
         /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
         /// <param name="description">The description.</param>
         /// <returns>CommonResponse.</returns>
-        public static RequestErrorObject SetErrorToNotFound(
+        public static RequestErrorObject SetErrorTo404NotFound(
             this RequestErrorObject error,
             string description = null
         )
@@ -141,42 +140,44 @@ namespace APIBlox.AspNetCore.Types
         }
 
         /// <summary>
-        ///     Sets the error to un authorized (401).
-        /// </summary>
-        /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
-        /// <param name="description">The description.</param>
-        public static RequestErrorObject SetErrorToUnAuthorized(
-            this RequestErrorObject error,
-            string description = null
-        )
-        {
-            return SetError(error, CommonStatusCodes.Status401Unauthorized, description);
-        }
-
-        /// <summary>
-        ///     Sets the error to bad request (400).
-        /// </summary>
-        /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
-        /// <param name="description">The description.</param>
-        public static RequestErrorObject SetErrorToBadRequest(
-            this RequestErrorObject error,
-            string description = null
-        )
-        {
-            return SetError(error, CommonStatusCodes.Status400BadRequest, description);
-        }
-
-        /// <summary>
         ///     Sets the error to not acceptable (406).
         /// </summary>
         /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
         /// <param name="description">The description.</param>
-        public static RequestErrorObject SetErrorToNotAcceptable(
+        public static RequestErrorObject SetErrorTo406NotAcceptable(
             this RequestErrorObject error,
             string description = null
         )
         {
             return SetError(error, CommonStatusCodes.Status406NotAcceptable, description);
+        }
+
+        /// <summary>
+        ///     Sets the error to data conflict (409).
+        /// </summary>
+        /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
+        /// <param name="description">The description.</param>
+        /// <returns>CommonResponse.</returns>
+        public static RequestErrorObject SetErrorTo409DataConflict(
+            this RequestErrorObject error,
+            string description = null
+        )
+        {
+            return SetError(error, CommonStatusCodes.Status409Conflict, description);
+        }
+
+        /// <summary>
+        ///     Sets the error to data conflict upsert (409).
+        /// </summary>
+        /// <param name="error"> The <see cref="RequestErrorObject" />. </param>
+        /// <param name="description">The description.</param>
+        /// <returns>CommonResponse.</returns>
+        public static RequestErrorObject SetErrorTo409DataConflictUpserts(
+            this RequestErrorObject error,
+            string description = null
+        )
+        {
+            return SetError(error, CommonStatusCodes.Status409ConflictUpserts, description ?? "");
         }
 
         /// <summary>

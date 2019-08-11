@@ -65,9 +65,9 @@ namespace APIBlox.AspNetCore.Filters
             var errObject = new RequestErrorObject();
 
             if (authorizeResult.Challenged)
-                errObject.SetErrorToUnAuthorized();
+                errObject.SetErrorTo401UnAuthorized();
             else if (authorizeResult.Forbidden)
-                errObject.SetErrorToForbidden(string.Join(", ", Policy.AuthenticationSchemes));
+                errObject.SetErrorTo403Forbidden(string.Join(", ", Policy.AuthenticationSchemes));
             else
                 return;
 

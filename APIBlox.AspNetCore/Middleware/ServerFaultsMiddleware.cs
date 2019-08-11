@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
 using APIBlox.AspNetCore.Exceptions;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Types;
+using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +25,7 @@ namespace APIBlox.AspNetCore
         private readonly Func<string> _referenceIdFunc;
         private readonly string _typeUrl;
         private readonly bool _verboseProduction;
+        private readonly bool _addUserStackTrace;
         private readonly Action<RequestErrorObject> _resultAction;
 
 
@@ -30,6 +35,7 @@ namespace APIBlox.AspNetCore
             IHostingEnvironment env, 
             string typeUrl, 
             bool verboseProduction,
+            bool addUserStackTrace,
             Func<string> referenceIdFunc,
             Action<RequestErrorObject> requestErrorObjectAction
         )
@@ -39,6 +45,7 @@ namespace APIBlox.AspNetCore
             _env = env;
             _typeUrl = typeUrl;
             _verboseProduction = verboseProduction;
+            _addUserStackTrace = addUserStackTrace;
             _referenceIdFunc = referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString());
             _resultAction = requestErrorObjectAction;
         }
@@ -68,9 +75,10 @@ namespace APIBlox.AspNetCore
                     statusCode = handled.RequestErrorObject.Status ?? (int)HttpStatusCode.InternalServerError;
                 }
                 else
-                {
                     errorResult = BuildResponse(error.Error, context.Request.Path);
-                }
+
+                if (_addUserStackTrace)
+                    AddUserStackTrace(errorResult, error.Error);
 
                 _resultAction?.Invoke(errorResult);
 
@@ -167,6 +175,28 @@ namespace APIBlox.AspNetCore
             };
 
             return dto;
+        }
+
+        private static void AddUserStackTrace(DynamicDataObject errResult, Exception ex)
+        {
+            var regex = new Regex(@"([^\)]*\)) in (.*):line (\d)*$");
+
+            var stackTraceLines = (ex.StackTrace ?? Environment.StackTrace)
+                .Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+
+            var sb = new StringBuilder();
+            foreach (var ln in stackTraceLines)
+            {
+                if (!regex.IsMatch(ln))
+                    continue;
+
+                sb.AppendLine(ln);
+            }
+
+            if (errResult.HasProperty("Stack-trace"))
+                errResult.RemoveProperty("Stack-trace");
+
+            errResult.AddProperty("Stack-trace", sb.ToString());
         }
     }
 }

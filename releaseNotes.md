@@ -1,5 +1,7 @@
-_August 8th, 2019_  **v2.1.??**
+_August 11th, 2019_  **v2.1.14**
 - APIBlox.NetCore.Decorators.Commands.RetryCommandHandlerDecorator, WoW! did not break if successful.
+- APIBlox.AspNetCore.TypesHandlerResponseExtensions, changed comments and method names to reflect what is in _APIBlox.AspNetCore.Enums.CommonStatusCodes_.
+- APIBlox.AspNetCore.ServerFaultsMiddleware, A user pointed out to me that it would be nice to see a stack trace, therefore it has been added.  The extension method _UseServerFaults_ has had a parameter added that defaults to true.  Keep in mind this is only the USER code stack trace, if you need to see a full trace, then set to false and use the AddAlterRequestErrorObject extension method to do it yourself (see the _Examples.Featers.Startup.ConfigureServices_ method for an example).
 
 Thanks,  
 _Slacquer_  

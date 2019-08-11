@@ -31,7 +31,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="typeUrl">The url to specify in the <see cref="ProblemDetails.Type" /></param>
         /// <param name="verboseProduction">
         ///     When true no messages will be filtered out during production.  Be careful as anything
-        ///     that is picked up during an error will be sent back in the 500 result.
+        ///     that is picked up during an error will be sent back in the result.
+        /// </param>
+        /// <param name="addUserStackTrace">
+        ///     When true the Environment.StackTrace will be filtered to include user code, and added to the result as "stack-trace":"[data]"
         /// </param>
         /// <param name="referenceIdFunc">
         ///     A callback function to set the reference number of the fault, by default this is
@@ -45,6 +48,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IApplicationBuilder app,
             string typeUrl = @"about:blank",
             bool verboseProduction = false,
+            bool addUserStackTrace = true,
             Func<string> referenceIdFunc = null,
             Action<RequestErrorObject> requestErrorObjectAction = null
         )
@@ -53,12 +57,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 c.UseMiddleware<ServerFaultsMiddleware>(
                     typeUrl,
                     verboseProduction,
+                    addUserStackTrace,
                     referenceIdFunc ?? (() => DateTimeOffset.Now.Ticks.ToString()),
-                    requestErrorObjectAction??(p => { })
+                    requestErrorObjectAction ?? (p => { })
                 )
             );
         }
-        
+
         /// <summary>
         ///     Uses the <see cref="SimulateWaitTimeMiddleware" />.  This only works
         ///     in dev and the request path must contain query param wait.

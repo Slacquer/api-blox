@@ -59,7 +59,7 @@ namespace APIBlox.AspNetCore.Enums
         /// <summary>
         ///     406
         /// </summary>
-        [Metadata("NotAcceptable", "The target resource does not have a current representation that would be acceptable to the user agent, according to the proactive negotiation header fields received in the request, and the server is unwilling to supply a default representation.")]
+        [Metadata("Not Acceptable", "The target resource does not have a current representation that would be acceptable to the user agent, according to the proactive negotiation header fields received in the request, and the server is unwilling to supply a default representation.")]
         Status406NotAcceptable = StatusCodes.Status406NotAcceptable,
 
         /// <summary>
