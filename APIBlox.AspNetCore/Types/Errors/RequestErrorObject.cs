@@ -11,7 +11,7 @@ namespace APIBlox.AspNetCore.Types
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Class ServerFaultResource.
+    ///     Class RequestErrorObject.
     /// </summary>
     [Serializable]
     public class RequestErrorObject : DynamicDataObject
@@ -107,6 +107,8 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         public string Type { get; set; }
 
+        internal static Action<RequestErrorObject> RequestErrorObjectAction { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         ///     <summary>
@@ -196,8 +198,6 @@ namespace APIBlox.AspNetCore.Types
 
             return base.GetDynamicMemberNames();
         }
-
-        internal static Action<RequestErrorObject> RequestErrorObjectAction { get; set; }
 
         private void TryAlterRequestObjectAction()
         {
