@@ -21,7 +21,7 @@ namespace APIBlox.NetCore.Migrations
                 b =>
                 {
                     b.Property<string>("Id").ValueGeneratedOnAdd();
-                    b.Property<string>("Data");
+                    b.Property<string>("DataEx");
                     b.Property<string>("DataType").HasMaxLength(1024);
                     b.Property<int>("DocumentType").HasMaxLength(255);
                     b.Property<string>("StreamId").IsRequired().HasMaxLength(255);

@@ -28,14 +28,17 @@ namespace Examples
         {
             services
                 .AddServerFaults()
-                .AddEventStoreService<CosmosAggregate>()
-                .AddCosmosDbRepository<CosmosAggregate>(_config)
-                //.AddEventStoreService<MongoAggregate>()
-                //.AddMongoDbRepository<MongoAggregate>(_config)
+                //.AddEventStoreService<CosmosAggregate>()
+                //.AddCosmosDbRepository<CosmosAggregate>(_config)
+
+                .AddEventStoreService<MongoAggregate>()
+                .AddMongoDbRepository<MongoAggregate>(_config)
+
                 //.AddEventStoreService<RavenAggregate>()
                 //.AddRavenDbRepository<RavenAggregate>(_config)
-                //.AddEventStoreService<EfCoreSqlAggregate>()
-                //.AddEfCoreSqlRepository<EfCoreSqlAggregate>(_config)
+
+                .AddEventStoreService<EfCoreSqlAggregate>()
+                .AddEfCoreSqlRepository<EfCoreSqlAggregate>(_config)
                 ;
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

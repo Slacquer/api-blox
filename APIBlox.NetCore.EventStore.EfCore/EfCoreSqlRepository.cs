@@ -8,6 +8,7 @@ using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace APIBlox.NetCore
 {
@@ -28,7 +29,17 @@ namespace APIBlox.NetCore
             where TDocument : EventStoreDocument
         {
             foreach (var document in documents)
-                _context.Documents.Add(document);
+                _context.Documents.Add(new DocEx
+                    {
+                        DataEx = JsonConvert.SerializeObject(document.Data),
+                        DataType = document.DataType,
+                        DocumentType = document.DocumentType,
+                        Id = document.Id,
+                        StreamId = document.StreamId,
+                        TimeStamp = document.TimeStamp,
+                        Version = document.Version
+                    }
+                );
 
             var ret = await _context.SaveChangesAsync(cancellationToken);
 
@@ -42,7 +53,20 @@ namespace APIBlox.NetCore
         {
             var ret = await _context.Documents.Where(predicate).ToListAsync(cancellationToken);
 
-            return (IEnumerable<TResultDocument>) ret;
+            var lst = (ret.Cast<DocEx>()
+                .Select(ex => new EventStoreDocument
+                    {
+                        Data = ex.DataType is null ? null : JObject.Parse(ex.DataEx).ToObject(Type.GetType(ex.DataType)),
+                        DataType = ex.DataType,
+                        DocumentType = ex.DocumentType,
+                        Id = ex.Id,
+                        StreamId = ex.StreamId,
+                        TimeStamp = ex.TimeStamp,
+                        Version = ex.Version
+                    }
+                )).ToList();
+
+            return (IEnumerable<TResultDocument>)lst;
         }
 
         public async Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)

@@ -16,13 +16,13 @@ namespace APIBlox.NetCore
         {
         }
 
-        public DbSet<EventStoreDocument> Documents { get; set; }
+        public DbSet<DocEx> Documents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var eventStoreDocumentMap = new EventStoreDocumentMap(modelBuilder.Entity<EventStoreDocument>());
+            var EventStoreDocumentMap = new EventStoreDocumentMap(modelBuilder.Entity<DocEx>());
 
-            eventStoreDocumentMap.Map();
+            EventStoreDocumentMap.Map();
         }
     }
 

@@ -127,7 +127,7 @@ namespace APIBlox.NetCore
             );
         }
 
-        private EventDocument BuildEventDoc(EventModel @event, string streamId,
+        private static EventDocument BuildEventDoc(EventModel @event, string streamId,
             long timeStamp, long streamVersion
         )
         {
@@ -137,7 +137,7 @@ namespace APIBlox.NetCore
                 Version = streamVersion,
                 TimeStamp = timeStamp,
                 DataType = @event.Data.GetType().AssemblyQualifiedName,
-                Data = JsonConvert.SerializeObject(@event.Data, JsonSettings)
+                Data = @event.Data
             };
 
             return document;

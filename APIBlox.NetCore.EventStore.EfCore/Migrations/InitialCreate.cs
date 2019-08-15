@@ -14,7 +14,7 @@ namespace APIBlox.NetCore.Migrations
                     StreamId = table.Column<string>(maxLength: 255 ),
                     DocumentType = table.Column<int>(maxLength: 255),
                     DataType = table.Column<string>(maxLength: 1024, nullable: true),
-                    Data = table.Column<string>(nullable: true),
+                    DataEx = table.Column<string>(nullable: true),
                     Version = table.Column<long>(),
                     TimeStamp = table.Column<long>()
                 },

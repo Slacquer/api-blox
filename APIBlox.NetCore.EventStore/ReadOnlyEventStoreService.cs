@@ -8,6 +8,7 @@ using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace APIBlox.NetCore
 {
@@ -82,7 +83,7 @@ namespace APIBlox.NetCore
 
             try
             {
-                data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings);
+                data = JObject.FromObject(document.Data).ToObject(Type.GetType(document.DataType));
             }
             catch (JsonSerializationException)
             {
@@ -98,20 +99,9 @@ namespace APIBlox.NetCore
 
         protected virtual SnapshotModel BuildSnapshotModel(EventStoreDocument document)
         {
-            object data;
-
-            try
-            {
-                data = JsonConvert.DeserializeObject(document.Data, Type.GetType(document.DataType), JsonSettings);
-            }
-            catch (JsonSerializationException)
-            {
-                data = document.Data;
-            }
-
             return new SnapshotModel
             {
-                Data = data,
+                Data = document.Data,
                 DataType = document.DataType,
                 Version = document.Version
             };

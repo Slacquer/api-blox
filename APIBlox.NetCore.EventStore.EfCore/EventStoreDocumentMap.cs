@@ -6,9 +6,9 @@ namespace APIBlox.NetCore
 {
     internal class EventStoreDocumentMap
     {
-        private readonly EntityTypeBuilder<EventStoreDocument> _builder;
+        private readonly EntityTypeBuilder<DocEx> _builder;
 
-        public EventStoreDocumentMap(EntityTypeBuilder<EventStoreDocument> builder)
+        public EventStoreDocumentMap(EntityTypeBuilder<DocEx> builder)
         {
             _builder = builder;
         }
@@ -21,7 +21,9 @@ namespace APIBlox.NetCore
 
             _builder.HasIndex(p => p.StreamId);
 
-            _builder.Property(p => p.Data);
+            _builder.Ignore(p => p.Data);
+            _builder.Property(p => p.DataEx);
+
             _builder.Property(p => p.DataType).HasMaxLength(1024);
             _builder.Property(p => p.DocumentType).HasMaxLength(255);
 

@@ -57,7 +57,7 @@ namespace APIBlox.NetCore.Documents
         ///     Gets or sets the data.
         /// </summary>
         /// <value>The data.</value>
-        public string Data { get; set; }
+        public object Data { get; set; }
 
         private static decimal GetOrderingFraction(DocumentType documentType)
         {
