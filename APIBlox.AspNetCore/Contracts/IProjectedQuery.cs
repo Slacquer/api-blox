@@ -7,9 +7,9 @@ namespace APIBlox.AspNetCore.Contracts
     /// <summary>
     ///     Interface IProjectedQuery
     /// </summary>
-    public interface IProjectedQuery
+    public interface IProjectedQuery : IQuery
     {
-        
+
         /// <summary>
         ///     Gets or sets the select.
         /// </summary>

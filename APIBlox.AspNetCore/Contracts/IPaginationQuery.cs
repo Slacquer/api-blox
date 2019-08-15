@@ -4,7 +4,7 @@
     /// <summary>
     ///     Interface IPaginationQuery
     /// </summary>
-    public interface IPaginationQuery : IOrderedQuery
+    public interface IPaginationQuery : IQuery
     {
         /// <summary>
         ///     Gets or sets the running count.

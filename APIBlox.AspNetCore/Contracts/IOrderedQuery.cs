@@ -3,7 +3,7 @@
     /// <summary>
     ///     Interface IOrderedQuery
     /// </summary>
-    public interface IOrderedQuery
+    public interface IOrderedQuery : IQuery
     {
         /// <summary>
         ///     Gets or sets the order by.

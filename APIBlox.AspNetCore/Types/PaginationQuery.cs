@@ -8,7 +8,7 @@ namespace APIBlox.AspNetCore.Types
     /// <summary>
     ///     Class PaginationQuery.
     /// </summary>
-    public class PaginationQuery : OrderedQuery, IPaginationQuery
+    public class PaginationQuery : Query, IPaginationQuery
     {
         /// <inheritdoc />
         /// <summary>

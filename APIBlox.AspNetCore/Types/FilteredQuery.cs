@@ -10,7 +10,7 @@ namespace APIBlox.AspNetCore.Types
     ///     Class FilteredQuery.
     /// </summary>
     /// <seealso cref="T:APIBlox.AspNetCore.Types.OrderedQuery" />
-    public class FilteredQuery : OrderedQuery, IFilteredQuery
+    public class FilteredQuery : Query, IFilteredQuery
     {
         /// <inheritdoc />
         /// <summary>
@@ -19,7 +19,6 @@ namespace APIBlox.AspNetCore.Types
         public FilteredQuery()
         {
             Map.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
-            Map.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
         }
 
         /// <inheritdoc />
@@ -32,14 +31,6 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Sets the select (projection).  Usage is determined by the API itself.
-        /// </summary>
-        /// <value>The select.</value>
-        [FromQuery(Name = "select")]
-        public string Select { get; set; }
-
-        /// <inheritdoc />
-        /// <summary>
         ///     Builds the query.
         /// </summary>
         /// <returns>QueryBuilder.</returns>
@@ -49,9 +40,6 @@ namespace APIBlox.AspNetCore.Types
 
             if (!Filter.IsEmptyNullOrWhiteSpace())
                 qb.Add("filter", Filter);
-
-            if (!Select.IsEmptyNullOrWhiteSpace())
-                qb.Add("select", Select);
 
             return qb;
         }

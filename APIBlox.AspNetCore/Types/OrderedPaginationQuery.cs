@@ -5,25 +5,33 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
-    /// <inheritdoc />
     /// <summary>
-    ///     Class OrderedQuery.
+    ///     Class OrderedPaginationQuery.
+    ///     Implements the <see cref="APIBlox.AspNetCore.Types.PaginationQuery" />
+    ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IOrderedQuery" />
     /// </summary>
-    public class OrderedQuery : Query, IOrderedQuery
+    /// <seealso cref="APIBlox.AspNetCore.Types.PaginationQuery" />
+    /// <seealso cref="APIBlox.AspNetCore.Contracts.IOrderedQuery" />
+    public class OrderedPaginationQuery : PaginationQuery, IOrderedQuery
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="OrderedQuery" /> class.
+        ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.FilteredPaginationQuery" /> class.
         /// </summary>
-        public OrderedQuery()
+        /// <inheritdoc />
+        public OrderedPaginationQuery()
         {
             Map.TryAdd("OrderBy", new[] {"$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort"});
         }
 
-        /// <inheritdoc />
         /// <summary>
+        ///     <summary>
+        ///         Initializes a new instance of the <see cref="FilteredPaginationQuery" /> class.
+        ///     </summary>
+        ///     <value>The order by.</value>
         ///     Sets the order by.  Usage is determined by the API itself.
         /// </summary>
         /// <value>The order by.</value>
+        /// <inheritdoc />
         [FromQuery(Name = "orderBy")]
         public string OrderBy { get; set; }
 
@@ -31,6 +39,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Builds the query.
         /// </summary>
         /// <returns>QueryBuilder.</returns>
+        /// <inheritdoc />
         protected override QueryBuilder BuildQuery()
         {
             var qb = base.BuildQuery();

@@ -76,7 +76,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         /// <summary>
-        ///     Builds a ordered result query from a filtered queryable, that assumes client side paging.
+        ///     Builds a filtered result query from a filtered queryable, that assumes client side paging.
         /// </summary>
         /// <typeparam name="TIn">The type of the t in.</typeparam>
         /// <typeparam name="TOut">The type of the t out.</typeparam>
@@ -92,18 +92,9 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TOut : new()
         {
-            var tmp = qry
-                .BuildOrderedQueryable(request)
+            var result = qry
                 .BuildFilteredQueryable(request)
                 .BuildOutputQueryable(projection, serializeSettings);
-
-            if (request.Select.IsEmptyNullOrWhiteSpace())
-            {
-                Console.WriteLine(tmp.Expression.ToString());
-                return tmp;
-            }
-
-            var result = tmp.BuildUserProjectionQueryable(request);
 
             Console.WriteLine(result.Expression.ToString());
 
@@ -111,7 +102,7 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         /// <summary>
-        ///     Builds a paged result query from a filtered queryable, where server side paging is enforced.
+        ///     Builds a filtered paged result query from a filtered queryable, where server side paging is enforced.
         /// </summary>
         /// <typeparam name="TIn">The type of the t in.</typeparam>
         /// <typeparam name="TOut">The type of the t out.</typeparam>
@@ -128,18 +119,9 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TOut : new()
         {
-            var tmp = qry.BuildPagedQueryable(request, maxItemsPerResult)
-                .BuildOrderedQueryable(request)
+            var result = qry.BuildPagedQueryable(request, maxItemsPerResult)
                 .BuildFilteredQueryable(request)
                 .BuildOutputQueryable(projection, serializeSettings);
-
-            if (request.Select.IsEmptyNullOrWhiteSpace())
-            {
-                Console.WriteLine(tmp.Expression.ToString());
-                return tmp;
-            }
-
-            var result = tmp.BuildUserProjectionQueryable(request);
 
             Console.WriteLine(result.Expression.ToString());
 

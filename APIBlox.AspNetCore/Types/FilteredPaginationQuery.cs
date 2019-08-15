@@ -5,53 +5,45 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
-    /// <inheritdoc cref="PaginationQuery" />
     /// <summary>
     ///     Class FilteredPaginationQuery.
+    ///     Implements the <see cref="APIBlox.AspNetCore.Types.PaginationQuery" />
+    ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IFilteredQuery" />
     /// </summary>
-    /// <seealso cref="T:APIBlox.AspNetCore.Types.PaginationQuery" />
+    /// <seealso cref="APIBlox.AspNetCore.Types.PaginationQuery" />
+    /// <seealso cref="APIBlox.AspNetCore.Contracts.IFilteredQuery" />
     public class FilteredPaginationQuery : PaginationQuery, IFilteredQuery
     {
-        /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.FilteredPaginationQuery" /> class.
         /// </summary>
+        /// <inheritdoc />
         public FilteredPaginationQuery()
         {
             Map.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
-            Map.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
         }
 
-        /// <inheritdoc />
         /// <summary>
         ///     Sets the filter (where). Usage is determined by the API itself.
         /// </summary>
         /// <value>The filter.</value>
+        /// <inheritdoc />
         [FromQuery(Name = "filter")]
         public string Filter { get; set; }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Sets the select (projection).  Usage is determined by the API itself.
-        /// </summary>
-        /// <value>The select.</value>
-        [FromQuery(Name = "select")]
-        public string Select { get; set; }
-
-        /// <inheritdoc />
         /// <summary>
         ///     Builds the query.
         /// </summary>
         /// <returns>QueryBuilder.</returns>
+        /// <value>The running count.</value>
+        /// <inheritdoc />
+        /// <inheritdoc />
         protected override QueryBuilder BuildQuery()
         {
             var qb = base.BuildQuery();
 
             if (!Filter.IsEmptyNullOrWhiteSpace())
                 qb.Add("filter", Filter);
-
-            if (!Select.IsEmptyNullOrWhiteSpace())
-                qb.Add("select", Select);
 
             return qb;
         }

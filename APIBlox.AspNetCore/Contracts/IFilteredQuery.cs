@@ -3,7 +3,7 @@
     /// <summary>
     ///     Interface IFilteredQuery
     /// </summary>
-    public interface IFilteredQuery : IOrderedQuery, IProjectedQuery
+    public interface IFilteredQuery : IQuery
     {
         /// <summary>
         ///     Gets or sets the filter.

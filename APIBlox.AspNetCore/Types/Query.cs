@@ -73,6 +73,12 @@ namespace APIBlox.AspNetCore.Types
         {
             var qb = new QueryBuilder();
 
+            if (Undefined is null)
+                return qb;
+
+            foreach (var p in Undefined)
+                qb.Add(p.Key.ToCamelCase(), p.Value);
+
             return qb;
         }
     }
