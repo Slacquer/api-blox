@@ -99,10 +99,12 @@ namespace APIBlox.NetCore
 
         protected virtual SnapshotModel BuildSnapshotModel(EventStoreDocument document)
         {
+            var em = BuildEventModel(document);
+
             return new SnapshotModel
             {
-                Data = document.Data,
-                DataType = document.DataType,
+                Data = em.Data,
+                DataType = em.DataType,
                 Version = document.Version
             };
         }

@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 namespace Examples.AggregateModels
 {
     /// <summary>
-    ///     Class CosmosAggregate.
+    ///     Class Aggregate
     /// </summary>
     public class Aggregate<TAggregate>
         where TAggregate : class
@@ -25,7 +25,7 @@ namespace Examples.AggregateModels
         private readonly IDictionary<Type, MethodInfo> _whenMethods;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CosmosAggregate" /> class.
+        ///     Initializes a new instance of the <see cref="Aggregate{TAggregate}"/> class.
         /// </summary>
         /// <param name="eventStoreService">The event store service.</param>
         /// <param name="streamId">The stream identifier.</param>
@@ -159,7 +159,7 @@ namespace Examples.AggregateModels
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (CosmosAggregate) _myEventStream.Snapshot.Data;
+                var data = (Aggregate<TAggregate>) _myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;

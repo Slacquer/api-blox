@@ -143,7 +143,7 @@ namespace APIBlox.NetCore
             return document;
         }
 
-        private SnapshotDocument BuildSnapShotDoc(string streamId, SnapshotModel snapshot,
+        private static SnapshotDocument BuildSnapShotDoc(string streamId, SnapshotModel snapshot,
             long version
         )
         {
@@ -153,7 +153,7 @@ namespace APIBlox.NetCore
                 Version = version,
                 TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds(),
                 DataType = snapshot.Data.GetType().AssemblyQualifiedName,
-                Data = JsonConvert.SerializeObject(snapshot.Data, JsonSettings)
+                Data = snapshot.Data
             };
 
             return document;
