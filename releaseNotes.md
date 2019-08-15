@@ -1,7 +1,8 @@
 _August 13th, 2019_  **v2.1.15**
 - APIBlox.AspNetCore.Types - Added IProjectedQuery and ProjectedQuery, and changed the inheritancce around a bit.  This was done to allow a GET for example to retrieve a single result, with could be projected, previously the ORDERBY and FILTER mechanisms made no sense in a single result response.
-
-Thanks,  
+- APIBlox.NetCore.EventStore.EventStoreDocument - changed the Data to be an object rather than string, for searching.  This required making changes to _APIBlox.NetCore.EventStore.EfCore_ as well, since it can NOT use a object for a property (column).  This is a big breaking change as stored event data will no longer work.
+- 
+Apologies,  
 _Slacquer_  
 
 <br>

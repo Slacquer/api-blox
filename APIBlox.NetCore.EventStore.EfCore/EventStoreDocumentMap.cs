@@ -1,5 +1,4 @@
-﻿using APIBlox.NetCore.Documents;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace APIBlox.NetCore
@@ -21,8 +20,8 @@ namespace APIBlox.NetCore
 
             _builder.HasIndex(p => p.StreamId);
 
-            _builder.Ignore(p => p.Data);
-            _builder.Property(p => p.DataEx);
+            //_builder.Ignore(p => p.Data);
+            _builder.Property(p => p.Data);
 
             _builder.Property(p => p.DataType).HasMaxLength(1024);
             _builder.Property(p => p.DocumentType).HasMaxLength(255);

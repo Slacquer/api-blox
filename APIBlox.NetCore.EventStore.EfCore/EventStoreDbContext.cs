@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Options;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +19,9 @@ namespace APIBlox.NetCore
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var EventStoreDocumentMap = new EventStoreDocumentMap(modelBuilder.Entity<DocEx>());
+            var eventStoreDocumentMap = new EventStoreDocumentMap(modelBuilder.Entity<DocEx>());
 
-            EventStoreDocumentMap.Map();
+            eventStoreDocumentMap.Map();
         }
     }
 
@@ -30,12 +29,13 @@ namespace APIBlox.NetCore
     {
         protected override EventStoreDbContext CreateNewInstance(DbContextOptions<EventStoreDbContext> options)
         {
-            return  new EventStoreDbContext(options);
+            return new EventStoreDbContext(options);
         }
     }
 
     internal abstract class DesignTimeDbContextFactoryBase<TContext> :
-        IDesignTimeDbContextFactory<TContext> where TContext : DbContext
+        IDesignTimeDbContextFactory<TContext>
+        where TContext : DbContext
     {
         public TContext CreateDbContext(string[] args)
         {
@@ -44,11 +44,9 @@ namespace APIBlox.NetCore
 
         protected abstract TContext CreateNewInstance(DbContextOptions<TContext> options);
 
-
         private TContext Create(string basePath, string environmentName)
         {
             var builder = new ConfigurationBuilder()
-
                 .SetBasePath(basePath)
                 .AddJsonFile("appSettings.json")
                 .AddJsonFile($"appSettings.{environmentName}.json", true);
@@ -64,7 +62,6 @@ namespace APIBlox.NetCore
                 );
 
             return Create(es);
-
         }
 
         private TContext Create(EfCoreSqlOptions efCoreOptions)
@@ -74,7 +71,8 @@ namespace APIBlox.NetCore
 
             var optionsBuilder = new DbContextOptionsBuilder<TContext>();
 
-            Console.WriteLine($"---------------CNNSTR: {efCoreOptions.CnnString}");
+            if (Environment.UserInteractive)
+                Console.WriteLine($"---------------CNNSTR: {efCoreOptions.CnnString}");
 
             optionsBuilder.UseSqlServer(efCoreOptions.CnnString);
 
