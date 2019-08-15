@@ -31,7 +31,10 @@ namespace Examples.Configuration
 
                 //.WritePostController<ChildPostRequest, ChildResponse>(options.Set(p => p.ActionRoute = null, p => p.StatusCodes = null))
                 .WritePostAcceptedController<ChildPostRequest>(options.Set(p => p.ActionRoute = null, p => p.StatusCodes = null))
-                .WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(options.Set(p => p.ActionRoute = null, p => p.StatusCodes = new List<int> { 200, 401, 403 }))
+                .WriteQueryAllController<ChildrenRequest, IEnumerable<ChildResponse>>(options.Set(p => p.ActionRoute = null,
+                        p => p.StatusCodes = new List<int> {200, 401, 403}
+                    )
+                )
                 ;
 
             return templates;

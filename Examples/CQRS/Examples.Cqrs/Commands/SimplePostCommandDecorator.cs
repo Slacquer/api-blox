@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Contracts;
 using Examples.Resources;
@@ -28,6 +27,5 @@ namespace Examples.Commands
 
             return ret;
         }
-
     }
 }

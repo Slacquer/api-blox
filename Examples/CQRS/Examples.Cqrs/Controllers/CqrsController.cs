@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.AspNetCore.ActionResults;
-using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Contracts;
 using Examples.Resources;
@@ -86,10 +85,10 @@ namespace Examples.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(ExampleRequestObject requestResource)
         {
-           var ret = await _commandHandler.HandleAsync(requestResource, CancellationToken.None);
+            var ret = await _commandHandler.HandleAsync(requestResource, CancellationToken.None);
 
-           if (ret.HasErrors)
-               return new ProblemResult(ret.Error);
+            if (ret.HasErrors)
+                return new ProblemResult(ret.Error);
 
             return Ok();
         }

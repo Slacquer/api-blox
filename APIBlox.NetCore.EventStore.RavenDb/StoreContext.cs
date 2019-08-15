@@ -12,8 +12,8 @@ namespace APIBlox.NetCore
 {
     internal class StoreContext : IDisposable
     {
-        private string _collection;
         private readonly IDocumentStore _store;
+        private string _collection;
 
         public StoreContext(RavenDbOptions options)
         {

@@ -13,6 +13,7 @@ namespace APIBlox.NetCore.Decorators.Commands
     /// <typeparam name="TRequest">The type of the t command.</typeparam>
     /// <seealso cref="T:APIBlox.AspNetCore.Decorators.CommandQueryDecoratorLoggingBase" />
     /// <seealso cref="T:APIBlox.AspNetCore.Contracts.ICommandHandler`1" />
+
     //[DebuggerStepThrough]
     public class MetricsCommandHandlerDecorator<TRequest>
         : ICommandHandler<TRequest>
@@ -66,6 +67,7 @@ namespace APIBlox.NetCore.Decorators.Commands
     /// <typeparam name="TResult">The type of the t result.</typeparam>
     /// <seealso cref="T:APIBlox.NetCore.LoggingBase" />
     /// <seealso cref="T:APIBlox.AspNetCore.Contracts.ICommandHandler`2" />
+
     //[DebuggerStepThrough]
     public class MetricsCommandHandlerDecorator<TRequest, TResult>
         : ICommandHandler<TRequest, TResult>

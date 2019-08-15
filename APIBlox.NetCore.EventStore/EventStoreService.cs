@@ -79,10 +79,11 @@ namespace APIBlox.NetCore
                 docs.Add(eDoc);
 
                 lst.Add(new EventModel
-                {
-                    Data = events[i],
-                    DataType = eDoc.DataType
-                });
+                    {
+                        Data = events[i],
+                        DataType = eDoc.DataType
+                    }
+                );
             }
 
             ret.Events = lst.ToArray();
@@ -109,7 +110,7 @@ namespace APIBlox.NetCore
         {
             var doc = BuildSnapShotDoc(streamId, snapshot, expectedVersion);
 
-            await Repository.AddAsync(new[] { doc }, cancellationToken);
+            await Repository.AddAsync(new[] {doc}, cancellationToken);
 
             if (deleteOlderSnapshots)
                 await DeleteSnapshotsAsync(streamId, expectedVersion, cancellationToken);

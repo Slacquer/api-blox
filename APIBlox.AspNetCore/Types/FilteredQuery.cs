@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
-    /// <inheritdoc cref="OrderedQuery" />
     /// <summary>
     ///     Class FilteredQuery.
+    ///     Implements the <see cref="APIBlox.AspNetCore.Types.Query" />
+    ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IFilteredQuery" />
     /// </summary>
-    /// <seealso cref="T:APIBlox.AspNetCore.Types.OrderedQuery" />
+    /// <seealso cref="APIBlox.AspNetCore.Types.Query" />
+    /// <seealso cref="APIBlox.AspNetCore.Contracts.IFilteredQuery" />
     public class FilteredQuery : Query, IFilteredQuery
     {
         /// <inheritdoc />
@@ -23,7 +25,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Sets the filter (where). Usage is determined by the API itself.
+        ///     Sets the filter (where). Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The filter.</value>
         [FromQuery(Name = "filter")]

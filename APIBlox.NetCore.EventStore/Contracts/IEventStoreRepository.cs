@@ -15,6 +15,12 @@ namespace APIBlox.NetCore.Contracts
         where TModel : class
     {
         /// <summary>
+        ///     Gets the json settings.
+        /// </summary>
+        /// <value>The json settings.</value>
+        JsonSerializerSettings JsonSettings { get; }
+
+        /// <summary>
         ///     Adds the asynchronous.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -51,11 +57,5 @@ namespace APIBlox.NetCore.Contracts
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;System.Int32&gt;.</returns>
         Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        ///     Gets the json settings.
-        /// </summary>
-        /// <value>The json settings.</value>
-        JsonSerializerSettings JsonSettings { get; }
     }
 }

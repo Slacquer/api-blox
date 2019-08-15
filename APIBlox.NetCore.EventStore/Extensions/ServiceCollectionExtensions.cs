@@ -16,20 +16,24 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TModel">The type of the t model (perhaps your ddd aggregate).</typeparam>
         /// <param name="services">The services.</param>
-        /// <param name="settings">The settings.  Uses the <see cref="PopulateNonPublicSettersContractResolver"/> if no settings are provided.</param>
+        /// <param name="settings">
+        ///     The settings.  Uses the <see cref="PopulateNonPublicSettersContractResolver" /> if no settings
+        ///     are provided.
+        /// </param>
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddEventStoreService<TModel>(this IServiceCollection services, JsonSerializerSettings settings = null)
             where TModel : class
         {
             return services.AddScoped<IEventStoreService<TModel>, EventStoreService<TModel>>(sp =>
-            {
-                settings = settings ?? new JsonSerializerSettings
                 {
-                    ContractResolver = new PopulateNonPublicSettersContractResolver()
-                };
-                var repo = sp.GetRequiredService<IEventStoreRepository<TModel>>();
-                return new EventStoreService<TModel>(repo, settings);
-            });
+                    settings = settings ?? new JsonSerializerSettings
+                    {
+                        ContractResolver = new PopulateNonPublicSettersContractResolver()
+                    };
+                    var repo = sp.GetRequiredService<IEventStoreRepository<TModel>>();
+                    return new EventStoreService<TModel>(repo, settings);
+                }
+            );
         }
 
         /// <summary>
@@ -37,20 +41,25 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TModel">The type of the t model (perhaps your ddd aggregate).</typeparam>
         /// <param name="services">The services.</param>
-        /// <param name="settings">The settings.  Uses the <see cref="PopulateNonPublicSettersContractResolver"/> if no settings are provided.</param>
+        /// <param name="settings">
+        ///     The settings.  Uses the <see cref="PopulateNonPublicSettersContractResolver" /> if no settings
+        ///     are provided.
+        /// </param>
         /// <returns>IServiceCollection.</returns>
-        public static IServiceCollection AddReadOnlyEventStoreService<TModel>(this IServiceCollection services, JsonSerializerSettings settings = null)
+        public static IServiceCollection AddReadOnlyEventStoreService<TModel>(this IServiceCollection services, JsonSerializerSettings settings = null
+        )
             where TModel : class
         {
             return services.AddScoped<IReadOnlyEventStoreService<TModel>, ReadOnlyEventStoreService<TModel>>(sp =>
-            {
-                settings = settings ?? new JsonSerializerSettings
                 {
-                    ContractResolver = new PopulateNonPublicSettersContractResolver()
-                };
-                var repo = sp.GetRequiredService<IEventStoreRepository<TModel>>();
-                return new ReadOnlyEventStoreService<TModel>(repo, settings);
-            });
+                    settings = settings ?? new JsonSerializerSettings
+                    {
+                        ContractResolver = new PopulateNonPublicSettersContractResolver()
+                    };
+                    var repo = sp.GetRequiredService<IEventStoreRepository<TModel>>();
+                    return new ReadOnlyEventStoreService<TModel>(repo, settings);
+                }
+            );
         }
     }
 }

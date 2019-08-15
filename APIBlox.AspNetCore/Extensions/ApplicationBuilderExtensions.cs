@@ -34,14 +34,15 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     that is picked up during an error will be sent back in the result.
         /// </param>
         /// <param name="addUserStackTrace">
-        ///     When true the Environment.StackTrace will be filtered to include user code, and added to the result as "stack-trace":"[data]"
+        ///     When true the Environment.StackTrace will be filtered to include user code, and added to the result as
+        ///     "stack-trace":"[data]"
         /// </param>
         /// <param name="referenceIdFunc">
         ///     A callback function to set the reference number of the fault, by default this is
         ///     <see cref="DateTimeOffset.Now" />.Ticks
         /// </param>
         /// <param name="requestErrorObjectAction">
-        ///     A callback action to allow editing the <see cref="RequestErrorObject"/> prior to returning results.
+        ///     A callback action to allow editing the <see cref="RequestErrorObject" /> prior to returning results.
         /// </param>
         /// <returns>IApplicationBuilder.</returns>
         public static IApplicationBuilder UseServerFaults(

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace APIBlox.AspNetCore.Contracts
+﻿namespace APIBlox.AspNetCore.Contracts
 {
     /// <summary>
     ///     Interface IProjectedQuery
     /// </summary>
     public interface IProjectedQuery : IQuery
     {
-
         /// <summary>
         ///     Gets or sets the select.
         /// </summary>

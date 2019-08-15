@@ -24,7 +24,7 @@ namespace APIBlox.AspNetCore.Types
         }
 
         /// <summary>
-        ///     Sets the filter (where). Usage is determined by the API itself.
+        ///     Sets the filter (where). Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The filter.</value>
         /// <inheritdoc />

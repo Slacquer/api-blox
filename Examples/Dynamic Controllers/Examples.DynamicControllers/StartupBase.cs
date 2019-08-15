@@ -57,7 +57,7 @@ namespace Examples
                 .AddDynamicControllerConfigurations(_loggerFactory,
                     GetType(),
                     _environment.IsProduction(),
-                    _environment.IsProduction(), 
+                    _environment.IsProduction(),
                     true,
                     factory =>
                     {
@@ -75,17 +75,17 @@ namespace Examples
                     },
                     Path.GetDirectoryName(startupAssembly.Location)
                 )
-#if DEBUG
+            #if DEBUG
                 .AddMvc()
-#else
+            #else
                 .AddMvcCore()
-#endif
+            #endif
                 .AddApplicationPart(_dynamicControllersAssembly)
-                
+
                 //
                 // Resource Validator.
                 .AddValidateResourceActionFilter()
-                
+
                 //
                 // Handles cancellation token cancelled.
                 .AddOperationCancelledExceptionFilter()
@@ -93,7 +93,7 @@ namespace Examples
                 //
                 // Pagination
                 .AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 10)
-                
+
                 // Location header
                 .AddPostLocationHeaderResultFilter()
 
@@ -103,9 +103,9 @@ namespace Examples
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-#if DEBUG
+        #if DEBUG
             services.AddSwaggerExampleFeatures(SiteTitle, Version, _dynamicControllersXmlFile);
-#endif
+        #endif
         }
 
         /// <summary>
@@ -122,9 +122,9 @@ namespace Examples
 
             app.UseMvc();
 
-#if DEBUG
+        #if DEBUG
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
-#endif
+        #endif
         }
 
         /// <summary>

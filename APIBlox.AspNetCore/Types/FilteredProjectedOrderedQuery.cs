@@ -24,7 +24,7 @@ namespace APIBlox.AspNetCore.Types
         }
 
         /// <summary>
-        ///     Sets the select (projection).  Usage is determined by the API itself.
+        ///     Sets the select (projection).  Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The select.</value>
         /// <inheritdoc />

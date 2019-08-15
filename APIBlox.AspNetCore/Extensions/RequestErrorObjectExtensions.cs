@@ -85,7 +85,6 @@ namespace APIBlox.AspNetCore.Types
             return SetDetailAndAddErrorObject(error, titleDetail, description);
         }
 
-
         /// <summary>
         ///     Sets the error to bad request (400).
         /// </summary>

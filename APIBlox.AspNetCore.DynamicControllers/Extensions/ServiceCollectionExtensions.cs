@@ -28,7 +28,10 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     if set to <c>true</c> Summary comments from the request object of the first
         ///     controller action added will be included as controller summary comments..
         /// </param>
-        /// <param name="preCompile">The pre compile function.  If caching and cache is found then this function will not be called.</param>
+        /// <param name="preCompile">
+        ///     The pre compile function.  If caching and cache is found then this function will not be
+        ///     called.
+        /// </param>
         /// <param name="postCompile">The post compile action.</param>
         /// <param name="xmlFallbackPaths">The XML fallback paths.</param>
         /// <returns>IServiceCollection.</returns>

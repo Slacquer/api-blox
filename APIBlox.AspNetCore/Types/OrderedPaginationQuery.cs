@@ -28,7 +28,7 @@ namespace APIBlox.AspNetCore.Types
         ///         Initializes a new instance of the <see cref="FilteredPaginationQuery" /> class.
         ///     </summary>
         ///     <value>The order by.</value>
-        ///     Sets the order by.  Usage is determined by the API itself.
+        ///     Sets the order by.  Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The order by.</value>
         /// <inheritdoc />

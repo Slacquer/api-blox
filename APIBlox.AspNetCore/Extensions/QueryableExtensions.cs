@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using APIBlox.AspNetCore.Contracts;
@@ -8,8 +6,6 @@ using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 using Newtonsoft.Json;
-
-#endregion
 
 namespace APIBlox.AspNetCore.Extensions
 {
@@ -154,8 +150,6 @@ namespace APIBlox.AspNetCore.Extensions
             return result;
         }
 
-
-
         private static IQueryable<TIn> BuildFilteredQueryable<TIn>(this IQueryable<TIn> source,
             IFilteredQuery request
         )
@@ -183,7 +177,8 @@ namespace APIBlox.AspNetCore.Extensions
         }
 
         private static IQueryable BuildUserProjectionQueryable<TIn>(this IQueryable<TIn> source,
-            IProjectedQuery request)
+            IProjectedQuery request
+        )
         {
             return request.Select.IsEmptyNullOrWhiteSpace() ? source : source.Select(request.Select);
         }
@@ -211,8 +206,6 @@ namespace APIBlox.AspNetCore.Extensions
         }
     }
 }
-
-
 
 //#region -    Using Statements    -
 
@@ -379,7 +372,6 @@ namespace APIBlox.AspNetCore.Extensions
 
 //            return result.ToDynamicListAsync<TOut>();
 //        }
-
 
 //        private static IQueryable<TIn> BuildFilteredQueryable<TIn>(this IQueryable<TIn> source,
 //            IFilteredQuery request

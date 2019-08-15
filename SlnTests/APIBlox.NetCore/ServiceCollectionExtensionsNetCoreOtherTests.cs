@@ -14,6 +14,9 @@ namespace SlnTests.APIBlox.NetCore
 
     public class ServiceCollectionExtensionsNetCoreOtherTests
     {
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly List<string> _paths = new List<string>();
+
         public ServiceCollectionExtensionsNetCoreOtherTests()
         {
             _loggerFactory = new LoggerFactory();
@@ -40,9 +43,6 @@ namespace SlnTests.APIBlox.NetCore
             for (var i = 0; i < 10; i++)
                 _paths.Add(Path.Combine(i % 2 == 0 ? "!" + root : root, i.ToString()));
         }
-
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly List<string> _paths = new List<string>();
 
         [Fact]
         public void LoggerOutputShouldComplainAboutAsterisksForInvalidPath()

@@ -12,11 +12,6 @@ namespace APIBlox.NetCore.Extensions
     public static class XmlDocumentationExtensions
     {
         /// <summary>
-        ///     Paths to look into when default implementation fails to find files.
-        /// </summary>
-        public static List<string> FallbackPaths { get; set; }
-
-        /// <summary>
         ///     A cache used to remember Xml documentation for assemblies.
         /// </summary>
         private static readonly Dictionary<Assembly, XmlDocument> Cache = new Dictionary<Assembly, XmlDocument>();
@@ -25,6 +20,11 @@ namespace APIBlox.NetCore.Extensions
         ///     A cache used to store failure exceptions for assembly lookups.
         /// </summary>
         private static readonly Dictionary<Assembly, Exception> FailCache = new Dictionary<Assembly, Exception>();
+
+        /// <summary>
+        ///     Paths to look into when default implementation fails to find files.
+        /// </summary>
+        public static List<string> FallbackPaths { get; set; }
 
         /// <summary>
         ///     Provides the documentation comments for a specific method.
@@ -203,7 +203,7 @@ namespace APIBlox.NetCore.Extensions
                 if (!(FallbackPaths is null) && FallbackPaths.Count > 0)
                 {
                     var searchFiles = new List<string>();
-                    
+
                     foreach (var fPath in FallbackPaths)
                     {
                         var assPath = Path.Combine(fPath, $"{name}.xml");
@@ -217,8 +217,9 @@ namespace APIBlox.NetCore.Extensions
 
                         searchFiles.Add(assPath);
                     }
+
                     throw new Exception(
-                        $"XML documentation not present (make sure it is turned on in " +
+                        "XML documentation not present (make sure it is turned on in " +
                         $"project properties when building) for type {name}.  " +
                         $"Looked for: '{string.Join(",", searchFiles)}'.",
                         exception
@@ -226,7 +227,7 @@ namespace APIBlox.NetCore.Extensions
                 }
 
                 throw new Exception(
-                    $"XML documentation not present (make sure it is turned on in " +
+                    "XML documentation not present (make sure it is turned on in " +
                     $"project properties when building) for for type {name}.  Looked for xml file '{path}'.",
                     exception
                 );

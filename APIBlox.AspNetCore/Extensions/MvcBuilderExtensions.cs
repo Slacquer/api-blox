@@ -90,12 +90,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         ///     This filter will ensure all results comply to a specific structure,
         ///     IE: {
-        ///             data:{ value } | data:[{ value }],
-        ///             pagination:{
-        ///                 totalCount:number,
-        ///                 nextPage:number,
-        ///                 previousPage:number
-        ///             }
+        ///     data:{ value } | data:[{ value }],
+        ///     pagination:{
+        ///     totalCount:number,
+        ///     nextPage:number,
+        ///     previousPage:number
+        ///     }
         ///     }
         ///     <para>Works independently of <see cref="EnsureResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
@@ -119,16 +119,15 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-
         /// <summary>
         ///     This filter will ensure all results comply to a specific structure,
         ///     IE: {
-        ///             data:{ value } | data:[{ value }],
-        ///             pagination:{
-        ///                 totalCount:number,
-        ///                 nextPage:number,
-        ///                 previousPage:number
-        ///             }
+        ///     data:{ value } | data:[{ value }],
+        ///     pagination:{
+        ///     totalCount:number,
+        ///     nextPage:number,
+        ///     previousPage:number
+        ///     }
         ///     }
         ///     <para>Works independently of <see cref="EnsureResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
@@ -155,8 +154,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         ///     This filter will ensure all results comply to a structure, defined by you in the callback.
         ///     Defaults to: {
-        ///             data:{ value } | data:[{ value }]
-        ///         }
+        ///     data:{ value } | data:[{ value }]
+        ///     }
         ///     <para>Works independently of <see cref="EnsurePaginationResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
         /// </summary>
@@ -182,12 +181,11 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-
         /// <summary>
         ///     This filter will ensure all results comply to a structure, defined by you in the callback.
         ///     Defaults to: {
-        ///             data:{ value } | data:[{ value }]
-        ///         }
+        ///     data:{ value } | data:[{ value }]
+        ///     }
         ///     <para>Works independently of <see cref="EnsurePaginationResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
         /// </summary>
@@ -222,12 +220,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="sharedMaxAgeSeconds">The shared maximum age seconds.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcCoreBuilder AddETagActionFilter(this IMvcCoreBuilder builder,
-            ILoggerFactory loggerFactory, int maxAgeSeconds = 600, int sharedMaxAgeSeconds = 84600)
+            ILoggerFactory loggerFactory, int maxAgeSeconds = 600, int sharedMaxAgeSeconds = 84600
+        )
         {
-            builder.AddFilter<ETagActionFilter>(o =>
-            {
-                o.Filters.TryAdd(new ETagActionFilter(loggerFactory, maxAgeSeconds, sharedMaxAgeSeconds));
-            });
+            builder.AddFilter<ETagActionFilter>(o => { o.Filters.TryAdd(new ETagActionFilter(loggerFactory, maxAgeSeconds, sharedMaxAgeSeconds)); });
 
             return builder;
         }
@@ -241,12 +237,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="sharedMaxAgeSeconds">The shared maximum age seconds.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddETagActionFilter(this IMvcBuilder builder,
-            ILoggerFactory loggerFactory, int maxAgeSeconds = 600, int sharedMaxAgeSeconds = 84600)
+            ILoggerFactory loggerFactory, int maxAgeSeconds = 600, int sharedMaxAgeSeconds = 84600
+        )
         {
-            builder.AddFilter<ETagActionFilter>(o =>
-                {
-                    o.Filters.TryAdd(new ETagActionFilter(loggerFactory, maxAgeSeconds, sharedMaxAgeSeconds));
-                });
+            builder.AddFilter<ETagActionFilter>(o => { o.Filters.TryAdd(new ETagActionFilter(loggerFactory, maxAgeSeconds, sharedMaxAgeSeconds)); });
 
             return builder;
         }
@@ -417,7 +411,9 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder.AddFilter<ValidateResourceActionFilter>(order: 0);
         }
 
-        private static void PaginationCommon(IServiceCollection services, ILoggerFactory loggerFactory, bool onlyQueryActions, int defaultPageSize = 100, Func<object, dynamic> defineResponseFunc = null)
+        private static void PaginationCommon(IServiceCollection services, ILoggerFactory loggerFactory, bool onlyQueryActions,
+            int defaultPageSize = 100, Func<object, dynamic> defineResponseFunc = null
+        )
         {
             services.Configure<MvcOptions>(o =>
                 {

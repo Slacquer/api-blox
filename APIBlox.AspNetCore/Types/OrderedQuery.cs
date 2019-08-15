@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
-    /// <inheritdoc />
     /// <summary>
     ///     Class OrderedQuery.
+    ///     Implements the <see cref="APIBlox.AspNetCore.Types.Query" />
+    ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IOrderedQuery" />
     /// </summary>
+    /// <seealso cref="APIBlox.AspNetCore.Types.Query" />
+    /// <seealso cref="APIBlox.AspNetCore.Contracts.IOrderedQuery" />
     public class OrderedQuery : Query, IOrderedQuery
     {
         /// <summary>
@@ -21,7 +24,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Sets the order by.  Usage is determined by the API itself.
+        ///     Sets the order by.  Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The order by.</value>
         [FromQuery(Name = "orderBy")]

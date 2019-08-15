@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using APIBlox.AspNetCore.Enums;
 using APIBlox.NetCore.Extensions;
 
 namespace APIBlox.AspNetCore.Types

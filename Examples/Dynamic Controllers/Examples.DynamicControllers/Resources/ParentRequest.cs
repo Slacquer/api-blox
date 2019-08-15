@@ -1,5 +1,4 @@
 ﻿using APIBlox.AspNetCore.Types;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Examples.Resources
 {

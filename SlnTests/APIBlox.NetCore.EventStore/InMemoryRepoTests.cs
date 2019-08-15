@@ -4,15 +4,11 @@ using System.Threading.Tasks;
 using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Models;
-using APIBlox.NetCore.Options;
-using APIBlox.NetCore.Types.JsonBits;
-using Microsoft.Azure.Documents.Client;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using Xunit;
+
 #pragma warning disable 1591
 
 namespace SlnTests.APIBlox.NetCore.EventStore
@@ -193,11 +189,9 @@ namespace SlnTests.APIBlox.NetCore.EventStore
     {
         public string Foo { get; set; }
 
-        [JsonProperty(PropertyName = "fubar")]
-        public int Bar { get; set; }
+        [JsonProperty(PropertyName = "fubar")] public int Bar { get; set; }
 
-        [BsonIgnore]
-        public MySstruct Structure { get; set; } = new MySstruct {Num1 = 44, Num2 = 12313};
+        [BsonIgnore] public MySstruct Structure { get; set; } = new MySstruct {Num1 = 44, Num2 = 12313};
     }
 
     public struct MySstruct

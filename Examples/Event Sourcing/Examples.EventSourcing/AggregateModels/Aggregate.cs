@@ -19,13 +19,13 @@ namespace Examples.AggregateModels
         where TAggregate : class
     {
         private readonly IEventStoreService<TAggregate> _es;
-        private EventStreamModel _myEventStream;
 
         private readonly string _streamId;
         private readonly IDictionary<Type, MethodInfo> _whenMethods;
+        private EventStreamModel _myEventStream;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Aggregate{TAggregate}"/> class.
+        ///     Initializes a new instance of the <see cref="Aggregate{TAggregate}" /> class.
         /// </summary>
         /// <param name="eventStoreService">The event store service.</param>
         /// <param name="streamId">The stream identifier.</param>

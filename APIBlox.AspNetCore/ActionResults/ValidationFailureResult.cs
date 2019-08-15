@@ -25,12 +25,12 @@ namespace APIBlox.AspNetCore.ActionResults
             string errorDocumentLocation = "about:blank"
         )
             : base(new RequestErrorObject
-            {
-                Title = "One or more validation errors has occured.",
-                Detail = "Please refer to the errors property for additional details",
-                Type = errorDocumentLocation,
-                Status = statusCode
-            }
+                {
+                    Title = "One or more validation errors has occured.",
+                    Detail = "Please refer to the errors property for additional details",
+                    Type = errorDocumentLocation,
+                    Status = statusCode
+                }
             )
         {
             StatusCode = statusCode;

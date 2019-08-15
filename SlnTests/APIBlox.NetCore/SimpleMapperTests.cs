@@ -9,18 +9,6 @@ namespace SlnTests.APIBlox.NetCore
 
     public class SimpleMapperTests
     {
-
-        [Fact]
-        public void Success()
-        {
-            var foo = new Foo { Name = "          " };
-
-            var bar = foo.MapTo<Bar>(settings: new JsonSerializerSettings { Converters = new JsonConverter[] { new EmptyStringToNullConverter() }, ContractResolver = new PopulateNonPublicSettersContractResolver() });
-
-            Assert.Null(bar.Name);
-
-        }
-
         public class Foo
         {
             public string Name { get; set; }
@@ -29,6 +17,21 @@ namespace SlnTests.APIBlox.NetCore
         public class Bar
         {
             public string Name { get; private set; }
+        }
+
+        [Fact]
+        public void Success()
+        {
+            var foo = new Foo {Name = "          "};
+
+            var bar = foo.MapTo<Bar>(settings: new JsonSerializerSettings
+                {
+                    Converters = new JsonConverter[] {new EmptyStringToNullConverter()},
+                    ContractResolver = new PopulateNonPublicSettersContractResolver()
+                }
+            );
+
+            Assert.Null(bar.Name);
         }
     }
 }

@@ -35,6 +35,6 @@ namespace APIBlox.AspNetCore.Contracts
         ///     Gets  the comments.
         /// </summary>
         /// <value>The comments.</value>
-        string Comments { get; set;}
+        string Comments { get; set; }
     }
 }

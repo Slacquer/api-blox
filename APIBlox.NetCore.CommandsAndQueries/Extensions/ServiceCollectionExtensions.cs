@@ -18,8 +18,8 @@ namespace APIBlox.NetCore.Extensions
         ///     decorations are executed in the order they are added.
         /// </summary>
         /// <remarks>
-        ///     Your handler CAN implement more than one <see cref="ICommandHandler{TResult}"/> or
-        ///     <seealso cref="ICommandHandler{TRequestQuery, TResult}"/>, and each will be wrapped
+        ///     Your handler CAN implement more than one <see cref="ICommandHandler{TRequestCommand}" /> or
+        ///     <seealso cref="ICommandHandler{TRequestQuery, TResult}" />, and each will be wrapped
         ///     with each decorator, this also holds true with the decorator itself.
         /// </remarks>
         /// <typeparam name="THandler">The type of the t handler.</typeparam>
@@ -44,7 +44,9 @@ namespace APIBlox.NetCore.Extensions
                 foreach (var qi in qis)
                 {
                     if (decorator.IsGenericType)
+                    {
                         services.AddServiceDecoration(loggerFactory, qi, qi.CreateGenericType(decorator));
+                    }
                     else
                     {
                         // Not a generic decorator, so lets find the handler bits and fill them in.
@@ -64,8 +66,8 @@ namespace APIBlox.NetCore.Extensions
         ///     decorations are executed in the order they are added.
         /// </summary>
         /// <remarks>
-        ///     Your handler CAN implement more than one <see cref="IQueryHandler{TResult}"/> or
-        ///     <seealso cref="IQueryHandler{TRequestQuery, TResult}"/>, and each will be wrapped
+        ///     Your handler CAN implement more than one <see cref="IQueryHandler{TResult}" /> or
+        ///     <seealso cref="IQueryHandler{TRequestQuery, TResult}" />, and each will be wrapped
         ///     with each decorator, this also holds true with the decorator itself.
         /// </remarks>
         /// <typeparam name="THandler">The type of the t handler.</typeparam>
@@ -93,7 +95,9 @@ namespace APIBlox.NetCore.Extensions
                 foreach (var qi in qis)
                 {
                     if (decorator.IsGenericType)
+                    {
                         services.AddServiceDecoration(loggerFactory, qi, qi.CreateGenericType(decorator));
+                    }
                     else
                     {
                         // Not a generic decorator, so lets find the handler bits and fill them in.

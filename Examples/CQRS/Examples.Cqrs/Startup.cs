@@ -60,7 +60,6 @@ namespace Examples
                 // Pagination
                 //.AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 100)
                 .AddEnsureResponseResultActionFilter(_loggerFactory)
-
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);

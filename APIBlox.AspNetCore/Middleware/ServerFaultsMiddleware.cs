@@ -65,13 +65,13 @@ namespace APIBlox.AspNetCore
             try
             {
                 RequestErrorObject errorResult;
-                var statusCode = (int)HttpStatusCode.InternalServerError;
+                var statusCode = (int) HttpStatusCode.InternalServerError;
 
                 if (error.Error is HandledRequestException exception)
                 {
                     var handled = exception;
                     errorResult = handled.RequestErrorObject;
-                    statusCode = handled.RequestErrorObject.Status ?? (int)HttpStatusCode.InternalServerError;
+                    statusCode = handled.RequestErrorObject.Status ?? (int) HttpStatusCode.InternalServerError;
                 }
                 else
                 {
@@ -146,7 +146,7 @@ namespace APIBlox.AspNetCore
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
-                (int)HttpStatusCode.InternalServerError,
+                (int) HttpStatusCode.InternalServerError,
                 instance,
                 _referenceIdFunc()
             )
@@ -163,7 +163,7 @@ namespace APIBlox.AspNetCore
         {
             var dto = new ServerErrorObject("An internal server error has occured.",
                 "Please refer to the errors property for additional information.",
-                (int)HttpStatusCode.InternalServerError,
+                (int) HttpStatusCode.InternalServerError,
                 instance,
                 _referenceIdFunc()
             )
@@ -181,7 +181,7 @@ namespace APIBlox.AspNetCore
         private static void AddUserStackTrace(DynamicDataObject errResult, Exception ex)
         {
             var stackTraceLines = (ex.StackTrace ?? Environment.StackTrace)
-                .Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                .Split(new[] {Environment.NewLine}, StringSplitOptions.None);
 
             var sb = new StringBuilder();
 

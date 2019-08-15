@@ -25,7 +25,7 @@ namespace APIBlox.AspNetCore.Types
 
         /// <inheritdoc />
         /// <summary>
-        ///     Sets the order by.  Usage is determined by the API itself.
+        ///     Sets the order by.  Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The order by.</value>
         /// <summary>

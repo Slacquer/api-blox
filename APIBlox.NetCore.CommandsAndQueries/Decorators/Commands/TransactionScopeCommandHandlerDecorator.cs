@@ -5,7 +5,7 @@ using APIBlox.NetCore.Contracts;
 
 namespace APIBlox.NetCore.Decorators.Commands
 {
-    /// <inheritdoc cref="ICommandHandler{TRequest}" />
+    /// <inheritdoc cref="ICommandHandler{TRequestCommand}" />
     /// <summary>
     ///     Class TransactionScopeCommandHandlerDecorator.
     /// </summary>

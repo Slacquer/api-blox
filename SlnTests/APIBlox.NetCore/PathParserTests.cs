@@ -11,6 +11,8 @@ namespace SlnTests.APIBlox.NetCore
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class PathParserTests : IDisposable
     {
+        private readonly List<string> _paths = new List<string>();
+
         public PathParserTests()
         {
             var path = Path.GetTempPath();
@@ -37,8 +39,6 @@ namespace SlnTests.APIBlox.NetCore
         {
             Directory.Delete(_paths[0], true);
         }
-
-        private readonly List<string> _paths = new List<string>();
 
         [Fact]
         public void ShouldHavePathsFromSingleDoubleAsterisks()

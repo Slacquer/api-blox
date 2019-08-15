@@ -28,7 +28,7 @@ namespace APIBlox.AspNetCore.Extensions
             TType value
         )
         {
-            return col.TryAdd<FilterCollection, IFilterMetadata>((IFilterMetadata)value);
+            return col.TryAdd<FilterCollection, IFilterMetadata>((IFilterMetadata) value);
         }
 
         /// <summary>
@@ -36,7 +36,8 @@ namespace APIBlox.AspNetCore.Extensions
         /// </summary>
         /// <param name="col">The col.</param>
         /// <param name="value">The value.</param>
-        /// /// <param name="order">Filter order</param>
+        /// ///
+        /// <param name="order">Filter order</param>
         /// <returns>TCollection.</returns>
         public static FilterCollection TryAdd(this FilterCollection col, Type value, int? order = null)
         {
@@ -106,7 +107,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
         {
             return col.TryAdd<IList<IApplicationFeatureProvider>,
-                IApplicationFeatureProvider>((IApplicationFeatureProvider)value);
+                IApplicationFeatureProvider>((IApplicationFeatureProvider) value);
         }
 
         /// <summary>

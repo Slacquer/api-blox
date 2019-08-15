@@ -17,7 +17,7 @@ namespace APIBlox.AspNetCore.Filters
         private readonly ILogger<EnsureResponseResultActionFilter> _log;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EnsureResponseResultActionFilter"/> class.
+        ///     Initializes a new instance of the <see cref="EnsureResponseResultActionFilter" /> class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="getsOnly">if set to <c>true</c> [gets only].</param>
@@ -28,7 +28,10 @@ namespace APIBlox.AspNetCore.Filters
             Func<object, object> ensureResponseCompliesWithAction
         )
         {
-            object DefaultFormat(object d) => new { Data = d };
+            object DefaultFormat(object d)
+            {
+                return new {Data = d};
+            }
 
             _getsOnly = getsOnly;
             _action = ensureResponseCompliesWithAction ?? DefaultFormat;
@@ -44,9 +47,9 @@ namespace APIBlox.AspNetCore.Filters
             var action = await next().ConfigureAwait(false);
             var result = action.Result as ObjectResult;
 
-            if (result?.Value is null 
-                || (_getsOnly && !action.HttpContext.Request.Method.EqualsEx("get")) 
-                || result.StatusCode >= 300 
+            if (result?.Value is null
+                || _getsOnly && !action.HttpContext.Request.Method.EqualsEx("get")
+                || result.StatusCode >= 300
                 || result.StatusCode < 200)
             {
                 var sc = result != null
@@ -62,7 +65,7 @@ namespace APIBlox.AspNetCore.Filters
             var t = result.Value.GetType();
 
             ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable)) && !t.IsAssignableTo(typeof(string));
-            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>)result.Value).Count() : 0;
+            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>) result.Value).Count() : 0;
 
             var retValue = _action(result.Value);
 

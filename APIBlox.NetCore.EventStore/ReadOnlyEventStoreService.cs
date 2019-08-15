@@ -54,29 +54,6 @@ namespace APIBlox.NetCore
             return ReadAsync(streamId, null, fromDate, toDate, cancellationToken);
         }
 
-        protected async Task<RootDocument> ReadRootAsync(string streamId,
-            CancellationToken cancellationToken = default
-        )
-        {
-            var result = (await Repository.GetAsync<EventStoreDocument>(
-                d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
-                cancellationToken
-            )).FirstOrDefault();
-
-            var doc = !(result is null)
-                ? new RootDocument
-                {
-                    DocumentType = result.DocumentType,
-                    Id = result.Id,
-                    StreamId = result.StreamId,
-                    TimeStamp = result.TimeStamp,
-                    Version = result.Version
-                }
-                : null;
-
-            return doc;
-        }
-
         protected virtual EventModel BuildEventModel(EventStoreDocument document)
         {
             object data;
@@ -107,6 +84,29 @@ namespace APIBlox.NetCore
                 DataType = em.DataType,
                 Version = document.Version
             };
+        }
+
+        protected async Task<RootDocument> ReadRootAsync(string streamId,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var result = (await Repository.GetAsync<EventStoreDocument>(
+                d => d.StreamId == streamId && d.DocumentType == DocumentType.Root,
+                cancellationToken
+            )).FirstOrDefault();
+
+            var doc = !(result is null)
+                ? new RootDocument
+                {
+                    DocumentType = result.DocumentType,
+                    Id = result.Id,
+                    StreamId = result.StreamId,
+                    TimeStamp = result.TimeStamp,
+                    Version = result.Version
+                }
+                : null;
+
+            return doc;
         }
 
         private async Task<EventStreamModel> ReadAsync(string streamId, long? fromVersion = null, DateTimeOffset? fromDate = null,

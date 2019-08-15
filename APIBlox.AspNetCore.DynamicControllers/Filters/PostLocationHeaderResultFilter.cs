@@ -71,7 +71,7 @@ namespace APIBlox.AspNetCore
 
                 return;
             }
-            
+
             if (!(context.Result is ObjectResult result))
                 return;
 

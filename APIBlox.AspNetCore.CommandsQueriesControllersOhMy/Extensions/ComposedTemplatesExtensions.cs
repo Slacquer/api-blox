@@ -23,7 +23,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying resources by some value(s).
         ///     <para>
-        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///         Results are always returned in an <see cref="HandlerResponse" />. instance.
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -35,9 +35,9 @@ namespace APIBlox.AspNetCore.Extensions
         /// <param name="options">The options.</param>
         /// <returns>IEnumerable&lt;IComposedTemplate&gt;.</returns>
         /// <exception cref="ArgumentException">
-        /// Must be a single object type. - TResponse
-        /// or
-        /// When providing status codes you must not use an empty list! - StatusCodes
+        ///     Must be a single object type. - TResponse
+        ///     or
+        ///     When providing status codes you must not use an empty list! - StatusCodes
         /// </exception>
         public static IEnumerable<IComposedTemplate> WriteQueryByController<TRequest, TResponse>(
             this IEnumerable<IComposedTemplate> templates, DynamicControllerTemplateOptions options
@@ -47,7 +47,7 @@ namespace APIBlox.AspNetCore.Extensions
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
-            var codes = (options.StatusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> {200, 204, 401, 403}).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -58,14 +58,15 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
-                 template,
-                 typeof(TRequest),
-                 typeof(TResponse),
-                 false,
-                 req => options.ControllerName ?? $"QueryBy{req}Controller",
-                 BuildResponseTypes(codes)
-             ));
+            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+                    template,
+                    typeof(TRequest),
+                    typeof(TResponse),
+                    false,
+                    req => options.ControllerName ?? $"QueryBy{req}Controller",
+                    BuildResponseTypes(codes)
+                )
+            );
 
             return templates;
         }
@@ -73,7 +74,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for querying for all resources.
         ///     <para>
-        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///         Results are always returned in an <see cref="HandlerResponse" />. instance.
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -94,7 +95,7 @@ namespace APIBlox.AspNetCore.Extensions
             if (!typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a enumerable object type.", nameof(TResponse));
 
-            var codes = (options.StatusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> {200, 204, 401, 403}).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -105,14 +106,15 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
-                template,
-                typeof(TRequest),
-                typeof(TResponse),
-                false,
-                req => options.ControllerName ?? $"QueryAll{req}Controller",
-               BuildResponseTypes(codes)
-            ));
+            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+                    template,
+                    typeof(TRequest),
+                    typeof(TResponse),
+                    false,
+                    req => options.ControllerName ?? $"QueryAll{req}Controller",
+                    BuildResponseTypes(codes)
+                )
+            );
 
             return templates;
         }
@@ -120,7 +122,7 @@ namespace APIBlox.AspNetCore.Extensions
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for deleting resources by some value.
         ///     <para>
-        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///         Results are always returned in an <see cref="HandlerResponse" />. instance.
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -135,7 +137,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> { 204, 401, 403, 404 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> {204, 401, 403, 404}).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -146,21 +148,22 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
-                template,
-                typeof(TRequest),
-                null,
-                false,
-                req => options.ControllerName ?? $"DeleteBy{req}Controller",
-                BuildResponseTypes(codes)
-            ));
+            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+                    template,
+                    typeof(TRequest),
+                    null,
+                    false,
+                    req => options.ControllerName ?? $"DeleteBy{req}Controller",
+                    BuildResponseTypes(codes)
+                )
+            );
             return templates;
         }
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PUT.
         ///     <para>
-        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///         Results are always returned in an <see cref="HandlerResponse" />. instance.
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -175,7 +178,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> { 204, 400, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> {204, 400, 401, 403, 404, 409}).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -186,21 +189,22 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
-                 template,
-                 typeof(TRequest),
-                 null,
-                 true,
-                 req => options.ControllerName ?? $"PutBy{req}Controller",
-                 BuildResponseTypes(codes)
-             ));
+            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+                    template,
+                    typeof(TRequest),
+                    null,
+                    true,
+                    req => options.ControllerName ?? $"PutBy{req}Controller",
+                    BuildResponseTypes(codes)
+                )
+            );
             return templates;
         }
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for updating a resources via PATCH.
         ///     <para>
-        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///         Results are always returned in an <see cref="HandlerResponse" />. instance.
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -215,7 +219,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> { 204, 400, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> {204, 400, 401, 403, 404, 409}).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -226,21 +230,22 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
-                 template,
-                 typeof(TRequest),
-                 null,
-                 true,
-                 req => options.ControllerName ?? $"PatchBy{req}Controller",
-                 BuildResponseTypes(codes)
-             ));
+            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+                    template,
+                    typeof(TRequest),
+                    null,
+                    true,
+                    req => options.ControllerName ?? $"PatchBy{req}Controller",
+                    BuildResponseTypes(codes)
+                )
+            );
             return templates;
         }
 
         /// <summary>
         ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources.
         ///     <para>
-        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///         Results are always returned in an <see cref="HandlerResponse" />. instance.
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -260,7 +265,7 @@ namespace APIBlox.AspNetCore.Extensions
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
-            var codes = (options.StatusCodes ?? new List<int> { 201, 204, 400, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> {201, 204, 400, 401, 403, 404, 409}).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -271,22 +276,24 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
-                   template,
-                   typeof(TRequest),
-                   typeof(TResponse),
-                   true,
-                   req => options.ControllerName ?? $"Post{req}Controller",
-                   BuildResponseTypes(codes)
-               ));
+            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+                    template,
+                    typeof(TRequest),
+                    typeof(TResponse),
+                    true,
+                    req => options.ControllerName ?? $"Post{req}Controller",
+                    BuildResponseTypes(codes)
+                )
+            );
 
             return templates;
         }
 
         /// <summary>
-        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources but NOT getting back an immediate result.
+        ///     Adds a <see cref="DynamicControllerComposedTemplate" /> for creating a resources but NOT getting back an immediate
+        ///     result.
         ///     <para>
-        ///         Results are always returned in an <see cref="HandlerResponse"/>. instance.
+        ///         Results are always returned in an <see cref="HandlerResponse" />. instance.
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -301,7 +308,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> { 202, 400, 401, 403, 404, 409 }).ToList();
+            var codes = (options.StatusCodes ?? new List<int> {202, 400, 401, 403, 404, 409}).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -312,14 +319,15 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
-                   template,
-                   typeof(TRequest),
-                   null,
-                   true,
-                   req => options.ControllerName ?? $"PostAccepted{req}Controller",
-                   BuildResponseTypes(codes)
-               ));
+            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+                    template,
+                    typeof(TRequest),
+                    null,
+                    true,
+                    req => options.ControllerName ?? $"PostAccepted{req}Controller",
+                    BuildResponseTypes(codes)
+                )
+            );
 
             return templates;
         }
@@ -386,6 +394,7 @@ namespace APIBlox.AspNetCore.Extensions
                     ? summary
                     : options.ActionComments.Summary,
                 Remarks = options.ActionComments.Remarks.IsEmptyNullOrWhiteSpace()
+
                     //? @"![](https://github.com/Slacquer/api-blox/blob/master/logo-blue-small.png?raw=true) _Dynamic Controller Action_"
                     ? @"_Dynamic Controller Action_"
                     : options.ActionComments.Remarks
@@ -408,11 +417,16 @@ namespace APIBlox.AspNetCore.Extensions
 
             foreach (var sc in statusCodes)
             {
-                sbCodes.AppendFormat((CommonStatusCodes)sc == CommonStatusCodes.Status200Ok || (CommonStatusCodes)sc == CommonStatusCodes.Status201Created ? PrtResult : Prt, sc);
+                sbCodes.AppendFormat((CommonStatusCodes) sc == CommonStatusCodes.Status200Ok ||
+                                     (CommonStatusCodes) sc == CommonStatusCodes.Status201Created
+                        ? PrtResult
+                        : Prt,
+                    sc
+                );
 
                 if (Enum.IsDefined(typeof(CommonStatusCodes), sc))
                 {
-                    var statusCode = (CommonStatusCodes)sc;
+                    var statusCode = (CommonStatusCodes) sc;
 
                     var attr = statusCode.GetAttributeOfType<MetadataAttribute>();
 
@@ -422,12 +436,13 @@ namespace APIBlox.AspNetCore.Extensions
                     sbComments.AppendLine($"/// <response code=\"{sc}\">{codeTitle}, {codeDesc}</response>");
                 }
                 else
+                {
                     sbComments.AppendLine($"/// <response code=\"{sc}\">{sc}.</response>");
+                }
             }
 
             return (sbCodes.ToString(), sbComments.ToString());
         }
-
 
         // ReSharper disable once ClassNeverInstantiated.Local
         /// <summary>

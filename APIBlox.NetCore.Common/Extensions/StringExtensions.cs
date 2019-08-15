@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -12,6 +11,7 @@ namespace APIBlox.NetCore.Extensions
     /// <summary>
     ///     Class StringExtensions.
     /// </summary>
+
     //[DebuggerStepThrough]
     public static class StringExtensions
     {
@@ -51,7 +51,7 @@ namespace APIBlox.NetCore.Extensions
         {
             return value is null
                 ? defaultValue
-                : (T)Convert.ChangeType(value, typeof(T));
+                : (T) Convert.ChangeType(value, typeof(T));
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace APIBlox.NetCore.Extensions
             if (str.IsEmptyNullOrWhiteSpace())
                 return str;
 
-            var bits = str.Split(new[] { " ", "_" }, StringSplitOptions.RemoveEmptyEntries);
+            var bits = str.Split(new[] {" ", "_"}, StringSplitOptions.RemoveEmptyEntries);
             var sb = new StringBuilder();
             var ci = new CultureInfo(cultureName ?? CultureInfo.CurrentCulture.DisplayName, false).TextInfo;
 

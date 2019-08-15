@@ -25,8 +25,9 @@ namespace APIBlox.NetCore.Types
         ///     </para>
         /// </param>
         /// <returns>TDest.</returns>
-        public static TDest MapTo<TDest>(this object src, TDest dest = default, 
-            JsonSerializerSettings settings = null)
+        public static TDest MapTo<TDest>(this object src, TDest dest = default,
+            JsonSerializerSettings settings = null
+        )
             where TDest : new()
         {
             settings = settings ?? new JsonSerializerSettings
@@ -34,7 +35,7 @@ namespace APIBlox.NetCore.Types
                 ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
                 PreserveReferencesHandling = PreserveReferencesHandling.All
             };
-            
+
             var ret = dest == null ? new TDest() : dest;
 
             if (src is string jsonString && jsonString.IsJson())
@@ -44,6 +45,5 @@ namespace APIBlox.NetCore.Types
 
             return ret;
         }
-
     }
 }

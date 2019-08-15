@@ -133,8 +133,6 @@ namespace APIBlox.AspNetCore
             return EmitToAssembly(templates);
         }
 
-
-
         /// <summary>
         ///     Given a type this will generate method input parameters in string form along with namespaces.
         /// </summary>
@@ -144,8 +142,8 @@ namespace APIBlox.AspNetCore
         {
             // https://docs.microsoft.com/en-us/dotnet/api/system.codedom.compiler.codedomprovider?view=netframework-4.7.2
 
-            var namespaces = new List<string> { obj.Namespace };
-            var method = new CodeMemberMethod { Name = "DummyMethod" };
+            var namespaces = new List<string> {obj.Namespace};
+            var method = new CodeMemberMethod {Name = "DummyMethod"};
 
             var properties = GetPublicReadWriteProperties(obj);
 
@@ -171,6 +169,7 @@ namespace APIBlox.AspNetCore
 
                     arg.CustomAttributes.Add(attr);
                 }
+
                 method.Parameters.Add(arg);
             }
 
@@ -237,7 +236,7 @@ namespace APIBlox.AspNetCore
         {
             var name = GetNameWithoutGenericArity(obj);
             var ns = obj.Namespace;
-            var namespaces = new List<string> { ns };
+            var namespaces = new List<string> {ns};
 
             var result = new StringBuilder();
             result.Append($"{name}");
@@ -325,9 +324,6 @@ namespace APIBlox.AspNetCore
                 throw new ArgumentException($"{request.Name} must have a public property that is decorated with a {nameof(FromBodyAttribute)}.");
         }
 
-
-
-
         private static void AddExistingArray(List<string> dest, IEnumerable<string> src)
         {
             if (src is null)
@@ -381,7 +377,7 @@ namespace APIBlox.AspNetCore
 
             try
             {
-                var emitResult = compilation.Emit(dllFile,  pdbFile, xmlFile);
+                var emitResult = compilation.Emit(dllFile, pdbFile, xmlFile);
 
                 if (emitResult.Success)
                 {
@@ -394,7 +390,7 @@ namespace APIBlox.AspNetCore
                     _log.LogInformation(() => $"Created dynamic controllers assembly file: {dll.FullName}");
 
                     CheckAndSetWarnings(emitResult);
-                    
+
                     return dll;
                 }
 
@@ -406,12 +402,12 @@ namespace APIBlox.AspNetCore
             {
                 if (File.Exists(dllFile))
                 {
-                    Warnings = new List<string> { ioEx.Message };
+                    Warnings = new List<string> {ioEx.Message};
                     _log.LogWarning(() => $"Could not create dynamic controllers assembly file: {dllFile}.  Its in use!");
                 }
                 else
                 {
-                    Errors = new List<string> { ioEx.Message };
+                    Errors = new List<string> {ioEx.Message};
                     _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dllFile}.  Ex: {ioEx.Message}");
                 }
 
@@ -540,8 +536,6 @@ namespace APIBlox.AspNetCore
             Warnings = warnings.Any() ? warnings : null;
         }
 
-
-
         private static string WriteMethod(CodeTypeMember method)
         {
             // https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/how-to-create-a-class-using-codedom
@@ -553,7 +547,7 @@ namespace APIBlox.AspNetCore
                     {
                         using (var reader = new StreamReader(stream))
                         {
-                            var options = new CodeGeneratorOptions { BracingStyle = "C" };
+                            var options = new CodeGeneratorOptions {BracingStyle = "C"};
 
                             provider.GenerateCodeFromMember(method, writer, options);
 
@@ -594,7 +588,7 @@ namespace APIBlox.AspNetCore
 
                 if (cpi is null)
                     throw new TemplateCompilationException(
-                        new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
+                        new[] {$"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!"}
                     );
 
                 namespaces.Add(cp.ParameterType.Namespace);
@@ -618,7 +612,6 @@ namespace APIBlox.AspNetCore
 
                         yield return new CodeAttributeArgument(new CodePrimitiveExpression(itm));
                     }
-
                 }
             }
         }
@@ -658,7 +651,6 @@ namespace APIBlox.AspNetCore
 
                         yield return new CodeAttributeArgument(pi.Name, new CodePrimitiveExpression(itm));
                     }
-
                 }
             }
         }

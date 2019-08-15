@@ -1,16 +1,16 @@
-﻿using System;
-using APIBlox.NetCore.Types;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-#if UseAPIBlox
+﻿#if UseAPIBlox
+using System;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using APIBlox.NetCore.Types;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 #else
 using Examples.Contracts;
@@ -24,7 +24,7 @@ namespace Examples
         private const string SiteTitle = "APIBlox Example: Features";
         private const string Version = "v1";
 
-#if UseAPIBlox
+    #if UseAPIBlox
         public Startup(IConfiguration configuration, IHostingEnvironment environment, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
@@ -45,12 +45,12 @@ namespace Examples
                 new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName
             }.ToArray();
         }
-#endif
+    #endif
 
         public void ConfigureServices(IServiceCollection services)
         {
             services
-#if UseAPIBlox
+            #if UseAPIBlox
                 .AddServerFaults()
 
                 //
@@ -68,7 +68,6 @@ namespace Examples
                     }
                 )
 
-
                 //
                 // Too much for this project, take a look at the Example Clean Architecture
                 //.AddInvertedDependentsAndConfigureServices(
@@ -78,7 +77,7 @@ namespace Examples
                 //    _assemblyNames,
                 //    _assemblyPaths
                 //)
-#else
+            #else
                 // You may think to yourself... "This is no big deal, why would I need to do use your dumb InjectableServiceAttribute?
                 // In fact I could clean up this bit of code just by putting it in an extension method and all is good."...
                 //      Oh Really Tough guy? what happens when this presentation project does NOT have a reference to
@@ -87,9 +86,9 @@ namespace Examples
                 //          then what!
                 //                  huh!
                 .AddSingleton<IRandomNumberGeneratorService, RandomNumberGeneratorService>()
-#endif
+            #endif
                 .AddMvc()
-#if UseAPIBlox
+            #if UseAPIBlox
                 .AddCamelCaseResultsOptions()
 
                 //
@@ -111,7 +110,7 @@ namespace Examples
                 //
                 // Custom tokens, example has version
                 .AddRouteTokensConvention(_configuration, _environment, "ExampleTokens")
-#endif
+            #endif
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
@@ -119,7 +118,7 @@ namespace Examples
 
         public void Configure(IApplicationBuilder app)
         {
-#if UseAPIBlox
+        #if UseAPIBlox
 
             //
             // Handle any and all server (500) errors with a defined structure.
@@ -129,22 +128,22 @@ namespace Examples
             // Good for testing how things respond (when things go too
             // quickly because your dev machine is such a monster!)
             app.UseSimulateWaitTime(_environment);
-#else
+        #else
             //app.UseDeveloperExceptionPage();
-#endif
+        #endif
             app.UseHsts();
 
             app.UseMvc();
 
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
         }
-#if UseAPIBlox
+    #if UseAPIBlox
         private readonly string[] _assemblyNames;
         private readonly string[] _assemblyPaths;
         private const string AboutErrorsUrl = "http://hey.look.at.me/errorcodes";
         private readonly IConfiguration _configuration;
         private readonly IHostingEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
-#endif
+    #endif
     }
 }
