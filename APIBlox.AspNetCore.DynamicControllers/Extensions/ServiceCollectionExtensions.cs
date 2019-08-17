@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddDynamicControllerConfigurations(this IServiceCollection services,
             ILoggerFactory loggerFactory, Type startup, bool useCached, bool releaseConfiguration, bool addControllerComments,
             Func<DynamicControllerFactory, IEnumerable<IComposedTemplate>> preCompile,
-            Action<DynamicControllerFactory, string, Assembly> postCompile,
+            Action<DynamicControllerFactory, string, Assembly, string[]> postCompile,
             params string[] xmlFallbackPaths
         )
         {
@@ -54,7 +54,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (useCached && CacheFilesExist(log, dll, xmlFile))
             {
-                postCompile?.Invoke(factory, xmlFile.FullName, Assembly.LoadFrom(dll.FullName));
+                postCompile?.Invoke(factory, xmlFile.FullName, Assembly.LoadFrom(dll.FullName), null);
                 return services;
             }
 
@@ -67,9 +67,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var outputAss = factory.Compile(outputPath, templatesToCompile);
 
-            var (_, _, xml) = factory.OutputFiles;
+            var (_, _, xml, csFiles) = factory.OutputFiles;
 
-            postCompile?.Invoke(factory, xml, outputAss);
+            postCompile?.Invoke(factory, xml, outputAss, csFiles);
 
             return services;
         }

@@ -65,7 +65,7 @@ namespace Examples
 
                         return BuildTemplates(new List<IComposedTemplate>());
                     },
-                    (factory, xml, ass) =>
+                    (factory, xml, ass, csFiles) =>
                     {
                         _dynamicControllersXmlFile = xml;
                         _dynamicControllersAssembly = ass;
@@ -75,11 +75,11 @@ namespace Examples
                     },
                     Path.GetDirectoryName(startupAssembly.Location)
                 )
-            #if DEBUG
+#if DEBUG
                 .AddMvc()
-            #else
+#else
                 .AddMvcCore()
-            #endif
+#endif
                 .AddApplicationPart(_dynamicControllersAssembly)
 
                 //
@@ -103,9 +103,9 @@ namespace Examples
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-        #if DEBUG
+#if DEBUG
             services.AddSwaggerExampleFeatures(SiteTitle, Version, _dynamicControllersXmlFile);
-        #endif
+#endif
         }
 
         /// <summary>
@@ -122,9 +122,9 @@ namespace Examples
 
             app.UseMvc();
 
-        #if DEBUG
+#if DEBUG
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
-        #endif
+#endif
         }
 
         /// <summary>

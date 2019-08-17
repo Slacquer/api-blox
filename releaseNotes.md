@@ -1,4 +1,5 @@
 _August 17th, 2019_  **v2.1.18**
+- APIBlox.AspNetCore.DynamicControllerFactory - Will now output CS files for each controller (if not release), allowing debugging to take place.
 - **BUG** APIBlox.AspNetCore.Attributes.FromQueryWithAlternateNamesAttribute - currently the dynamic controller(s) code only supports PARAMS in constructor args, so this needed to be changed in the attribute itself.
 
 Thanks,  

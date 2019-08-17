@@ -88,7 +88,7 @@ namespace APIBlox.AspNetCore
         ///     Gets the output files when compiling with an assembly output path.
         /// </summary>
         /// <value>The output files.</value>
-        public (string, string, string) OutputFiles { get; private set; }
+        public (string, string, string, string[]) OutputFiles { get; private set; }
 
         /// <summary>
         ///     Compiles 1 or more <see cref="IComposedTemplate" /> to the specified assemblyOutputPath.
@@ -120,18 +120,18 @@ namespace APIBlox.AspNetCore
             return !(fi is null) && fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
         }
 
-        /// <summary>
-        ///     Compiles 1 or more <see cref="IComposedTemplate" /> to an assembly in memory.
-        ///     <para>
-        ///         When null is returned, then errors have been generated, check the <see cref="Errors" /> property.
-        ///     </para>
-        /// </summary>
-        /// <param name="templates">The templates.</param>
-        /// <returns>IEnumerable&lt;Type&gt;.</returns>
-        public Assembly Compile(params IComposedTemplate[] templates)
-        {
-            return EmitToAssembly(templates);
-        }
+        ///// <summary>
+        /////     Compiles 1 or more <see cref="IComposedTemplate" /> to an assembly in memory.
+        /////     <para>
+        /////         When null is returned, then errors have been generated, check the <see cref="Errors" /> property.
+        /////     </para>
+        ///// </summary>
+        ///// <param name="templates">The templates.</param>
+        ///// <returns>IEnumerable&lt;Type&gt;.</returns>
+        //public Assembly Compile(params IComposedTemplate[] templates)
+        //{
+        //    return EmitToAssembly(templates);
+        //}
 
         /// <summary>
         ///     Given a type this will generate method input parameters in string form along with namespaces.
@@ -142,8 +142,8 @@ namespace APIBlox.AspNetCore
         {
             // https://docs.microsoft.com/en-us/dotnet/api/system.codedom.compiler.codedomprovider?view=netframework-4.7.2
 
-            var namespaces = new List<string> {obj.Namespace};
-            var method = new CodeMemberMethod {Name = "DummyMethod"};
+            var namespaces = new List<string> { obj.Namespace };
+            var method = new CodeMemberMethod { Name = "DummyMethod" };
 
             var properties = GetPublicReadWriteProperties(obj);
 
@@ -236,7 +236,7 @@ namespace APIBlox.AspNetCore
         {
             var name = GetNameWithoutGenericArity(obj);
             var ns = obj.Namespace;
-            var namespaces = new List<string> {ns};
+            var namespaces = new List<string> { ns };
 
             var result = new StringBuilder();
             result.Append($"{name}");
@@ -332,44 +332,45 @@ namespace APIBlox.AspNetCore
             dest.AddRange(src);
         }
 
-        private Assembly EmitToAssembly(params IComposedTemplate[] templates)
-        {
-            Reset();
+        //private Assembly EmitToAssembly(params IComposedTemplate[] templates)
+        //{
+        //    Reset();
 
-            var csOptions = GetSyntaxTree(templates, out var csSyntaxTree);
+        //    var csOptions = GetSyntaxTree(templates, out var csSyntaxTree, out _);
 
-            var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, GetReferences(), csOptions);
+        //    var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, GetReferences(), csOptions);
 
-            using (var ms = new MemoryStream())
-            {
-                var emitResult = compilation.Emit(ms);
+        //    using (var ms = new MemoryStream())
+        //    {
+        //        var emitResult = compilation.Emit(ms);
 
-                if (emitResult.Success)
-                {
-                    CheckAndSetWarnings(emitResult);
+        //        if (emitResult.Success)
+        //        {
+        //            CheckAndSetWarnings(emitResult);
 
-                    ms.Seek(0, SeekOrigin.Begin);
+        //            ms.Seek(0, SeekOrigin.Begin);
 
-                    var assembly = Assembly.Load(ms.ToArray());
+        //            var assembly = Assembly.Load(ms.ToArray());
 
-                    _log.LogInformation(() => $"Created dynamic controllers assembly: {assembly.FullName}");
+        //            _log.LogInformation(() => $"Created dynamic controllers assembly: {assembly.FullName}");
 
-                    return assembly;
-                }
+        //            return assembly;
+        //        }
 
-                _log.LogCritical(() => $"Could not create dynamic controllers assembly: {_assemblyName}");
+        //        _log.LogCritical(() => $"Could not create dynamic controllers assembly: {_assemblyName}");
 
-                CheckAndSetFailures(emitResult);
+        //        CheckAndSetFailures(emitResult);
 
-                return null;
-            }
-        }
+        //        return null;
+        //    }
+        //}
 
         private FileInfo EmitToFile(string outputFolder, params IComposedTemplate[] templates)
         {
             Reset();
 
-            var csOptions = GetSyntaxTree(templates, out var csSyntaxTree);
+            var csOptions = GetSyntaxTree(outputFolder, templates, out var csSyntaxTree, out var csFiles);
+
             var compilation = CSharpCompilation.Create(_assemblyName, csSyntaxTree, GetReferences(), csOptions);
             var dllFile = Path.Combine(outputFolder, $"{_assemblyName}.dll");
             var pdbFile = Path.Combine(outputFolder, $"{_assemblyName}.pdb");
@@ -385,7 +386,7 @@ namespace APIBlox.AspNetCore
                     var pdb = new FileInfo(pdbFile);
                     var xml = new FileInfo(xmlFile);
 
-                    OutputFiles = (dll.FullName, pdb.FullName, xml.FullName);
+                    OutputFiles = (dll.FullName, pdb.FullName, xml.FullName, csFiles);
 
                     _log.LogInformation(() => $"Created dynamic controllers assembly file: {dll.FullName}");
 
@@ -402,12 +403,12 @@ namespace APIBlox.AspNetCore
             {
                 if (File.Exists(dllFile))
                 {
-                    Warnings = new List<string> {ioEx.Message};
+                    Warnings = new List<string> { ioEx.Message };
                     _log.LogWarning(() => $"Could not create dynamic controllers assembly file: {dllFile}.  Its in use!");
                 }
                 else
                 {
-                    Errors = new List<string> {ioEx.Message};
+                    Errors = new List<string> { ioEx.Message };
                     _log.LogCritical(() => $"Could not create dynamic controllers assembly file: {dllFile}.  Ex: {ioEx.Message}");
                 }
 
@@ -445,13 +446,14 @@ namespace APIBlox.AspNetCore
 
         private void Reset()
         {
-            OutputFiles = (null, null, null);
+            OutputFiles = (null, null, null, null);
             Errors = null;
             Warnings = null;
             Controllers = null;
         }
 
-        private CSharpCompilationOptions GetSyntaxTree(IComposedTemplate[] templates, out IEnumerable<SyntaxTree> csSyntaxTree)
+        private CSharpCompilationOptions GetSyntaxTree(string outputFolder, IComposedTemplate[] templates,
+            out IEnumerable<SyntaxTree> csSyntaxTree, out string[] csFiles)
         {
             if (templates is null || !templates.Any())
                 throw new ArgumentNullException(nameof(templates));
@@ -500,12 +502,35 @@ namespace APIBlox.AspNetCore
                     dc.Actions.Add(da.Action.Content);
                 }
 
-                results.Add(cg.Key, CSharpSyntaxTree.ParseText(dc.ToString()).GetRoot().NormalizeWhitespace().ToFullString());
+                var result = CSharpSyntaxTree.ParseText(dc.ToString()).GetRoot().NormalizeWhitespace().ToFullString();
+
+                results.Add(cg.Key, result);
             }
 
-            Controllers = results;
-            csSyntaxTree = Controllers.Select(r => CSharpSyntaxTree.ParseText(r.Value));
+            var defEncoding = Encoding.UTF8;
 
+            var files = new List<string>();
+            Controllers = results;
+            csSyntaxTree = results.Select(r =>
+            {
+                var (key, code) = r;
+                var srcPath = $"{key}.cs";
+                var fullPath = Path.Combine(outputFolder, srcPath);
+                var tree = CSharpSyntaxTree.ParseText(code, new CSharpParseOptions(), srcPath);
+                var syntaxRootNode = tree.GetRoot() as CSharpSyntaxNode;
+                var encoded = CSharpSyntaxTree.Create(syntaxRootNode, null, srcPath, defEncoding);
+
+                if (_release)
+                    return encoded;
+
+                File.WriteAllText(fullPath, code, defEncoding);
+
+                files.Add(fullPath);
+
+                return encoded;
+            }).ToList();
+
+            csFiles = files.Any() ? files.ToArray() : null;
             return csOptions;
         }
 
@@ -547,7 +572,7 @@ namespace APIBlox.AspNetCore
                     {
                         using (var reader = new StreamReader(stream))
                         {
-                            var options = new CodeGeneratorOptions {BracingStyle = "C"};
+                            var options = new CodeGeneratorOptions { BracingStyle = "C" };
 
                             provider.GenerateCodeFromMember(method, writer, options);
 
@@ -588,7 +613,7 @@ namespace APIBlox.AspNetCore
 
                 if (cpi is null)
                     throw new TemplateCompilationException(
-                        new[] {$"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!"}
+                        new[] { $"Attribute {type.Name} does not have a GETTER, parser can NOT get current values for constructor!" }
                     );
 
                 namespaces.Add(cp.ParameterType.Namespace);
