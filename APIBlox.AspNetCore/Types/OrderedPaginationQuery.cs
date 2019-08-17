@@ -1,4 +1,5 @@
-﻿using APIBlox.AspNetCore.Contracts;
+﻿using APIBlox.AspNetCore.Attributes;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,13 @@ namespace APIBlox.AspNetCore.Types
     ///     Class OrderedPaginationQuery.
     ///     Implements the <see cref="APIBlox.AspNetCore.Types.PaginationQuery" />
     ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IOrderedQuery" />
+    ///     <para>
+    ///         Be sure to also call the AddFromQueryWithAlternateNamesBinder Mvc/MvcCore
+    ///         builder extension method to allow alternate names to be used.
+    ///     </para>
+    ///     <para>
+    ///         Alternates In addition to PaginationQuery, OrderBy = $OrderBy, SortBy, $SortBy, Sort, $Sort
+    ///     </para>
     /// </summary>
     /// <seealso cref="APIBlox.AspNetCore.Types.PaginationQuery" />
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IOrderedQuery" />
@@ -20,7 +28,7 @@ namespace APIBlox.AspNetCore.Types
         /// <inheritdoc />
         public OrderedPaginationQuery()
         {
-            Map.TryAdd("OrderBy", new[] {"$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort"});
+            Map.TryAdd("OrderBy", new[] { "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort" });
         }
 
         /// <summary>
@@ -32,7 +40,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The order by.</value>
         /// <inheritdoc />
-        [FromQuery(Name = "orderBy")]
+        [FromQueryWithAlternateNames(new[] { "orderBy", "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort" })]
         public string OrderBy { get; set; }
 
         /// <summary>

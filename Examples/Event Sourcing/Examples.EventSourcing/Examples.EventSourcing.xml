@@ -11,7 +11,7 @@
         </member>
         <member name="M:Examples.AggregateModels.Aggregate`1.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{`0},System.String)">
             <summary>
-                Initializes a new instance of the <see cref="T:Examples.AggregateModels.Aggregate`1"/> class.
+                Initializes a new instance of the <see cref="T:Examples.AggregateModels.Aggregate`1" /> class.
             </summary>
             <param name="eventStoreService">The event store service.</param>
             <param name="streamId">The stream identifier.</param>

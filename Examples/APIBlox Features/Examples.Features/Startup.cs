@@ -1,4 +1,6 @@
-﻿#if UseAPIBlox
+﻿
+using Examples.Controllers;
+#if UseAPIBlox
 using System;
 using System.IO;
 using System.Reflection;
@@ -110,8 +112,14 @@ namespace Examples
                 //
                 // Custom tokens, example has version
                 .AddRouteTokensConvention(_configuration, _environment, "ExampleTokens")
+
+                //
+                // IQuery maps stuff (allowing alternate names to be used)
+                .AddFromQueryWithAlternateNamesBinder()
+
             #endif
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
         }

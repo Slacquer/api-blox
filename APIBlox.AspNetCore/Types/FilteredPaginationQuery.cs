@@ -1,4 +1,5 @@
-﻿using APIBlox.AspNetCore.Contracts;
+﻿using APIBlox.AspNetCore.Attributes;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,13 @@ namespace APIBlox.AspNetCore.Types
     ///     Class FilteredPaginationQuery.
     ///     Implements the <see cref="APIBlox.AspNetCore.Types.PaginationQuery" />
     ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IFilteredQuery" />
+    ///     <para>
+    ///         Be sure to also call the AddFromQueryWithAlternateNamesBinder Mvc/MvcCore
+    ///         builder extension method to allow alternate names to be used.
+    ///     </para>
+    ///     <para>
+    ///         Alternates In addition to PaginationQuery, Filter = $Where, Where, $Filter
+    ///     </para>
     /// </summary>
     /// <seealso cref="APIBlox.AspNetCore.Types.PaginationQuery" />
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IFilteredQuery" />
@@ -28,7 +36,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The filter.</value>
         /// <inheritdoc />
-        [FromQuery(Name = "filter")]
+        [FromQueryWithAlternateNames(new[] { "filter", "$Where", "Where", "$Filter" })]
         public string Filter { get; set; }
 
         /// <summary>

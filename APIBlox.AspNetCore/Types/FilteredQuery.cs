@@ -1,4 +1,5 @@
-﻿using APIBlox.AspNetCore.Contracts;
+﻿using APIBlox.AspNetCore.Attributes;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,13 @@ namespace APIBlox.AspNetCore.Types
     ///     Class FilteredQuery.
     ///     Implements the <see cref="APIBlox.AspNetCore.Types.Query" />
     ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IFilteredQuery" />
+    ///     <para>
+    ///         Be sure to also call the AddFromQueryWithAlternateNamesBinder Mvc/MvcCore
+    ///         builder extension method to allow alternate names to be used.
+    ///     </para>
+    ///     <para>
+    ///         Alternates to Filter = $Where, Where, $Filter
+    ///     </para>
     /// </summary>
     /// <seealso cref="APIBlox.AspNetCore.Types.Query" />
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IFilteredQuery" />
@@ -28,7 +36,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Sets the filter (where). Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The filter.</value>
-        [FromQuery(Name = "filter")]
+        [FromQueryWithAlternateNames(new[] { "filter", "$Where", "Where", "$Filter" })]
         public string Filter { get; set; }
 
         /// <inheritdoc />

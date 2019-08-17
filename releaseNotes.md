@@ -1,3 +1,15 @@
+_August 16th, 2019_  **v2.1.17**
+- APIBlox.AspNetCore.Types - Seems we needed a model binder for alternate names with IQuery object maps.  So I added the following:
+- _APIBlox.AspNetCore.Attributes.FromQueryWithAlternateNamesAttribute_
+- _AddFromQueryWithAlternateNamesBinder_ extension method.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _August 15th, 2019_  **v2.1.16**
 - APIBlox.AspNetCore.Types - Added several Query objects.
 

@@ -1,4 +1,5 @@
-﻿using APIBlox.AspNetCore.Contracts;
+﻿using APIBlox.AspNetCore.Attributes;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,13 @@ namespace APIBlox.AspNetCore.Types
     ///     Class FilteredProjectedQuery.
     ///     Implements the <see cref="APIBlox.AspNetCore.Types.FilteredQuery" />
     ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IProjectedQuery" />
+    ///     <para>
+    ///         Be sure to also call the AddFromQueryWithAlternateNamesBinder Mvc/MvcCore
+    ///         builder extension method to allow alternate names to be used.
+    ///     </para>
+    ///     <para>
+    ///         Alternates In addition to FilteredQuery, Select = $Select, Project, $Project
+    ///     </para>
     /// </summary>
     /// <seealso cref="APIBlox.AspNetCore.Types.FilteredQuery" />
     /// <seealso cref="APIBlox.AspNetCore.Contracts.IProjectedQuery" />
@@ -28,7 +36,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The select.</value>
         /// <inheritdoc />
-        [FromQuery(Name = "select")]
+        [FromQueryWithAlternateNames(new[] { "select", "$Select", "Project", "$Project" })]
         public string Select { get; set; }
 
         /// <summary>

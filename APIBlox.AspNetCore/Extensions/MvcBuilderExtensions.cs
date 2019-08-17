@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using APIBlox.AspNetCore;
 using APIBlox.AspNetCore.ActionResults;
+using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Extensions;
 using APIBlox.AspNetCore.Filters;
+using APIBlox.AspNetCore.ModelBinders;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +23,40 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class MvcBuilderExtensionsAspNetCore
     {
+        /// <summary>
+        ///     Adds a binder to allow the <see cref="IQuery" /> filters the ability
+        ///     to accept alternate names.  IE: Filter=$Filter=Where, etc.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns>IMvcCoreBuilder.</returns>
+        public static IMvcCoreBuilder AddFromQueryWithAlternateNamesBinder(this IMvcCoreBuilder builder)
+        {
+            builder.Services.Configure<MvcOptions>(o => o.ModelBinderProviders.Insert(
+                    0,
+                    new FromQueryWithAlternateNamesBinderProvider()
+                )
+            );
+
+            return builder;
+        }
+
+        /// <summary>
+        ///     Adds a binder to allow the <see cref="IQuery" /> filters the ability
+        ///     to accept alternate names.  IE: Filter=$Filter=Where, etc.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns>IMvcBuilder.</returns>
+        public static IMvcBuilder AddFromQueryWithAlternateNamesBinder(this IMvcBuilder builder)
+        {
+            builder.Services.Configure<MvcOptions>(o => o.ModelBinderProviders.Insert(
+                    0,
+                    new FromQueryWithAlternateNamesBinderProvider()
+                )
+            );
+
+            return builder;
+        }
+
         /// <summary>
         ///     Will make sure that
         ///     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is

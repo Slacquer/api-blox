@@ -1,12 +1,27 @@
-﻿using APIBlox.AspNetCore.Contracts;
+﻿using APIBlox.AspNetCore.Attributes;
+using APIBlox.AspNetCore.Contracts;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
-    /// <inheritdoc cref="OrderedQuery" />
     /// <summary>
     ///     Class PaginationQuery.
+    ///     Implements the <see cref="APIBlox.AspNetCore.Types.Query" />
+    ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IPaginationQuery" />
+    ///     <para>
+    ///         Be sure to also call the AddFromQueryWithAlternateNamesBinder Mvc/MvcCore
+    ///         builder extension method to allow alternate names to be used.
+    ///     </para>
+    ///     <para>
+    ///         Alternates to Skip = $Skip, Offset, $Offset
+    ///     </para>
+    ///     <para>
+    ///         Alternates to Top = Limit, $Limit, Take, $Take
+    ///     </para>
+    ///     <para>
+    ///         Alternates to RunningCount = Rc, Count, $Count, $RunningCount
+    ///     </para>
     /// </summary>
     public class PaginationQuery : Query, IPaginationQuery
     {
@@ -16,9 +31,9 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         public PaginationQuery()
         {
-            Map.TryAdd("Skip", new[] {"$Skip", "Offset", "$Offset"});
-            Map.TryAdd("Top", new[] {"$Top", "Limit", "$Limit", "Take", "$Take"});
-            Map.TryAdd("RunningCount", new[] {"$Rc", "Rc", "Count", "$Count", "$RunningCount"});
+            Map.TryAdd("Skip", new[] { "$Skip", "Offset", "$Offset" });
+            Map.TryAdd("Top", new[] { "$Top", "Limit", "$Limit", "Take", "$Take" });
+            Map.TryAdd("RunningCount", new[] { "$Rc", "Rc", "Count", "$Count", "$RunningCount" });
         }
 
         /// <inheritdoc />
@@ -26,7 +41,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets the running count.  Used internally.
         /// </summary>
         /// <value>The running count.</value>
-        [FromQuery(Name = "runningCount")]
+        [FromQueryWithAlternateNames(new[] { "runningCount", "$Rc", "Rc", "Count", "$Count", "$RunningCount" })]
         public int? RunningCount { get; set; }
 
         /// <inheritdoc />
@@ -34,7 +49,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Sets the skip amount.
         /// </summary>
         /// <value>The skip.</value>
-        [FromQuery(Name = "skip")]
+        [FromQueryWithAlternateNames(new[] { "skip", "$Skip", "Offset", "$Offset" })]
         public int? Skip { get; set; }
 
         /// <inheritdoc />
@@ -42,7 +57,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Sets the top amount.
         /// </summary>
         /// <value>The top.</value>
-        [FromQuery(Name = "top")]
+        [FromQueryWithAlternateNames(new[] { "top", "$Top", "Limit", "$Limit", "Take", "$Take" })]
         public int? Top { get; set; }
 
         /// <inheritdoc />
