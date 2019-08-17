@@ -28,7 +28,7 @@ namespace APIBlox.AspNetCore.Types
         /// <inheritdoc />
         public ProjectedPaginationQuery()
         {
-            Map.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
+            Map.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace APIBlox.AspNetCore.Types
         /// <value>The select.</value>
         /// <inheritdoc />
         [FromQuery(Name = "select")]
-        [FromQueryWithAlternateNames(new[] { "select", "$Select", "Project", "$Project" })]
+        [FromQueryWithAlternateNames("select", "$Select", "Project", "$Project")]
         public string Select { get; set; }
 
         /// <summary>

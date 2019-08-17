@@ -1,3 +1,12 @@
+_August 17th, 2019_  **v2.1.18**
+- **BUG** APIBlox.AspNetCore.Attributes.FromQueryWithAlternateNamesAttribute - currently the dynamic controller(s) code only supports PARAMS in constructor args, so this needed to be changed in the attribute itself.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _August 16th, 2019_  **v2.1.17**
 - APIBlox.AspNetCore.Types - Seems we needed a model binder for alternate names with IQuery object maps.  So I added the following:
 - _APIBlox.AspNetCore.Attributes.FromQueryWithAlternateNamesAttribute_

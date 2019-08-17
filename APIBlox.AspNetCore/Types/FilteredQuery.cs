@@ -2,7 +2,6 @@
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -28,7 +27,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         public FilteredQuery()
         {
-            Map.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
+            Map.TryAdd("Filter", new[] { "$Where", "Where", "$Filter" });
         }
 
         /// <inheritdoc />
@@ -36,7 +35,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Sets the filter (where). Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The filter.</value>
-        [FromQueryWithAlternateNames(new[] { "filter", "$Where", "Where", "$Filter" })]
+        [FromQueryWithAlternateNames("filter", "$Where", "$WHERE", "$whERE", "$Where", "Where", "$Filter")]
         public string Filter { get; set; }
 
         /// <inheritdoc />

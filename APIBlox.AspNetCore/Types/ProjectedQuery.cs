@@ -35,7 +35,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The select.</value>
         [FromQuery(Name = "select")]
-        [FromQueryWithAlternateNames(new[] { "select", "$Select", "Project", "$Project" })]
+        [FromQueryWithAlternateNames("select", "$Select", "Project", "$Project")]
         public string Select { get; set; }
 
         /// <inheritdoc />

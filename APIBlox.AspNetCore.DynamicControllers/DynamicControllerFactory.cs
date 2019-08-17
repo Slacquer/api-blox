@@ -293,7 +293,7 @@ namespace APIBlox.AspNetCore
         /// <exception cref="ArgumentException"></exception>
         public static void ValidateResponseType(Type response)
         {
-            if (response.IsPublic && !response.IsAbstract && response.GetConstructors(BindingFlags.Public | BindingFlags.Instance) != null)
+            if (response.IsPublic && !response.IsAbstract)// && response.GetConstructors(BindingFlags.Public | BindingFlags.Instance) != null)
                 return;
 
             if (!response.IsAssignableTo(typeof(IEnumerable)))
@@ -628,6 +628,9 @@ namespace APIBlox.AspNetCore
 
             foreach (var pi in properties)
             {
+                if (pi.DeclaringType is null)
+                    throw new ArgumentException("Could nto get type of property in obj!", nameof(obj));
+
                 namespaces.Add(pi.DeclaringType.Namespace);
 
                 var value = pi.GetValue(obj);
@@ -664,9 +667,11 @@ namespace APIBlox.AspNetCore
 
         private static List<PropertyInfo> GetPublicReadWriteProperties(Type type)
         {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.CanRead && p.CanWrite)
                 .ToList();
+
+            return props;
         }
     }
 }

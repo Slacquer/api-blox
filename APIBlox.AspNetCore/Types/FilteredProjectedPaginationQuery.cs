@@ -2,7 +2,6 @@
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -28,7 +27,7 @@ namespace APIBlox.AspNetCore.Types
         /// <inheritdoc />
         public FilteredProjectedPaginationQuery()
         {
-            Map.TryAdd("Select", new[] {"$Select", "Project", "$Project"});
+            Map.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
         }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The select.</value>
         /// <inheritdoc />
-        [FromQueryWithAlternateNames(new[] { "select", "$Select", "Project", "$Project" })]
+        [FromQueryWithAlternateNames("select", "$Select", "Project", "$Project")]
         public string Select { get; set; }
 
         /// <summary>

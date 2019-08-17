@@ -2,7 +2,6 @@
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -35,7 +34,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Sets the order by.  Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The order by.</value>
-        [FromQueryWithAlternateNames(new[] { "orderBy", "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort" })]
+        [FromQueryWithAlternateNames("orderBy", "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort")]
         public string OrderBy { get; set; }
 
         /// <summary>

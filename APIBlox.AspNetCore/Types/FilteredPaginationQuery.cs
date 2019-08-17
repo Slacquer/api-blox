@@ -2,7 +2,6 @@
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -28,7 +27,7 @@ namespace APIBlox.AspNetCore.Types
         /// <inheritdoc />
         public FilteredPaginationQuery()
         {
-            Map.TryAdd("Filter", new[] {"$Where", "Where", "$Filter"});
+            Map.TryAdd("Filter", new[] { "$Where", "Where", "$Filter" });
         }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The filter.</value>
         /// <inheritdoc />
-        [FromQueryWithAlternateNames(new[] { "filter", "$Where", "Where", "$Filter" })]
+        [FromQueryWithAlternateNames("filter", "$Where", "Where", "$Filter")]
         public string Filter { get; set; }
 
         /// <summary>

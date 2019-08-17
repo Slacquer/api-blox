@@ -41,7 +41,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The order by.</value>
         [FromQuery(Name = "orderBy")]
-        [FromQueryWithAlternateNames(new[] { "orderBy", "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort" })]
+        [FromQueryWithAlternateNames("orderBy", "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort")]
         public string OrderBy { get; set; }
 
         /// <summary>

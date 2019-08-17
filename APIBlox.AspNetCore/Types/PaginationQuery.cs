@@ -1,7 +1,6 @@
 ﻿using APIBlox.AspNetCore.Attributes;
 using APIBlox.AspNetCore.Contracts;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -41,7 +40,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets the running count.  Used internally.
         /// </summary>
         /// <value>The running count.</value>
-        [FromQueryWithAlternateNames(new[] { "runningCount", "$Rc", "Rc", "Count", "$Count", "$RunningCount" })]
+        [FromQueryWithAlternateNames("runningCount", "$Rc", "Rc", "Count", "$Count", "$RunningCount")]
         public int? RunningCount { get; set; }
 
         /// <inheritdoc />
