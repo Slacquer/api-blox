@@ -21,7 +21,7 @@ namespace APIBlox.AspNetCore.ModelBinders
 
         private static bool IsIQuery(ModelBinderProviderContext c)
         {
-            var attrs = ((DefaultModelMetadata)c.Metadata).Attributes.PropertyAttributes;
+            var attrs = ((DefaultModelMetadata)c.Metadata).Attributes.Attributes;
 
             return !(attrs is null) && attrs.Any(pa => pa.GetType() == typeof(FromQueryWithAlternateNamesAttribute));
         }

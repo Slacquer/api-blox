@@ -44,7 +44,7 @@ namespace APIBlox.AspNetCore.ModelBinders
 
         private static ValueProviderResult FindAlternateValue(ModelBindingContext bc, DefaultModelMetadata metadata)
         {
-            var attrs = metadata.Attributes.PropertyAttributes
+            var attrs = metadata.Attributes.Attributes
                 .Where(a => a.GetType() == typeof(FromQueryWithAlternateNamesAttribute))
                 .Cast<FromQueryWithAlternateNamesAttribute>()
                 .FirstOrDefault();

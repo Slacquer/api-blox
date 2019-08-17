@@ -100,6 +100,7 @@ namespace Examples
                 //
                 // Make sure all results are camel cased.
                 .AddCamelCaseResultsOptions()
+
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
