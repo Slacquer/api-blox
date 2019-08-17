@@ -48,7 +48,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Sets the skip amount.
         /// </summary>
         /// <value>The skip.</value>
-        [FromQueryWithAlternateNames(new[] { "skip", "$Skip", "Offset", "$Offset" })]
+        [FromQueryWithAlternateNames("skip", "$Skip", "Offset", "$Offset")]
         public int? Skip { get; set; }
 
         /// <inheritdoc />
@@ -56,7 +56,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Sets the top amount.
         /// </summary>
         /// <value>The top.</value>
-        [FromQueryWithAlternateNames(new[] { "top", "$Top", "Limit", "$Limit", "Take", "$Take" })]
+        [FromQueryWithAlternateNames("top", "$Top", "Limit", "$Limit", "Take", "$Take")]
         public int? Top { get; set; }
 
         /// <inheritdoc />

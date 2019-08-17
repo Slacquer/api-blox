@@ -2,7 +2,6 @@
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -34,7 +33,6 @@ namespace APIBlox.AspNetCore.Types
         ///     Sets the select (projection).  Usage is determined by the API itself, please seek external documentation.
         /// </summary>
         /// <value>The select.</value>
-        [FromQuery(Name = "select")]
         [FromQueryWithAlternateNames("select", "$Select", "Project", "$Project")]
         public string Select { get; set; }
 

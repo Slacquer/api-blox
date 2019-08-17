@@ -1,4 +1,5 @@
-_August 17th, 2019_  **v2.1.18**
+_August 17th, 2019_  **v2.1.19**
+- APIBlox.AspNetCore.Types.Query - Exposed Map to children.
 - APIBlox.AspNetCore.DynamicControllerFactory - Will now output CS files for each controller (if not release), allowing debugging to take place.  **Removed** Compile overload.
 - **BUG** APIBlox.AspNetCore.Attributes.FromQueryWithAlternateNamesAttribute - currently the dynamic controller(s) code only supports PARAMS in constructor args, so this needed to be changed in the attribute itself.
 

@@ -2,7 +2,6 @@
 using APIBlox.AspNetCore.Contracts;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APIBlox.AspNetCore.Types
 {
@@ -36,7 +35,6 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         /// <value>The select.</value>
         /// <inheritdoc />
-        [FromQuery(Name = "select")]
         [FromQueryWithAlternateNames("select", "$Select", "Project", "$Project" )]
         public string Select { get; set; }
 

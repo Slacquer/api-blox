@@ -47,7 +47,7 @@ namespace APIBlox.AspNetCore.Types
         ///     The in map for deciphering incoming query params.
         /// </summary>
         [JsonIgnore]
-        internal Dictionary<string, string[]> Map { get; } = new Dictionary<string, string[]>();
+        protected Dictionary<string, string[]> Map { get; } = new Dictionary<string, string[]>();
 
         /// <summary>
         ///     Gets or sets the undefined parameters.
