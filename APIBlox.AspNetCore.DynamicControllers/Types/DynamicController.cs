@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 
 namespace APIBlox.AspNetCore.Types
@@ -45,10 +46,10 @@ namespace APIBlox.AspNetCore.Types
         {
             var ns = string.Join("\n", Namespaces.Distinct().OrderBy(s => s).GroupBy(g => g).Select(s => $"using {s.Key.Trim()};"));
             var fields = string.Join("\n\n", Fields.Distinct().Select(s => s.Trim().EndsWith(";") ? s : $"{s};"));
-            var ctorArgs = string.Join(",\n\n", CtorArgs.Distinct());
-            var ctorBody = string.Join("\n\n", CtorBody.Distinct().Select(s => s.Trim().EndsWith(";") ? s : $"{s};"));
-            var actions = string.Join("\n\n", Actions.Distinct());
-            var methods = string.Join("\n\n", Methods.Distinct());
+            var ctorArgs = string.Join(",\n\n", CtorArgs.Where(s=> !s.IsEmptyNullOrWhiteSpace()) .Distinct());
+            var ctorBody = string.Join("\n\n", CtorBody.Where(s=> !s.IsEmptyNullOrWhiteSpace()).Distinct().Select(s => s.Trim().EndsWith(";") ? s : $"{s};"));
+            var actions = string.Join("\n\n", Actions.Where(s=> !s.IsEmptyNullOrWhiteSpace()).Distinct());
+            var methods = string.Join("\n\n", Methods.Where(s=> !s.IsEmptyNullOrWhiteSpace()).Distinct());
 
             var ret = ControllerContent.Replace("[NAMESPACES]", ns)
                 .Replace("[CONTROLLERS_NAMESPACE]", _namespace)

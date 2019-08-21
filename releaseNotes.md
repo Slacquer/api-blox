@@ -1,3 +1,12 @@
+_August 17th, 2019_  **v2.1.21**
+- APIBlox.AspNetCore.CommandsQueriesControllersOhMy - Templates, up until now, all handlers were injected into the controllers constructor.  Not a big deal unless the controller gets quite large, therefore all handlers are now injected into the actions themselves ([FromServices] attribute).  This should help prevent the need to seperate the controllers into their own files.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _August 17th, 2019_  **v2.1.20**
 - **BUG** FromQueryWithAlterenateNamesBinderProvider - Was checking PropertyAttributes rather than Attributes...
 - APIBlox.AspNetCore.Types.Query - Exposed Map to children.

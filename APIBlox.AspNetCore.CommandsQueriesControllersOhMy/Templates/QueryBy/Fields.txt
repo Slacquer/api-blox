@@ -1,1 +1,1 @@
-﻿private readonly IQueryHandler<[REQ_OBJECT], HandlerResponse> _getBy[RES_OBJECT_INNER_RESULT]Handler;
+﻿

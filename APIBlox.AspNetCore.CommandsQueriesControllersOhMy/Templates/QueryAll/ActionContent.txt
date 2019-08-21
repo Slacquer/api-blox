@@ -9,11 +9,12 @@
 [ProducesErrorResponseType(typeof(RequestErrorObject))]
 [RESPONSE_TYPES]
 public async Task<IActionResult> [CONTROLLER_NAME]QueryAll[REQ_OBJECT](
+	[FromServices]IQueryHandler<[REQ_OBJECT], HandlerResponse> handler,
     [ACTION_PARAMS]
     CancellationToken cancellationToken
 )
 {
-    var ret = await _getAll[RES_OBJECT_INNER_RESULT]Handler.HandleAsync(
+    var ret = await handler.HandleAsync(
         [NEW_REQ_OBJECT], 
         cancellationToken
     );

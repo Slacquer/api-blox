@@ -8,11 +8,12 @@
 [ProducesErrorResponseType(typeof(RequestErrorObject))]
 [RESPONSE_TYPES]
 public async Task<IActionResult> [CONTROLLER_NAME]PatchBy[REQ_OBJECT](
+	[FromServices]ICommandHandler<[REQ_OBJECT], HandlerResponse> handler,
     [ACTION_PARAMS]
     CancellationToken cancellationToken
 )
 {
-    var ret = await _patchBy[REQ_OBJECT]Handler.HandleAsync(
+    var ret = await handler.HandleAsync(
         [NEW_REQ_OBJECT],
         cancellationToken
     );

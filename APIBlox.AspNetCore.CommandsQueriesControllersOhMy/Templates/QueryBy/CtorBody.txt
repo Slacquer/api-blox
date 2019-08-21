@@ -1,1 +1,1 @@
-﻿_getBy[RES_OBJECT_INNER_RESULT]Handler = getBy[RES_OBJECT_INNER_RESULT]Handler;
+﻿
