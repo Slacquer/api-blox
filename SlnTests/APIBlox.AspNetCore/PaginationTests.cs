@@ -56,7 +56,7 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.Contains("skip=7", ret.Next);
             Assert.Contains("top=2", ret.Next);
             Assert.Contains("runningCount=17", ret.Next);
-            Assert.Contains("orderBy=foo.bar", ret.Next);
+            Assert.Contains("$SORTBY=foo.bar", ret.Next);
         }
 
         [Fact]
@@ -174,10 +174,23 @@ namespace SlnTests.APIBlox.AspNetCore
         }
 
         [Fact]
-        public void ResultsLessThanMaxSoNextShouldBeNull()
+        public void ResultsLessThanMaxSoNextAndPreviousShouldBeNull()
         {
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("");
+
+            var builder = new PaginationMetadataBuilder(10);
+            var ret = builder.Build(9, ctx);
+
+            Assert.Null(ret.Previous);
+            Assert.Null(ret.Next);
+        }
+
+        [Fact]
+        public void ResultsLessThanMaxButNonPaginationQueryParamsPassedSoNextAndPreviousShouldBeNull()
+        {
+            var ctx = GetActionExecutingContext();
+            ctx.HttpContext.Request.QueryString = new QueryString("?OrderBy=foo.bar");
 
             var builder = new PaginationMetadataBuilder(10);
             var ret = builder.Build(9, ctx);

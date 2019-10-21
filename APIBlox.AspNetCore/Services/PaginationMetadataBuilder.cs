@@ -113,7 +113,7 @@ namespace APIBlox.AspNetCore
             if (!(previousQuery is null))
                 previousQuery.Undefined = previousQuery.Undefined;
 
-            return new PaginationMetadata
+            var ret = new PaginationMetadata
             {
                 ResultCount = resultCount,
                 Next = nextQuery is null
@@ -123,6 +123,12 @@ namespace APIBlox.AspNetCore
                     ? null
                     : string.Format(baseUrl, previousQuery)
             };
+
+            // if previous is empty and we do not have more than max, then next should be null as well.
+            if (ret.Previous is null && resultCount < _defaultPageSize)
+                ret.Next = null;
+
+            return ret;
         }
 
         private FilteredPaginationQuery Clone(FilteredPaginationQuery org)
