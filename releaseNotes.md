@@ -1,4 +1,4 @@
-_October 20th, 2019_  **v2.1.22**
+_October 20th, 2019_  **v2.1.23**
 - Pagination - Seems when query params OTHER than pagination query parms are sent, then one the results were less than max alloted, the **NEXT** was being populated and should not have been. 
 
 Thanks,  
