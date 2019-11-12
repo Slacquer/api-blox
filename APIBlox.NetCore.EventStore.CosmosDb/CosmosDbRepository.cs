@@ -155,7 +155,7 @@ namespace APIBlox.NetCore
         {
             var exists = await _client.CreateDatabaseQuery()
                 .Where(d => d.Id == _databaseId)
-                .ToAsyncEnumerable().Any();
+                .ToAsyncEnumerable().AnyAsync();
 
             if (exists)
                 return;
@@ -167,7 +167,7 @@ namespace APIBlox.NetCore
         {
             var exists = await _client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(_databaseId))
                 .Where(d => d.Id == _collectionId)
-                .ToAsyncEnumerable().Any();
+                .ToAsyncEnumerable().AnyAsync();
 
             if (exists)
                 return;

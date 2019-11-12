@@ -1,3 +1,12 @@
+_November 12th, 2019_  **v2.1.24**
+- NUGET packages update.  This will likely be the last version before .net core 3 is implmented.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _October 20th, 2019_  **v2.1.23**
 - Pagination - Seems when query params OTHER than pagination query parms are sent, then one the results were less than max alloted, the **NEXT** was being populated and should not have been. 
 
