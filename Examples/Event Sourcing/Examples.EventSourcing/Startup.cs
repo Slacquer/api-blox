@@ -30,21 +30,21 @@ namespace Examples
                 .AddServerFaults()
                 .AddEventStoreService<CosmosAggregate>()
                 .AddCosmosDbRepository<CosmosAggregate>(_config)
-                .AddEventStoreService<MongoAggregate>()
-                .AddMongoDbRepository<MongoAggregate>(_config)
-                .AddEventStoreService<RavenAggregate>()
-                .AddRavenDbRepository<RavenAggregate>(_config)
-                .AddEventStoreService<EfCoreSqlAggregate>()
-                .AddEfCoreSqlRepository<EfCoreSqlAggregate>(_config)
+                //.AddEventStoreService<MongoAggregate>()
+                //.AddMongoDbRepository<MongoAggregate>(_config)
+                //.AddEventStoreService<RavenAggregate>()
+                //.AddRavenDbRepository<RavenAggregate>(_config)
+                //.AddEventStoreService<EfCoreSqlAggregate>()
+                //.AddEfCoreSqlRepository<EfCoreSqlAggregate>(_config)
                 ;
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
 
-            BsonClassMap.RegisterClassMap<MongoAggregate>();
-            BsonClassMap.RegisterClassMap<SomeValueAdded>();
-            BsonClassMap.RegisterClassMap<SomeValueChanged>();
+            //BsonClassMap.RegisterClassMap<MongoAggregate>();
+            //BsonClassMap.RegisterClassMap<SomeValueAdded>();
+            //BsonClassMap.RegisterClassMap<SomeValueChanged>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
