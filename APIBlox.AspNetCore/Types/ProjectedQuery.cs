@@ -7,8 +7,6 @@ namespace APIBlox.AspNetCore.Types
 {
     /// <summary>
     ///     Class ProjectedQuery.
-    /// Implements the <see cref="APIBlox.AspNetCore.Types.Query" />
-    /// Implements the <see cref="APIBlox.AspNetCore.Contracts.IProjectedQuery" />
     ///     <para>
     ///         Be sure to also call the AddFromQueryWithAlternateNamesBinder Mvc/MvcCore
     ///         builder extension method to allow alternate names to be used.
@@ -19,7 +17,6 @@ namespace APIBlox.AspNetCore.Types
     /// </summary>
     public class ProjectedQuery : Query, IProjectedQuery
     {
-        /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:APIBlox.AspNetCore.Types.ProjectedQuery" /> class.
         /// </summary>
@@ -28,15 +25,12 @@ namespace APIBlox.AspNetCore.Types
             Map.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
         }
 
-        /// <inheritdoc />
         /// <summary>
         ///     Sets the select (projection).  Usage is determined by the API itself, please seek external documentation.
         /// </summary>
-        /// <value>The select.</value>
         [FromQueryWithAlternateNames("select", "$Select", "Project", "$Project")]
         public string Select { get; set; }
 
-        /// <inheritdoc />
         /// <summary>
         ///     Builds the query.
         /// </summary>

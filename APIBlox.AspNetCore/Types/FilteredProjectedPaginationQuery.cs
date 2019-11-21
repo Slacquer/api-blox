@@ -7,8 +7,6 @@ namespace APIBlox.AspNetCore.Types
 {
     /// <summary>
     ///     Class FilteredProjectedPaginationQuery.
-    ///     Implements the <see cref="APIBlox.AspNetCore.Types.FilteredPaginationQuery" />
-    ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IProjectedQuery" />
     ///     <para>
     ///         Be sure to also call the AddFromQueryWithAlternateNamesBinder Mvc/MvcCore
     ///         builder extension method to allow alternate names to be used.
@@ -17,14 +15,11 @@ namespace APIBlox.AspNetCore.Types
     ///         Alternates In addition to FilteredPaginationQuery, Select = $Select, Project, $Project
     ///     </para>
     /// </summary>
-    /// <seealso cref="APIBlox.AspNetCore.Types.FilteredPaginationQuery" />
-    /// <seealso cref="APIBlox.AspNetCore.Contracts.IProjectedQuery" />
     public class FilteredProjectedPaginationQuery : FilteredPaginationQuery, IProjectedQuery
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="FilteredProjectedPaginationQuery" /> class.
         /// </summary>
-        /// <inheritdoc />
         public FilteredProjectedPaginationQuery()
         {
             Map.TryAdd("Select", new[] { "$Select", "Project", "$Project" });
@@ -33,8 +28,6 @@ namespace APIBlox.AspNetCore.Types
         /// <summary>
         ///     Sets the select (projection).  Usage is determined by the API itself, please seek external documentation.
         /// </summary>
-        /// <value>The select.</value>
-        /// <inheritdoc />
         [FromQueryWithAlternateNames("select", "$Select", "Project", "$Project")]
         public string Select { get; set; }
 
@@ -42,7 +35,6 @@ namespace APIBlox.AspNetCore.Types
         ///     Builds the query.
         /// </summary>
         /// <returns>QueryBuilder.</returns>
-        /// <inheritdoc />
         protected override QueryBuilder BuildQuery()
         {
             var qb = base.BuildQuery();

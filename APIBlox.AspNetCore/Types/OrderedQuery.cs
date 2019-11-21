@@ -7,8 +7,6 @@ namespace APIBlox.AspNetCore.Types
 {
     /// <summary>
     ///     Class OrderedQuery.
-    ///     Implements the <see cref="APIBlox.AspNetCore.Types.Query" />
-    ///     Implements the <see cref="APIBlox.AspNetCore.Contracts.IOrderedQuery" />
     ///     <para>
     ///         Be sure to also call the AddFromQueryWithAlternateNamesBinder Mvc/MvcCore
     ///         builder extension method to allow alternate names to be used.
@@ -17,8 +15,6 @@ namespace APIBlox.AspNetCore.Types
     ///         Alternates to OrderBy = $OrderBy, SortBy, $SortBy, Sort, $Sort
     ///     </para>
     /// </summary>
-    /// <seealso cref="APIBlox.AspNetCore.Types.Query" />
-    /// <seealso cref="APIBlox.AspNetCore.Contracts.IOrderedQuery" />
     public class OrderedQuery : Query, IOrderedQuery
     {
         /// <summary>
@@ -29,11 +25,9 @@ namespace APIBlox.AspNetCore.Types
             Map.TryAdd("OrderBy", new[] { "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort" });
         }
 
-        /// <inheritdoc />
         /// <summary>
         ///     Sets the order by.  Usage is determined by the API itself, please seek external documentation.
         /// </summary>
-        /// <value>The order by.</value>
         [FromQueryWithAlternateNames("orderBy", "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort")]
         public string OrderBy { get; set; }
 
