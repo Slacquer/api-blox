@@ -52,7 +52,6 @@ namespace APIBlox.AspNetCore.Types
         /// <summary>
         ///     Gets or sets the undefined parameters.
         /// </summary>
-        /// <value>The other.</value>
         [JsonIgnore]
         internal IDictionary<string, string> Undefined { get; set; } = new Dictionary<string, string>();
 
