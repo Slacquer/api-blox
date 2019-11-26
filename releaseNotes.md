@@ -1,3 +1,13 @@
+_November 26th, 2019_  **v2.1.26**
+- Pagination, changed pagination to allow specifying max result sizes per routed path.
+- New Extension method(s): _**AddPaginationResultMaxPageSizeForPath**_
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 21st, 2019_  **v2.1.25**
 - Seems Ghost Doc caused some COMMENT issues in several files (when being parsed for dynamic controllers).
 

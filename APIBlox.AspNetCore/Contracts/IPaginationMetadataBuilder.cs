@@ -1,4 +1,5 @@
-﻿using APIBlox.AspNetCore.Services;
+﻿using System.Collections.Generic;
+using APIBlox.AspNetCore.Services;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace APIBlox.AspNetCore.Contracts
@@ -6,5 +7,7 @@ namespace APIBlox.AspNetCore.Contracts
     internal interface IPaginationMetadataBuilder
     {
         PaginationMetadata Build(int resultCount, ActionExecutingContext context);
+
+        Dictionary<string, int> RoutePageSizes { get; }
     }
 }
