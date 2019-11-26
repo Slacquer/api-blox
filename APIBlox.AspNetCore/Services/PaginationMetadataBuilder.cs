@@ -5,6 +5,7 @@ using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Services;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 
@@ -16,10 +17,14 @@ namespace APIBlox.AspNetCore
         private readonly int _defaultPageSize;
         private Dictionary<string, string> _queryParams;
 
-        public PaginationMetadataBuilder(int defaultPageSize = 1000)
+        public PaginationMetadataBuilder(int defaultPageSize = 1000, Dictionary<string, int> routePageSizes = null)
         {
             _defaultPageSize = defaultPageSize;
+
+            RoutePageSizes = routePageSizes ?? new Dictionary<string, int>();
         }
+
+        public Dictionary<string, int> RoutePageSizes { get; }
 
         public PaginationMetadata Build(int resultCount, ActionExecutingContext context)
         {
@@ -34,24 +39,41 @@ namespace APIBlox.AspNetCore
 
             var url = $"{req.Scheme}://{req.Host}{req.PathBase}{req.Path}{{0}}";
 
+            var maxPageSize = GetMaxPageSize(req.Path);
+
             // Throwing or should we just log?
-            if (resultCount > _defaultPageSize)
+            if (resultCount > maxPageSize)
                 throw new IndexOutOfRangeException(
                     $"The result set of {resultCount} is larger than what " +
-                    $"has been defined as the Max page size of {_defaultPageSize}."
+                    $"has been defined as the Max page size of {maxPageSize} for path {req.Path}."
                 );
 
-            return BuildResponseFromQuery(resultCount, url);
+            return BuildResponseFromQuery(resultCount, url, maxPageSize);
         }
 
-        private PaginationMetadata BuildResponseFromQuery(int resultCount, string baseUrl)
+        private int GetMaxPageSize(PathString reqPath)
+        {
+            if (!RoutePageSizes.Any())
+                return _defaultPageSize;
+
+            var p = reqPath.ToString().ToLowerInvariant();
+
+            if (!RoutePageSizes.ContainsKey(p))
+                return _defaultPageSize;
+
+            var max = RoutePageSizes[p];
+
+            return max;
+        }
+
+        private PaginationMetadata BuildResponseFromQuery(int resultCount, string baseUrl, int maxPageSize)
         {
             var requestQuery = new FilteredPaginationQuery();
             requestQuery.SetAliasesAndValues(_queryParams);
 
             // If resultCount is 0 or empty then we are just going to display the structure.
             // If resultCount is less than the max, and no query params have been passed then no need to have anything either.
-            if (resultCount == 0 || resultCount < _defaultPageSize && !_queryParams.Any())
+            if (resultCount == 0 || resultCount < maxPageSize && !_queryParams.Any())
                 return new PaginationMetadata
                 {
                     ResultCount = resultCount
@@ -98,7 +120,7 @@ namespace APIBlox.AspNetCore
                 previousQuery.RunningCount = previousRc <= 0 ? null : previousRc;
 
                 // Do we need next?
-                if (resultCount >= _defaultPageSize)
+                if (resultCount >= maxPageSize)
                 {
                     nextQuery = Clone(requestQuery);
                     nextQuery.Skip = next;
@@ -125,7 +147,7 @@ namespace APIBlox.AspNetCore
             };
 
             // if previous is empty and we do not have more than max, then next should be null as well.
-            if (ret.Previous is null && resultCount < _defaultPageSize)
+            if (ret.Previous is null && resultCount < maxPageSize)
                 ret.Next = null;
 
             return ret;

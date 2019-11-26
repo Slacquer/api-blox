@@ -23,6 +23,8 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class MvcBuilderExtensionsAspNetCore
     {
+        private static PaginationMetadataBuilder _pmb;
+
         /// <summary>
         ///     Adds a binder to allow the <see cref="IQuery" /> filters the ability
         ///     to accept alternate names.  IE: Filter=$Filter=Where, etc.
@@ -183,6 +185,63 @@ namespace Microsoft.Extensions.DependencyInjection
         )
         {
             PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defaultPageSize, defineResponseFunc);
+
+            return builder;
+        }
+
+        /// <summary>
+        ///     Adds a path and max result size configuration for the Pagination result action filter.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="maxPageSize">Maximum size of the page.</param>
+        /// <returns>IServiceCollection.</returns>
+        /// <exception cref="ArgumentException">
+        ///     Must not be an empty path. - path
+        ///     or
+        ///     Must be greater than zero. - maxPageSize
+        /// </exception>
+        public static IServiceCollection AddPaginationResultMaxPageSizeForPath(this IServiceCollection services, string path, int maxPageSize)
+        {
+            AddPaginationResultPathToMetadataBuilder(path, maxPageSize);
+
+            return services;
+        }
+
+        /// <summary>
+        ///     Adds a path and max result size configuration for the Pagination result action filter.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="maxPageSize">Maximum size of the page.</param>
+        /// <returns>IMvcCoreBuilder.</returns>
+        /// <exception cref="ArgumentException">
+        ///     Must not be an empty path. - path
+        ///     or
+        ///     Must be greater than zero. - maxPageSize
+        /// </exception>
+        public static IMvcCoreBuilder AddPaginationResultMaxPageSizeForPath(this IMvcCoreBuilder builder, string path, int maxPageSize)
+        {
+            AddPaginationResultPathToMetadataBuilder(path, maxPageSize);
+
+            return builder;
+        }
+
+        /// <summary>
+        ///     Adds a path and max result size configuration for the Pagination result action filter.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="maxPageSize">Maximum size of the page.</param>
+        /// <returns>IMvcBuilder.</returns>
+        /// <exception cref="ArgumentException">
+        ///     Must not be an empty path. - path
+        ///     or
+        ///     Must be greater than zero. - maxPageSize
+        /// </exception>
+        public static IMvcBuilder AddPaginationResultMaxPageSizeForPath(this IMvcBuilder builder, string path, int maxPageSize)
+        {
+            AddPaginationResultPathToMetadataBuilder(path, maxPageSize);
 
             return builder;
         }
@@ -447,6 +506,21 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder.AddFilter<ValidateResourceActionFilter>(order: 0);
         }
 
+        private static void AddPaginationResultPathToMetadataBuilder(string path, int maxPageSize)
+        {
+            var pmb = GetPaginationMetadataBuilder();
+
+            if (path.IsEmptyNullOrWhiteSpace())
+                throw new ArgumentException("Must not be an empty path.", nameof(path));
+
+            if (maxPageSize <= 0)
+                throw new ArgumentException("Must be greater than zero.", nameof(maxPageSize));
+
+            var p = $"{(path.StartsWith("/") ? "" : "/")}{path.ToLowerInvariant()}";
+
+            pmb.RoutePageSizes.Add(p, maxPageSize);
+        }
+
         private static void PaginationCommon(IServiceCollection services, ILoggerFactory loggerFactory, bool onlyQueryActions,
             int defaultPageSize = 100, Func<object, dynamic> defineResponseFunc = null
         )
@@ -458,13 +532,20 @@ namespace Microsoft.Extensions.DependencyInjection
                     );
                     o.Filters.TryAdd(new EnsurePaginationResponseResultActionFilter(
                             loggerFactory,
-                            new PaginationMetadataBuilder(defaultPageSize),
+                            GetPaginationMetadataBuilder(defaultPageSize),
                             onlyQueryActions,
                             defineResponseFunc
                         )
                     );
                 }
             );
+        }
+
+        private static IPaginationMetadataBuilder GetPaginationMetadataBuilder(int defaultPageSize = 100)
+        {
+            _pmb ??= new PaginationMetadataBuilder(defaultPageSize);
+
+            return _pmb;
         }
 
         private static Dictionary<string, string> CommonRouteTokens(IConfiguration configuration, IHostingEnvironment env, string configSection)

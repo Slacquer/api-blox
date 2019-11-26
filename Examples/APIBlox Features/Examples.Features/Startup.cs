@@ -101,6 +101,8 @@ namespace Examples
                 // Pagination
                 .AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 10)
 
+                .AddPaginationResultMaxPageSizeForPath("DevApi/versions/1/resources/Examples",10)
+
                 //
                 // No pagination
                 //.AddEnsureResponseResultActionFilter(_loggerFactory,false, defineResponseFunc: data => new { NonPaginatedResources = data })
