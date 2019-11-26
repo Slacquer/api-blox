@@ -99,9 +99,10 @@ namespace Examples
 
                 //
                 // Pagination
-                .AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 10)
+                .AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 10,
+                    onlyForThesePaths:new List<string>{ "/DevApi/versions/2/resources/Examples"})
 
-                .AddPaginationResultMaxPageSizeForPath("DevApi/versions/1/resources/Examples",10)
+                .AddPaginationResultMaxPageSizeForPath("/DevApi/versions/1/resources/Examples",10)
 
                 //
                 // No pagination

@@ -1,6 +1,7 @@
-_November 26th, 2019_  **v2.1.29**
+_November 26th, 2019_  **v2.1.30**
 - Changed some comments.
-
+- EnsurePaginationResponseResultActionFilter, added onlyForThesePaths param, thus paging can be applied to ONLY these paths, or if omitted (null) then will be applied globally.  **NOTE** it's up to you to make sure the passed paths match what the httpContext request path contains (IE: stats with a "\\")
+ 
 Thanks,  
 _Slacquer_  
 

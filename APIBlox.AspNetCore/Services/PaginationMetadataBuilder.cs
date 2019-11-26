@@ -49,12 +49,12 @@ namespace APIBlox.AspNetCore
             if (!RoutePageSizes.Any())
                 return _defaultPageSize;
 
-            var p = reqPath.ToString().ToLowerInvariant();
+            var path = RoutePageSizes.Keys.FirstOrDefault(k => k.EqualsEx(reqPath));
 
-            if (!RoutePageSizes.ContainsKey(p))
+            if (path is null)
                 return _defaultPageSize;
 
-            var max = RoutePageSizes[p];
+            var max = RoutePageSizes[path];
 
             return max;
         }

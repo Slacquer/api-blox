@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -11,21 +13,31 @@ namespace APIBlox.AspNetCore.Filters
     internal class EnsurePaginationResponseResultActionFilter : EnsureResponseResultActionFilter
     {
         private readonly IPaginationMetadataBuilder _paginationBuilder;
+        private readonly List<string> _onlyForThesePaths;
+        private readonly bool _globalPaths;
 
         public EnsurePaginationResponseResultActionFilter(
             ILoggerFactory loggerFactory,
             IPaginationMetadataBuilder paginationBuilder,
             bool getsOnly,
+            IEnumerable<string> onlyForThesePaths,
             Func<object, object> ensureResponseCompliesWithAction
         )
             : base(loggerFactory, getsOnly, ensureResponseCompliesWithAction)
         {
+
+            _onlyForThesePaths = onlyForThesePaths is null ? new List<string>() : onlyForThesePaths.ToList();
+            _globalPaths = !_onlyForThesePaths.Any();
+
             _paginationBuilder = paginationBuilder;
         }
 
         protected override void Handle(ActionExecutingContext context, ObjectResult result)
         {
             if (!ResultValueIsEnumerable || !ResultValueCount.HasValue)
+                return;
+
+            if (!_globalPaths && !_onlyForThesePaths.Any(p => p.EqualsEx(context.HttpContext.Request.Path)))
                 return;
 
             var value = result.Value;

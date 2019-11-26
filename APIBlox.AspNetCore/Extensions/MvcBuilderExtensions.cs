@@ -141,6 +141,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">The builder.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
+        /// <param name="onlyForThesePaths">The only for these paths.  When null, filter is applied globally</param>
         /// <param name="defaultPageSize">Default size of the page before creating the NEXT url.</param>
         /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcCoreBuilder.</returns>
@@ -148,11 +149,12 @@ namespace Microsoft.Extensions.DependencyInjection
             this IMvcCoreBuilder builder,
             ILoggerFactory loggerFactory,
             bool onlyQueryActions = true,
+            IEnumerable<string> onlyForThesePaths = null,
             int defaultPageSize = 1000,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defaultPageSize, defineResponseFunc);
+            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defaultPageSize, defineResponseFunc, onlyForThesePaths);
 
             return builder;
         }
@@ -173,6 +175,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">The builder.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
+        /// <param name="onlyForThesePaths">The only for these paths.  When null, filter is applied globally.</param>
         /// <param name="defaultPageSize">Default size of the page before creating the NEXT url.</param>
         /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcBuilder.</returns>
@@ -180,11 +183,12 @@ namespace Microsoft.Extensions.DependencyInjection
             this IMvcBuilder builder,
             ILoggerFactory loggerFactory,
             bool onlyQueryActions = true,
+            IEnumerable<string> onlyForThesePaths = null,
             int defaultPageSize = 1000,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defaultPageSize, defineResponseFunc);
+            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defaultPageSize, defineResponseFunc, onlyForThesePaths);
 
             return builder;
         }
@@ -516,13 +520,13 @@ namespace Microsoft.Extensions.DependencyInjection
             if (maxPageSize <= 0)
                 throw new ArgumentException("Must be greater than zero.", nameof(maxPageSize));
 
-            var p = $"{(path.StartsWith("/") ? "" : "/")}{path.ToLowerInvariant()}";
+            var p = $"{(path.StartsWith("/") ? "" : "/")}{path}";
 
             pmb.RoutePageSizes.Add(p, maxPageSize);
         }
 
         private static void PaginationCommon(IServiceCollection services, ILoggerFactory loggerFactory, bool onlyQueryActions,
-            int defaultPageSize = 100, Func<object, dynamic> defineResponseFunc = null
+            int defaultPageSize = 100, Func<object, dynamic> defineResponseFunc = null, IEnumerable<string> onlyForThesePaths = null
         )
         {
             services.Configure<MvcOptions>(o =>
@@ -534,6 +538,7 @@ namespace Microsoft.Extensions.DependencyInjection
                             loggerFactory,
                             GetPaginationMetadataBuilder(defaultPageSize),
                             onlyQueryActions,
+                            onlyForThesePaths,
                             defineResponseFunc
                         )
                     );
