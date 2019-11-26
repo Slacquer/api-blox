@@ -83,7 +83,7 @@ namespace APIBlox.AspNetCore
             {
                 // No inputs, create new ones, no need to new up previousQuery.
                 // Set the top (take) to be the max and the skip to be what was just returned, resultCount.
-                var top = GetTop(requestQuery);
+                var top = GetTop(requestQuery, maxPageSize);
 
                 nextQuery = Clone(requestQuery);
                 nextQuery.Skip = requestQuery.RunningCount;
@@ -93,7 +93,7 @@ namespace APIBlox.AspNetCore
             else if (!requestQuery.Top.IsNullOrZero() && requestQuery.Skip.IsNullOrZero())
             {
                 // Only top specified, se we use it.
-                var top = GetTop(requestQuery);
+                var top = GetTop(requestQuery, maxPageSize);
 
                 nextQuery = Clone(requestQuery);
                 nextQuery.Skip = requestQuery.RunningCount;
@@ -102,9 +102,9 @@ namespace APIBlox.AspNetCore
             }
             else if (requestQuery.Top.HasValue)
             {
-                var top = GetTop(requestQuery);
-                var pre = GetPreviousSkip(requestQuery);
-                var next = GetNextSkip(requestQuery);
+                var top = GetTop(requestQuery, maxPageSize);
+                var pre = GetPreviousSkip(requestQuery, maxPageSize);
+                var next = GetNextSkip(requestQuery, maxPageSize);
                 var nextRc = requestQuery.RunningCount;
 
                 previousQuery = Clone(requestQuery);
@@ -163,30 +163,30 @@ namespace APIBlox.AspNetCore
             requestQuery.RunningCount += resultCount;
         }
 
-        private int? GetTop(IPaginationQuery requestQuery)
+        private static int? GetTop(IPaginationQuery requestQuery, int defaultPageSize)
         {
             if (requestQuery.Top.IsNullOrZero())
-                return _defaultPageSize;
+                return defaultPageSize;
 
-            return requestQuery.Top > _defaultPageSize ? _defaultPageSize : requestQuery.Top;
+            return requestQuery.Top > defaultPageSize ? defaultPageSize : requestQuery.Top;
         }
 
-        private int? GetNextSkip(IPaginationQuery query)
+        private static int? GetNextSkip(IPaginationQuery query, int defaultPageSize)
         {
-            var top = query.Top.IsNullOrZero() || query.Top > _defaultPageSize ? _defaultPageSize : query.Top;
+            var top = query.Top.IsNullOrZero() || query.Top > defaultPageSize ? defaultPageSize : query.Top;
             var skip = query.Skip ?? query.RunningCount;
 
             return skip + top;
         }
 
-        private int? GetPreviousSkip(IPaginationQuery query)
+        private static int? GetPreviousSkip(IPaginationQuery query, int defaultPageSize)
         {
             if (query.Skip.IsNullOrZero())
                 return null;
 
             // ReSharper disable once PossibleInvalidOperationException
             var skip = query.Skip.Value;
-            var top = query.Top > _defaultPageSize ? _defaultPageSize : query.Top;
+            var top = query.Top > defaultPageSize ? defaultPageSize : query.Top;
 
             var nextSkip = skip - top;
 
