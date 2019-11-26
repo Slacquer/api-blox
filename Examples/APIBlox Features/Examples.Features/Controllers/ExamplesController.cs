@@ -53,10 +53,10 @@ namespace Examples.Controllers
         {
             var examples = new List<string>();
 
-            for (var i = 0; i < _rndSvc.GenerateNumber(100); i++)
+            for (var i = 0; i < _rndSvc.GenerateNumber(1000); i++)
                 examples.Add($"FuBar {i}");
 
-            return Ok(examples.Take(10));
+            return Ok(examples.Skip(query.Skip ?? 0).Take(query.Top ?? 10));
         }
 
         /// <summary>

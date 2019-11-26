@@ -41,13 +41,6 @@ namespace APIBlox.AspNetCore
 
             var maxPageSize = GetMaxPageSize(req.Path);
 
-            // Throwing or should we just log?
-            if (resultCount > maxPageSize)
-                throw new IndexOutOfRangeException(
-                    $"The result set of {resultCount} is larger than what " +
-                    $"has been defined as the Max page size of {maxPageSize} for path {req.Path}."
-                );
-
             return BuildResponseFromQuery(resultCount, url, maxPageSize);
         }
 

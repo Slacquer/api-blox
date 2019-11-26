@@ -1,3 +1,12 @@
+_November 26th, 2019_  **v2.1.27**
+- Pagination, Decided to remove the max size check, and just roll with it.  It really wasn't needed.  My thought process was incorrect at the time (lets hope).
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 26th, 2019_  **v2.1.26**
 - Pagination, changed pagination to allow specifying max result sizes per routed path.
 - New Extension method(s): _**AddPaginationResultMaxPageSizeForPath**_

@@ -233,17 +233,17 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.Null(ret.Previous);
         }
 
-        [Fact]
-        public void ShouldThrowSinceResultSetIsLargerThanMaxDefinedPageSize()
-        {
-            var ctx = GetActionExecutingContext();
-            ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&runningCount=10");
-            var builder = new PaginationMetadataBuilder(5);
+        //[Fact]
+        //public void ShouldThrowSinceResultSetIsLargerThanMaxDefinedPageSize()
+        //{
+        //    var ctx = GetActionExecutingContext();
+        //    ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&runningCount=10");
+        //    var builder = new PaginationMetadataBuilder(5);
 
-            var ex = Assert.Throws<IndexOutOfRangeException>(() => builder.Build(10, ctx));
+        //    var ex = Assert.Throws<IndexOutOfRangeException>(() => builder.Build(10, ctx));
 
-            Assert.StartsWith("The result set of 10 is larger than what has been defined as the Max page size of 5", ex.Message);
-        }
+        //    Assert.StartsWith("The result set of 10 is larger than what has been defined as the Max page size of 5", ex.Message);
+        //}
 
         [Fact]
         public void ShouldTreatZerosAsNoInputsSoShouldHaveNextNoPrevious()
