@@ -1,4 +1,4 @@
-_November 26th, 2019_  **v2.1.28**
+_November 26th, 2019_  **v2.1.29**
 - Changed some comments.
 
 Thanks,  
