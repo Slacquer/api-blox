@@ -1,3 +1,12 @@
+_November 26th, 2019_  **v2.1.28**
+- Changed some comments.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 26th, 2019_  **v2.1.27**
 - Pagination, Decided to remove the max size check, and just roll with it.  It really wasn't needed.  My thought process was incorrect at the time (lets hope).
 

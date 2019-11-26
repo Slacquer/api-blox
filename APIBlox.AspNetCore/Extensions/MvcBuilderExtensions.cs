@@ -141,7 +141,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">The builder.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
-        /// <param name="defaultPageSize">Default size of the page.</param>
+        /// <param name="defaultPageSize">Default size of the page before creating the NEXT url.</param>
         /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcCoreBuilder.</returns>
         public static IMvcCoreBuilder AddEnsurePaginationResultActionFilter(
@@ -173,7 +173,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">The builder.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
-        /// <param name="defaultPageSize">Default size of the page.</param>
+        /// <param name="defaultPageSize">Default size of the page before creating the NEXT url.</param>
         /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddEnsurePaginationResultActionFilter(
@@ -194,7 +194,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="path">The path.</param>
-        /// <param name="maxPageSize">Maximum size of the page.</param>
+        /// <param name="maxPageSize">Maximum size of the page before creating the NEXT url.</param>
         /// <returns>IServiceCollection.</returns>
         /// <exception cref="ArgumentException">
         ///     Must not be an empty path. - path
@@ -213,7 +213,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="path">The path.</param>
-        /// <param name="maxPageSize">Maximum size of the page.</param>
+        /// <param name="maxPageSize">Maximum size of the page before creating the NEXT url.</param>
         /// <returns>IMvcCoreBuilder.</returns>
         /// <exception cref="ArgumentException">
         ///     Must not be an empty path. - path
@@ -232,7 +232,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="path">The path.</param>
-        /// <param name="maxPageSize">Maximum size of the page.</param>
+        /// <param name="maxPageSize">Maximum size of the page before creating the NEXT url.</param>
         /// <returns>IMvcBuilder.</returns>
         /// <exception cref="ArgumentException">
         ///     Must not be an empty path. - path
