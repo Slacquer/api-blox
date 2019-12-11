@@ -1,4 +1,4 @@
-_December 11thh, 2019_  **v2.1.32**
+_December 11thh, 2019_  **v2.1.33**
 - ReadOnlyEventStoreService, during event stream deserialization, configured JsonSerializerSettings were not being used.
 
 Thanks,  
