@@ -21,9 +21,12 @@ namespace APIBlox.NetCore
         {
             Repository = repository;
             JsonSettings = serializerSettings ?? repository.JsonSettings ?? new JsonSerializerSettings();
+
+            JsonSerializer = JsonSerializer.Create(JsonSettings);
         }
 
         protected JsonSerializerSettings JsonSettings { get; }
+        protected JsonSerializer JsonSerializer { get; }
 
         public async Task<(long?, DateTimeOffset?)> ReadEventStreamVersionAsync(string streamId, CancellationToken cancellationToken = default)
         {
@@ -60,7 +63,8 @@ namespace APIBlox.NetCore
 
             try
             {
-                data = JObject.FromObject(document.Data).ToObject(Type.GetType(document.DataType));
+                data = JObject.FromObject(document.Data, JsonSerializer)
+                    .ToObject(Type.GetType(document.DataType), JsonSerializer);
             }
             catch (JsonSerializationException)
             {

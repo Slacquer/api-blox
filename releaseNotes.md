@@ -1,3 +1,12 @@
+_December 11thh, 2019_  **v2.1.32**
+- ReadOnlyEventStoreService, during event stream deserialization, configured JsonSerializerSettings were not being used.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _November 26th, 2019_  **v2.1.31**
 - PaginationMetadataBuilder, incorrectly handling new max pages size variable.
 
