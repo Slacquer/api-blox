@@ -70,6 +70,10 @@ namespace APIBlox.NetCore
             {
                 data = document.Data;
             }
+            catch (ArgumentException)
+            {
+                data = document.Data;
+            }
 
             return new EventModel
             {

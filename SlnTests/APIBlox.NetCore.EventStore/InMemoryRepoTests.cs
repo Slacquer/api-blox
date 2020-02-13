@@ -4,7 +4,11 @@ using System.Threading.Tasks;
 using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Models;
+using APIBlox.NetCore.Options;
+using APIBlox.NetCore.Types.JsonBits;
+using Microsoft.Azure.Documents.Client;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using Xunit;
@@ -15,26 +19,29 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 {
     public class InMemoryRepoTests
     {
-        //private static IEventStoreService<DummyAggregate> GetCosmosbBackedEventStoreService()
-        //{
-        //    var options = new CosmosDbOptions
-        //    {
-        //        DatabaseId = "testDb",
-        //        Endpoint = "https://localhost:8081",
-        //        Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
-        //    };
+        private static IEventStoreService<DummyAggregate> GetCosmosbBackedEventStoreService()
+        {
+            var options = new CosmosDbOptions
+            {
+                DatabaseId = "testDb",
+                Endpoint = "https://localhost:8081",
+                Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
+            };
 
-        //    options.CollectionProperties.Add("DummyAggregate", new CosmosDbCollectionProperties());
-        //    var opt = Options.Create(options);
+            options.CollectionProperties.Add("DummyAggregate", new CosmosDbCollectionProperties()
+            {
+                CollectionName = "DummyCollection"
+            });
+            var opt = Options.Create(options);
 
-        //    var c = new DocumentClient(new Uri(options.Endpoint), options.Key);
+            var c = new DocumentClient(new Uri(options.Endpoint), options.Key);
 
-        //    var repo = new CosmosDbRepository<DummyAggregate>(c, new CamelCaseSettings(), opt);
+            var repo = new CosmosDbRepository<DummyAggregate>(c, new CamelCaseSettings(), opt);
 
-        //    IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
+            IEventStoreService<DummyAggregate> svc = new EventStoreService<DummyAggregate>(repo);
 
-        //    return svc;
-        //}
+            return svc;
+        }
 
         //private static IEventStoreService<DummyAggregate> GetMongoDbBackedEventStoreService()
         //{
@@ -73,19 +80,19 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
         private static async Task RunCommon(IEventStoreService<DummyAggregate> svc)
         {
-            var agg = new DummyAggregate {StreamId = "test-doc"};
+            var agg = new DummyAggregate { StreamId = "test-doc" };
 
             await svc.DeleteEventStreamAsync(agg.StreamId);
             await Task.Delay(100);
 
-            var lst = new List<EventModel> {new EventModel {Data = new {someTHing = 99}}, new EventModel {Data = "2"}, new EventModel {Data = "3"}};
+            var lst = new List<EventModel> { new EventModel { Data = new { someTHing = 99 } }, new EventModel { Data = "2" }, new EventModel { Data = "3" } };
 
             var eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray());
             await Task.Delay(100);
 
             Assert.NotNull(eventStoreDoc);
 
-            lst = new List<EventModel> {new EventModel {Data = "4"}};
+            lst = new List<EventModel> { new EventModel { Data = "4" } };
 
             eventStoreDoc = await svc.WriteToEventStreamAsync(agg.StreamId, lst.ToArray(), 3);
             await Task.Delay(100);
@@ -107,10 +114,10 @@ namespace SlnTests.APIBlox.NetCore.EventStore
                 new Child {Foo = "bbb", Bar = 456},
                 new Child {Foo = "ccc", Bar = 789}
             };
-            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel {Data = agg});
+            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = agg });
             await Task.Delay(100);
 
-            lst = new List<EventModel> {new EventModel {Data = "5"}};
+            lst = new List<EventModel> { new EventModel { Data = "5" } };
 
             eventStoreDoc = await svc.WriteToEventStreamAsync(result.StreamId, lst.ToArray(), result.Version);
             await Task.Delay(100);
@@ -125,10 +132,10 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             Assert.NotNull(result.Snapshot);
             Assert.NotNull(result.Snapshot.Data as DummyAggregate);
 
-            var data = (DummyAggregate) result.Snapshot.Data;
-            Assert.True(((List<Child>) data.Children)[0].Structure.Num1 == 44);
+            var data = (DummyAggregate)result.Snapshot.Data;
+            Assert.True(((List<Child>)data.Children)[0].Structure.Num1 == 44);
 
-            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel {Data = "snapshot2"}, true);
+            await svc.CreateSnapshotAsync(result.StreamId, result.Version, new SnapshotModel { Data = "snapshot2" }, true);
             await Task.Delay(100);
 
             result = await svc.ReadEventStreamAsync(agg.StreamId);
@@ -140,21 +147,21 @@ namespace SlnTests.APIBlox.NetCore.EventStore
             Assert.True(result.Snapshot.Data.Equals("snapshot2"));
         }
 
-        //[Fact]
-        //public async Task CosmosDbFullTest()
-        //{
-        //    var svc = GetCosmosbBackedEventStoreService();
-
-        //    await RunCommon(svc);
-        //}
-
         [Fact]
-        public async Task EfCoreSqlServerFullTest()
+        public async Task CosmosDbFullTest()
         {
-            var svc = GetEfCoreSqlBackedEventStoreService();
+            var svc = GetCosmosbBackedEventStoreService();
 
             await RunCommon(svc);
         }
+
+        //[Fact]
+        //public async Task EfCoreSqlServerFullTest()
+        //{
+        //    var svc = GetEfCoreSqlBackedEventStoreService();
+
+        //    await RunCommon(svc);
+        //}
 
         //[Fact]
         //public async Task MongoDbFullTest()
@@ -191,7 +198,7 @@ namespace SlnTests.APIBlox.NetCore.EventStore
 
         [JsonProperty(PropertyName = "fubar")] public int Bar { get; set; }
 
-        [BsonIgnore] public MySstruct Structure { get; set; } = new MySstruct {Num1 = 44, Num2 = 12313};
+        [BsonIgnore] public MySstruct Structure { get; set; } = new MySstruct { Num1 = 44, Num2 = 12313 };
     }
 
     public struct MySstruct
