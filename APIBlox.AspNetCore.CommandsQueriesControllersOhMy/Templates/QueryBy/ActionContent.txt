@@ -4,8 +4,7 @@
 [PARAMS_COMMENTS]
 [HttpGet("[ACTION_ROUTE]")]
 [Produces("application/json", "application/problem+json")]
-// REMOVED for 2.2, until fix  https://github.com/aspnet/Mvc/issues/8174
-//[Consumes("application/json")]
+[Consumes("application/json")]
 [ProducesErrorResponseType(typeof(RequestErrorObject))]
 [RESPONSE_TYPES]
 public async Task<IActionResult> [CONTROLLER_NAME]QueryBy[REQ_OBJECT](
