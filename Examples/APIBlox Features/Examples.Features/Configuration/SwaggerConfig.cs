@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 // ReSharper disable once CheckNamespace
@@ -10,8 +11,13 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             return services.AddSwaggerGen(c =>
                 {
-                    c.DescribeAllEnumsAsStrings();
-                    c.SwaggerDoc(version, new Info {Title = siteTitle, Version = version});
+                    c.SwaggerDoc(version,
+                        new OpenApiInfo
+                        {
+                            Title = siteTitle,
+                            Version = version
+                        }
+                    );
                     c.IncludeXmlComments(@".\Examples.Features.xml", true);
                 }
             );

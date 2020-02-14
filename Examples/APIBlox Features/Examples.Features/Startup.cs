@@ -1,5 +1,6 @@
 ﻿
 using Examples.Controllers;
+
 #if UseAPIBlox
 using System;
 using System.IO;
@@ -7,7 +8,6 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using APIBlox.NetCore.Types;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
@@ -27,11 +27,10 @@ namespace Examples
         private const string Version = "v1";
 
     #if UseAPIBlox
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             _configuration = configuration;
             _environment = environment;
-            _loggerFactory = loggerFactory;
 
             _assemblyNames = new[]
             {
@@ -57,7 +56,7 @@ namespace Examples
 
                 //
                 // Instead of having to manually add to service collection.
-                .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
+                .AddInjectableServices(Program.StartupLogger, _assemblyNames, _assemblyPaths)
 
                 //
                 //  Change what is returned to the user when an error occurs.
@@ -99,7 +98,7 @@ namespace Examples
 
                 //
                 // Pagination
-                .AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 10,
+                .AddEnsurePaginationResultActionFilter(Program.StartupLogger, defaultPageSize: 10,
                     onlyForThesePaths:new List<string>{ "/DevApi/versions/2/resources/Examples"})
 
                 .AddPaginationResultMaxPageSizeForPath("/DevApi/versions/1/resources/Examples",10)
@@ -121,7 +120,7 @@ namespace Examples
                 .AddFromQueryWithAlternateNamesBinder()
 
             #endif
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
@@ -154,7 +153,6 @@ namespace Examples
         private const string AboutErrorsUrl = "http://hey.look.at.me/errorcodes";
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
-        private readonly ILoggerFactory _loggerFactory;
     #endif
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace Examples.Configuration
 {
@@ -10,8 +10,13 @@ namespace Examples.Configuration
         {
             return services.AddSwaggerGen(c =>
                 {
-                    c.DescribeAllEnumsAsStrings();
-                    c.SwaggerDoc(version, new Info {Title = siteTitle, Version = version});
+                    c.SwaggerDoc(version,
+                        new OpenApiInfo
+                        {
+                            Title = siteTitle,
+                            Version = version
+                        }
+                    );
                     c.IncludeXmlComments(@".\Examples.EventSourcing.xml", true);
                 }
             );

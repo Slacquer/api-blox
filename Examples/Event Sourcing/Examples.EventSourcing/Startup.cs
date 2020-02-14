@@ -1,12 +1,10 @@
 ﻿using Examples.AggregateModels;
 using Examples.Configuration;
-using Examples.Events;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Bson.Serialization;
 
 namespace Examples
 {
@@ -38,7 +36,7 @@ namespace Examples
                 //.AddEfCoreSqlRepository<EfCoreSqlAggregate>(_config)
                 ;
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
 
@@ -54,7 +52,12 @@ namespace Examples
             // Handle any and all server (500) errors with a defined structure.
             app.UseServerFaults();
 
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
         }

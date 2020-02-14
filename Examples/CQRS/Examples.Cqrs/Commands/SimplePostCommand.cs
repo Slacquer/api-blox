@@ -14,7 +14,7 @@ namespace Examples.Commands
         {
             // This implementation does NOT return anything (other than the task object obviously).
 
-            var res = new HandlerResponse().SetErrorTo400BadRequest("u blow");
+            var res = new HandlerResponse().SetErrorTo400BadRequest("Some Big Fat Error!");
             res.Result = requestCommand.SomeValue;
 
             return Task.FromResult(res);

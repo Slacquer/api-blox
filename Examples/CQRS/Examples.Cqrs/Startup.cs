@@ -17,12 +17,9 @@ namespace Examples
         private const string Version = "v1";
         private readonly string[] _assemblyNames;
         private readonly string[] _assemblyPaths;
-        private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IWebHostEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IWebHostEnvironment environment)
         {
-            _loggerFactory = loggerFactory;
-
             _assemblyNames = new[]
             {
                 "Examples."
@@ -45,11 +42,11 @@ namespace Examples
 
                 //
                 // Instead of having to manually add to service collection.
-                .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
+                .AddInjectableServices(Program.StartupLogger, _assemblyNames, _assemblyPaths)
 
                 //
                 //  Some decorators, be sure to do AFTER injectable services have been established.
-                .AddCqrsDecorators(_loggerFactory)
+                .AddCqrsDecorators(Program.StartupLogger)
                 .AddMvc()
 
                 //
@@ -59,7 +56,7 @@ namespace Examples
                 //
                 // Pagination
                 //.AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 100)
-                .AddEnsureResponseResultActionFilter(_loggerFactory)
+                .AddEnsureResponseResultActionFilter(Program.StartupLogger)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);

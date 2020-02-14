@@ -1,6 +1,7 @@
 ﻿using APIBlox.NetCore.Extensions;
+//using MicroElements.Swashbuckle.FluentValidation;
 using Microsoft.AspNetCore.Builder;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -13,14 +14,21 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             return services.AddSwaggerGen(c =>
                 {
-                    c.DescribeAllEnumsAsStrings();
-                    c.SwaggerDoc(version, new Info {Title = siteTitle, Version = version});
+                    c.SwaggerDoc(version,
+                        new OpenApiInfo
+                        {
+                            Title = siteTitle,
+                            Version = version
+                        }
+                    );
                     c.IncludeXmlComments(@".\Examples.DynamicControllers.xml", true);
 
                     if (!dynamicControllersXmlFile.IsEmptyNullOrWhiteSpace())
                         c.IncludeXmlComments(dynamicControllersXmlFile, true);
 
-                    c.AddFluentValidationRules();
+                    //c.AddFluentValidationRules();
+                    //c.SchemaFilter<FluentValidationRules>();
+                    //c.OperationFilter<FluentValidationOperationFilter>();
                 }
             );
         }

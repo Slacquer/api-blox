@@ -22,10 +22,8 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.1" />
-    <PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="2.3.0" />
-    <!--<PackageReference Include="Microsoft.AspNetCore.App" />-->
-    <!--<PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />-->
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+    <!--<PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="2.3.0" />-->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

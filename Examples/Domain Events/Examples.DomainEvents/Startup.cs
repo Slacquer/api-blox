@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace Examples
 {
@@ -17,12 +18,9 @@ namespace Examples
         private const string Version = "v1";
         private readonly string[] _assemblyNames;
         private readonly string[] _assemblyPaths;
-        private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IWebHostEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IWebHostEnvironment environment)
         {
-            _loggerFactory = loggerFactory;
-
             _assemblyNames = new[]
             {
                 "Examples."
@@ -44,7 +42,7 @@ namespace Examples
 
                 //
                 // Instead of having to manually add to service collection.
-                .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
+                .AddInjectableServices(Program.StartupLogger, _assemblyNames, _assemblyPaths)
                 .AddDomainEventsDispatcher()
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
@@ -56,9 +54,14 @@ namespace Examples
         {
             app.UseHsts();
 
-            app.UseMvc();
-
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

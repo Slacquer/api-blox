@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Examples
 {
@@ -21,7 +20,6 @@ namespace Examples
         private const string SiteTitle = "APIBlox Example: DynamiControllers";
         private const string Version = "v1";
         private readonly IWebHostEnvironment _environment;
-        private readonly ILoggerFactory _loggerFactory;
 
         private string _dynamicControllersXmlFile;
         private Assembly _dynamicControllersAssembly;
@@ -30,12 +28,9 @@ namespace Examples
         ///     Initializes a new instance of the <see cref="StartupBase" /> class.
         /// </summary>
         /// <param name="environment">The environment.</param>
-        /// <param name="loggerFactory">The logger factory.</param>
-        protected StartupBase(IWebHostEnvironment environment, ILoggerFactory loggerFactory
-        )
+        protected StartupBase(IWebHostEnvironment environment)
         {
             _environment = environment;
-            _loggerFactory = loggerFactory;
         }
 
         /// <summary>
@@ -51,11 +46,11 @@ namespace Examples
 
                 //
                 // Instead of having to manually add to service collection.
-                .AddReferencedInjectableServices(_loggerFactory)
+                .AddReferencedInjectableServices(Program.StartupLogger)
 
                 //
                 //  DynamicControllers and configuration
-                .AddDynamicControllerConfigurations(_loggerFactory,
+                .AddDynamicControllerConfigurations(Program.StartupLogger,
                     GetType(),
                     _environment.IsProduction(),
                     _environment.IsProduction(),
@@ -93,7 +88,7 @@ namespace Examples
 
                 //
                 // Pagination
-                .AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 10)
+                .AddEnsurePaginationResultActionFilter(Program.StartupLogger, defaultPageSize: 10)
 
                 // Location header
                 .AddPostLocationHeaderResultFilter()
@@ -122,7 +117,12 @@ namespace Examples
 
             app.UseHsts();
 
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
 #if DEBUG
             app.UseSwaggerExampleFeatures(SiteTitle, Version);

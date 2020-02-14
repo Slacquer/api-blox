@@ -2,7 +2,6 @@
 using APIBlox.AspNetCore.Contracts;
 using Examples.Configuration;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Examples
 {
@@ -17,9 +16,8 @@ namespace Examples
         ///     Initializes a new instance of the <see cref="Startup" /> class.
         /// </summary>
         /// <param name="environment">The environment.</param>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public Startup(IWebHostEnvironment environment, ILoggerFactory loggerFactory)
-            : base(environment, loggerFactory)
+        public Startup(IWebHostEnvironment environment)
+            : base(environment)
         {
         }
 
