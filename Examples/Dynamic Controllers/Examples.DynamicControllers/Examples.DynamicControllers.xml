@@ -278,7 +278,7 @@
                 Implements the <see cref="T:Examples.StartupBase" />
             </summary>
         </member>
-        <member name="M:Examples.Startup.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
+        <member name="M:Examples.Startup.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
                 Initializes a new instance of the <see cref="T:Examples.Startup" /> class.
             </summary>
@@ -297,7 +297,7 @@
                 Class Startup.
             </summary>
         </member>
-        <member name="M:Examples.StartupBase.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
+        <member name="M:Examples.StartupBase.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
                 Initializes a new instance of the <see cref="T:Examples.StartupBase" /> class.
             </summary>

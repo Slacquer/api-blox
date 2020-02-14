@@ -11,6 +11,7 @@ using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable once CheckNamespace
@@ -19,7 +20,7 @@ namespace APIBlox.AspNetCore
     internal class ServerFaultsMiddleware
     {
         private static readonly Regex StackTraceRegex = new Regex(@"([^\)]*\)) in (.*):line (\d)*$");
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly ILogger<ServerFaultsMiddleware> _log;
         private readonly RequestDelegate _next;
         private readonly Func<string> _referenceIdFunc;
@@ -31,7 +32,7 @@ namespace APIBlox.AspNetCore
         public ServerFaultsMiddleware(
             RequestDelegate next,
             ILogger<ServerFaultsMiddleware> logger,
-            IHostingEnvironment env,
+            IWebHostEnvironment env,
             string typeUrl,
             bool verboseProduction,
             bool addUserStackTrace,

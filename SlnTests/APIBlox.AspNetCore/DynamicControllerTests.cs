@@ -13,9 +13,10 @@ namespace SlnTests.APIBlox.AspNetCore
         public void ShouldBuildInputParams()
         {
             var type = typeof(TestControllerParameters);
-            var ret = DynamicControllerFactory.WriteInputParamsWithNamespaces(type);
+            var (item1, strings) = DynamicControllerFactory.WriteInputParamsWithNamespaces(type);
 
-            Assert.NotNull(ret);
+            Assert.NotNull(item1);
+            Assert.NotNull(strings);
         }
     }
 

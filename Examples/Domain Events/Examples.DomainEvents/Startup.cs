@@ -19,7 +19,7 @@ namespace Examples
         private readonly string[] _assemblyPaths;
         private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IHostingEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
 
@@ -47,7 +47,7 @@ namespace Examples
                 .AddInjectableServices(_loggerFactory, _assemblyNames, _assemblyPaths)
                 .AddDomainEventsDispatcher()
                 .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
         }

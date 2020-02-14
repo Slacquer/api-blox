@@ -19,7 +19,7 @@ namespace Examples
         private readonly string[] _assemblyPaths;
         private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IHostingEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
 
@@ -60,7 +60,7 @@ namespace Examples
                 // Pagination
                 //.AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 100)
                 .AddEnsureResponseResultActionFilter(_loggerFactory)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
         }
@@ -73,7 +73,14 @@ namespace Examples
 
             app.UseHsts();
 
-            app.UseMvc();
+            //app.UseMvc();
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
         }

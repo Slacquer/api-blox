@@ -61,28 +61,36 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         ///     Will make sure that
-        ///     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
+        ///     <see cref="MvcNewtonsoftJsonOptions.SerializerSettings" />.ContractResolver is
         ///     set to use <see cref="CamelCasePropertyNamesContractResolver" />
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <returns>IMvcCoreBuilder.</returns>
         public static IMvcCoreBuilder AddCamelCaseResultsOptions(this IMvcCoreBuilder builder)
         {
-            CamelCaseResultsCommon(builder.Services);
+            builder.Services.AddMvcCore().AddNewtonsoftJson(s =>
+            {
+                if (!(s.SerializerSettings.ContractResolver is CamelCasePropertyNamesContractResolver))
+                    s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
 
             return builder;
         }
 
         /// <summary>
         ///     Will make sure that
-        ///     <see cref="MvcJsonOptions.SerializerSettings" />.ContractResolver is
+        ///     <see cref="MvcNewtonsoftJsonOptions.SerializerSettings" />.ContractResolver is
         ///     set to use <see cref="CamelCasePropertyNamesContractResolver" />
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddCamelCaseResultsOptions(this IMvcBuilder builder)
         {
-            CamelCaseResultsCommon(builder.Services);
+            builder.Services.AddMvc().AddNewtonsoftJson(s =>
+            {
+                if (!(s.SerializerSettings.ContractResolver is CamelCasePropertyNamesContractResolver))
+                    s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
 
             return builder;
         }
@@ -435,7 +443,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IMvcCoreBuilder.</returns>
         public static IMvcCoreBuilder AddRouteTokensConvention(
             this IMvcCoreBuilder builder,
-            IConfiguration configuration, IHostingEnvironment env,
+            IConfiguration configuration, IWebHostEnvironment env,
             string configSection = "RouteTokenOptions"
         )
         {
@@ -459,7 +467,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddRouteTokensConvention(
             this IMvcBuilder builder,
-            IConfiguration configuration, IHostingEnvironment env,
+            IConfiguration configuration, IWebHostEnvironment env,
             string configSection = "RouteTokenOptions"
         )
         {
@@ -482,7 +490,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services.Configure<ApiBehaviorOptions>(o =>
                 {
-                    o.SuppressUseValidationProblemDetailsForInvalidModelStateResponses = true;
+                    //o.SuppressUseValidationProblemDetailsForInvalidModelStateResponses = true;
                     o.SuppressModelStateInvalidFilter = true;
                 }
             );
@@ -502,7 +510,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services.Configure<ApiBehaviorOptions>(o =>
                 {
-                    o.SuppressUseValidationProblemDetailsForInvalidModelStateResponses = true;
+                    //o.SuppressUseValidationProblemDetailsForInvalidModelStateResponses = true;
                     o.SuppressModelStateInvalidFilter = true;
                 }
             );
@@ -553,7 +561,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return _pmb;
         }
 
-        private static Dictionary<string, string> CommonRouteTokens(IConfiguration configuration, IHostingEnvironment env, string configSection)
+        private static Dictionary<string, string> CommonRouteTokens(IConfiguration configuration, IWebHostEnvironment env, string configSection)
         {
             var ret = configuration.GetSection(configSection).Get<Dictionary<string, string>>();
 
@@ -572,15 +580,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return ret;
         }
 
-        private static void CamelCaseResultsCommon(IServiceCollection services)
-        {
-            services.Configure<MvcJsonOptions>(s =>
-                {
-                    if (!(s.SerializerSettings.ContractResolver is CamelCasePropertyNamesContractResolver))
-                        s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                }
-            );
-        }
 
         private static void FindExistingResultActionFilterAndThrow(FilterCollection filters, string who)
         {

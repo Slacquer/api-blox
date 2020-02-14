@@ -74,7 +74,7 @@ namespace APIBlox.NetCore
         public async Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
         {
-            var doc = await _context.Documents.SingleAsync(d => d.Id == document.Id, cancellationToken);
+            var doc =  _context.Documents.Single(d => d.Id == document.Id);
 
             doc.Version = document.Version;
             doc.TimeStamp = document.TimeStamp;

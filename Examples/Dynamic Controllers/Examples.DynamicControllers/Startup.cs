@@ -18,7 +18,7 @@ namespace Examples
         /// </summary>
         /// <param name="environment">The environment.</param>
         /// <param name="loggerFactory">The logger factory.</param>
-        public Startup(IHostingEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IWebHostEnvironment environment, ILoggerFactory loggerFactory)
             : base(environment, loggerFactory)
         {
         }

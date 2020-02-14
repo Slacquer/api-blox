@@ -65,6 +65,7 @@ namespace APIBlox.NetCore
                 new UpdateOptions {IsUpsert = false},
                 cancellationToken
             );
+
         }
 
         public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate,

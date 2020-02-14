@@ -57,8 +57,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
                     if (es.ConfigureWarnings)
                         o.ConfigureWarnings(w =>
-                            w.Throw(RelationalEventId.QueryClientEvaluationWarning,
-                                RelationalEventId.QueryPossibleExceptionWithAggregateOperator,
+                            w.Throw(
+                                //RelationalEventId.QueryClientEvaluationWarning,
+                               // RelationalEventId.QueryPossibleExceptionWithAggregateOperator,
                                 RelationalEventId.QueryPossibleUnintendedUseOfEqualsWarning
                             )
                         );

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -76,7 +77,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IApplicationBuilder.</returns>
         public static IApplicationBuilder UseSimulateWaitTime(
             this IApplicationBuilder application,
-            IHostingEnvironment env,
+            IWebHostEnvironment env,
             params string[] excludeUrls
         )
         {

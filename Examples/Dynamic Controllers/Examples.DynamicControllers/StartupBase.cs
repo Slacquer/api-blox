@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Examples
@@ -19,7 +20,7 @@ namespace Examples
     {
         private const string SiteTitle = "APIBlox Example: DynamiControllers";
         private const string Version = "v1";
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
 
         private string _dynamicControllersXmlFile;
@@ -30,7 +31,7 @@ namespace Examples
         /// </summary>
         /// <param name="environment">The environment.</param>
         /// <param name="loggerFactory">The logger factory.</param>
-        protected StartupBase(IHostingEnvironment environment, ILoggerFactory loggerFactory
+        protected StartupBase(IWebHostEnvironment environment, ILoggerFactory loggerFactory
         )
         {
             _environment = environment;
@@ -102,7 +103,7 @@ namespace Examples
                 .AddCamelCaseResultsOptions()
 
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
 #if DEBUG
             services.AddSwaggerExampleFeatures(SiteTitle, Version, _dynamicControllersXmlFile);

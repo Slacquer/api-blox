@@ -27,7 +27,7 @@ namespace Examples
         private const string Version = "v1";
 
     #if UseAPIBlox
-        public Startup(IConfiguration configuration, IHostingEnvironment environment, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
             _environment = environment;
@@ -153,7 +153,7 @@ namespace Examples
         private readonly string[] _assemblyPaths;
         private const string AboutErrorsUrl = "http://hey.look.at.me/errorcodes";
         private readonly IConfiguration _configuration;
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
         private readonly ILoggerFactory _loggerFactory;
     #endif
     }

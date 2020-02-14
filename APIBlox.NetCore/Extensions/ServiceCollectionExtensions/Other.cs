@@ -148,7 +148,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">IServiceCollection</param>
         /// <param name="loggerFactory">ILoggerFactory</param>
         /// <param name="environment">
-        ///     Name of running environment, we are not Passing IHostingEnvironment
+        ///     Name of running environment, we are not Passing IWebHostEnvironment
         ///     as this is a AspNetCore thing, my understanding is that eventually the GenericHostBuilder will likely
         ///     expose the environment, and we can use it rather than a string.
         /// </param>
@@ -203,7 +203,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">IServiceCollection</param>
         /// <param name="loggerFactory">ILoggerFactory</param>
         /// <param name="environment">
-        ///     Name of running environment, we are not Passing IHostingEnvironment
+        ///     Name of running environment, we are not Passing IWebHostEnvironment
         ///     as this is a AspNetCore thing, my understanding is that eventually the GenericHostBuilder will likely
         ///     expose the environment, and we can use it rather than a string.
         /// </param>

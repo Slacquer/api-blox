@@ -15,6 +15,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Index = Microsoft.Azure.Documents.Index;
 
 namespace APIBlox.NetCore
 {
@@ -74,7 +75,7 @@ namespace APIBlox.NetCore
             where TResultDocument : EventStoreDocument
         {
             var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
-                    new FeedOptions {EnableCrossPartitionQuery = true}
+                    new FeedOptions { EnableCrossPartitionQuery = true }
                 )
                 .Where(predicate)
                 .OrderByDescending(d => d.SortOrder)
@@ -90,7 +91,7 @@ namespace APIBlox.NetCore
                     lst.Add(document);
             }
 
-            return (IEnumerable<TResultDocument>) lst;
+            return (IEnumerable<TResultDocument>)lst;
         }
 
         public async Task UpdateAsync<TDocument>(TDocument document,
@@ -160,7 +161,7 @@ namespace APIBlox.NetCore
             if (exists)
                 return;
 
-            await _client.CreateDatabaseAsync(new Database {Id = _databaseId});
+            await _client.CreateDatabaseAsync(new Database { Id = _databaseId });
         }
 
         private async Task CreateCollectionIfNotExistsAsync(IReadOnlyCollection<string> keys, int offerThroughput)
@@ -178,16 +179,16 @@ namespace APIBlox.NetCore
             };
             documentCollection.PartitionKey.Paths.Add("/StreamId");
 
-            var p = new IncludedPath {Path = "/"};
+            var p = new IncludedPath { Path = "/" };
             var rng = Index.Range(DataType.String);
 
             documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
-            p = new IncludedPath {Path = "/StreamId/?"};
+            p = new IncludedPath { Path = "/StreamId/?" };
             p.Indexes.Add(rng);
             documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
-            p = new IncludedPath {Path = "/DocumentType/?"};
+            p = new IncludedPath { Path = "/DocumentType/?" };
             p.Indexes.Add(rng);
             documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
@@ -204,7 +205,7 @@ namespace APIBlox.NetCore
             await _client.CreateDocumentCollectionAsync(
                 UriFactory.CreateDatabaseUri(_databaseId),
                 documentCollection,
-                new RequestOptions {OfferThroughput = offerThroughput}
+                new RequestOptions { OfferThroughput = offerThroughput }
             );
         }
     }
