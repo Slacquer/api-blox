@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RavenDB.Client" Version="4.2.4" />
+    <PackageReference Include="RavenDB.Client" Version="4.2.8" />
     <PackageReference Include="System.Interactive.Async" Version="4.0.0" />
   </ItemGroup>
 
