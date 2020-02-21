@@ -1,4 +1,14 @@
-_December 11thh, 2019_  **v2.1.33**
+
+_February 21st, 2020_  **v3.0.0**
+- Upgrade to .Net Core 3.x
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+_December 11th, 2019_  **v2.1.33**
 - ReadOnlyEventStoreService, during event stream deserialization, configured JsonSerializerSettings were not being used.
 
 Thanks,  

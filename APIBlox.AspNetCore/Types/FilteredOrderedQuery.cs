@@ -17,8 +17,6 @@ namespace APIBlox.AspNetCore.Types
     /// </summary>
     public class FilteredOrderedQuery : FilteredQuery, IOrderedQuery
     {
-        #region -    Constructors    -
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="FilteredProjectedPaginationQuery" /> class.
         /// </summary>
@@ -26,8 +24,6 @@ namespace APIBlox.AspNetCore.Types
         {
             Map.TryAdd("OrderBy", new[] { "$OrderBy", "SortBy", "$SortBy", "Sort", "$Sort" });
         }
-
-        #endregion
 
         /// <summary>
         ///     Sets the order by.  Usage is determined by the API itself, please seek external documentation.

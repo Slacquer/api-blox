@@ -16,8 +16,6 @@ namespace APIBlox.AspNetCore.Attributes
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
     public class FromQueryWithAlternateNamesAttribute : Attribute, IBindingSourceMetadata, IModelNameProvider
     {
-        #region -    Constructors    -
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="FromQueryWithAlternateNamesAttribute" /> class.
         /// </summary>
@@ -42,8 +40,6 @@ namespace APIBlox.AspNetCore.Attributes
                 AlternateNames.Add(an);
             }
         }
-
-        #endregion
 
         /// <summary>
         ///     Gets the alternate names.
