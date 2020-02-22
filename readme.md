@@ -15,7 +15,9 @@
 ![:)][logo]   
 # API Blox
 
-_April 4th, 2019_  **v2.0.0** _[release notes][rn]_ 
+_February 22nd, 2020_  **v3.0.2** _[release notes][rn]_ 
+
+_Built Using .Net Core 3_
 
 __Dynamic Controllers are now created on the fly, rather than using generic bits!  This has made things (Swashbuckle for one) considerably easier to deal with.__
 
