@@ -23,7 +23,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="RavenDB.Client" Version="4.*" />
-    <PackageReference Include="System.Interactive.Async" Version="4*" />
+    <PackageReference Include="System.Interactive.Async" Version="4.*" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,5 @@
 
-_February 26th, 2020_  **v3.0.3**
+_February 26th, 2020_  **v3.0.4**
 - Changed most references to use wildcard versions.
 
 Thanks,  

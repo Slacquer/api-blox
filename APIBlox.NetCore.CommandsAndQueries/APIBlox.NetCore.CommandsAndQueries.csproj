@@ -3,8 +3,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <!-- <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion> -->
-
+    
     <RootNamespace>APIBlox.NetCore</RootNamespace>
 
     <AssemblyName>APIBlox.NetCore.CommandsAndQueries</AssemblyName>
