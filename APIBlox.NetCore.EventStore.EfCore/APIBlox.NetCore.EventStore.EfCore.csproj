@@ -31,6 +31,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Interactive.Async" Version="4.*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,10 +44,6 @@
     <Content Include="appsettings.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Interactive.Async" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

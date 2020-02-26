@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    
+
     <RootNamespace>APIBlox.NetCore</RootNamespace>
-   
-    <Description>RavenDb backing for APIBlox.NetCore.EventStore.  SourceLink is enabled.</Description> 
-    
+
+    <Description>RavenDb backing for APIBlox.NetCore.EventStore.  SourceLink is enabled.</Description>
+
     <AssemblyName>APIBlox.NetCore.EventStore.RavenDb</AssemblyName>
-   
+
     <Product>APIBlox.NetCore.EventStore.RavenDb</Product>
 
     <PackageId>APIBlox.NetCore.EventStore.RavenDb</PackageId>
@@ -22,16 +22,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="RavenDB.Client" Version="4.*" />
+    <PackageReference Include="System.Interactive.Async" Version="4*" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="RavenDB.Client" Version="4.*" />
-    <PackageReference Include="System.Interactive.Async" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
