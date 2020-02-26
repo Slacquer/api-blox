@@ -70,8 +70,6 @@ namespace Examples
 
             app.UseHsts();
 
-            //app.UseMvc();
-
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

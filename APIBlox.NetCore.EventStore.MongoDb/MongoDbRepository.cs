@@ -35,7 +35,7 @@ namespace APIBlox.NetCore
         {
             await _context.Collection<TDocument>(_colName).InsertManyAsync(
                 documents,
-                new InsertManyOptions {IsOrdered = true},
+                new InsertManyOptions { IsOrdered = true },
                 cancellationToken
             );
 
@@ -62,10 +62,9 @@ namespace APIBlox.NetCore
             await _context.Collection<EventStoreDocument>(_colName).ReplaceOneAsync(
                 i => i.Id == document.Id,
                 document,
-                new UpdateOptions {IsUpsert = false},
+                new ReplaceOptions { IsUpsert = false },
                 cancellationToken
             );
-
         }
 
         public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate,
@@ -75,7 +74,7 @@ namespace APIBlox.NetCore
             var ret = await _context.Collection<EventStoreDocument>(_colName)
                 .DeleteManyAsync(predicate, null, cancellationToken);
 
-            return (int) ret.DeletedCount;
+            return (int)ret.DeletedCount;
         }
     }
 }

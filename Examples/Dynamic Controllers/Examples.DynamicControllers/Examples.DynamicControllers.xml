@@ -320,5 +320,90 @@
             </summary>
             <returns>IEnumerable&lt;IComposedTemplate&gt;.</returns>
         </member>
+        <member name="T:Examples.ITestme`2">
+            <summary>
+                Interface ITestme
+            </summary>
+            <typeparam name="TEntity">The type of the t entity.</typeparam>
+            <typeparam name="TId">The type of the t identifier.</typeparam>
+        </member>
+        <member name="P:Examples.ITestme`2.Id">
+            <summary>
+                Gets or sets the identifier.
+            </summary>
+        </member>
+        <member name="P:Examples.ITestme`2.Entity">
+            <summary>
+                Gets or sets the entity.
+            </summary>
+        </member>
+        <member name="T:Examples.ITestme`1">
+            <summary>
+                Interface ITestme
+            </summary>
+            <typeparam name="TEntity">The type of the t entity.</typeparam>
+        </member>
+        <member name="P:Examples.ITestme`1.Id">
+            <summary>
+                Gets or sets the identifier.
+            </summary>
+        </member>
+        <member name="P:Examples.ITestme`1.Entity">
+            <summary>
+                Gets or sets the entity.
+            </summary>
+        </member>
+        <member name="T:Examples.Testme`2">
+            <summary>
+                Class Testme.
+            Implements the <see cref="T:Examples.TestMeBase`1" />
+            Implements the <see cref="T:Examples.ITestme`2" />
+            </summary>
+        </member>
+        <member name="M:Examples.Testme`2.#ctor(Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Testme`2"/> class.
+            </summary>
+            <param name="loggerFactory">The logger factory.</param>
+        </member>
+        <member name="P:Examples.Testme`2.Id">
+            <summary>
+                Gets or sets the identifier.
+            </summary>
+        </member>
+        <member name="T:Examples.Testme`1">
+            <summary>
+                Class Testme.
+            Implements the <see cref="T:Examples.TestMeBase`1" />
+            Implements the <see cref="T:Examples.ITestme`1" />
+            </summary>
+        </member>
+        <member name="M:Examples.Testme`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Testme`1"/> class.
+            </summary>
+            <param name="loggerFactory">The logger factory.</param>
+        </member>
+        <member name="P:Examples.Testme`1.Id">
+            <summary>
+                Gets or sets the identifier.
+            </summary>
+        </member>
+        <member name="T:Examples.TestMeBase`1">
+            <summary>
+                Class TestMeBase.
+            </summary>
+        </member>
+        <member name="M:Examples.TestMeBase`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.TestMeBase`1"/> class.
+            </summary>
+            <param name="loggerFactory">The logger factory.</param>
+        </member>
+        <member name="P:Examples.TestMeBase`1.Entity">
+            <summary>
+                Gets or sets the entity.
+            </summary>
+        </member>
     </members>
 </doc>

@@ -1,4 +1,13 @@
 
+_February 26th, 2020_  **v3.0.0**
+- Changed most references to use wildcard versions.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _February 21st, 2020_  **v3.0.0**
 - Upgrade to .Net Core 3.x
 

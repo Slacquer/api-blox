@@ -143,7 +143,12 @@ namespace Examples
         #endif
             app.UseHsts();
 
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             app.UseSwaggerExampleFeatures(SiteTitle, Version);
         }
