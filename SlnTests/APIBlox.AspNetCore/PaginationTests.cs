@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using APIBlox.AspNetCore;
 using Microsoft.AspNetCore.Http;
@@ -174,7 +173,7 @@ namespace SlnTests.APIBlox.AspNetCore
         }
 
         [Fact]
-        public void ResultsLessThanMaxSoNextAndPreviousShouldBeNull()
+        public void ResultsLessThanTopSoNextAndPreviousShouldBeNull()
         {
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("");
@@ -187,7 +186,7 @@ namespace SlnTests.APIBlox.AspNetCore
         }
 
         [Fact]
-        public void ResultsLessThanMaxButNonPaginationQueryParamsPassedSoNextAndPreviousShouldBeNull()
+        public void ResultsLessThanTopButNonPaginationQueryParamsPassedSoNextAndPreviousShouldBeNull()
         {
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?OrderBy=foo.bar");
@@ -200,7 +199,7 @@ namespace SlnTests.APIBlox.AspNetCore
         }
 
         [Fact]
-        public void ResultsLessThanMaxSoNextShouldBeNullButPreviousShouldHaveValue()
+        public void ResultsLessThanTopSoNextShouldBeNullButPreviousShouldHaveValue()
         {
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&runningCount=10");

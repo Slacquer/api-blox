@@ -124,6 +124,13 @@ namespace APIBlox.AspNetCore
                     : string.Format(baseUrl, previousQuery)
             };
 
+            // if previous is empty and we do not have more than max, then next should be null as well.
+            if (ret.Previous is null)
+            {
+                if (!(nextQuery is null) && resultCount < nextQuery.Top)
+                    ret.Next = null;
+            }
+
             return ret;
         }
 
