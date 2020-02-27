@@ -98,10 +98,10 @@ namespace Examples
 
                 //
                 // Pagination
-                .AddEnsurePaginationResultActionFilter(Program.StartupLogger, defaultPageSize: 10,
+                .AddEnsurePaginationResultActionFilter(Program.StartupLogger,
                     onlyForThesePaths:new List<string>{ "/DevApi/versions/2/resources/Examples"})
 
-                .AddPaginationResultMaxPageSizeForPath("/DevApi/versions/1/resources/Examples",10)
+                .AddPaginationResultForPath("/DevApi/versions/1/resources/Examples")
 
                 //
                 // No pagination

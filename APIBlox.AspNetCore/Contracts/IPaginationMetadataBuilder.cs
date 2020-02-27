@@ -8,6 +8,6 @@ namespace APIBlox.AspNetCore.Contracts
     {
         PaginationMetadata Build(int resultCount, ActionExecutingContext context);
 
-        Dictionary<string, int> RoutePageSizes { get; }
+        List<string> Routes { get; }
     }
 }

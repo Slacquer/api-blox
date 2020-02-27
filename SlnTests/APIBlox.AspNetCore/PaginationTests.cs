@@ -48,7 +48,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?take=2&offSet=5&rc=7&$SORTBY=foo.bar");
 
-            var builder = new PaginationMetadataBuilder(10);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(10, ctx);
 
             Assert.NotNull(ret.Previous);
@@ -65,7 +65,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=10");
 
-            var builder = new PaginationMetadataBuilder(100);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(100, ctx);
 
             Assert.Null(ret.Previous);
@@ -81,7 +81,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=2&skip=5&rc=5");
 
-            var builder = new PaginationMetadataBuilder(10);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(10, ctx);
 
             Assert.NotNull(ret.Previous);
@@ -97,7 +97,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=5&skip=3&rc=3");
 
-            var builder = new PaginationMetadataBuilder(10);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(10, ctx);
 
             Assert.NotNull(ret.Previous);
@@ -113,7 +113,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&runningCount=10");
 
-            var builder = new PaginationMetadataBuilder(100);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(100, ctx);
 
             Assert.NotNull(ret.Previous);
@@ -133,7 +133,7 @@ namespace SlnTests.APIBlox.AspNetCore
         public void NoInputsShouldHaveNextWithTopBeingTheMaxAndSkipBeingCountAndRcBeing50NoPreviousRegardlessOfMaxCount()
         {
             var ctx = GetActionExecutingContext();
-            var builder = new PaginationMetadataBuilder(100);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(100, ctx);
 
             Assert.NotNull(ret);
@@ -146,7 +146,7 @@ namespace SlnTests.APIBlox.AspNetCore
             Assert.Null(ret.Previous);
 
             ctx = GetActionExecutingContext();
-            builder = new PaginationMetadataBuilder(10);
+            builder = new PaginationMetadataBuilder();
             ret = builder.Build(10, ctx);
 
             Assert.NotNull(ret);
@@ -165,7 +165,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?$top=2&$skip=5&rc=7");
 
-            var builder = new PaginationMetadataBuilder(10);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(0, ctx);
 
             Assert.Null(ret.Previous);
@@ -179,11 +179,11 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("");
 
-            var builder = new PaginationMetadataBuilder(10);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(9, ctx);
 
             Assert.Null(ret.Previous);
-            Assert.Null(ret.Next);
+            Assert.NotNull(ret.Next);
         }
 
         [Fact]
@@ -192,11 +192,11 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?OrderBy=foo.bar");
 
-            var builder = new PaginationMetadataBuilder(10);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(9, ctx);
 
             Assert.Null(ret.Previous);
-            Assert.Null(ret.Next);
+            Assert.NotNull(ret.Next);
         }
 
         [Fact]
@@ -205,7 +205,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=10&skip=10&runningCount=10");
 
-            var builder = new PaginationMetadataBuilder(10);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(3, ctx);
 
             Assert.NotNull(ret.Previous);
@@ -218,7 +218,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=10&myExtraData=999");
 
-            var builder = new PaginationMetadataBuilder(100);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(100, ctx);
 
             Assert.NotNull(ret);
@@ -251,7 +251,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=0&skip=0&runningCount=0");
 
-            var builder = new PaginationMetadataBuilder(100);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(100, ctx);
 
             Assert.NotNull(ret);
@@ -265,7 +265,7 @@ namespace SlnTests.APIBlox.AspNetCore
             ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?top=100&skip=0&runningCount=0");
 
-            builder = new PaginationMetadataBuilder(100);
+            builder = new PaginationMetadataBuilder();
             ret = builder.Build(100, ctx);
 
             Assert.NotNull(ret);
@@ -279,7 +279,7 @@ namespace SlnTests.APIBlox.AspNetCore
             ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?$skip=0");
 
-            builder = new PaginationMetadataBuilder(100);
+            builder = new PaginationMetadataBuilder();
             ret = builder.Build(100, ctx);
 
             Assert.NotNull(ret);
@@ -298,7 +298,7 @@ namespace SlnTests.APIBlox.AspNetCore
             var ctx = GetActionExecutingContext();
             ctx.HttpContext.Request.QueryString = new QueryString("?skip=0&runningCount=10");
 
-            var builder = new PaginationMetadataBuilder(100);
+            var builder = new PaginationMetadataBuilder();
             var ret = builder.Build(100, ctx);
 
             Assert.NotNull(ret);

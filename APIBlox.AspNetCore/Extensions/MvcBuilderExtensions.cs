@@ -150,7 +150,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
         /// <param name="onlyForThesePaths">The only for these paths.  When null, filter is applied globally</param>
-        /// <param name="defaultPageSize">Default size of the page before creating the NEXT url.</param>
         /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcCoreBuilder.</returns>
         public static IMvcCoreBuilder AddEnsurePaginationResultActionFilter(
@@ -158,11 +157,10 @@ namespace Microsoft.Extensions.DependencyInjection
             ILoggerFactory loggerFactory,
             bool onlyQueryActions = true,
             IEnumerable<string> onlyForThesePaths = null,
-            int defaultPageSize = 1000,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defaultPageSize, defineResponseFunc, onlyForThesePaths);
+            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defineResponseFunc, onlyForThesePaths);
 
             return builder;
         }
@@ -184,7 +182,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="onlyQueryActions">if set to <c>true</c> [only query actions].</param>
         /// <param name="onlyForThesePaths">The only for these paths.  When null, filter is applied globally.</param>
-        /// <param name="defaultPageSize">Default size of the page before creating the NEXT url.</param>
         /// <param name="defineResponseFunc">The define response function.</param>
         /// <returns>IMvcBuilder.</returns>
         public static IMvcBuilder AddEnsurePaginationResultActionFilter(
@@ -192,68 +189,64 @@ namespace Microsoft.Extensions.DependencyInjection
             ILoggerFactory loggerFactory,
             bool onlyQueryActions = true,
             IEnumerable<string> onlyForThesePaths = null,
-            int defaultPageSize = 1000,
             Func<object, dynamic> defineResponseFunc = null
         )
         {
-            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defaultPageSize, defineResponseFunc, onlyForThesePaths);
+            PaginationCommon(builder.Services, loggerFactory, onlyQueryActions, defineResponseFunc, onlyForThesePaths);
 
             return builder;
         }
 
         /// <summary>
-        ///     Adds a path and max result size configuration for the Pagination result action filter.
+        ///     Adds a path configuration for the Pagination result action filter.
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="path">The path.</param>
-        /// <param name="maxPageSize">Maximum size of the page before creating the NEXT url.</param>
         /// <returns>IServiceCollection.</returns>
         /// <exception cref="ArgumentException">
         ///     Must not be an empty path. - path
         ///     or
         ///     Must be greater than zero. - maxPageSize
         /// </exception>
-        public static IServiceCollection AddPaginationResultMaxPageSizeForPath(this IServiceCollection services, string path, int maxPageSize)
+        public static IServiceCollection AddPaginationResultForPath(this IServiceCollection services, string path)
         {
-            AddPaginationResultPathToMetadataBuilder(path, maxPageSize);
+            AddPaginationResultPathToMetadataBuilder(path);
 
             return services;
         }
 
         /// <summary>
-        ///     Adds a path and max result size configuration for the Pagination result action filter.
+        ///     Adds a path configuration for the Pagination result action filter.
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="path">The path.</param>
-        /// <param name="maxPageSize">Maximum size of the page before creating the NEXT url.</param>
         /// <returns>IMvcCoreBuilder.</returns>
         /// <exception cref="ArgumentException">
         ///     Must not be an empty path. - path
         ///     or
         ///     Must be greater than zero. - maxPageSize
         /// </exception>
-        public static IMvcCoreBuilder AddPaginationResultMaxPageSizeForPath(this IMvcCoreBuilder builder, string path, int maxPageSize)
+        public static IMvcCoreBuilder AddPaginationResultForPath(this IMvcCoreBuilder builder, string path)
         {
-            AddPaginationResultPathToMetadataBuilder(path, maxPageSize);
+            AddPaginationResultPathToMetadataBuilder(path);
 
             return builder;
         }
 
         /// <summary>
-        ///     Adds a path and max result size configuration for the Pagination result action filter.
+        ///     Adds a path configuration for the Pagination result action filter.
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="path">The path.</param>
-        /// <param name="maxPageSize">Maximum size of the page before creating the NEXT url.</param>
         /// <returns>IMvcBuilder.</returns>
         /// <exception cref="ArgumentException">
         ///     Must not be an empty path. - path
         ///     or
         ///     Must be greater than zero. - maxPageSize
         /// </exception>
-        public static IMvcBuilder AddPaginationResultMaxPageSizeForPath(this IMvcBuilder builder, string path, int maxPageSize)
+        public static IMvcBuilder AddPaginationResultForPath(this IMvcBuilder builder, string path)
         {
-            AddPaginationResultPathToMetadataBuilder(path, maxPageSize);
+            AddPaginationResultPathToMetadataBuilder(path);
 
             return builder;
         }
@@ -518,23 +511,20 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder.AddFilter<ValidateResourceActionFilter>(order: 0);
         }
 
-        private static void AddPaginationResultPathToMetadataBuilder(string path, int maxPageSize)
+        private static void AddPaginationResultPathToMetadataBuilder(string path)
         {
             var pmb = GetPaginationMetadataBuilder();
 
             if (path.IsEmptyNullOrWhiteSpace())
                 throw new ArgumentException("Must not be an empty path.", nameof(path));
 
-            if (maxPageSize <= 0)
-                throw new ArgumentException("Must be greater than zero.", nameof(maxPageSize));
-
             var p = $"{(path.StartsWith("/") ? "" : "/")}{path}";
 
-            pmb.RoutePageSizes.Add(p, maxPageSize);
+            pmb.Routes.Add(p);
         }
 
         private static void PaginationCommon(IServiceCollection services, ILoggerFactory loggerFactory, bool onlyQueryActions,
-            int defaultPageSize = 100, Func<object, dynamic> defineResponseFunc = null, IEnumerable<string> onlyForThesePaths = null
+            Func<object, dynamic> defineResponseFunc = null, IEnumerable<string> onlyForThesePaths = null
         )
         {
             services.Configure<MvcOptions>(o =>
@@ -544,7 +534,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     );
                     o.Filters.TryAdd(new EnsurePaginationResponseResultActionFilter(
                             loggerFactory,
-                            GetPaginationMetadataBuilder(defaultPageSize),
+                            GetPaginationMetadataBuilder(),
                             onlyQueryActions,
                             onlyForThesePaths,
                             defineResponseFunc
@@ -554,9 +544,9 @@ namespace Microsoft.Extensions.DependencyInjection
             );
         }
 
-        private static IPaginationMetadataBuilder GetPaginationMetadataBuilder(int defaultPageSize = 100)
+        private static IPaginationMetadataBuilder GetPaginationMetadataBuilder()
         {
-            _pmb ??= new PaginationMetadataBuilder(defaultPageSize);
+            _pmb ??= new PaginationMetadataBuilder();
 
             return _pmb;
         }

@@ -88,7 +88,7 @@ namespace Examples
 
                 //
                 // Pagination
-                .AddEnsurePaginationResultActionFilter(Program.StartupLogger, defaultPageSize: 10)
+                .AddEnsurePaginationResultActionFilter(Program.StartupLogger)
 
                 // Location header
                 .AddPostLocationHeaderResultFilter()

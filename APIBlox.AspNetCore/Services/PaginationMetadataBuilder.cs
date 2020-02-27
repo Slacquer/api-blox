@@ -14,17 +14,14 @@ namespace APIBlox.AspNetCore
 {
     internal class PaginationMetadataBuilder : IPaginationMetadataBuilder
     {
-        private readonly int _defaultPageSize;
         private Dictionary<string, string> _queryParams;
 
-        public PaginationMetadataBuilder(int defaultPageSize = 1000, Dictionary<string, int> routePageSizes = null)
+        public PaginationMetadataBuilder(List<string> routes = null)
         {
-            _defaultPageSize = defaultPageSize;
-
-            RoutePageSizes = routePageSizes ?? new Dictionary<string, int>();
+            Routes = routes ?? new List<string>();
         }
 
-        public Dictionary<string, int> RoutePageSizes { get; }
+        public List<string> Routes { get; }
 
         public PaginationMetadata Build(int resultCount, ActionExecutingContext context)
         {
@@ -39,30 +36,19 @@ namespace APIBlox.AspNetCore
 
             var url = $"{req.Scheme}://{req.Host}{req.PathBase}{req.Path}{{0}}";
 
-            var maxPageSize = GetMaxPageSize(req.Path);
-
-            return BuildResponseFromQuery(resultCount, url, maxPageSize);
+            return BuildResponseFromQuery(resultCount, url);
         }
 
-        private int GetMaxPageSize(PathString reqPath)
-        {
-            if (!RoutePageSizes.Any())
-                return _defaultPageSize;
-
-            var path = RoutePageSizes.Keys.FirstOrDefault(k => k.EqualsEx(reqPath));
-
-            if (path is null)
-                return _defaultPageSize;
-
-            var max = RoutePageSizes[path];
-
-            return max;
-        }
-
-        private PaginationMetadata BuildResponseFromQuery(int resultCount, string baseUrl, int maxPageSize)
+        private PaginationMetadata BuildResponseFromQuery(int resultCount, string baseUrl)
         {
             var requestQuery = new FilteredPaginationQuery();
             requestQuery.SetAliasesAndValues(_queryParams);
+
+            var maxPageSize = (requestQuery.Top.IsNullOrZero()
+                ? requestQuery.Skip.IsNullOrZero()
+                    ? resultCount
+                    : requestQuery.Skip
+                : requestQuery.Top) ?? resultCount;
 
             // If resultCount is 0 or empty then we are just going to display the structure.
             // If resultCount is less than the max, and no query params have been passed then no need to have anything either.
