@@ -5,7 +5,6 @@ using APIBlox.AspNetCore.Contracts;
 using APIBlox.AspNetCore.Services;
 using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 
@@ -124,10 +123,6 @@ namespace APIBlox.AspNetCore
                     ? null
                     : string.Format(baseUrl, previousQuery)
             };
-
-            // if previous is empty and we do not have more than max, then next should be null as well.
-            if (ret.Previous is null && resultCount < maxPageSize)
-                ret.Next = null;
 
             return ret;
         }
