@@ -1,4 +1,13 @@
 
+_March 5th, 2020_  **v3.0.6**
+- Minor cleanup.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _February 27th, 2020_  **v3.0.4**
 - Pagination, changed to no longer need a MaxPageSize, will use top and skip to determine next and previous.  This does require that the api itself make sure that it takes and skips data as necessary.
 
