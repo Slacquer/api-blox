@@ -41,7 +41,7 @@ namespace Examples.Controllers
         {
             var m = new Aggregate<TAggregate>(_svc, firstName);
 
-            await m.Build(true);
+            await m.BuildAsync(true);
 
             return Ok(m);
         }
@@ -57,7 +57,7 @@ namespace Examples.Controllers
         {
             var m = new Aggregate<TAggregate>(_svc, resource.FirstName);
 
-            await m.AddSomeValue(resource.SomeValue, cancellationToken);
+            await m.AddSomeValueAsync(resource.SomeValue, cancellationToken);
             await m.PublishChangesAsync(cancellationToken);
 
             return Accepted();
@@ -75,7 +75,7 @@ namespace Examples.Controllers
         {
             var m = new Aggregate<TAggregate>(_svc, firstName);
 
-            await m.UpdateSomeValue(someValue, cancellationToken);
+            await m.UpdateSomeValueAsync(someValue, cancellationToken);
             await m.PublishChangesAsync(cancellationToken);
 
             return NoContent();
@@ -92,7 +92,7 @@ namespace Examples.Controllers
         {
             var m = new Aggregate<TAggregate>(_svc, firstName);
 
-            await m.DeleteMe(cancellationToken);
+            await m.DeleteMeAsync(cancellationToken);
 
             return NoContent();
         }

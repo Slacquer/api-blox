@@ -73,7 +73,7 @@ namespace Examples
                 // Too much for this project, take a look at the Example Clean Architecture
                 //.AddInvertedDependentsAndConfigureServices(
                 //    _configuration,
-                //    _loggerFactory,
+                //    Program.StartupLogger,
                 //    _environment.EnvironmentName,
                 //    _assemblyNames,
                 //    _assemblyPaths

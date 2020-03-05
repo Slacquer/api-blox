@@ -360,41 +360,40 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 try
                 {
-                    using (var assResolver = new AssemblyResolver())
+                    using var assResolver = new AssemblyResolver();
+
+                    if (!assFi.Exists)
                     {
-                        if (!assFi.Exists)
-                        {
-                            _log.LogWarning(() => $"Skipping {assFi}, it no longer exists!");
-                            continue;
-                        }
-
-                        var assembly = assResolver.LoadFromAssemblyFileInfo(assFi, out var alreadyLoaded);
-
-                        if (assembly is null)
-                        {
-                            if (!alreadyLoaded)
-                                _log.LogWarning(() => $"NULL result from LoadFromAssemblyFileInfo for file: {assFi}");
-
-                            continue;
-                        }
-
-                        _log.LogInformation(() => $"Resolved Assembly: {assFi}");
-
-                        ret.AddRange(assembly.GetTypes()
-                            .Where(x =>
-                                !x.GetTypeInfo().IsAbstract && injectable &&
-                                x.GetCustomAttributes<InjectableServiceAttribute>().Any()
-                                || inverted && x.GetInterfaces().Any(t =>
-                                    typeof(IDependencyInvertedConfiguration).IsAssignableTo(t)
-                                )
-                            )
-                            .Select(t => new KeyValuePair<bool, Type>(
-                                    typeof(IDependencyInvertedConfiguration).IsAssignableTo(t),
-                                    t
-                                )
-                            )
-                        );
+                        _log.LogWarning(() => $"Skipping {assFi}, it no longer exists!");
+                        continue;
                     }
+
+                    var assembly = assResolver.LoadFromAssemblyFileInfo(assFi, out var alreadyLoaded);
+
+                    if (assembly is null)
+                    {
+                        if (!alreadyLoaded)
+                            _log.LogWarning(() => $"NULL result from LoadFromAssemblyFileInfo for file: {assFi}");
+
+                        continue;
+                    }
+
+                    _log.LogInformation(() => $"Resolved Assembly: {assFi}");
+
+                    ret.AddRange(assembly.GetTypes()
+                        .Where(x =>
+                            !x.GetTypeInfo().IsAbstract && injectable &&
+                            x.GetCustomAttributes<InjectableServiceAttribute>().Any()
+                            || inverted && x.GetInterfaces().Any(t =>
+                                typeof(IDependencyInvertedConfiguration).IsAssignableTo(t)
+                            )
+                        )
+                        .Select(t => new KeyValuePair<bool, Type>(
+                                typeof(IDependencyInvertedConfiguration).IsAssignableTo(t),
+                                t
+                            )
+                        )
+                    );
                 }
                 catch (Exception ex)
                 {
@@ -457,7 +456,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var args = face.GetGenericArguments();
                 ServiceDescriptor descriptor;
 
-                if (args?.Any() == true && type.IsGenericTypeDefinition)
+                if (args.Any() && type.IsGenericTypeDefinition)
                 {
                     if (type.IsOpenGeneric())
                     {
@@ -480,7 +479,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 // If interface doesn't have any generic args, then we will have nothing to pass
                 // to the implementation during creation for THIS INTERFACE, so we will not add it as a service.
-                else if (args == null || !args.Any() && type.IsGenericTypeDefinition)
+                else if (!args.Any() && type.IsGenericTypeDefinition)
                 {
                     continue;
                 }

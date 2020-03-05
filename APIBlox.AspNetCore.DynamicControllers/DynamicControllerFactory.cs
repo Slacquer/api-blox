@@ -430,15 +430,14 @@ namespace APIBlox.AspNetCore
                 if (References.Any(p => p.FilePath.EqualsEx(assembly.Location)))
                     continue;
 
-                using (var ass = new AssemblyResolver())
-                {
-                    ass.LoadFromAssemblyPath(assembly.Location, out _);
+                using var ass = new AssemblyResolver();
 
-                    lst.AddRange(ass.LoadedReferencedAssemblies
-                        .Where(an => File.Exists(an.Location) && References.All(p => p.FilePath != an.Location))
-                        .Select(a => MetadataReference.CreateFromFile(a.Location))
-                    );
-                }
+                ass.LoadFromAssemblyPath(assembly.Location, out _);
+
+                lst.AddRange(ass.LoadedReferencedAssemblies
+                    .Where(an => File.Exists(an.Location) && References.All(p => p.FilePath != an.Location))
+                    .Select(a => MetadataReference.CreateFromFile(a.Location))
+                );
             }
 
             return lst;

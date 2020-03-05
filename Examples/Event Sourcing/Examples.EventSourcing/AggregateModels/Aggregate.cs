@@ -73,9 +73,9 @@ namespace Examples.AggregateModels
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <exception cref="EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
-        public async Task AddSomeValue(string someValue, CancellationToken cancellationToken)
+        public async Task AddSomeValueAsync(string someValue, CancellationToken cancellationToken)
         {
-            await Build(false, cancellationToken);
+            await BuildAsync(false, cancellationToken);
 
             if (!(_myEventStream is null))
                 throw new EventStoreConcurrencyException($"Aggregate with stream id {_streamId} already exists!");
@@ -97,9 +97,9 @@ namespace Examples.AggregateModels
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <exception cref="EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
-        public async Task UpdateSomeValue(string someValue, CancellationToken cancellationToken)
+        public async Task UpdateSomeValueAsync(string someValue, CancellationToken cancellationToken)
         {
-            await Build(false, cancellationToken);
+            await BuildAsync(false, cancellationToken);
 
             if (_myEventStream is null)
                 throw new EventStoreConcurrencyException($"Aggregate with stream id {_streamId} not found!");
@@ -118,8 +118,8 @@ namespace Examples.AggregateModels
         public async Task PublishChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = await _es.WriteToEventStreamAsync(_streamId,
-                DomainEvents.Select(e => new EventModel {Data = e}).ToArray(),
-                _myEventStream.Version > 0 ? _myEventStream.Version : (long?) null,
+                DomainEvents.Select(e => new EventModel { Data = e }).ToArray(),
+                _myEventStream.Version > 0 ? _myEventStream.Version : (long?)null,
                 cancellationToken
             );
 
@@ -128,7 +128,7 @@ namespace Examples.AggregateModels
             if (result.Version % 10 == 0)
                 await _es.CreateSnapshotAsync(_streamId,
                     result.Version,
-                    new SnapshotModel {Data = this},
+                    new SnapshotModel { Data = this },
                     cancellationToken: cancellationToken
                 );
 
@@ -142,7 +142,7 @@ namespace Examples.AggregateModels
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         /// <exception cref="EventStoreNotFoundException">StreamId {_streamId}</exception>
-        public async Task Build(bool failNotFound = false, CancellationToken cancellationToken = default)
+        public async Task BuildAsync(bool failNotFound = false, CancellationToken cancellationToken = default)
         {
             if (!(_myEventStream is null))
                 return;
@@ -159,7 +159,7 @@ namespace Examples.AggregateModels
 
             if (!(_myEventStream.Snapshot is null))
             {
-                var data = (Aggregate<TAggregate>) _myEventStream.Snapshot.Data;
+                var data = (Aggregate<TAggregate>)_myEventStream.Snapshot.Data;
 
                 SomeValue = data.SomeValue;
                 AggregateId = data.AggregateId;
@@ -175,9 +175,9 @@ namespace Examples.AggregateModels
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public async Task DeleteMe(CancellationToken cancellationToken)
+        public Task DeleteMeAsync(CancellationToken cancellationToken)
         {
-            await _es.DeleteEventStreamAsync(_streamId, cancellationToken);
+            return _es.DeleteEventStreamAsync(_streamId, cancellationToken);
         }
 
         private void When(SomeValueAdded e)
@@ -208,7 +208,7 @@ namespace Examples.AggregateModels
                 throw new InvalidOperationException(s);
             }
 
-            info.Invoke(this, new[] {@event});
+            info.Invoke(this, new[] { @event });
         }
     }
 }

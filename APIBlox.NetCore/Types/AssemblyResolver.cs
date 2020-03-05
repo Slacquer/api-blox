@@ -77,8 +77,7 @@ namespace APIBlox.NetCore.Types
                 ? Assembly.Load(new AssemblyName(fileNameWithOutExtension))
                 : AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyFullPath);
 
-            if (assembly != null)
-                LoadReferencedAssemblies(assembly, fileName, directory);
+            LoadReferencedAssemblies(assembly, fileName, directory);
 
             alreadyLoaded = false;
 
@@ -135,9 +134,6 @@ namespace APIBlox.NetCore.Types
                         continue;
 
                     var loadedAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
-
-                    if (loadedAssembly == null)
-                        continue;
 
                     LoadReferencedAssemblies(loadedAssembly, lfn, directory);
                 }

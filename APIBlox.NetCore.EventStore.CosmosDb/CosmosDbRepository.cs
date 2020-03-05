@@ -42,7 +42,9 @@ namespace APIBlox.NetCore
             _docCollectionUri = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
             JsonSettings = settings ?? throw new ArgumentNullException(nameof(settings));
 
+            // ReSharper disable once AsyncConverter.AsyncWait
             CreateDatabaseIfNotExistsAsync().Wait();
+            // ReSharper disable once AsyncConverter.AsyncWait
             CreateCollectionIfNotExistsAsync(colValue.UniqueKeys.ToList(), colValue.OfferThroughput).Wait();
         }
 
