@@ -53,9 +53,9 @@ namespace APIBlox.NetCore
             return _collection;
         }
 
-        private void EnsureDatabaseExists(IDocumentStore store, string database = null, bool createDatabaseIfNotExists = true)
+        private static void EnsureDatabaseExists(IDocumentStore store, string database = null, bool createDatabaseIfNotExists = true)
         {
-            database = database ?? store.Database;
+            database ??= store.Database;
 
             if (string.IsNullOrWhiteSpace(database))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(database));

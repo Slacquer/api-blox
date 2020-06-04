@@ -40,7 +40,7 @@
             </summary>
             <value>My version.</value>
         </member>
-        <member name="M:Examples.AggregateModels.Aggregate`1.AddSomeValue(System.String,System.Threading.CancellationToken)">
+        <member name="M:Examples.AggregateModels.Aggregate`1.AddSomeValueAsync(System.String,System.Threading.CancellationToken)">
             <summary>
                 Adds some value.
             </summary>
@@ -49,7 +49,7 @@
             <returns>Task.</returns>
             <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreConcurrencyException">Aggregate with stream id {_streamId}</exception>
         </member>
-        <member name="M:Examples.AggregateModels.Aggregate`1.UpdateSomeValue(System.String,System.Threading.CancellationToken)">
+        <member name="M:Examples.AggregateModels.Aggregate`1.UpdateSomeValueAsync(System.String,System.Threading.CancellationToken)">
             <summary>
                 Updates some value.
             </summary>
@@ -65,7 +65,7 @@
             <param name="cancellationToken">The cancellation token.</param>
             <returns>Task.</returns>
         </member>
-        <member name="M:Examples.AggregateModels.Aggregate`1.Build(System.Boolean,System.Threading.CancellationToken)">
+        <member name="M:Examples.AggregateModels.Aggregate`1.BuildAsync(System.Boolean,System.Threading.CancellationToken)">
             <summary>
                 Builds the specified fail not found.
             </summary>
@@ -74,7 +74,7 @@
             <returns>Task.</returns>
             <exception cref="T:APIBlox.NetCore.Exceptions.EventStoreNotFoundException">StreamId {_streamId}</exception>
         </member>
-        <member name="M:Examples.AggregateModels.Aggregate`1.DeleteMe(System.Threading.CancellationToken)">
+        <member name="M:Examples.AggregateModels.Aggregate`1.DeleteMeAsync(System.Threading.CancellationToken)">
             <summary>
                 Deletes me.
             </summary>

@@ -68,7 +68,7 @@ namespace APIBlox.NetCore
             ).Wait();
         }
 
-        private MongoDbOptions ValidateOptions(MongoDbOptions options)
+        private static MongoDbOptions ValidateOptions(MongoDbOptions options)
         {
             if (options is null)
                 throw new ArgumentNullException(nameof(options));
