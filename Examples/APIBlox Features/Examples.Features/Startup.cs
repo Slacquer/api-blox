@@ -99,9 +99,9 @@ namespace Examples
                 //
                 // Pagination
                 .AddEnsurePaginationResultActionFilter(Program.StartupLogger,
-                    onlyForThesePaths:new List<string>{ "/DevApi/versions/2/resources/Examples"})
+                    onlyForThesePaths:new List<string>{ "/DevApi/versions/1/resources/Examples"})
 
-                .AddPaginationResultForPath("/DevApi/versions/1/resources/Examples")
+                //.AddPaginationResultForPath("/DevApi/versions/1/resources/Examples")
 
                 //
                 // No pagination
