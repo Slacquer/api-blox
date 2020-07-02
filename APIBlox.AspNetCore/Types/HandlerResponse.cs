@@ -36,7 +36,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the metadata.
         /// </summary>
         /// <value>The metadata.</value>
-        public dynamic Metadata{get;set;}
+        public dynamic MetaData { get; set; }
 
         /// <summary>
         ///     Gets or sets the status.

@@ -13,7 +13,7 @@ namespace Examples.CmdQueryHandlers
     {
         public Task<HandlerResponse> HandleAsync(ChildrenRequest query, CancellationToken cancellationToken)
         {
-            var ret = new HandlerResponse {Metadata = "Make sure i show up when paginated"};
+            var ret = new HandlerResponse {MetaData = new{Test=1, Foo=new{ Bar=3, SUckit="Testing"}}};
 
             // if we do not return something then the controller will get mad at us!
             var kids = new List<ChildResponse>();

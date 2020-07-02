@@ -64,8 +64,8 @@ namespace APIBlox.AspNetCore.Filters
 
                 var propValue = prop.GetValue(hr.Result);
 
-                if (!(hr.Metadata is null))
-                    dynamicResult.AddProperty(nameof(hr.Metadata), hr.Metadata);
+                if (!(hr.MetaData is null))
+                    dynamicResult.AddProperty(nameof(hr.MetaData), hr.MetaData);
 
                 dynamicResult
                     .AddProperty(prop.Name, propValue)
