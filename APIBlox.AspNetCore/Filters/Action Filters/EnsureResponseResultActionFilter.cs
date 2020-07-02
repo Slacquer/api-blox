@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -46,7 +47,7 @@ namespace APIBlox.AspNetCore.Filters
         {
             var action = await next().ConfigureAwait(false);
             var result = action.Result as ObjectResult;
-
+            
             if (result?.Value is null
                 || _getsOnly && !action.HttpContext.Request.Method.EqualsEx("get")
                 || result.StatusCode >= 300
@@ -62,15 +63,30 @@ namespace APIBlox.AspNetCore.Filters
                 return;
             }
 
-            var t = result.Value.GetType();
+            if (!(result.Value is HandlerResponse handlerResult))
+            {
+                var t = result.Value.GetType();
 
-            ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable)) && !t.IsAssignableTo(typeof(string));
-            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>) result.Value).Count() : 0;
+                ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable)) && !t.IsAssignableTo(typeof(string));
+                ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>) result.Value).Count() : 0;
 
-            var retValue = _action(result.Value);
+                var retValue = _action(result.Value);
 
-            if (!(retValue is null))
-                result.Value = retValue;
+                if (!(retValue is null))
+                    result.Value = retValue;
+            }
+            else
+            {
+                var t = ((object)handlerResult.Result).GetType();
+
+                ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable)) && !t.IsAssignableTo(typeof(string));
+                ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>) handlerResult.Result).Count() : 0;
+
+                var retValue = _action(handlerResult.Result);
+
+                if (!(retValue is null))
+                    handlerResult.Result = retValue;
+            }
 
             Handle(context, result);
         }

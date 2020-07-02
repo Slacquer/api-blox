@@ -1,4 +1,13 @@
 
+_July 2nd, 2020_  **v3.0.7**
+- Added a metadata property to HandlerResponse, thus allowing any extra bits needed in responses..
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _March 5th, 2020_  **v3.0.6**
 - Minor cleanup.
 

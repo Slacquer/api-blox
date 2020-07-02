@@ -30,5 +30,5 @@ public async Task<IActionResult> [CONTROLLER_NAME]QueryAll[REQ_OBJECT](
             "When responding to a GET you must either set an error or pass a result!"
         );
 
-    return Ok(ret.Result);
+    return Ok(ret);
 }

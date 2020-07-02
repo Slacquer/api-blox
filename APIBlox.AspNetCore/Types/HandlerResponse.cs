@@ -33,6 +33,12 @@ namespace APIBlox.AspNetCore.Types
         public dynamic Result { get; set; }
 
         /// <summary>
+        ///     Gets or sets the metadata.
+        /// </summary>
+        /// <value>The metadata.</value>
+        public dynamic MetaData { get; set; }
+
+        /// <summary>
         ///     Gets or sets the status.
         /// </summary>
         /// <value>The status.</value>
