@@ -56,7 +56,13 @@ namespace Examples.Controllers
             for (var i = 0; i < _rndSvc.GenerateNumber(1000); i++)
                 examples.Add($"FuBar {i}");
 
-            return Ok(examples.Skip(query.Skip ?? 0).Take(query.Top ?? 10));
+            var res = new HandlerResponse
+            {
+                MetaData = "Hi",
+                Result = examples.Skip(query.Skip ?? 0).Take(query.Top ?? 10)
+            };
+
+            return Ok(res);
         }
 
         /// <summary>
