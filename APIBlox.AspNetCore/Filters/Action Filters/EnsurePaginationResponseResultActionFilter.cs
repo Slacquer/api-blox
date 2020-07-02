@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using APIBlox.AspNetCore.Contracts;
+using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
@@ -41,15 +42,39 @@ namespace APIBlox.AspNetCore.Filters
                 return;
 
             var value = result.Value;
-            var type = value.GetType();
-            var prop = type.GetProperties().First();
-            var dynamicResult = new DynamicDataObject();
-            var propValue = prop.GetValue(value);
 
-            dynamicResult.AddProperty(prop.Name, propValue).AddProperty(
-                "Pagination",
-                _paginationBuilder.Build(ResultValueCount.Value, context)
-            );
+            var dynamicResult = new DynamicDataObject();
+
+            if (!(value is HandlerResponse hr))
+            {
+                var type = value.GetType();
+                var prop = type.GetProperties().First();
+
+                var propValue = prop.GetValue(value);
+
+                dynamicResult.AddProperty(prop.Name, propValue).AddProperty(
+                    "Pagination",
+                    _paginationBuilder.Build(ResultValueCount.Value, context)
+                );
+            }
+            else
+            {
+                var type = hr.Result.GetType();
+                var prop = type.GetProperties()[0];
+
+                var propValue = prop.GetValue(hr.Result);
+
+                if (!(hr.Metadata is null))
+                    dynamicResult.AddProperty(nameof(hr.Metadata), hr.Metadata);
+
+                dynamicResult
+                    .AddProperty(prop.Name, propValue)
+                    .AddProperty(
+                    "Pagination",
+                    _paginationBuilder.Build(ResultValueCount.Value, context)
+                );
+            }
+
 
             result.Value = dynamicResult;
         }
