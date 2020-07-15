@@ -58,7 +58,6 @@ namespace Examples.Controllers
 
             var res = new HandlerResponse
             {
-                MetaData = "Hi",
                 Result = examples.Skip(query.Skip ?? 0).Take(query.Top ?? 10)
             };
 

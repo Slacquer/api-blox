@@ -1,4 +1,13 @@
 
+_July 2nd, 2020_  **v3.0.12**
+- Reverted to 3.0.6 code.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _July 2nd, 2020_  **v3.0.11**
 - Previous release had full HandlerResponse in POST and POST ACCEPTED responses and should not have.
 

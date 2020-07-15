@@ -42,39 +42,15 @@ namespace APIBlox.AspNetCore.Filters
                 return;
 
             var value = result.Value;
-
+            var type = value.GetType();
+            var prop = type.GetProperties().First();
             var dynamicResult = new DynamicDataObject();
+            var propValue = prop.GetValue(value);
 
-            if (!(value is HandlerResponse hr))
-            {
-                var type = value.GetType();
-                var prop = type.GetProperties().First();
-
-                var propValue = prop.GetValue(value);
-
-                dynamicResult.AddProperty(prop.Name, propValue).AddProperty(
-                    "Pagination",
-                    _paginationBuilder.Build(ResultValueCount.Value, context)
-                );
-            }
-            else
-            {
-                var type = hr.Result.GetType();
-                var prop = type.GetProperties()[0];
-
-                var propValue = prop.GetValue(hr.Result);
-
-                if (!(hr.MetaData is null))
-                    dynamicResult.AddProperty(nameof(hr.MetaData), hr.MetaData);
-
-                dynamicResult
-                    .AddProperty(prop.Name, propValue)
-                    .AddProperty(
-                    "Pagination",
-                    _paginationBuilder.Build(ResultValueCount.Value, context)
-                );
-            }
-
+            dynamicResult.AddProperty(prop.Name, propValue).AddProperty(
+                "Pagination",
+                _paginationBuilder.Build(ResultValueCount.Value, context)
+            );
 
             result.Value = dynamicResult;
         }
