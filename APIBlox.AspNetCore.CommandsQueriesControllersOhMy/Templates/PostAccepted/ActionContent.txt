@@ -28,5 +28,5 @@ public async Task<IActionResult> [CONTROLLER_NAME]PostAccepted[REQ_OBJECT](
     if (!(errorResult is null))
         return errorResult;
 
-    return ret.Result is null ? Accepted() : Accepted(ret);
+    return ret.Result is null ? Accepted() : Accepted(ret.Result);
 }

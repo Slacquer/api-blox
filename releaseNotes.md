@@ -1,6 +1,6 @@
 
-_July 2nd, 2020_  **v3.0.8**
-- Needed IActionResult cast on POST templates.
+_July 2nd, 2020_  **v3.0.11**
+- Previous release had full HandlerResponse in POST and POST ACCEPTED responses and should not have.
 
 Thanks,  
 _Slacquer_  
