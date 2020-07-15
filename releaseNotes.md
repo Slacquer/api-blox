@@ -1,4 +1,13 @@
 
+_July 2nd, 2020_  **v3.0.8**
+- Needed IActionResult cast on POST templates.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _July 2nd, 2020_  **v3.0.7**
 - Added a metadata property to HandlerResponse, thus allowing any extra bits needed in responses..
 
