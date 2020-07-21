@@ -1,6 +1,6 @@
 _July 2nd, 2020_  **v3.0.13**
 - Reverting made me sick...
-- Code now properly (figers crossed) deals with pagination and dynamic objects.
+- Code now properly (fingers crossed) deals with pagination and dynamic objects.
 - Dynamic Controller templates, would fail when using object,dynamic or string for response types.
 
 Thanks,  
