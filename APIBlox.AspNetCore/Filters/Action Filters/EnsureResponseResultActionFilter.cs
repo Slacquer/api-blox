@@ -29,7 +29,7 @@ namespace APIBlox.AspNetCore.Filters
             Func<object, object> ensureResponseCompliesWithAction
         )
         {
-            object DefaultFormat(object d)
+            static object DefaultFormat(object d)
             {
                 return new { Data = d };
             }

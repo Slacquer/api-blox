@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="9.0.1" />
     <!--<PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="2.3.0" />-->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
   </ItemGroup>

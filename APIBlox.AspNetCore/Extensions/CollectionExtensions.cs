@@ -67,23 +67,16 @@ namespace APIBlox.AspNetCore.Extensions
             if (col.All(t =>
                 {
                     // Yet more lameness, really should be able to do a simple test here...
-                    switch (t)
+                    return t switch
                     {
-                        case TypeFilterAttribute tf:
-                            return tf.ImplementationType != vt;
-                        case ServiceFilterAttribute sf:
-                            return sf.ServiceType != vt;
-                        case FormatFilterAttribute ff:
-                            return ff.GetType() != vt;
-                        case ResultFilterAttribute rs:
-                            return rs.GetType() != vt;
-                        case ExceptionFilterAttribute ef:
-                            return ef.GetType() != vt;
-                        case ActionFilterAttribute af:
-                            return af.GetType() != vt;
-                        default:
-                            return t.GetType() != vt;
-                    }
+                        TypeFilterAttribute tf => tf.ImplementationType != vt,
+                        ServiceFilterAttribute sf => sf.ServiceType != vt,
+                        FormatFilterAttribute ff => ff.GetType() != vt,
+                        ResultFilterAttribute rs => rs.GetType() != vt,
+                        ExceptionFilterAttribute ef => ef.GetType() != vt,
+                        ActionFilterAttribute af => af.GetType() != vt,
+                        _ => t.GetType() != vt
+                    };
                 }
             ))
                 if (order.HasValue)
