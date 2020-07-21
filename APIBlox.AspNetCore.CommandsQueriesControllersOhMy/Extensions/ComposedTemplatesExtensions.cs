@@ -44,10 +44,13 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
-                throw new ArgumentException("Must be a single object type.", nameof(TResponse));
+            var t = typeof(TResponse);
 
-            var codes = (options.StatusCodes ?? new List<int> {200, 204, 401, 403}).ToList();
+            if (t.Name != nameof(Object) && t.Name != nameof(String))
+                if (t.IsAssignableTo(typeof(IEnumerable)))
+                    throw new ArgumentException("Must be a single object type.", nameof(TResponse));
+
+            var codes = (options.StatusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -58,7 +61,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                     template,
                     typeof(TRequest),
                     typeof(TResponse),
@@ -95,7 +98,7 @@ namespace APIBlox.AspNetCore.Extensions
             if (!typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a enumerable object type.", nameof(TResponse));
 
-            var codes = (options.StatusCodes ?? new List<int> {200, 204, 401, 403}).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -106,7 +109,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                     template,
                     typeof(TRequest),
                     typeof(TResponse),
@@ -137,7 +140,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> {204, 401, 403, 404}).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 204, 401, 403, 404 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -148,7 +151,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                     template,
                     typeof(TRequest),
                     null,
@@ -178,7 +181,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> {204, 400, 401, 403, 404, 409}).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 204, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -189,7 +192,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                     template,
                     typeof(TRequest),
                     null,
@@ -219,7 +222,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> {204, 400, 401, 403, 404, 409}).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 204, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -230,7 +233,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                     template,
                     typeof(TRequest),
                     null,
@@ -265,7 +268,7 @@ namespace APIBlox.AspNetCore.Extensions
             if (typeof(TResponse).IsAssignableTo(typeof(IEnumerable)))
                 throw new ArgumentException("Must be a single object type.", nameof(TResponse));
 
-            var codes = (options.StatusCodes ?? new List<int> {201, 204, 400, 401, 403, 404, 409}).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 201, 204, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -276,7 +279,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                     template,
                     typeof(TRequest),
                     typeof(TResponse),
@@ -308,7 +311,7 @@ namespace APIBlox.AspNetCore.Extensions
         )
             where TRequest : new()
         {
-            var codes = (options.StatusCodes ?? new List<int> {202, 400, 401, 403, 404, 409}).ToList();
+            var codes = (options.StatusCodes ?? new List<int> { 202, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
                 throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
@@ -319,7 +322,7 @@ namespace APIBlox.AspNetCore.Extensions
 
             var template = new DynamicControllerComposedTemplate(options.NameSpace, options.ControllerRoute, action, cc);
 
-            ((List<IComposedTemplate>) templates).Add(ParseReplaceAndAddToCollection(
+            ((List<IComposedTemplate>)templates).Add(ParseReplaceAndAddToCollection(
                     template,
                     typeof(TRequest),
                     null,
@@ -417,8 +420,8 @@ namespace APIBlox.AspNetCore.Extensions
 
             foreach (var sc in statusCodes)
             {
-                sbCodes.AppendFormat((CommonStatusCodes) sc == CommonStatusCodes.Status200Ok ||
-                                     (CommonStatusCodes) sc == CommonStatusCodes.Status201Created
+                sbCodes.AppendFormat((CommonStatusCodes)sc == CommonStatusCodes.Status200Ok ||
+                                     (CommonStatusCodes)sc == CommonStatusCodes.Status201Created
                         ? PrtResult
                         : Prt,
                     sc
@@ -426,7 +429,7 @@ namespace APIBlox.AspNetCore.Extensions
 
                 if (Enum.IsDefined(typeof(CommonStatusCodes), sc))
                 {
-                    var statusCode = (CommonStatusCodes) sc;
+                    var statusCode = (CommonStatusCodes)sc;
 
                     var attr = statusCode.GetAttributeOfType<MetadataAttribute>();
 
