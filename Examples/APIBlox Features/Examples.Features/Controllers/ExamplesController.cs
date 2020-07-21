@@ -56,12 +56,29 @@ namespace Examples.Controllers
             for (var i = 0; i < _rndSvc.GenerateNumber(1000); i++)
                 examples.Add($"FuBar {i}");
 
+            //var res = new HandlerResponse
+            //{
+            //    Result = new
+            //    {
+            //        Foo = new
+            //        {
+            //            Bar = new
+            //            {
+            //                Dummy = "Hello",
+            //                ExampleResults = examples.Skip(query.Skip ?? 0).Take(query.Top ?? 10)
+            //            }
+            //        },
+            //        SomeMetadata = "Some extra bits."
+
+            //    }
+            //};
+
             var res = new HandlerResponse
             {
-                Result = examples.Skip(query.Skip ?? 0).Take(query.Top ?? 10)
+                Result = examples.Skip(query.Skip ?? 0).Take(query.Top ?? 10)//.ToList()
             };
 
-            return Ok(res);
+            return Ok(res.Result);
         }
 
         /// <summary>

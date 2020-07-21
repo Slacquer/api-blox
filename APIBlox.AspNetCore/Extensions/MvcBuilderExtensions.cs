@@ -145,6 +145,7 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     }
         ///     <para>Works independently of <see cref="EnsureResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
+        ///     <para>Counts are based on the FIRST object within the results that is array like.</para>
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="loggerFactory">The logger factory.</param>
@@ -177,6 +178,7 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     }
         ///     <para>Works independently of <see cref="EnsureResponseResultActionFilter" /></para>
         ///     <para>This is only applied to actions that return <see cref="ObjectResult" /></para>
+        ///     <para>Counts are based on the FIRST object within the results that is array like.</para>
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="loggerFactory">The logger factory.</param>

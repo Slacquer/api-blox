@@ -99,13 +99,15 @@ namespace Examples
                 //
                 // Pagination
                 .AddEnsurePaginationResultActionFilter(Program.StartupLogger,
-                    onlyForThesePaths:new List<string>{ "/DevApi/versions/1/resources/Examples"})
+                    onlyForThesePaths: new List<string> { "/DevApi/versions/1/resources/Examples" })
+                //.AddEnsurePaginationResultActionFilter(Program.StartupLogger,
+                //    onlyForThesePaths: new List<string> { "/DevApi/versions/1/resources/Examples" }, defineResponseFunc: d => d)
 
                 //.AddPaginationResultForPath("/DevApi/versions/1/resources/Examples")
 
                 //
                 // No pagination
-                //.AddEnsureResponseResultActionFilter(_loggerFactory,false, defineResponseFunc: data => new { NonPaginatedResources = data })
+                //.AddEnsureResponseResultActionFilter(Program.StartupLogger,false, defineResponseFunc: data => new { NonPaginatedResources = data })
 
                 //
                 // Resource Validator.

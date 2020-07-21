@@ -1,3 +1,12 @@
+_July 2nd, 2020_  **v3.0.13**
+- Reverting made me sick...
+- Code now properly (figers crossed) deals with pagination and dynamic objects.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
 
 _July 2nd, 2020_  **v3.0.12**
 - Reverted to 3.0.6 code.

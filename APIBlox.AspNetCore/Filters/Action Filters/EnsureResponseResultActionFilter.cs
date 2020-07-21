@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using APIBlox.AspNetCore.Types;
 using APIBlox.NetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace APIBlox.AspNetCore.Filters
 {
@@ -31,7 +31,7 @@ namespace APIBlox.AspNetCore.Filters
         {
             object DefaultFormat(object d)
             {
-                return new {Data = d};
+                return new { Data = d };
             }
 
             _getsOnly = getsOnly;
@@ -66,7 +66,18 @@ namespace APIBlox.AspNetCore.Filters
             var t = result.Value.GetType();
 
             ResultValueIsEnumerable = t.IsAssignableTo(typeof(IEnumerable)) && !t.IsAssignableTo(typeof(string));
-            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>) result.Value).Count() : 0;
+            ResultValueCount = ResultValueIsEnumerable ? ((IEnumerable<object>)result.Value).Count() : 0;
+
+            if (!ResultValueIsEnumerable)
+            {
+                var found = FindFirstArrayItem(result.Value);
+
+                if (!(found is null))
+                {
+                    ResultValueIsEnumerable = true;
+                    ResultValueCount = found.Count;
+                }
+            }
 
             var retValue = _action(result.Value);
 
@@ -78,6 +89,27 @@ namespace APIBlox.AspNetCore.Filters
 
         protected virtual void Handle(ActionExecutingContext context, ObjectResult result)
         {
+        }
+
+        private static JArray FindFirstArrayItem(object value)
+        {
+            var jt = JToken.FromObject(value);
+
+            if (!(jt is JObject jo))
+                return null;
+
+            foreach (var property in jo.Properties())
+            {
+                if (property.Value is JArray ar)
+                    return ar;
+
+                var ret = FindFirstArrayItem(property.Value);
+
+                if (!(ret is null))
+                    return ret;
+            }
+
+            return null;
         }
     }
 }

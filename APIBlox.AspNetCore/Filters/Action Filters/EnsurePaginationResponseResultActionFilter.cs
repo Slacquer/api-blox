@@ -8,6 +8,7 @@ using APIBlox.NetCore.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace APIBlox.AspNetCore.Filters
 {
@@ -42,12 +43,18 @@ namespace APIBlox.AspNetCore.Filters
                 return;
 
             var value = result.Value;
-            var type = value.GetType();
-            var prop = type.GetProperties().First();
             var dynamicResult = new DynamicDataObject();
-            var propValue = prop.GetValue(value);
 
-            dynamicResult.AddProperty(prop.Name, propValue).AddProperty(
+
+            var token = JToken.FromObject(result.Value);
+
+            if (token is JObject t)
+                foreach (var p in t.Properties())
+                    dynamicResult.AddProperty(p.Name, p.Value);
+            else
+                throw new FormatException("Reuslts must have a root property, somthing like d => new { Data = myResults }.");
+
+            dynamicResult.AddProperty(
                 "Pagination",
                 _paginationBuilder.Build(ResultValueCount.Value, context)
             );
