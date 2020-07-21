@@ -1,3 +1,12 @@
+_July 2nd, 2020_  **v3.0.14**
+- Dynamic Controller templates, POST template was not returning result object.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _July 2nd, 2020_  **v3.0.13**
 - Reverting made me sick...
 - Code now properly (fingers crossed) deals with pagination and dynamic objects.

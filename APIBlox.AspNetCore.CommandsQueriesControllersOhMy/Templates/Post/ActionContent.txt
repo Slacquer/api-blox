@@ -33,5 +33,5 @@ public async Task<IActionResult> [CONTROLLER_NAME]Post[REQ_OBJECT](
 
     var id = FindId(ret.Result);
 
-    return Equals(id, -1) ? Ok(ret.Result) : CreatedAtRoute(new {id}, ret);
+    return Equals(id, -1) ? Ok(ret.Result) : CreatedAtRoute(new {id}, ret.Result);
 }
