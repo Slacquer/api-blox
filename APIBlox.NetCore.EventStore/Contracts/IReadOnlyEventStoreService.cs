@@ -8,7 +8,7 @@ namespace APIBlox.NetCore.Contracts
     /// <summary>
     ///     Interface IReadOnlyEventStoreService
     /// </summary>
-    /// <typeparam name="TModel">The type of the t model.</typeparam>
+    /// <typeparam name="TModel">The type of the t model.  This is a marker, to allow multiple instances.</typeparam>
     public interface IReadOnlyEventStoreService<TModel>
         where TModel : class
     {

@@ -9,8 +9,9 @@ using Newtonsoft.Json;
 namespace APIBlox.NetCore.Contracts
 {
     /// <summary>
-    ///     Interface IEventStoreRepository
+    /// Interface IEventStoreRepository
     /// </summary>
+    /// <typeparam name="TModel">The type of the t model.  This is a marker, to allow multiple instances.</typeparam>
     public interface IEventStoreRepository<TModel>
         where TModel : class
     {
