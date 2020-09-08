@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             return services.AddScoped<IEventStoreService<TModel>, EventStoreService<TModel>>(sp =>
                 {
-                    settings = settings ?? new JsonSerializerSettings
+                    settings ??= new JsonSerializerSettings
                     {
                         ContractResolver = new PopulateNonPublicSettersContractResolver()
                     };
@@ -52,7 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             return services.AddScoped<IReadOnlyEventStoreService<TModel>, ReadOnlyEventStoreService<TModel>>(sp =>
                 {
-                    settings = settings ?? new JsonSerializerSettings
+                    settings ??= new JsonSerializerSettings
                     {
                         ContractResolver = new PopulateNonPublicSettersContractResolver()
                     };
