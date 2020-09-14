@@ -24,7 +24,7 @@ namespace APIBlox.NetCore
         private readonly IDocumentClient _client;
         private readonly ILogger _logger;
         private readonly CosmosDbOptions _options;
-        private JsonSerializerSettings _jsonSettings;
+        private readonly JsonSerializerSettings _jsonSettings;
 
         public CosmosDbRepository(ILoggerFactory loggerFactory, IDocumentClient client, IEventSourcedJsonSerializerSettings settings, IOptions<CosmosDbOptions> options)
         {
@@ -48,7 +48,8 @@ namespace APIBlox.NetCore
                             doc,
                             new RequestOptions
                             {
-                                PartitionKey = new PartitionKey(doc.StreamId)
+                                PartitionKey = new PartitionKey(doc.StreamId),
+                                JsonSerializerSettings = _jsonSettings
                             },
                             true,
                             cancellationToken
@@ -72,7 +73,11 @@ namespace APIBlox.NetCore
             await ExecuteAsync(async dbCol =>
                 {
                     var qry = _client.CreateDocumentQuery<EventStoreDocument>(dbCol.DocumentCollectionUri,
-                            new FeedOptions { EnableCrossPartitionQuery = true, JsonSerializerSettings=_jsonSettings }
+                            new FeedOptions
+                            {
+                                EnableCrossPartitionQuery = true,
+                                JsonSerializerSettings = _jsonSettings
+                            }
                         )
                         .Where(predicate)
                         .OrderByDescending(d => d.SortOrder)
@@ -102,7 +107,8 @@ namespace APIBlox.NetCore
                         document,
                         new RequestOptions
                         {
-                            PartitionKey = new PartitionKey(document.StreamId)
+                            PartitionKey = new PartitionKey(document.StreamId),
+                            JsonSerializerSettings = _jsonSettings
                         },
                         cancellationToken
                     );
@@ -126,7 +132,8 @@ namespace APIBlox.NetCore
                         await _client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(dbCol.DatabaseId, dbCol.CollectionId, doc.Id),
                             new RequestOptions
                             {
-                                PartitionKey = new PartitionKey(doc.StreamId)
+                                PartitionKey = new PartitionKey(doc.StreamId),
+                                JsonSerializerSettings = _jsonSettings
                             },
                             cancellationToken
                         );
@@ -181,62 +188,5 @@ namespace APIBlox.NetCore
                     throw;
                 }
         }
-
-        //private async Task CreateDatabaseIfNotExistsAsync()
-        //{
-        //    var exists = await _client.CreateDatabaseQuery()
-        //        .Where(d => d.Id == _databaseId)
-        //        .ToAsyncEnumerable().AnyAsync();
-
-        //    if (exists)
-        //        return;
-
-        //    await _client.CreateDatabaseAsync(new Database { Id = _databaseId });
-        //}
-
-        //private async Task CreateCollectionIfNotExistsAsync(IReadOnlyCollection<string> keys, int offerThroughput)
-        //{
-        //    var exists = await _client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(_databaseId))
-        //        .Where(d => d.Id == _collectionId)
-        //        .ToAsyncEnumerable().AnyAsync();
-
-        //    if (exists)
-        //        return;
-
-        //    var documentCollection = new DocumentCollection
-        //    {
-        //        Id = _collectionId
-        //    };
-        //    documentCollection.PartitionKey.Paths.Add("/StreamId");
-
-        //    var p = new IncludedPath { Path = "/" };
-        //    var rng = Index.Range(DataType.String);
-
-        //    documentCollection.IndexingPolicy.IncludedPaths.Add(p);
-
-        //    p = new IncludedPath { Path = "/StreamId/?" };
-        //    p.Indexes.Add(rng);
-        //    documentCollection.IndexingPolicy.IncludedPaths.Add(p);
-
-        //    p = new IncludedPath { Path = "/DocumentType/?" };
-        //    p.Indexes.Add(rng);
-        //    documentCollection.IndexingPolicy.IncludedPaths.Add(p);
-
-        //    if (keys.Any())
-        //    {
-        //        var uniqueKey = new UniqueKey();
-
-        //        foreach (var key in keys)
-        //            uniqueKey.Paths.Add(key);
-
-        //        documentCollection.UniqueKeyPolicy.UniqueKeys.Add(uniqueKey);
-        //    }
-
-        //    await _client.CreateDocumentCollectionAsync(
-        //        UriFactory.CreateDatabaseUri(_databaseId),
-        //        documentCollection,
-        //        new RequestOptions { OfferThroughput = offerThroughput }
-        //    );
-        //}
     }
 }
