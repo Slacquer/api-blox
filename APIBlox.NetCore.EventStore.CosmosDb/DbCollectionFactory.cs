@@ -1,6 +1,4 @@
-﻿#region -    Using Statements    -
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,18 +12,12 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-#endregion
-
 namespace APIBlox.NetCore
 {
     internal static class DbCollectionFactory
     {
-        #region -    Fields    -
-
         private static readonly object DbColLock = new object();
         private static readonly Dictionary<Type, DbCollection> DbCols = new Dictionary<Type, DbCollection>();
-
-        #endregion
 
         public static DbCollection GetDatabaseAndCollection<TModel>(CosmosDbOptions options)
         {
