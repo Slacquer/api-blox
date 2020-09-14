@@ -18,7 +18,7 @@ namespace APIBlox.NetCore
         private readonly EventStoreDbContext _context;
         private readonly JsonSerializerSettings _jsonSettings;
 
-        public EfCoreSqlRepository(EventStoreDbContext context, IEventSourcedJsonSerializerSettings jsonSerializerSettings)
+        public EfCoreSqlRepository(EventStoreDbContext context, IEventStoreJsonSerializerSettings jsonSerializerSettings)
         {
             _context = context;
             _jsonSettings = jsonSerializerSettings.Settings;

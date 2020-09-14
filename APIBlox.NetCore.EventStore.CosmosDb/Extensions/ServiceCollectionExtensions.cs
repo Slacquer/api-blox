@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 var client = new DocumentClient(new Uri(es.Endpoint),
                     es.Key,
-                    sp.GetRequiredService<IEventSourcedJsonSerializerSettings>().Settings,
+                    sp.GetRequiredService<IEventStoreJsonSerializerSettings>().Settings,
                     es.ConnectionPolicy
                 );
             

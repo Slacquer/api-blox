@@ -119,14 +119,14 @@ namespace APIBlox.NetCore
                 UniqueKeyPolicy = dbCol.ColProps.UniqueKeyPolicy,
                 PartitionKey = new PartitionKeyDefinition
                 {
-                    Paths = new Collection<string> {"/streamId"}
+                    Paths = new Collection<string> {"/StreamId"}
                 }
             };
 
-            var p = new IncludedPath { Path = "/streamId/?" };
+            var p = new IncludedPath { Path = "/StreamId/?" };
             docCol.IndexingPolicy.IncludedPaths.Add(p);
 
-            p = new IncludedPath { Path = "/documentType/?" };
+            p = new IncludedPath { Path = "/DocumentType/?" };
             docCol.IndexingPolicy.IncludedPaths.Add(p);
 
             var existingCol = await docClient.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(dbCol.DatabaseId))

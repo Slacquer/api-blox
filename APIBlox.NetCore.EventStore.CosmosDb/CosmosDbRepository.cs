@@ -26,7 +26,7 @@ namespace APIBlox.NetCore
         private readonly CosmosDbOptions _options;
         private readonly JsonSerializerSettings _jsonSettings;
 
-        public CosmosDbRepository(ILoggerFactory loggerFactory, IDocumentClient client, IEventSourcedJsonSerializerSettings settings, IOptions<CosmosDbOptions> options)
+        public CosmosDbRepository(ILoggerFactory loggerFactory, IDocumentClient client, IEventStoreJsonSerializerSettings settings, IOptions<CosmosDbOptions> options)
         {
             _logger = loggerFactory.CreateLogger(GetType());
 

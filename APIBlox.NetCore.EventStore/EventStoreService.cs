@@ -13,7 +13,7 @@ namespace APIBlox.NetCore
     internal class EventStoreService<TModel> : ReadOnlyEventStoreService<TModel>, IEventStoreService<TModel>
         where TModel : class
     {
-        public EventStoreService(IEventStoreRepository<TModel> repo, IEventSourcedJsonSerializerSettings esSerializerSettings)
+        public EventStoreService(IEventStoreRepository<TModel> repo, IEventStoreJsonSerializerSettings esSerializerSettings)
             : base(repo, esSerializerSettings)
         {
         }

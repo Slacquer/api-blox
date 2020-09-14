@@ -1,3 +1,12 @@
+_September 14th, 2020_  **v3.0.15**
+- CosmosDb Event Sourcing - Changed configuration models, extension methods, etc.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _July 2nd, 2020_  **v3.0.14**
 - Dynamic Controller templates, POST template was not returning result object.
 

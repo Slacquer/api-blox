@@ -24,12 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddEventStoreService<TModel>(this IServiceCollection services, JsonSerializerSettings settings = null)
             where TModel : class
         {
-            settings ??= new CamelCaseSettings
-            {
-                ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
-            };
-
-            services.AddSingleton<IEventSourcedJsonSerializerSettings>(sp => new EventSourcedJsonSerializerSettings(settings));
+            services.AddSingleton<IEventStoreJsonSerializerSettings>(sp => new EventSourcedJsonSerializerSettings(settings));
 
             return services.AddScoped<IEventStoreService<TModel>, EventStoreService<TModel>>();
         }
@@ -48,12 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
         )
             where TModel : class
         {
-            settings ??= new CamelCaseSettings
-            {
-                ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
-            };
-
-            services.AddSingleton<IEventSourcedJsonSerializerSettings>(sp => new EventSourcedJsonSerializerSettings(settings));
+            services.AddSingleton<IEventStoreJsonSerializerSettings>(sp => new EventSourcedJsonSerializerSettings(settings));
 
             return services.AddScoped<IReadOnlyEventStoreService<TModel>, ReadOnlyEventStoreService<TModel>>();
         }
