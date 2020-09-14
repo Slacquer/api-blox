@@ -28,6 +28,10 @@ namespace Examples
                 .AddServerFaults()
                 .AddEventStoreService<CosmosAggregate>()
                 .AddCosmosDbRepository<CosmosAggregate>(_config)
+
+                .AddEventStoreService<CosmosAggregate2>()
+                .AddCosmosDbRepository<CosmosAggregate2>(_config)
+
                 //.AddEventStoreService<MongoAggregate>()
                 //.AddMongoDbRepository<MongoAggregate>(_config)
                 //.AddEventStoreService<RavenAggregate>()

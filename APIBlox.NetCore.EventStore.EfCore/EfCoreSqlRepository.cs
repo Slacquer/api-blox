@@ -16,30 +16,30 @@ namespace APIBlox.NetCore
         where TModel : class
     {
         private readonly EventStoreDbContext _context;
+        private readonly JsonSerializerSettings _jsonSettings;
 
-        public EfCoreSqlRepository(EventStoreDbContext context, JsonSerializerSettings jsonSerializerSettings)
+        public EfCoreSqlRepository(EventStoreDbContext context, IEventSourcedJsonSerializerSettings jsonSerializerSettings)
         {
             _context = context;
-            JsonSettings = jsonSerializerSettings;
+            _jsonSettings = jsonSerializerSettings.Settings;
         }
-
-        public JsonSerializerSettings JsonSettings { get; }
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
         {
             foreach (var document in documents)
             {
-                _context.Documents.Add(new DocEx
-                    {
-                        Data = JsonConvert.SerializeObject(document.Data),
-                        DataType = document.DataType,
-                        DocumentType = document.DocumentType,
-                        Id = document.Id,
-                        StreamId = document.StreamId,
-                        TimeStamp = document.TimeStamp,
-                        Version = document.Version
-                    }
+                await _context.Documents.AddAsync(new DocEx
+                {
+                    Data = JsonConvert.SerializeObject(document.Data, _jsonSettings),
+                    DataType = document.DataType,
+                    DocumentType = document.DocumentType,
+                    Id = document.Id,
+                    StreamId = document.StreamId,
+                    TimeStamp = document.TimeStamp,
+                    Version = document.Version
+                },
+                    cancellationToken
                 );
             }
 
@@ -57,24 +57,24 @@ namespace APIBlox.NetCore
 
             var lst = ret.Cast<DocEx>()
                 .Select(ex => new EventStoreDocument
-                    {
-                        Data = ex.DataType is null ? null : JObject.Parse(ex.Data).ToObject(Type.GetType(ex.DataType)),
-                        DataType = ex.DataType,
-                        DocumentType = ex.DocumentType,
-                        Id = ex.Id,
-                        StreamId = ex.StreamId,
-                        TimeStamp = ex.TimeStamp,
-                        Version = ex.Version
-                    }
+                {
+                    Data = ex.DataType is null ? null : JObject.Parse(ex.Data).ToObject(Type.GetType(ex.DataType)!),
+                    DataType = ex.DataType,
+                    DocumentType = ex.DocumentType,
+                    Id = ex.Id,
+                    StreamId = ex.StreamId,
+                    TimeStamp = ex.TimeStamp,
+                    Version = ex.Version
+                }
                 ).ToList();
 
-            return (IEnumerable<TResultDocument>) lst;
+            return (IEnumerable<TResultDocument>)lst;
         }
 
         public async Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
         {
-            var doc =  _context.Documents.Single(d => d.Id == document.Id);
+            var doc = _context.Documents.Single(d => d.Id == document.Id);
 
             doc.Version = document.Version;
             doc.TimeStamp = document.TimeStamp;
@@ -84,8 +84,7 @@ namespace APIBlox.NetCore
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<int> DeleteAsync<TDocument>(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
-            where TDocument : EventStoreDocument
+        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
         {
             var docs = await _context.Documents.Where(predicate).ToListAsync(cancellationToken);
 

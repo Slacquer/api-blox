@@ -55,15 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
             );
 
-            services.AddScoped<IEventStoreRepository<TModel>, RavenDbRepository<TModel>>(x =>
-                {
-                    var ret = new RavenDbRepository<TModel>(x.GetRequiredService<StoreContext>(),
-                        settings
-                    );
-
-                    return ret;
-                }
-            );
+            services.AddScoped<IEventStoreRepository<TModel>, RavenDbRepository<TModel>>();
 
             return services;
         }

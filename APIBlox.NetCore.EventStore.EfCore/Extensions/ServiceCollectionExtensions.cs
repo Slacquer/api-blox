@@ -73,7 +73,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
                     ctx.Database.Migrate();
 
-                    return new EfCoreSqlRepository<TModel>(ctx, settings);
+                    return new EfCoreSqlRepository<TModel>(ctx,
+                        x.GetRequiredService<IEventSourcedJsonSerializerSettings>()
+                    );
                 }
             );
 

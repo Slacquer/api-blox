@@ -27,11 +27,11 @@ namespace APIBlox.NetCore
 
         #endregion
 
-        public static DbCollection GetDatabaseAndCollection<TEntity>(CosmosDbOptions options)
+        public static DbCollection GetDatabaseAndCollection<TModel>(CosmosDbOptions options)
         {
             lock (DbColLock)
             {
-                var t = typeof(TEntity);
+                var t = typeof(TModel);
 
                 var existing = DbCols.ContainsKey(t) ? DbCols[t] : null;
 
@@ -119,21 +119,14 @@ namespace APIBlox.NetCore
                 UniqueKeyPolicy = dbCol.ColProps.UniqueKeyPolicy,
                 PartitionKey = new PartitionKeyDefinition
                 {
-                    Paths = new Collection<string> {"/StreamId"}
+                    Paths = new Collection<string> {"/streamId"}
                 }
             };
 
-            var p = new IncludedPath { Path = "/" };
-            var rng = Microsoft.Azure.Documents.Index.Range(DataType.String);
-
+            var p = new IncludedPath { Path = "/streamId/?" };
             docCol.IndexingPolicy.IncludedPaths.Add(p);
 
-            p = new IncludedPath { Path = "/StreamId/?" };
-            p.Indexes.Add(rng);
-            docCol.IndexingPolicy.IncludedPaths.Add(p);
-
-            p = new IncludedPath { Path = "/DocumentType/?" };
-            p.Indexes.Add(rng);
+            p = new IncludedPath { Path = "/documentType/?" };
             docCol.IndexingPolicy.IncludedPaths.Add(p);
 
             var existingCol = await docClient.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(dbCol.DatabaseId))

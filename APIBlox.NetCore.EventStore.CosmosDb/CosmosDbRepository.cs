@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Exceptions;
-using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Options;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
@@ -25,29 +24,32 @@ namespace APIBlox.NetCore
         private readonly IDocumentClient _client;
         private readonly ILogger _logger;
         private readonly CosmosDbOptions _options;
+        private JsonSerializerSettings _jsonSettings;
 
-        public CosmosDbRepository(ILoggerFactory loggerFactory, IDocumentClient client, IOptions<CosmosDbOptions> options)
+        public CosmosDbRepository(ILoggerFactory loggerFactory, IDocumentClient client, IEventSourcedJsonSerializerSettings settings, IOptions<CosmosDbOptions> options)
         {
             _logger = loggerFactory.CreateLogger(GetType());
 
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _options = options.Value;
+            _jsonSettings = settings.Settings;
         }
-
-        public JsonSerializerSettings JsonSettings { get; }
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
             CancellationToken cancellationToken = default
         )
             where TDocument : EventStoreDocument
         {
-            await ExecuteAsync<TDocument>(async dbCol =>
+            await ExecuteAsync(async dbCol =>
                 {
                     foreach (var doc in documents)
                     {
                         await _client.CreateDocumentAsync(dbCol.DocumentCollectionUri,
                             doc,
-                            new RequestOptions { PartitionKey = new PartitionKey(doc.StreamId) },
+                            new RequestOptions
+                            {
+                                PartitionKey = new PartitionKey(doc.StreamId)
+                            },
                             true,
                             cancellationToken
                         );
@@ -67,10 +69,10 @@ namespace APIBlox.NetCore
         {
             var lst = new List<EventStoreDocument>();
 
-            await ExecuteAsync<TResultDocument>(async dbCol =>
+            await ExecuteAsync(async dbCol =>
                 {
                     var qry = _client.CreateDocumentQuery<EventStoreDocument>(dbCol.DocumentCollectionUri,
-                            new FeedOptions { EnableCrossPartitionQuery = true }
+                            new FeedOptions { EnableCrossPartitionQuery = true, JsonSerializerSettings=_jsonSettings }
                         )
                         .Where(predicate)
                         .OrderByDescending(d => d.SortOrder)
@@ -94,7 +96,7 @@ namespace APIBlox.NetCore
         )
             where TDocument : EventStoreDocument
         {
-            await ExecuteAsync<TDocument>(async dbCol =>
+            await ExecuteAsync(async dbCol =>
                 {
                     await _client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(dbCol.DatabaseId, dbCol.CollectionId, document.StreamId),
                         document,
@@ -109,16 +111,15 @@ namespace APIBlox.NetCore
             );
         }
 
-        public async Task<int> DeleteAsync<TDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TDocument : EventStoreDocument
         {
             var count = 0;
 
-            await ExecuteAsync<TDocument>(async dbCol =>
+            await ExecuteAsync(async dbCol =>
                 {
-                    var docs = await GetAsync<TDocument>(predicate, cancellationToken);
+                    var docs = await GetAsync<EventStoreDocument>(predicate, cancellationToken);
 
                     foreach (var doc in docs)
                     {
@@ -140,11 +141,11 @@ namespace APIBlox.NetCore
             return count;
         }
 
-        private async Task ExecuteAsync<TDocument>(Func<DbCollection, Task> cb,
+        private async Task ExecuteAsync(Func<DbCollection, Task> cb,
             CancellationToken cancellationToken = default
         )
         {
-            var dbCol = DbCollectionFactory.GetDatabaseAndCollection<TDocument>(_options);
+            var dbCol = DbCollectionFactory.GetDatabaseAndCollection<TModel>(_options);
 
             while (true)
                 try
@@ -156,7 +157,7 @@ namespace APIBlox.NetCore
                 catch (DocumentClientException dce)
                 {
                     if (dce.StatusCode == HttpStatusCode.Conflict)
-                        throw new EventStoreConcurrencyException($"A duplicated constraint (Unique Key) violation for {typeof(TDocument).Name}.");
+                        throw new EventStoreConcurrencyException($"A duplicated constraint (Unique Key) violation for {typeof(TModel).Name}.");
 
                     if (dce.StatusCode == HttpStatusCode.NotFound || dce.StatusCode == HttpStatusCode.Gone)
                     {

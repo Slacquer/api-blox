@@ -2,11 +2,9 @@
 using APIBlox.NetCore;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Options;
-using APIBlox.NetCore.Types.JsonBits;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -22,7 +20,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TModel">The type of the t model.</typeparam>
         /// <param name="services">The services.</param>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="serializerSettings">The serializer settings.</param>
         /// <param name="configSection">The configuration section.</param>
         /// <returns>IServiceCollection.</returns>
         /// <exception cref="ArgumentException">
@@ -32,7 +29,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddCosmosDbRepository<TModel>(
             this IServiceCollection services,
             IConfiguration configuration,
-            JsonSerializerSettings serializerSettings = null,
             string configSection = "CosmosDbOptions"
         )
             where TModel : class
@@ -47,22 +43,20 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.Configure<CosmosDbOptions>(config);
 
-            var settings = serializerSettings ?? new CamelCaseSettings
+            services.AddSingleton<IDocumentClient>(sp =>
             {
-                ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
-            };
+                var client = new DocumentClient(new Uri(es.Endpoint),
+                    es.Key,
+                    sp.GetRequiredService<IEventSourcedJsonSerializerSettings>().Settings,
+                    es.ConnectionPolicy
+                );
+            
+                // Microsoft Suggested...
+                // https://docs.microsoft.com/en-us/azure/cosmos-db/performance-tips
+                client.OpenAsync();
 
-            var client = new DocumentClient(new Uri(es.Endpoint),
-                es.Key,
-                settings,
-                es.ConnectionPolicy
-            );
-
-            // Microsoft Suggested...
-            // https://docs.microsoft.com/en-us/azure/cosmos-db/performance-tips
-            client.OpenAsync();
-
-            services.AddSingleton<IDocumentClient>(client);
+                return client;
+            });
             services.AddScoped<IEventStoreRepository<TModel>, CosmosDbRepository<TModel>>();
 
             return services;

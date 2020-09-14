@@ -7,15 +7,14 @@ using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Exceptions;
 using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Models;
-using Newtonsoft.Json;
 
 namespace APIBlox.NetCore
 {
     internal class EventStoreService<TModel> : ReadOnlyEventStoreService<TModel>, IEventStoreService<TModel>
         where TModel : class
     {
-        public EventStoreService(IEventStoreRepository<TModel> repo, JsonSerializerSettings serializerSettings = null)
-            : base(repo, serializerSettings)
+        public EventStoreService(IEventStoreRepository<TModel> repo, IEventSourcedJsonSerializerSettings esSerializerSettings)
+            : base(repo, esSerializerSettings)
         {
         }
 
@@ -100,7 +99,7 @@ namespace APIBlox.NetCore
             CancellationToken cancellationToken = default
         )
         {
-            await Repository.DeleteAsync<TModel>(d => d.StreamId == streamId, cancellationToken);
+            await Repository.DeleteAsync(d => d.StreamId == streamId, cancellationToken);
         }
 
         public async Task CreateSnapshotAsync(string streamId, long expectedVersion,
@@ -120,7 +119,7 @@ namespace APIBlox.NetCore
             CancellationToken cancellationToken = default
         )
         {
-            await Repository.DeleteAsync<TModel>(d =>
+            await Repository.DeleteAsync(d =>
                     d.StreamId == streamId
                     && d.DocumentType == DocumentType.Snapshot
                     && d.Version < olderThanVersion,

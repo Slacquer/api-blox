@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
-using Newtonsoft.Json;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
@@ -19,15 +18,12 @@ namespace APIBlox.NetCore
         private readonly string _colName;
         private readonly StoreContext _context;
 
-        public RavenDbRepository(StoreContext context, JsonSerializerSettings serializerSettings)
+        public RavenDbRepository(StoreContext context)
         {
             _context = context;
-            JsonSettings = serializerSettings ?? throw new ArgumentNullException(nameof(serializerSettings));
 
             _colName = typeof(TModel).Name;
         }
-
-        public JsonSerializerSettings JsonSettings { get; }
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
@@ -76,8 +72,7 @@ namespace APIBlox.NetCore
             }
         }
 
-        public async Task<int> DeleteAsync<TDocument>(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
-            where TDocument : EventStoreDocument
+        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
         {
             int ret;
 

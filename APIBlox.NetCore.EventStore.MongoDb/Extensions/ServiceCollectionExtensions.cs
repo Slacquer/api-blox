@@ -54,15 +54,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
             );
 
-            services.AddScoped<IEventStoreRepository<TModel>, MongoDbRepository<TModel>>(x =>
-                {
-                    var ret = new MongoDbRepository<TModel>(x.GetRequiredService<CollectionContext>(),
-                        settings
-                    );
-
-                    return ret;
-                }
-            );
+            services.AddScoped<IEventStoreRepository<TModel>, MongoDbRepository<TModel>>();
 
             return services;
         }

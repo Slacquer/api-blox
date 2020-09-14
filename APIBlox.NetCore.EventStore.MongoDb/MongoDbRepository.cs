@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
 using MongoDB.Driver;
-using Newtonsoft.Json;
 
 namespace APIBlox.NetCore
 {
@@ -17,16 +16,12 @@ namespace APIBlox.NetCore
         private readonly string _colName;
         private readonly CollectionContext _context;
 
-        public MongoDbRepository(CollectionContext context, JsonSerializerSettings serializerSettings)
+        public MongoDbRepository(CollectionContext context)
         {
             _context = context;
 
             _colName = typeof(TModel).Name;
-
-            JsonSettings = serializerSettings ?? throw new ArgumentNullException(nameof(serializerSettings));
         }
-
-        public JsonSerializerSettings JsonSettings { get; }
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
             CancellationToken cancellationToken = default
@@ -67,10 +62,9 @@ namespace APIBlox.NetCore
             );
         }
 
-        public async Task<int> DeleteAsync<TDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
+        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate,
             CancellationToken cancellationToken = default
         )
-            where TDocument : EventStoreDocument
         {
             var ret = await _context.Collection<EventStoreDocument>(_colName)
                 .DeleteManyAsync(predicate, null, cancellationToken);

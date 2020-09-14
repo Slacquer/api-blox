@@ -24,16 +24,14 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddEventStoreService<TModel>(this IServiceCollection services, JsonSerializerSettings settings = null)
             where TModel : class
         {
-            return services.AddScoped<IEventStoreService<TModel>, EventStoreService<TModel>>(sp =>
-                {
-                    settings ??= new JsonSerializerSettings
-                    {
-                        ContractResolver = new PopulateNonPublicSettersContractResolver()
-                    };
-                    var repo = sp.GetRequiredService<IEventStoreRepository<TModel>>();
-                    return new EventStoreService<TModel>(repo, settings);
-                }
-            );
+            settings ??= new CamelCaseSettings
+            {
+                ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
+            };
+
+            services.AddSingleton<IEventSourcedJsonSerializerSettings>(sp => new EventSourcedJsonSerializerSettings(settings));
+
+            return services.AddScoped<IEventStoreService<TModel>, EventStoreService<TModel>>();
         }
 
         /// <summary>
@@ -50,16 +48,14 @@ namespace Microsoft.Extensions.DependencyInjection
         )
             where TModel : class
         {
-            return services.AddScoped<IReadOnlyEventStoreService<TModel>, ReadOnlyEventStoreService<TModel>>(sp =>
-                {
-                    settings ??= new JsonSerializerSettings
-                    {
-                        ContractResolver = new PopulateNonPublicSettersContractResolver()
-                    };
-                    var repo = sp.GetRequiredService<IEventStoreRepository<TModel>>();
-                    return new ReadOnlyEventStoreService<TModel>(repo, settings);
-                }
-            );
+            settings ??= new CamelCaseSettings
+            {
+                ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
+            };
+
+            services.AddSingleton<IEventSourcedJsonSerializerSettings>(sp => new EventSourcedJsonSerializerSettings(settings));
+
+            return services.AddScoped<IReadOnlyEventStoreService<TModel>, ReadOnlyEventStoreService<TModel>>();
         }
     }
 }

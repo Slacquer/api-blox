@@ -95,6 +95,20 @@
             <param name="eventStoreService">The event store service.</param>
             <param name="streamId">The stream identifier.</param>
         </member>
+        <member name="T:Examples.AggregateModels.CosmosAggregate2">
+            <inheritdoc />
+            <summary>
+                Class CosmosAggregate.
+                Implements the <see cref="T:Examples.AggregateModels.CosmosAggregate" />
+            </summary>
+        </member>
+        <member name="M:Examples.AggregateModels.CosmosAggregate2.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.AggregateModels.CosmosAggregate2},System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.AggregateModels.CosmosAggregate2" /> class.
+            </summary>
+            <param name="eventStoreService">The event store service.</param>
+            <param name="streamId">The stream identifier.</param>
+        </member>
         <member name="T:Examples.AggregateModels.EfCoreSqlAggregate">
             <inheritdoc />
             <summary>
@@ -196,6 +210,22 @@
         <member name="M:Examples.Controllers.EventSourcingCosmosDbController.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.AggregateModels.CosmosAggregate})">
             <summary>
                 Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingCosmosDbController" /> class.
+            </summary>
+            <param name="svc">The SVC.</param>
+        </member>
+        <member name="T:Examples.Controllers.EventSourcingCosmosDb2Controller">
+            <inheritdoc />
+            <summary>
+                Class EventSourcingController.
+                Implements the <see cref="T:Examples.AggregateModels.CosmosAggregate" />
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+            <inheritdoc />
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.ControllerBase" />
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingCosmosDb2Controller.#ctor(APIBlox.NetCore.Contracts.IEventStoreService{Examples.AggregateModels.CosmosAggregate2})">
+            <summary>
+                Initializes a new instance of the <see cref="T:Examples.Controllers.EventSourcingCosmosDb2Controller" /> class.
             </summary>
             <param name="svc">The SVC.</param>
         </member>

@@ -17,10 +17,10 @@ namespace APIBlox.NetCore
     {
         protected readonly IEventStoreRepository<TModel> Repository;
 
-        public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repository, JsonSerializerSettings serializerSettings)
+        public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repository, IEventSourcedJsonSerializerSettings esSerializerSettings)
         {
             Repository = repository;
-            JsonSettings = serializerSettings ?? repository.JsonSettings ?? new JsonSerializerSettings();
+            JsonSettings = esSerializerSettings?.Settings ?? new JsonSerializerSettings();
 
             JsonSerializer = JsonSerializer.Create(JsonSettings);
         }
@@ -64,7 +64,7 @@ namespace APIBlox.NetCore
             try
             {
                 data = JObject.FromObject(document.Data, JsonSerializer)
-                    .ToObject(Type.GetType(document.DataType), JsonSerializer);
+                    .ToObject(Type.GetType(document.DataType) ?? throw new ArgumentException(), JsonSerializer);
             }
             catch (JsonSerializationException)
             {
