@@ -13,9 +13,9 @@ using APIBlox.NetCore.Options;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Index = Microsoft.Azure.Documents.Index;
 
 namespace APIBlox.NetCore
 {
@@ -23,29 +23,15 @@ namespace APIBlox.NetCore
         where TModel : class
     {
         private readonly IDocumentClient _client;
-        private readonly string _collectionId;
-        private readonly string _databaseId;
-        private readonly Uri _docCollectionUri;
+        private readonly ILogger _logger;
+        private readonly CosmosDbOptions _options;
 
-        public CosmosDbRepository(IDocumentClient client, JsonSerializerSettings settings, IOptions<CosmosDbOptions> options)
+        public CosmosDbRepository(ILoggerFactory loggerFactory, IDocumentClient client, IOptions<CosmosDbOptions> options)
         {
-            var opt = options.Value;
-            var col = opt.CollectionProperties.FirstOrDefault(c => c.Key.EqualsEx(typeof(TModel).Name)).Value;
+            _logger = loggerFactory.CreateLogger(GetType());
 
-            var colValue = col ?? throw new ArgumentNullException(nameof(IOptions<CosmosDbOptions>),
-                               $"CollectionProperty value for '{typeof(TModel).Name}' was not found!"
-                           );
-
-            _collectionId = col.CollectionName ?? throw new ArgumentNullException(nameof(col.CollectionName));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _databaseId = opt.DatabaseId ?? throw new ArgumentNullException(nameof(opt.DatabaseId));
-            _docCollectionUri = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
-            JsonSettings = settings ?? throw new ArgumentNullException(nameof(settings));
-
-            // ReSharper disable once AsyncConverter.AsyncWait
-            CreateDatabaseIfNotExistsAsync().Wait();
-            // ReSharper disable once AsyncConverter.AsyncWait
-            CreateCollectionIfNotExistsAsync(colValue.UniqueKeys.ToList(), colValue.OfferThroughput).Wait();
+            _options = options.Value;
         }
 
         public JsonSerializerSettings JsonSettings { get; }
@@ -55,18 +41,21 @@ namespace APIBlox.NetCore
         )
             where TDocument : EventStoreDocument
         {
-            foreach (var doc in documents)
-            {
-                await _client.CreateDocumentAsync(_docCollectionUri,
-                    doc,
-                    new RequestOptions
+            await ExecuteAsync<TDocument>(async dbCol =>
+                {
+                    foreach (var doc in documents)
                     {
-                        PartitionKey = new PartitionKey(doc.StreamId)
-                    },
-                    true,
-                    cancellationToken
-                );
-            }
+                        await _client.CreateDocumentAsync(dbCol.DocumentCollectionUri,
+                            doc,
+                            new RequestOptions { PartitionKey = new PartitionKey(doc.StreamId) },
+                            true,
+                            cancellationToken
+                        );
+
+                    }
+                },
+                cancellationToken: cancellationToken
+            );
 
             return documents.Length;
         }
@@ -76,22 +65,26 @@ namespace APIBlox.NetCore
         )
             where TResultDocument : EventStoreDocument
         {
-            var qry = _client.CreateDocumentQuery<EventStoreDocument>(_docCollectionUri,
-                    new FeedOptions { EnableCrossPartitionQuery = true }
-                )
-                .Where(predicate)
-                .OrderByDescending(d => d.SortOrder)
-                .AsDocumentQuery();
-
             var lst = new List<EventStoreDocument>();
 
-            while (qry.HasMoreResults)
-            {
-                var ret = await qry.ExecuteNextAsync<EventStoreDocument>(cancellationToken);
+            await ExecuteAsync<TResultDocument>(async dbCol =>
+                {
+                    var qry = _client.CreateDocumentQuery<EventStoreDocument>(dbCol.DocumentCollectionUri,
+                            new FeedOptions { EnableCrossPartitionQuery = true }
+                        )
+                        .Where(predicate)
+                        .OrderByDescending(d => d.SortOrder)
+                        .AsDocumentQuery();
 
-                foreach (var document in ret)
-                    lst.Add(document);
-            }
+                    while (qry.HasMoreResults)
+                    {
+                        var ret = await qry.ExecuteNextAsync<EventStoreDocument>(cancellationToken);
+
+                        lst.AddRange(ret);
+                    }
+                },
+                cancellationToken
+            );
 
             return (IEnumerable<TResultDocument>)lst;
         }
@@ -101,114 +94,148 @@ namespace APIBlox.NetCore
         )
             where TDocument : EventStoreDocument
         {
-            try
-            {
-                await _client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(_databaseId, _collectionId, document.StreamId),
-                    document,
-                    new RequestOptions
-                    {
-                        PartitionKey = new PartitionKey(document.StreamId)
-                    },
-                    cancellationToken
-                );
-            }
-            catch (DocumentClientException e)
-            {
-                if (e.StatusCode == HttpStatusCode.NotFound)
-                    throw new EventStoreNotFoundException($"Document with stream id '{document.StreamId}' not found!");
-
-                throw;
-            }
-        }
-
-        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate,
-            CancellationToken cancellationToken = default
-        )
-        {
-            var count = 0;
-
-            try
-            {
-                var docs = await GetAsync<EventStoreDocument>(predicate, cancellationToken);
-
-                foreach (var doc in docs)
+            await ExecuteAsync<TDocument>(async dbCol =>
                 {
-                    await _client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(_databaseId, _collectionId, doc.Id),
+                    await _client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(dbCol.DatabaseId, dbCol.CollectionId, document.StreamId),
+                        document,
                         new RequestOptions
                         {
-                            PartitionKey = new PartitionKey(doc.StreamId)
+                            PartitionKey = new PartitionKey(document.StreamId)
                         },
                         cancellationToken
                     );
-                    count++;
-                }
-            }
-            catch (DocumentClientException e)
-            {
-                if (e.StatusCode == HttpStatusCode.NotFound)
-                    throw new EventStoreNotFoundException(e.Message);
+                },
+                cancellationToken
+            );
+        }
 
-                throw;
-            }
+        public async Task<int> DeleteAsync<TDocument>(Expression<Func<EventStoreDocument, bool>> predicate,
+            CancellationToken cancellationToken = default
+        )
+            where TDocument : EventStoreDocument
+        {
+            var count = 0;
+
+            await ExecuteAsync<TDocument>(async dbCol =>
+                {
+                    var docs = await GetAsync<TDocument>(predicate, cancellationToken);
+
+                    foreach (var doc in docs)
+                    {
+                        await _client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(dbCol.DatabaseId, dbCol.CollectionId, doc.Id),
+                            new RequestOptions
+                            {
+                                PartitionKey = new PartitionKey(doc.StreamId)
+                            },
+                            cancellationToken
+                        );
+                        count++;
+                    }
+                },
+                cancellationToken
+
+            );
+           
 
             return count;
         }
 
-        private async Task CreateDatabaseIfNotExistsAsync()
+        private async Task ExecuteAsync<TDocument>(Func<DbCollection, Task> cb,
+            CancellationToken cancellationToken = default
+        )
         {
-            var exists = await _client.CreateDatabaseQuery()
-                .Where(d => d.Id == _databaseId)
-                .ToAsyncEnumerable().AnyAsync();
+            var dbCol = DbCollectionFactory.GetDatabaseAndCollection<TDocument>(_options);
 
-            if (exists)
-                return;
+            while (true)
+                try
+                {
+                    await cb(dbCol);
 
-            await _client.CreateDatabaseAsync(new Database { Id = _databaseId });
+                    break;
+                }
+                catch (DocumentClientException dce)
+                {
+                    if (dce.StatusCode == HttpStatusCode.Conflict)
+                        throw new EventStoreConcurrencyException($"A duplicated constraint (Unique Key) violation for {typeof(TDocument).Name}.");
+
+                    if (dce.StatusCode == HttpStatusCode.NotFound || dce.StatusCode == HttpStatusCode.Gone)
+                    {
+                        var createdDb = await _client.CreateDbColDatabaseAsync(_logger, dbCol, cancellationToken);
+                        var createdCol = await _client.CreateDbColCollectionAsync(_logger, dbCol, cancellationToken);
+
+                        if (createdDb || createdCol)
+                            continue;
+
+                        throw new EventStoreNotFoundException("Execution failure", dce);
+                    }
+
+                    if (dce.StatusCode == HttpStatusCode.ServiceUnavailable)
+
+                        // Hmmm?  this happens quite a bit locally.
+                        throw new EventStoreAccessException(
+                            "Cosmos is DOWN.  Execution failure",
+                            dce
+                        );
+
+                    throw;
+                }
         }
 
-        private async Task CreateCollectionIfNotExistsAsync(IReadOnlyCollection<string> keys, int offerThroughput)
-        {
-            var exists = await _client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(_databaseId))
-                .Where(d => d.Id == _collectionId)
-                .ToAsyncEnumerable().AnyAsync();
+        //private async Task CreateDatabaseIfNotExistsAsync()
+        //{
+        //    var exists = await _client.CreateDatabaseQuery()
+        //        .Where(d => d.Id == _databaseId)
+        //        .ToAsyncEnumerable().AnyAsync();
 
-            if (exists)
-                return;
+        //    if (exists)
+        //        return;
 
-            var documentCollection = new DocumentCollection
-            {
-                Id = _collectionId
-            };
-            documentCollection.PartitionKey.Paths.Add("/StreamId");
+        //    await _client.CreateDatabaseAsync(new Database { Id = _databaseId });
+        //}
 
-            var p = new IncludedPath { Path = "/" };
-            var rng = Index.Range(DataType.String);
+        //private async Task CreateCollectionIfNotExistsAsync(IReadOnlyCollection<string> keys, int offerThroughput)
+        //{
+        //    var exists = await _client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(_databaseId))
+        //        .Where(d => d.Id == _collectionId)
+        //        .ToAsyncEnumerable().AnyAsync();
 
-            documentCollection.IndexingPolicy.IncludedPaths.Add(p);
+        //    if (exists)
+        //        return;
 
-            p = new IncludedPath { Path = "/StreamId/?" };
-            p.Indexes.Add(rng);
-            documentCollection.IndexingPolicy.IncludedPaths.Add(p);
+        //    var documentCollection = new DocumentCollection
+        //    {
+        //        Id = _collectionId
+        //    };
+        //    documentCollection.PartitionKey.Paths.Add("/StreamId");
 
-            p = new IncludedPath { Path = "/DocumentType/?" };
-            p.Indexes.Add(rng);
-            documentCollection.IndexingPolicy.IncludedPaths.Add(p);
+        //    var p = new IncludedPath { Path = "/" };
+        //    var rng = Index.Range(DataType.String);
 
-            if (keys.Any())
-            {
-                var uniqueKey = new UniqueKey();
+        //    documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
-                foreach (var key in keys)
-                    uniqueKey.Paths.Add(key);
+        //    p = new IncludedPath { Path = "/StreamId/?" };
+        //    p.Indexes.Add(rng);
+        //    documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
-                documentCollection.UniqueKeyPolicy.UniqueKeys.Add(uniqueKey);
-            }
+        //    p = new IncludedPath { Path = "/DocumentType/?" };
+        //    p.Indexes.Add(rng);
+        //    documentCollection.IndexingPolicy.IncludedPaths.Add(p);
 
-            await _client.CreateDocumentCollectionAsync(
-                UriFactory.CreateDatabaseUri(_databaseId),
-                documentCollection,
-                new RequestOptions { OfferThroughput = offerThroughput }
-            );
-        }
+        //    if (keys.Any())
+        //    {
+        //        var uniqueKey = new UniqueKey();
+
+        //        foreach (var key in keys)
+        //            uniqueKey.Paths.Add(key);
+
+        //        documentCollection.UniqueKeyPolicy.UniqueKeys.Add(uniqueKey);
+        //    }
+
+        //    await _client.CreateDocumentCollectionAsync(
+        //        UriFactory.CreateDatabaseUri(_databaseId),
+        //        documentCollection,
+        //        new RequestOptions { OfferThroughput = offerThroughput }
+        //    );
+        //}
     }
 }

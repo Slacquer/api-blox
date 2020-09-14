@@ -29,43 +29,41 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     In order to use the {nameof(CosmosDbOptions)} you " +
         ///     $"will need to have an {configSection}
         /// </exception>
-        public static IServiceCollection AddCosmosDbRepository<TModel>(this IServiceCollection services, IConfiguration configuration,
-            JsonSerializerSettings serializerSettings = null, string configSection = "CosmosDbOptions"
+        public static IServiceCollection AddCosmosDbRepository<TModel>(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            JsonSerializerSettings serializerSettings = null,
+            string configSection = "CosmosDbOptions"
         )
             where TModel : class
         {
+
             var config = configuration.GetSection(configSection);
 
             var es = config.Get<CosmosDbOptions>();
 
             if (es is null)
-                throw new ArgumentException(
-                    $"In order to use the {nameof(CosmosDbOptions)} you " +
-                    $"will need to have an {configSection} configuration entry."
-                );
+                throw new ArgumentException($"Configuration section {configSection} not found.");
 
             services.Configure<CosmosDbOptions>(config);
 
-            var client = new DocumentClient(new Uri(es.Endpoint), es.Key);
+            var settings = serializerSettings ?? new CamelCaseSettings
+            {
+                ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
+            };
+
+            var client = new DocumentClient(new Uri(es.Endpoint),
+                es.Key,
+                settings,
+                es.ConnectionPolicy
+            );
 
             // Microsoft Suggested...
             // https://docs.microsoft.com/en-us/azure/cosmos-db/performance-tips
             client.OpenAsync();
 
             services.AddSingleton<IDocumentClient>(client);
-
-            var settings = serializerSettings;
-            services.AddScoped<IEventStoreRepository<TModel>, CosmosDbRepository<TModel>>(x =>
-                {
-                    var opt = Options.Options.Create(es);
-                    var ret = new CosmosDbRepository<TModel>(x.GetRequiredService<IDocumentClient>(),
-                        settings ?? new CamelCaseSettings {ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()},
-                        opt
-                    );
-
-                    return ret;
-                }
-            );
+            services.AddScoped<IEventStoreRepository<TModel>, CosmosDbRepository<TModel>>();
 
             return services;
         }

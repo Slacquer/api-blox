@@ -84,7 +84,8 @@ namespace APIBlox.NetCore
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
+        public async Task<int> DeleteAsync<TDocument>(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
+            where TDocument : EventStoreDocument
         {
             var docs = await _context.Documents.Where(predicate).ToListAsync(cancellationToken);
 

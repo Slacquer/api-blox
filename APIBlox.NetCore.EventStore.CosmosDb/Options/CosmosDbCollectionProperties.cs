@@ -1,4 +1,7 @@
-﻿namespace APIBlox.NetCore.Options
+﻿using System.Collections.Generic;
+using Microsoft.Azure.Documents;
+
+namespace APIBlox.NetCore.Options
 {
     /// <summary>
     ///     Class CollectionProperties.
@@ -6,21 +9,18 @@
     public class CosmosDbCollectionProperties
     {
         /// <summary>
-        ///     Gets or sets the name of the collection.
+        ///     Gets or sets the models.
         /// </summary>
-        /// <value>The name of the collection.</value>
-        public string CollectionName { get; set; }
+        public List<string> Models { get; set; }
 
         /// <summary>
-        ///     Gets or sets the unique keys.
+        ///     Gets or sets the unique key policy.
         /// </summary>
-        /// <value>The unique keys.</value>
-        public string[] UniqueKeys { get; set; } = new string[0];
+        public UniqueKeyPolicy UniqueKeyPolicy { get; set; } = new UniqueKeyPolicy();
 
         /// <summary>
         ///     Gets or sets the offer throughput.
         /// </summary>
-        /// <value>The offer throughput.</value>
-        public int OfferThroughput { get; set; } = 400;
+        public int OfferThroughput { get; set; } = -1;
     }
 }

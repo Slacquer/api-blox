@@ -100,7 +100,7 @@ namespace APIBlox.NetCore
             CancellationToken cancellationToken = default
         )
         {
-            await Repository.DeleteAsync(d => d.StreamId == streamId, cancellationToken);
+            await Repository.DeleteAsync<TModel>(d => d.StreamId == streamId, cancellationToken);
         }
 
         public async Task CreateSnapshotAsync(string streamId, long expectedVersion,
@@ -120,7 +120,7 @@ namespace APIBlox.NetCore
             CancellationToken cancellationToken = default
         )
         {
-            await Repository.DeleteAsync(d =>
+            await Repository.DeleteAsync<TModel>(d =>
                     d.StreamId == streamId
                     && d.DocumentType == DocumentType.Snapshot
                     && d.Version < olderThanVersion,
