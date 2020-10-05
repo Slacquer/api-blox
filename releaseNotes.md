@@ -1,3 +1,12 @@
+_October 4th, 2020_  **v3.0.15**
+- CosmosDb Event Sourcing - Removed camel case serializer settings from IDependencyInvertedConfiguration now when null, stays null.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
 _September 14th, 2020_  **v3.0.15**
 - CosmosDb Event Sourcing - Changed configuration models, extension methods, etc.
 
