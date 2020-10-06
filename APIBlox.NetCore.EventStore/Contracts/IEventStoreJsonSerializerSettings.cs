@@ -10,9 +10,5 @@ namespace APIBlox.NetCore.Contracts
     /// </summary>
     public interface IEventStoreJsonSerializerSettings
     {
-        /// <summary>
-        ///     Gets the settings.
-        /// </summary>
-        JsonSerializerSettings Settings { get; }
     }
 }

@@ -18,10 +18,10 @@ namespace APIBlox.NetCore
         private readonly EventStoreDbContext _context;
         private readonly JsonSerializerSettings _jsonSettings;
 
-        public EfCoreSqlRepository(EventStoreDbContext context, IEventStoreJsonSerializerSettings jsonSerializerSettings)
+        public EfCoreSqlRepository(EventStoreDbContext context, IEventStoreJsonSerializerSettings settings)
         {
             _context = context;
-            _jsonSettings = jsonSerializerSettings.Settings;
+            _jsonSettings = (JsonSerializerSettings) settings ?? new JsonSerializerSettings();;
         }
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents, CancellationToken cancellationToken = default)

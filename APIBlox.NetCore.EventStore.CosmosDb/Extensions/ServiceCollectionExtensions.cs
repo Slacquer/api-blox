@@ -5,6 +5,7 @@ using APIBlox.NetCore.Options;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -47,10 +48,10 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 var client = new DocumentClient(new Uri(es.Endpoint),
                     es.Key,
-                    sp.GetRequiredService<IEventStoreJsonSerializerSettings>().Settings,
+                  (JsonSerializerSettings)sp.GetRequiredService<IEventStoreJsonSerializerSettings>(),
                     es.ConnectionPolicy
                 );
-            
+
                 // Microsoft Suggested...
                 // https://docs.microsoft.com/en-us/azure/cosmos-db/performance-tips
                 client.OpenAsync();

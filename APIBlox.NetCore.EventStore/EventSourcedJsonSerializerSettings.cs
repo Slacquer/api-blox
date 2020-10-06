@@ -5,17 +5,12 @@ using Newtonsoft.Json.Serialization;
 
 namespace APIBlox.NetCore
 {
-    internal class EventSourcedJsonSerializerSettings : IEventStoreJsonSerializerSettings
+    internal class EventSourcedJsonSerializerSettings : JsonSerializerSettings, IEventStoreJsonSerializerSettings
     {
-        public EventSourcedJsonSerializerSettings(JsonSerializerSettings settings)
+        public EventSourcedJsonSerializerSettings(IContractResolver contractResolver = null)
         {
-            //Settings = settings ?? new CamelCaseSettings
-            //{
-            //    ContractResolver = new CamelCasePopulateNonPublicSettersContractResolver()
-            //};
-            Settings = settings;
+            ContractResolver = contractResolver ?? new PopulateNonPublicSettersContractResolver();
         }
-        public JsonSerializerSettings Settings { get; }
     }
 
 }

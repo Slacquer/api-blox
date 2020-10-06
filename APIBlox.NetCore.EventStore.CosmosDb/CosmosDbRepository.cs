@@ -32,7 +32,7 @@ namespace APIBlox.NetCore
 
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _options = options.Value;
-            _jsonSettings = settings.Settings;
+            _jsonSettings = (JsonSerializerSettings) settings ?? new JsonSerializerSettings();;
         }
 
         public async Task<int> AddAsync<TDocument>(TDocument[] documents,
