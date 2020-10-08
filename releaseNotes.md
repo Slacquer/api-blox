@@ -1,6 +1,7 @@
 _October 4th, 2020_  **v3.0.15**
 - CosmosDb Event Sourcing - Removed camel case serializer settings from IDependencyInvertedConfiguration now when null, stays null.
 - Several nuget packages updated.
+- Added Expression extensions to common assembly.
 
 Thanks,  
 _Slacquer_  
