@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using APIBlox.NetCore.Documents;
+using APIBlox.NetCore.Extensions;
 using APIBlox.NetCore.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -20,7 +21,7 @@ namespace APIBlox.NetCore
         public ReadOnlyEventStoreService(IEventStoreRepository<TModel> repository, IEventStoreJsonSerializerSettings esSerializerSettings)
         {
             Repository = repository;
-            JsonSettings = (JsonSerializerSettings) esSerializerSettings ?? new JsonSerializerSettings();
+            JsonSettings = (JsonSerializerSettings)esSerializerSettings ?? new JsonSerializerSettings();
 
             JsonSerializer = JsonSerializer.Create(JsonSettings);
         }
@@ -33,7 +34,7 @@ namespace APIBlox.NetCore
             var root = await ReadRootAsync(streamId, cancellationToken);
 
             return root is null
-                ? ((long?, DateTimeOffset?)) (null, null)
+                ? ((long?, DateTimeOffset?))(null, null)
                 : (root.Version, DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp));
         }
 
@@ -54,7 +55,12 @@ namespace APIBlox.NetCore
             CancellationToken cancellationToken = default
         )
         {
-            return ReadAsync(streamId, null, fromDate, toDate, cancellationToken);
+            return ReadAsync(streamId, null, fromDate, toDate, null, cancellationToken);
+        }
+
+        public Task<EventStreamModel> ReadEventStreamAsync(string streamId, Expression<Func<EventStoreDocument, bool>> predicate = null, CancellationToken cancellationToken = default)
+        {
+            return ReadAsync(streamId, predicate: predicate, cancellationToken: cancellationToken);
         }
 
         protected virtual EventModel BuildEventModel(EventStoreDocument document)
@@ -118,13 +124,17 @@ namespace APIBlox.NetCore
         }
 
         private async Task<EventStreamModel> ReadAsync(string streamId, long? fromVersion = null, DateTimeOffset? fromDate = null,
-            DateTimeOffset? toDate = null, CancellationToken cancellationToken = default
+            DateTimeOffset? toDate = null,
+            Expression<Func<EventStoreDocument, bool>> predicate = null,
+            CancellationToken cancellationToken = default
         )
         {
             if (streamId == null)
                 throw new ArgumentNullException(nameof(streamId));
 
-            Expression<Func<EventStoreDocument, bool>> predicate = e => e.StreamId == streamId;
+            predicate = predicate is null
+                ? e => e.StreamId == streamId
+                : predicate.AndAlso(e => e.StreamId == streamId);
 
             if (fromVersion.HasValue && fromVersion > 0)
             {

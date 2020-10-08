@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using APIBlox.NetCore.Documents;
 using APIBlox.NetCore.Models;
 
 namespace APIBlox.NetCore.Contracts
@@ -53,6 +55,19 @@ namespace APIBlox.NetCore.Contracts
         /// <returns>Task&lt;EventStreamModel&gt;.</returns>
         Task<EventStreamModel> ReadEventStreamAsync(string streamId, DateTimeOffset fromDate,
             DateTimeOffset? toDate = null,
+            CancellationToken cancellationToken = default
+        );
+
+
+        /// <summary>
+        ///     Reads the event stream asynchronously optionally using an express.
+        /// </summary>
+        /// <param name="streamId">The stream identifier.</param>
+        /// <param name="predicate">The predicate.  Will always contain streamId == streamId</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;EventStreamModel&gt;.</returns>
+        Task<EventStreamModel> ReadEventStreamAsync(string streamId,
+            Expression<Func<EventStoreDocument, bool>> predicate = null,
             CancellationToken cancellationToken = default
         );
     }

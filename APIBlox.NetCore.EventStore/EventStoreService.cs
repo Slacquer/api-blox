@@ -19,6 +19,7 @@ namespace APIBlox.NetCore
         }
 
         public async Task<EventStreamModel> WriteToEventStreamAsync(string streamId, EventModel[] events,
+            object metaData = null,
             long? expectedVersion = null, CancellationToken cancellationToken = default
         )
         {
@@ -48,13 +49,21 @@ namespace APIBlox.NetCore
                     );
 
                 root.TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+                if (!(metaData is null))
+                {
+                    root.Data = metaData;
+                    root.DataType = metaData.GetType().AssemblyQualifiedName;
+                }
             }
             else
             {
                 root = new RootDocument
                 {
                     StreamId = streamId,
-                    TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds()
+                    TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Data = metaData,
+                    DataType = metaData?.GetType().AssemblyQualifiedName
                 };
 
                 docs.Add(root);
@@ -78,10 +87,10 @@ namespace APIBlox.NetCore
                 docs.Add(eDoc);
 
                 lst.Add(new EventModel
-                    {
-                        Data = events[i],
-                        DataType = eDoc.DataType
-                    }
+                {
+                    Data = events[i],
+                    DataType = eDoc.DataType
+                }
                 );
             }
 
@@ -109,7 +118,7 @@ namespace APIBlox.NetCore
         {
             var doc = BuildSnapShotDoc(streamId, snapshot, expectedVersion);
 
-            await Repository.AddAsync(new[] {doc}, cancellationToken);
+            await Repository.AddAsync(new[] { doc }, cancellationToken);
 
             if (deleteOlderSnapshots)
                 await DeleteSnapshotsAsync(streamId, expectedVersion, cancellationToken);

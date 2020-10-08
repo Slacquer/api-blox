@@ -13,14 +13,16 @@ namespace APIBlox.NetCore.Contracts
         where TModel : class
     {
         /// <summary>
-        ///     Writes to stream asynchronously.
+        ///     Writes to event stream asynchronous.
         /// </summary>
         /// <param name="streamId">The stream identifier.</param>
         /// <param name="events">The events.</param>
+        /// <param name="metaData">The meta data.</param>
         /// <param name="expectedVersion">The expected version.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;System.UInt64&gt;.</returns>
+        /// <returns>Task&lt;EventStreamModel&gt;.</returns>
         Task<EventStreamModel> WriteToEventStreamAsync(string streamId, EventModel[] events,
+            object metaData = null,
             long? expectedVersion = null, CancellationToken cancellationToken = default
         );
 

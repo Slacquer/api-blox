@@ -119,6 +119,7 @@ namespace Examples.AggregateModels
         {
             var result = await _es.WriteToEventStreamAsync(_streamId,
                 DomainEvents.Select(e => new EventModel { Data = e }).ToArray(),
+                null,
                 _myEventStream.Version > 0 ? _myEventStream.Version : (long?)null,
                 cancellationToken
             );
