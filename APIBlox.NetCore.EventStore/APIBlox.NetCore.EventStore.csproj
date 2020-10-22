@@ -5,7 +5,7 @@
     
     <RootNamespace>APIBlox.NetCore</RootNamespace>
    
-    <Description>Simple data backing agnostic event store.  SourceLink is enabled.</Description> 
+    <Description>Simple data backing agnostic event store.</Description> 
     
     <AssemblyName>APIBlox.NetCore.EventStore</AssemblyName>
    

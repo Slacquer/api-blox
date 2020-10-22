@@ -5,7 +5,7 @@
 
     <RootNamespace>APIBlox.NetCore</RootNamespace>
 
-    <Description>MongoDB backing for APIBlox.NetCore.EventStore.  SourceLink is enabled.</Description>
+    <Description>MongoDB backing for APIBlox.NetCore.EventStore.</Description>
 
     <AssemblyName>APIBlox.NetCore.EventStore.MongoDb</AssemblyName>
 

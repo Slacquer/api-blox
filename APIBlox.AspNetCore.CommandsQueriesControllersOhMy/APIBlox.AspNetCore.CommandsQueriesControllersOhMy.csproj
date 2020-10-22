@@ -8,7 +8,7 @@
 
     <AssemblyName>APIBlox.AspNetCore.CommandsQueriesControllersOhMy</AssemblyName>
 
-    <Description>Combination package for Commands and Queries when using Dynamic Controllers.  SourceLink is enabled.</Description>
+    <Description>Combination package for Commands and Queries when using Dynamic Controllers.</Description>
 
     <Product>APIBlox.AspNetCore.CommandsQueriesControllersOhMy</Product>
 

@@ -5,7 +5,7 @@
 
     <RootNamespace>APIBlox.NetCore</RootNamespace>
 
-    <Description>RavenDb backing for APIBlox.NetCore.EventStore.  SourceLink is enabled.</Description>
+    <Description>RavenDb backing for APIBlox.NetCore.EventStore.</Description>
 
     <AssemblyName>APIBlox.NetCore.EventStore.RavenDb</AssemblyName>
 

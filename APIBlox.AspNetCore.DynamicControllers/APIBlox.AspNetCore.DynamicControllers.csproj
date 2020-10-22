@@ -6,7 +6,7 @@
     
     <RootNamespace>APIBlox.AspNetCore</RootNamespace>
 
-    <Description>Simple dynamic controllers package that puts the focus on resources.  SourceLink is enabled.</Description>
+    <Description>Simple dynamic controllers package that puts the focus on resources.</Description>
     
     <AssemblyName>APIBlox.AspNetCore.DynamicControllers</AssemblyName>
     

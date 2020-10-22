@@ -5,7 +5,7 @@
 
     <RootNamespace>APIBlox.NetCore</RootNamespace>
 
-    <Description>CosmosDB backing for APIBlox.NetCore.EventStore.  SourceLink is enabled.</Description>
+    <Description>CosmosDB backing for APIBlox.NetCore.EventStore.</Description>
 
     <AssemblyName>APIBlox.NetCore.EventStore.CosmosDb</AssemblyName>
 

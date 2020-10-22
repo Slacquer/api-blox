@@ -5,7 +5,7 @@
     
     <RootNamespace>APIBlox.NetCore</RootNamespace>
    
-    <Description>Entity Framework Core backing for APIBlox.NetCore.EventStore.  SourceLink is enabled.</Description> 
+    <Description>Entity Framework Core backing for APIBlox.NetCore.EventStore.</Description> 
     
     <AssemblyName>APIBlox.NetCore.EventStore.EfCore</AssemblyName>
    

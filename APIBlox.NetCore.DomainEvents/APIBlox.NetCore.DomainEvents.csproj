@@ -5,7 +5,7 @@
     
     <RootNamespace>APIBlox.NetCore</RootNamespace>
    
-    <Description>Simple domain events.  SourceLink is enabled.</Description> 
+    <Description>Simple domain events.</Description> 
     
     <AssemblyName>APIBlox.NetCore.DomainEvents</AssemblyName>
    

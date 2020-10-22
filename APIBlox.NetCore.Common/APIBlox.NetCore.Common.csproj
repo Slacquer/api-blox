@@ -6,7 +6,7 @@
     
     <RootNamespace>APIBlox.NetCore</RootNamespace> 
    
-    <Description>Cross-Cutting.NetCore bits.  SourceLink is enabled.</Description> 
+    <Description>Cross-Cutting.NetCore bits.</Description> 
     
     <AssemblyName>APIBlox.NetCore.Common</AssemblyName>
 

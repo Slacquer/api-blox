@@ -6,7 +6,7 @@
     
     <RootNamespace>APIBlox.NetCore</RootNamespace>
 
-    <Description>.NetCore bits.  SourceLink is enabled.</Description>
+    <Description>.NetCore bits.</Description>
     
     <AssemblyName>APIBlox.NetCore</AssemblyName>
    
