@@ -20,7 +20,6 @@ namespace Examples.AggregateModels
     {
         private readonly IEventStoreService<TAggregate> _es;
 
-        private readonly string _streamId;
         private readonly IDictionary<Type, MethodInfo> _whenMethods;
         private EventStreamModel _myEventStream;
 
@@ -38,8 +37,10 @@ namespace Examples.AggregateModels
                 .Where(m => m.GetParameters().Length == 1)
                 .ToDictionary(m => m.GetParameters().First().ParameterType, m => m);
 
-            _streamId = streamId;
+            StreamId = streamId;
         }
+
+        public string StreamId { get; private set; }
 
         /// <summary>
         ///     Gets the domain events.
@@ -78,7 +79,7 @@ namespace Examples.AggregateModels
             await BuildAsync(false, cancellationToken);
 
             if (!(_myEventStream is null))
-                throw new EventStoreConcurrencyException($"Aggregate with stream id {_streamId} already exists!");
+                throw new EventStoreConcurrencyException($"Aggregate with stream id {StreamId} already exists!");
 
             _myEventStream = new EventStreamModel();
 
@@ -102,7 +103,7 @@ namespace Examples.AggregateModels
             await BuildAsync(false, cancellationToken);
 
             if (_myEventStream is null)
-                throw new EventStoreConcurrencyException($"Aggregate with stream id {_streamId} not found!");
+                throw new EventStoreConcurrencyException($"Aggregate with stream id {StreamId} not found!");
 
             // Validate and such
             SomeValue = someValue;
@@ -117,7 +118,7 @@ namespace Examples.AggregateModels
         /// <returns>Task.</returns>
         public async Task PublishChangesAsync(CancellationToken cancellationToken = default)
         {
-            var result = await _es.WriteToEventStreamAsync(_streamId,
+            var result = await _es.WriteToEventStreamAsync(StreamId,
                 DomainEvents.Select(e => new EventModel { Data = e }).ToArray(),
                 null,
                 _myEventStream.Version > 0 ? _myEventStream.Version : (long?)null,
@@ -127,7 +128,7 @@ namespace Examples.AggregateModels
             MyVersion = result.Version;
 
             if (result.Version % 10 == 0)
-                await _es.CreateSnapshotAsync(_streamId,
+                await _es.CreateSnapshotAsync(StreamId,
                     result.Version,
                     new SnapshotModel { Data = this },
                     cancellationToken: cancellationToken
@@ -148,12 +149,12 @@ namespace Examples.AggregateModels
             if (!(_myEventStream is null))
                 return;
 
-            _myEventStream = await _es.ReadEventStreamAsync(_streamId, cancellationToken);
+            _myEventStream = await _es.ReadEventStreamAsync(StreamId, cancellationToken);
 
             if (_myEventStream is null)
             {
                 if (failNotFound)
-                    throw new EventStoreNotFoundException($"StreamId {_streamId} not found");
+                    throw new EventStoreNotFoundException($"StreamId {StreamId} not found");
 
                 return;
             }
@@ -178,7 +179,7 @@ namespace Examples.AggregateModels
         /// <returns>Task.</returns>
         public Task DeleteMeAsync(CancellationToken cancellationToken)
         {
-            return _es.DeleteEventStreamAsync(_streamId, cancellationToken);
+            return _es.DeleteEventStreamAsync(StreamId, cancellationToken);
         }
 
         private void When(SomeValueAdded e)

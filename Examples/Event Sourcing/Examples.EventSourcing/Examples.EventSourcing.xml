@@ -165,11 +165,18 @@
             </summary>
             <param name="svc">The SVC.</param>
         </member>
-        <member name="M:Examples.Controllers.EventSourcingController`1.Get(System.String)">
+        <member name="M:Examples.Controllers.EventSourcingController`1.Get(System.String,System.Threading.CancellationToken)">
             <summary>
                 Gets the specified first name.
             </summary>
             <param name="firstName">The first name.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task&lt;ActionResult&gt;.</returns>
+        </member>
+        <member name="M:Examples.Controllers.EventSourcingController`1.Get(System.Threading.CancellationToken)">
+            <summary>
+                Gets all entries.
+            </summary>
             <returns>Task&lt;ActionResult&gt;.</returns>
         </member>
         <member name="M:Examples.Controllers.EventSourcingController`1.Post(Examples.Resources.AggregateResource,System.Threading.CancellationToken)">

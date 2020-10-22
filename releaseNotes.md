@@ -3,6 +3,7 @@ _October 4th, 2020_  **v3.0.15**
 - Several nuget packages updated.
 - Added Expression extensions to common assembly.
 - EventStoreService - now adds metadata to root documents when not null.
+- EventStoreService - Changed ReadEventStreamAsync to ReadEventStreamsAsync, pull all with pagination.
 
 Thanks,  
 _Slacquer_  

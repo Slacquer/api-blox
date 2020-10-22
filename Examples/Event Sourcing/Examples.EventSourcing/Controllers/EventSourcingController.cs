@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using APIBlox.NetCore.Contracts;
 using Examples.AggregateModels;
@@ -35,15 +37,39 @@ namespace Examples.Controllers
         ///     Gets the specified first name.
         /// </summary>
         /// <param name="firstName">The first name.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;ActionResult&gt;.</returns>
-        [HttpGet]
-        public async Task<ActionResult> Get(string firstName)
+        [HttpGet("{firstName}")]
+        public async Task<ActionResult> Get([FromRoute]string firstName, CancellationToken cancellationToken)
         {
             var m = new Aggregate<TAggregate>(_svc, firstName);
 
-            await m.BuildAsync(true);
+            await m.BuildAsync(true, cancellationToken);
 
             return Ok(m);
+        }
+
+        /// <summary>
+        ///     Gets all entries.
+        /// </summary>
+        /// <returns>Task&lt;ActionResult&gt;.</returns>
+        [HttpGet]
+        public async Task<ActionResult> Get(CancellationToken cancellationToken)
+        {
+            var streams = await _svc.ReadEventStreamsAsync(null, cancellationToken: cancellationToken);
+
+            var lst = new List<Aggregate<TAggregate>>();
+            foreach (var es in streams)
+            {
+                var m = new Aggregate<TAggregate>(_svc, es.StreamId);
+
+                await m.BuildAsync(true, cancellationToken);
+
+                lst.Add(m);
+
+            }
+
+            return Ok(lst.ToList());
         }
 
         /// <summary>

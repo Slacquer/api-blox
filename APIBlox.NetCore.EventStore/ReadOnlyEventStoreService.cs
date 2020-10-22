@@ -58,9 +58,41 @@ namespace APIBlox.NetCore
             return ReadAsync(streamId, null, fromDate, toDate, null, cancellationToken);
         }
 
-        public Task<EventStreamModel> ReadEventStreamAsync(string streamId, Expression<Func<EventStoreDocument, bool>> predicate = null, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<EventStreamModel>> ReadEventStreamsAsync(
+            Expression<Func<EventStoreDocument, bool>> predicate,
+            int? take = null,
+            int? skip = null,
+            CancellationToken cancellationToken = default)
         {
-            return ReadAsync(streamId, predicate: predicate, cancellationToken: cancellationToken);
+            // get a list of streamId's, then build for each.
+            var ids = (await Repository.GetAsync<EventStoreDocument>(
+                d => d.DocumentType == DocumentType.Root,
+                cancellationToken
+            )).Select(r => r.Id);
+
+            if (skip.HasValue)
+                ids = ids.Skip(skip.Value);
+            if (take.HasValue)
+                ids = ids.Take(take.Value);
+
+            var results = new List<EventStreamModel>();
+            var tasks = new List<Task<EventStreamModel>>();
+
+            foreach (var id in ids.ToList())
+            {
+                tasks.Add(ReadAsync(id, predicate: predicate, cancellationToken: cancellationToken));
+
+                if (tasks.Count < 10)
+                    continue;
+
+                results.AddRange(await Task.WhenAll(tasks));
+                tasks.Clear();
+            }
+
+            if (tasks.Any())
+                results.AddRange(await Task.WhenAll(tasks));
+
+            return results;
         }
 
         protected virtual EventModel BuildEventModel(EventStoreDocument document)

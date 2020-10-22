@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,14 +61,17 @@ namespace APIBlox.NetCore.Contracts
 
 
         /// <summary>
-        ///     Reads the event stream asynchronously optionally using an express.
+        ///     Reads all event streams asynchronously using an expression.
         /// </summary>
-        /// <param name="streamId">The stream identifier.</param>
-        /// <param name="predicate">The predicate.  Will always contain streamId == streamId</param>
+        /// <param name="predicate">Optional filter predicate.</param>
+        /// <param name="take">Take or Top for pagination</param>
+        /// <param name="skip">Skip for pagination</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task&lt;EventStreamModel&gt;.</returns>
-        Task<EventStreamModel> ReadEventStreamAsync(string streamId,
+        /// <returns>Task&lt;IEnumerable&lt;EventStreamModel&gt;&gt;.</returns>
+        Task<IEnumerable<EventStreamModel>> ReadEventStreamsAsync(
             Expression<Func<EventStoreDocument, bool>> predicate = null,
+            int? take = null,
+            int? skip = null,
             CancellationToken cancellationToken = default
         );
     }
