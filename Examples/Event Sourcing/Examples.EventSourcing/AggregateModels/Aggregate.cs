@@ -40,6 +40,10 @@ namespace Examples.AggregateModels
             StreamId = streamId;
         }
 
+        /// <summary>
+        ///     Gets the stream identifier.
+        /// </summary>
+        /// <value>The stream identifier.</value>
         public string StreamId { get; private set; }
 
         /// <summary>

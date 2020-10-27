@@ -16,6 +16,12 @@
             <param name="eventStoreService">The event store service.</param>
             <param name="streamId">The stream identifier.</param>
         </member>
+        <member name="P:Examples.AggregateModels.Aggregate`1.StreamId">
+            <summary>
+                Gets the stream identifier.
+            </summary>
+            <value>The stream identifier.</value>
+        </member>
         <member name="P:Examples.AggregateModels.Aggregate`1.DomainEvents">
             <summary>
                 Gets the domain events.
