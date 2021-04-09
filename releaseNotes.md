@@ -1,4 +1,4 @@
-_April 9th, 2020_  **v5.0.0**
+_April 9th, 2020_  **v5.0.1**
 - NetCore 5 update.
 
 Thanks,  
