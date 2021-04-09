@@ -41,7 +41,7 @@ _Built Using .Net Core 5_
 
 ## Things to keep in mind  
  
-- ~~All packages have [**SourceLink**][1] enabled.  In additon, the packages contain **xml comment** files.  
+ ~~All packages have [**SourceLink**][1] enabled.  In additon, the packages contain **xml comment** files.  
 **TIP** if you have never used the source link features then let me save you some trouble!  
 _**As of Visual Studio v15.8.7**_
     1. Add https://nuget.smbsrc.net to **tools\options\debugging\symbols** and make sure its checked, you may want to filter out symbols but for now make sure **Load all modules, unless excluded** is selected.
