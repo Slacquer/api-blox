@@ -17,9 +17,7 @@
 
 _February 22nd, 2020_  **v5.0.2** _[release notes][rn]_ 
 
-_Built Using .Net Core 3_
-
-__Dynamic Controllers are now created on the fly, rather than using generic bits!  This has made things (Swashbuckle for one) considerably easier to deal with.__
+_Built Using .Net Core 5_
 
 <br>
 
