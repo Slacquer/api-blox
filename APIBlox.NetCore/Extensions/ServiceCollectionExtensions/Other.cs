@@ -21,8 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         private static ILogger _log;
 
-        private static readonly List<KeyValuePair<bool, Type>>
-            WorkingAssemblyTypes = new List<KeyValuePair<bool, Type>>();
+        private static readonly List<KeyValuePair<bool, Type>> WorkingAssemblyTypes = new();
 
         /// <summary>
         ///     Adds a service that requires Dependency Injection, while performing a setup action.
@@ -513,13 +512,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 return;
             }
 
-            ((IDependencyInvertedConfiguration) Activator.CreateInstance(type))
-                .Configure(services, configuration, loggerFactory, environment);
+            ((IDependencyInvertedConfiguration) Activator.CreateInstance(type))?.Configure(services, configuration, loggerFactory, environment);
         }
 
         private static void CreateLog(ILoggerFactory loggerFactory)
         {
-            if (!(_log is null))
+            if (_log is not null)
                 return;
 
             _log = loggerFactory.CreateLogger("APIBlox.NetCore-Other");

@@ -39,7 +39,7 @@ namespace APIBlox.NetCore.Types
         /// <summary>
         ///     The properties collection
         /// </summary>
-        protected Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+        protected Dictionary<string, object> Properties { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the settings.
@@ -212,7 +212,7 @@ namespace APIBlox.NetCore.Types
         /// <returns>The result of the conversion.</returns>
         public static implicit operator bool(DynamicDataObject obj)
         {
-            return !(obj is null);
+            return obj is not null;
         }
 
         /// <summary>

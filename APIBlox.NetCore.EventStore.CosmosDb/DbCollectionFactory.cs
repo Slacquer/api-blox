@@ -16,8 +16,8 @@ namespace APIBlox.NetCore
 {
     internal static class DbCollectionFactory
     {
-        private static readonly object DbColLock = new object();
-        private static readonly Dictionary<Type, DbCollection> DbCols = new Dictionary<Type, DbCollection>();
+        private static readonly object DbColLock = new();
+        private static readonly Dictionary<Type, DbCollection> DbCols = new();
 
         public static DbCollection GetDatabaseAndCollection<TModel>(CosmosDbOptions options)
         {
@@ -27,7 +27,7 @@ namespace APIBlox.NetCore
 
                 var existing = DbCols.ContainsKey(t) ? DbCols[t] : null;
 
-                if (!(existing is null))
+                if (existing is not null)
                     return existing;
 
                 var dbCol = new DbCollection
@@ -130,10 +130,10 @@ namespace APIBlox.NetCore
             {
                 OfferThroughput = dbCol.ColProps.OfferThroughput > -1
                     ? dbCol.ColProps.OfferThroughput
-                    : (int?) null
+                    : null
             };
 
-            if (!(existingCol is null))
+            if (existingCol is not null)
                 return false;
 
             logger.LogWarning(() => $"Creating collection {dbCol.CollectionId} as it does not exist.");

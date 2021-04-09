@@ -34,7 +34,7 @@ namespace APIBlox.NetCore
             var root = await ReadRootAsync(streamId, cancellationToken);
 
             return root is null
-                ? ((long?, DateTimeOffset?))(null, null)
+                ? (null, null)
                 : (root.Version, DateTimeOffset.FromUnixTimeSeconds(root.TimeStamp));
         }
 
@@ -141,7 +141,7 @@ namespace APIBlox.NetCore
                 cancellationToken
             )).FirstOrDefault();
 
-            var doc = !(result is null)
+            var doc = result is not null
                 ? new RootDocument
                 {
                     DocumentType = result.DocumentType,
@@ -168,7 +168,7 @@ namespace APIBlox.NetCore
                 ? e => e.StreamId == streamId
                 : predicate.AndAlso(e => e.StreamId == streamId);
 
-            if (fromVersion.HasValue && fromVersion > 0)
+            if (fromVersion is > 0)
             {
                 predicate = e => e.StreamId == streamId && e.Version >= fromVersion;
             }

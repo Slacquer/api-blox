@@ -14,7 +14,7 @@ namespace APIBlox.AspNetCore
         private readonly List<string> _excludeUrlsLike;
         private readonly ILogger<SimulateWaitTimeMiddleware> _log;
         private readonly RequestDelegate _next;
-        private readonly Random _rnd = new Random((int) DateTime.Now.Ticks);
+        private readonly Random _rnd = new((int) DateTime.Now.Ticks);
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SimulateWaitTimeMiddleware" /> class.
@@ -35,7 +35,7 @@ namespace APIBlox.AspNetCore
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var path = context.Request.Path.Value.ToLower();
+            var path = context.Request.Path.Value?.ToLower();
 
             if (!context.Request.Query.ContainsKey("wait"))
             {
@@ -45,7 +45,7 @@ namespace APIBlox.AspNetCore
                 return;
             }
 
-            if (_excludeUrlsLike.Any(u => path.Contains(u)))
+            if (_excludeUrlsLike.Any(u => path is not null && path.Contains(u)))
             {
                 _log.LogInformation(() =>
                     $"Skipping as request path {path} is " +

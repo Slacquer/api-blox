@@ -70,7 +70,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services.AddMvcCore().AddNewtonsoftJson(s =>
             {
-                if (!(s.SerializerSettings.ContractResolver is CamelCasePropertyNamesContractResolver))
+                if (s.SerializerSettings.ContractResolver is not CamelCasePropertyNamesContractResolver)
                     s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
@@ -88,7 +88,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services.AddMvc().AddNewtonsoftJson(s =>
             {
-                if (!(s.SerializerSettings.ContractResolver is CamelCasePropertyNamesContractResolver))
+                if (s.SerializerSettings.ContractResolver is not CamelCasePropertyNamesContractResolver)
                     s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
@@ -577,7 +577,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             foreach (var objFilter in filters)
             {
-                if (!(objFilter is TypeFilterAttribute attr))
+                if (objFilter is not TypeFilterAttribute attr)
                     continue;
 
                 if (!attr.ImplementationType.IsAssignableTo(typeof(EnsureResponseResultActionFilter)))

@@ -346,7 +346,7 @@ namespace APIBlox.AspNetCore.Extensions
         {
             DynamicControllerFactory.ValidateRequestType(requestObj, requestObjMustHaveBody);
 
-            if (!(responseObjectResult is null))
+            if (responseObjectResult is not null)
                 DynamicControllerFactory.ValidateResponseType(responseObjectResult);
 
             var (reqObj, _, requestNs) = DynamicControllerFactory.WriteNameWithNamespaces(requestObj);
@@ -362,10 +362,10 @@ namespace APIBlox.AspNetCore.Extensions
                 .Union(paramNs)
                 .Union(requestNs);
 
-            if (!(resultObjNs is null))
+            if (resultObjNs is not null)
                 ns = ns.Union(resultObjNs);
 
-            template.Comments = template.Comments ?? reqObjComments;
+            template.Comments ??= reqObjComments;
             template.Action.Namespaces = ns.ToArray();
 
             var cn = buildControllerName(realResObject);

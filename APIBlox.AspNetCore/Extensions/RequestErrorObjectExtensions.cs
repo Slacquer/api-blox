@@ -193,8 +193,7 @@ namespace APIBlox.AspNetCore.Types
 
             validationError.Property = property;
 
-            if (errorObject.Errors is null)
-                errorObject.Errors = new Collection<DynamicErrorObject>();
+            errorObject.Errors ??= new Collection<DynamicErrorObject>();
 
             errorObject.Errors.Add(validationError);
 

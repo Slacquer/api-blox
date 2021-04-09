@@ -104,14 +104,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static object GetInstance(this IServiceProvider provider, ServiceDescriptor descriptor)
         {
-            if (!(descriptor.ImplementationInstance is null))
+            if (descriptor.ImplementationInstance is not null)
                 return descriptor.ImplementationInstance;
 
-            return !(descriptor.ImplementationType is null)
+            return descriptor.ImplementationType is not null
                 ? ActivatorUtilities.GetServiceOrCreateInstance(provider,
                     descriptor.ImplementationType
                 )
-                : descriptor.ImplementationFactory(provider);
+                : descriptor.ImplementationFactory?.Invoke(provider);
         }
 
         private static bool TryDecorate(
@@ -147,7 +147,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void CreateLog(ILoggerFactory loggerFactory)
         {
-            if (!(_log is null))
+            if (_log is not null)
                 return;
 
             _log = loggerFactory.CreateLogger("APIBlox.NetCore-ServiceDecoration");

@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>IServiceCollection.</returns>
         public static IServiceCollection AddAlterRequestErrorObject(this IServiceCollection services, Action<RequestErrorObject> alterAction)
         {
-            if (!(alterAction is null))
+            if (alterAction is not null)
                 RequestErrorObject.RequestErrorObjectAction = alterAction;
 
             return services;

@@ -12,9 +12,10 @@ namespace Examples.CmdQueryHandlers
     {
         public Task<HandlerResponse> HandleAsync(ChildByIdRequest requestCommand, CancellationToken cancellationToken)
         {
-            var ret = new HandlerResponse();
-
-            ret.Result = new ChildResponse {Age = 4};
+            var ret = new HandlerResponse
+            {
+                Result = new ChildResponse {Age = 4}
+            };
 
             return Task.FromResult(ret);
         }

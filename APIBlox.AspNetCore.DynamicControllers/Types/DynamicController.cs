@@ -30,17 +30,17 @@ namespace APIBlox.AspNetCore.Types
             Fields.Add($@"private readonly ILogger<{_name}> _log;");
         }
 
-        public List<string> Namespaces { get; } = new List<string>();
+        public List<string> Namespaces { get; } = new();
 
-        public List<string> Fields { get; } = new List<string>();
+        public List<string> Fields { get; } = new();
 
-        public List<string> CtorArgs { get; } = new List<string>();
+        public List<string> CtorArgs { get; } = new();
 
-        public List<string> CtorBody { get; } = new List<string>();
+        public List<string> CtorBody { get; } = new();
 
-        public List<string> Actions { get; } = new List<string>();
+        public List<string> Actions { get; } = new();
 
-        public List<string> Methods { get; } = new List<string>();
+        public List<string> Methods { get; } = new();
 
         public override string ToString()
         {

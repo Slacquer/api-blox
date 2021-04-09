@@ -22,10 +22,9 @@ namespace APIBlox.NetCore.Extensions
                 var buffer = Encoding.UTF8.GetBytes(text);
                 var memoryStream = new MemoryStream();
 
-                using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
-                {
-                    gZipStream.Write(buffer, 0, buffer.Length);
-                }
+                using var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true);
+
+                gZipStream.Write(buffer, 0, buffer.Length);
 
                 memoryStream.Position = 0;
 
@@ -48,22 +47,20 @@ namespace APIBlox.NetCore.Extensions
             {
                 var gZipBuffer = Convert.FromBase64String(compressedText);
 
-                using (var memoryStream = new MemoryStream())
-                {
-                    var dataLength = BitConverter.ToInt32(gZipBuffer, 0);
-                    memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
+                using var memoryStream = new MemoryStream();
 
-                    var buffer = new byte[dataLength];
+                var dataLength = BitConverter.ToInt32(gZipBuffer, 0);
+                memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
 
-                    memoryStream.Position = 0;
+                var buffer = new byte[dataLength];
 
-                    using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
-                    {
-                        gZipStream.Read(buffer, 0, buffer.Length);
-                    }
+                memoryStream.Position = 0;
 
-                    return Encoding.UTF8.GetString(buffer);
-                }
+                using var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress);
+
+                gZipStream.Read(buffer, 0, buffer.Length);
+
+                return Encoding.UTF8.GetString(buffer);
             }
         }
     }

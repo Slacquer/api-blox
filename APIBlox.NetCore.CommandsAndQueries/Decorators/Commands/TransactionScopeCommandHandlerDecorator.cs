@@ -29,12 +29,11 @@ namespace APIBlox.NetCore.Decorators.Commands
         /// <inheritdoc />
         public async Task HandleAsync(TRequest requestCommand, CancellationToken cancellationToken)
         {
-            using (var scope = new TransactionScope())
-            {
-                await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
+            using var scope = new TransactionScope();
 
-                scope.Complete();
-            }
+            await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
+
+            scope.Complete();
         }
     }
 
@@ -51,7 +50,6 @@ namespace APIBlox.NetCore.Decorators.Commands
     {
         private readonly ICommandHandler<TRequest, TResult> _decorated;
 
-        /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the
         ///     <see cref="T:APIBlox.NetCore.Decorators.Commands.TransactionScopeCommandHandlerDecorator`2" /> class.
@@ -65,15 +63,12 @@ namespace APIBlox.NetCore.Decorators.Commands
         /// <inheritdoc />
         public async Task<TResult> HandleAsync(TRequest requestCommand, CancellationToken cancellationToken)
         {
-            TResult ret;
-
             // https://particular.net/blog/transactionscope-and-async-await-be-one-with-the-flow
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                ret = await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-                scope.Complete();
-            }
+            var ret = await _decorated.HandleAsync(requestCommand, cancellationToken).ConfigureAwait(false);
+
+            scope.Complete();
 
             return ret;
         }

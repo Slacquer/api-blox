@@ -51,7 +51,7 @@ namespace Examples.AggregateModels
         /// </summary>
         /// <value>The domain events.</value>
         [JsonIgnore]
-        public List<object> DomainEvents { get; } = new List<object>();
+        public List<object> DomainEvents { get; } = new();
 
         /// <summary>
         ///     Gets the aggregate identifier.
@@ -82,7 +82,7 @@ namespace Examples.AggregateModels
         {
             await BuildAsync(false, cancellationToken);
 
-            if (!(_myEventStream is null))
+            if (_myEventStream is not null)
                 throw new EventStoreConcurrencyException($"Aggregate with stream id {StreamId} already exists!");
 
             _myEventStream = new EventStreamModel();
@@ -125,7 +125,7 @@ namespace Examples.AggregateModels
             var result = await _es.WriteToEventStreamAsync(StreamId,
                 DomainEvents.Select(e => new EventModel { Data = e }).ToArray(),
                 null,
-                _myEventStream.Version > 0 ? _myEventStream.Version : (long?)null,
+                _myEventStream.Version > 0 ? _myEventStream.Version : null,
                 cancellationToken
             );
 
@@ -150,7 +150,7 @@ namespace Examples.AggregateModels
         /// <exception cref="EventStoreNotFoundException">StreamId {_streamId}</exception>
         public async Task BuildAsync(bool failNotFound = false, CancellationToken cancellationToken = default)
         {
-            if (!(_myEventStream is null))
+            if (_myEventStream is not null)
                 return;
 
             _myEventStream = await _es.ReadEventStreamAsync(StreamId, cancellationToken);
@@ -163,7 +163,7 @@ namespace Examples.AggregateModels
                 return;
             }
 
-            if (!(_myEventStream.Snapshot is null))
+            if (_myEventStream.Snapshot is not null)
             {
                 var data = (Aggregate<TAggregate>)_myEventStream.Snapshot.Data;
 

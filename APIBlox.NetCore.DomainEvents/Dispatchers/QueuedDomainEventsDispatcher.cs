@@ -10,7 +10,7 @@ namespace APIBlox.NetCore
 {
     internal class QueuedDomainEventsDispatcher : DispatcherBase, IQueuedDomainEventsDispatcher
     {
-        private readonly Queue<IDomainEvent> _eventsQueue = new Queue<IDomainEvent>();
+        private readonly Queue<IDomainEvent> _eventsQueue = new();
         private readonly ILogger<QueuedDomainEventsDispatcher> _log;
 
         public QueuedDomainEventsDispatcher(

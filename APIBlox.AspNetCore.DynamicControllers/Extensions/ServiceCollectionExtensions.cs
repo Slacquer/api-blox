@@ -44,8 +44,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var log = loggerFactory.CreateLogger(nameof(AddDynamicControllerConfigurations));
             var caller = Assembly.GetAssembly(startup);
-            var assemblyName = $"{caller.GetName().Name}.Controllers";
-            var outputPath = Path.Combine(Path.GetDirectoryName(caller.Location), "DynamicControllers");
+            var assemblyName = $"{caller?.GetName().Name}.Controllers";
+            var outputPath = Path.Combine(Path.GetDirectoryName(caller?.Location) ?? throw new InvalidOperationException(), "DynamicControllers");
             var dll = new FileInfo(Path.Combine(outputPath, $"{assemblyName}.dll"));
             var xmlFile = new FileInfo(Path.Combine(outputPath, $"{assemblyName}.xml"));
             var factory = new DynamicControllerFactory(loggerFactory, assemblyName, releaseConfiguration, addControllerComments);

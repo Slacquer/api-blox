@@ -107,10 +107,10 @@ namespace APIBlox.AspNetCore
                 }
             }
 
-            if (!(nextQuery is null))
+            if (nextQuery is not null)
                 nextQuery.Undefined = requestQuery.Undefined;
 
-            if (!(previousQuery is null))
+            if (previousQuery is not null)
                 previousQuery.Undefined = previousQuery.Undefined;
 
             var ret = new PaginationMetadata
@@ -125,10 +125,10 @@ namespace APIBlox.AspNetCore
             };
 
             // if previous is empty and we do not have more than top, then next should be null as well.
-            if (!(ret.Previous is null))
+            if (ret.Previous is not null)
                 return ret;
 
-            if (!(nextQuery is null) && resultCount < nextQuery.Top)
+            if (nextQuery is not null && resultCount < nextQuery.Top)
                 ret.Next = null;
 
             return ret;

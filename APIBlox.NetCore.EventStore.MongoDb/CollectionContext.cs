@@ -14,7 +14,7 @@ namespace APIBlox.NetCore
 {
     internal class CollectionContext
     {
-        private readonly ConcurrentBag<string> _createdIndexes = new ConcurrentBag<string>();
+        private readonly ConcurrentBag<string> _createdIndexes = new();
         private readonly IMongoDatabase _database;
         private readonly MongoDbOptions _options;
 

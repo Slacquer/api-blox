@@ -28,7 +28,7 @@ public async Task<IActionResult> [CONTROLLER_NAME]Post[REQ_OBJECT](
             "When responding to a POST you must either set an error or pass some results!"
         );
 
-    if (!(errorResult is null))
+    if (errorResult is not null)
         return errorResult;
 
     var id = FindId(ret.Result);

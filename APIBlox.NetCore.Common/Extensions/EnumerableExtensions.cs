@@ -28,7 +28,7 @@ namespace APIBlox.NetCore.Extensions
         {
             var lst = source.ToList();
 
-            var flattened = !(filter is null)
+            var flattened = filter is not null
                 ? lst.Where(filter)
                 : lst;
 

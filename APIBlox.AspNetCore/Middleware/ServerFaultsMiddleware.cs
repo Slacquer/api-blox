@@ -19,7 +19,7 @@ namespace APIBlox.AspNetCore
 {
     internal class ServerFaultsMiddleware
     {
-        private static readonly Regex StackTraceRegex = new Regex(@"([^\)]*\)) in (.*):line (\d)*$");
+        private static readonly Regex StackTraceRegex = new(@"([^\)]*\)) in (.*):line (\d)*$");
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<ServerFaultsMiddleware> _log;
         private readonly RequestDelegate _next;

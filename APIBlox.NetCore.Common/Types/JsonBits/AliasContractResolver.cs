@@ -18,7 +18,7 @@ namespace APIBlox.NetCore.Types.JsonBits
     /// <seealso cref="PopulateNonPublicSettersContractResolver" />
     public class AliasContractResolver : PopulateNonPublicSettersContractResolver
     {
-        private static readonly Dictionary<string, string> Aliases = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> Aliases = new();
 
         private readonly Dictionary<string, string[]> _map;
 
@@ -51,7 +51,7 @@ namespace APIBlox.NetCore.Types.JsonBits
                 kvp.Value.Any(s => s.EqualsEx(member.Name))
             );
 
-            if (!(propName.Value is null))
+            if (propName.Value is not null)
                 prop.PropertyName = propName.Key;
 
             return prop;

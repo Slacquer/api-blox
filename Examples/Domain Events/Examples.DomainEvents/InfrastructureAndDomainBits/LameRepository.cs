@@ -9,7 +9,7 @@ namespace Examples
     [InjectableService]
     internal class LameRepository : ILameRepository
     {
-        private static readonly Dictionary<int, DomainObject> Models = new Dictionary<int, DomainObject>();
+        private static readonly Dictionary<int, DomainObject> Models = new();
         private readonly IDomainEventsDispatcher _dispatcher;
 
         public LameRepository(IDomainEventsDispatcher dispatcher)

@@ -36,7 +36,7 @@ namespace APIBlox.NetCore
             if (root is null && expectedVersion.HasValue)
                 throw new EventStoreNotFoundException($"Stream '{streamId}' wasn't found.");
 
-            if (!(root is null) && !expectedVersion.HasValue)
+            if (root is not null && !expectedVersion.HasValue)
                 throw new EventStoreConcurrencyException($"Stream '{streamId}' exists, therefore you must specify an expected version.");
 
             var docs = new List<EventStoreDocument>();
@@ -50,7 +50,7 @@ namespace APIBlox.NetCore
 
                 root.TimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-                if (!(metaData is null))
+                if (metaData is not null)
                 {
                     root.Data = metaData;
                     root.DataType = metaData.GetType().AssemblyQualifiedName;

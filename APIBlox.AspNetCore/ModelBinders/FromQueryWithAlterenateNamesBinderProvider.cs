@@ -23,7 +23,7 @@ namespace APIBlox.AspNetCore.ModelBinders
         {
             var attrs = ((DefaultModelMetadata)c.Metadata).Attributes.Attributes;
 
-            return !(attrs is null) && attrs.Any(pa => pa.GetType() == typeof(FromQueryWithAlternateNamesAttribute));
+            return attrs is not null && attrs.Any(pa => pa.GetType() == typeof(FromQueryWithAlternateNamesAttribute));
         }
     }
 }

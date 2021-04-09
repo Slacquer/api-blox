@@ -21,7 +21,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the action comments.
         /// </summary>
         /// <value>The action comments.</value>
-        public DynamicComments ActionComments { get; set; } = new DynamicComments();
+        public DynamicComments ActionComments { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the name of the controller.
@@ -46,7 +46,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets or sets the controller comments.
         /// </summary>
         /// <value>The controller comments.</value>
-        public DynamicComments ControllerComments { get; set; } = new DynamicComments();
+        public DynamicComments ControllerComments { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the name space.

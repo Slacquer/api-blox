@@ -29,9 +29,9 @@ namespace APIBlox.AspNetCore
             var anonObjects = application.Controllers.Select(cm => new
                 {
                     cm.ControllerName,
-                    selectors = cm.Selectors.Where(sm => !(sm.AttributeRouteModel is null))
+                    selectors = cm.Selectors.Where(sm => sm.AttributeRouteModel is not null)
                         .Concat(cm.Actions.SelectMany(am =>
-                                am.Selectors.Where(sm => sm.AttributeRouteModel != null)
+                                am.Selectors.Where(sm => sm.AttributeRouteModel is not null)
                             )
                         )
                 }

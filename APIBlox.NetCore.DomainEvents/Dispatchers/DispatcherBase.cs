@@ -36,7 +36,7 @@ namespace APIBlox.NetCore
 
             foreach (var dh in wrapped)
             {
-                var t = dh.HandleEventAsync(de);
+                var t = dh?.HandleEventAsync(de);
                 tasks.Add(t);
                 callback(t);
             }

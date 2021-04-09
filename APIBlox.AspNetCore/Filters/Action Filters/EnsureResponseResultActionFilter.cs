@@ -72,7 +72,7 @@ namespace APIBlox.AspNetCore.Filters
             {
                 var found = FindFirstArrayItem(result.Value);
 
-                if (!(found is null))
+                if (found is not null)
                 {
                     ResultValueIsEnumerable = true;
                     ResultValueCount = found.Count;
@@ -81,7 +81,7 @@ namespace APIBlox.AspNetCore.Filters
 
             var retValue = _action(result.Value);
 
-            if (!(retValue is null))
+            if (retValue is not null)
                 result.Value = retValue;
 
             Handle(context, result);
@@ -95,7 +95,7 @@ namespace APIBlox.AspNetCore.Filters
         {
             var jt = JToken.FromObject(value);
 
-            if (!(jt is JObject jo))
+            if (jt is not JObject jo)
                 return null;
 
             foreach (var property in jo.Properties())
@@ -105,7 +105,7 @@ namespace APIBlox.AspNetCore.Filters
 
                 var ret = FindFirstArrayItem(property.Value);
 
-                if (!(ret is null))
+                if (ret is not null)
                     return ret;
             }
 

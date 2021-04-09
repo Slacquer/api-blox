@@ -96,7 +96,7 @@ namespace APIBlox.AspNetCore.Types
         ///     Gets the tokens.
         /// </summary>
         /// <value>The tokens.</value>
-        public Dictionary<string, string> Tokens { get; } = new Dictionary<string, string>
+        public Dictionary<string, string> Tokens { get; } = new()
         {
             {"[REQ_OBJECT]", ""},
             {"[RES_OBJECT_INNER_RESULT]", ""},

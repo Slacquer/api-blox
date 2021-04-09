@@ -50,7 +50,7 @@ namespace APIBlox.AspNetCore.Types
         ///     An object containing more specific information.
         /// </remarks>
         /// <value>The inner error.</value>
-        public Collection<DynamicErrorObject> Errors { get; set; } = new Collection<DynamicErrorObject>();
+        public Collection<DynamicErrorObject> Errors { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets a value indicating whether [no throw].

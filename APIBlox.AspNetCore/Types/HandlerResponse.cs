@@ -24,7 +24,7 @@ namespace APIBlox.AspNetCore.Types
         ///     <see cref="CommonStatusCodes.Status200Ok" />;
         ///     otherwise,<c>false</c>.
         /// </value>
-        public bool HasErrors => !(Error is null) || Status != CommonStatusCodes.Status200Ok;
+        public bool HasErrors => Error is not null || Status != CommonStatusCodes.Status200Ok;
 
         /// <summary>
         ///     Gets or sets the result.

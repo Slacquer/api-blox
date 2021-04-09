@@ -11,7 +11,7 @@ namespace SlnTests.APIBlox.NetCore
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class PathParserTests : IDisposable
     {
-        private readonly List<string> _paths = new List<string>();
+        private readonly List<string> _paths = new();
 
         public PathParserTests()
         {

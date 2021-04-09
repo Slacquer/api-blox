@@ -12,7 +12,7 @@ namespace Examples.Services
     [InjectableService(ServiceLifetime = ServiceLifetime.Singleton)]
     public class RandomNumberGeneratorService : IRandomNumberGeneratorService
     {
-        private static readonly Random Rnd = new Random((int) (DateTime.Now.Ticks % 100));
+        private static readonly Random Rnd = new((int) (DateTime.Now.Ticks % 100));
 
         /// <summary>
         ///     Generates the number.

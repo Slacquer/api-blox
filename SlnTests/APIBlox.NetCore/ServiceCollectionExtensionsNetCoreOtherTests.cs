@@ -15,7 +15,7 @@ namespace SlnTests.APIBlox.NetCore
     public class ServiceCollectionExtensionsNetCoreOtherTests
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly List<string> _paths = new List<string>();
+        private readonly List<string> _paths = new();
 
         public ServiceCollectionExtensionsNetCoreOtherTests()
         {

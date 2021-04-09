@@ -33,7 +33,7 @@ namespace APIBlox.AspNetCore.Types
                 Properties.TryAdd("ReferenceId", ReferenceId);
             }
 
-            if (!(Errors is null) && Errors.Any())
+            if (Errors is not null && Errors.Any())
                 Properties.TryAdd("Errors", Errors);
 
             return base.GetDynamicMemberNames();

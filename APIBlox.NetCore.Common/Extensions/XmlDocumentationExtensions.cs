@@ -14,12 +14,12 @@ namespace APIBlox.NetCore.Extensions
         /// <summary>
         ///     A cache used to remember Xml documentation for assemblies.
         /// </summary>
-        private static readonly Dictionary<Assembly, XmlDocument> Cache = new Dictionary<Assembly, XmlDocument>();
+        private static readonly Dictionary<Assembly, XmlDocument> Cache = new();
 
         /// <summary>
         ///     A cache used to store failure exceptions for assembly lookups.
         /// </summary>
-        private static readonly Dictionary<Assembly, Exception> FailCache = new Dictionary<Assembly, Exception>();
+        private static readonly Dictionary<Assembly, Exception> FailCache = new();
 
         /// <summary>
         ///     Paths to look into when default implementation fails to find files.
@@ -172,7 +172,7 @@ namespace APIBlox.NetCore.Extensions
 
             var xmlDocument = XmlFromAssembly(type.Assembly);
 
-            var matchedElement = xmlDocument["doc"]["members"].SelectSingleNode("member[@name='" + fullName + "']") as XmlElement;
+            var matchedElement = xmlDocument["doc"]?["members"]?.SelectSingleNode("member[@name='" + fullName + "']") as XmlElement;
 
             return matchedElement;
         }
@@ -186,7 +186,7 @@ namespace APIBlox.NetCore.Extensions
         {
             const string prefix = "file:///";
 
-            var assemblyFilename = assembly.CodeBase;
+            var assemblyFilename = assembly.Location;
             var doc = new XmlDocument();
             var name = assembly.GetName().Name;
             var path = Path.ChangeExtension(assemblyFilename.Substring(prefix.Length), ".xml");
@@ -200,7 +200,7 @@ namespace APIBlox.NetCore.Extensions
             }
             catch (FileNotFoundException exception)
             {
-                if (!(FallbackPaths is null) && FallbackPaths.Count > 0)
+                if (FallbackPaths is not null && FallbackPaths.Count > 0)
                 {
                     var searchFiles = new List<string>();
 

@@ -60,7 +60,7 @@ namespace APIBlox.AspNetCore.Types
         ///     An object containing more specific information.
         /// </remarks>
         /// <value>The inner error.</value>
-        public Collection<DynamicErrorObject> Errors { get; set; } = new Collection<DynamicErrorObject>();
+        public Collection<DynamicErrorObject> Errors { get; set; } = new();
 
         /// <summary>
         ///     [REQUIRED]
@@ -193,7 +193,7 @@ namespace APIBlox.AspNetCore.Types
 
             TryAlterRequestObjectAction();
 
-            if (!(Errors is null) && Errors.Any())
+            if (Errors is not null && Errors.Any())
                 Properties.TryAdd("Errors", Errors);
 
             return base.GetDynamicMemberNames();

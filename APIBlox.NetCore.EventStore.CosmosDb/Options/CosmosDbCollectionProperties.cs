@@ -16,7 +16,7 @@ namespace APIBlox.NetCore.Options
         /// <summary>
         ///     Gets or sets the unique key policy.
         /// </summary>
-        public UniqueKeyPolicy UniqueKeyPolicy { get; set; } = new UniqueKeyPolicy();
+        public UniqueKeyPolicy UniqueKeyPolicy { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the offer throughput.

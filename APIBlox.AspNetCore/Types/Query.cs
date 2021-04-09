@@ -17,8 +17,7 @@ namespace APIBlox.AspNetCore.Types
         /// </summary>
         internal void SetAliasesAndValues(Dictionary<string, string> queryParams)
         {
-            if (_props is null)
-                _props = GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            _props ??= GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
             foreach (var qp in queryParams)
             {
@@ -47,7 +46,7 @@ namespace APIBlox.AspNetCore.Types
         ///     The in map for deciphering incoming query params.
         /// </summary>
         [JsonIgnore]
-        protected Dictionary<string, string[]> Map { get; } = new Dictionary<string, string[]>();
+        protected Dictionary<string, string[]> Map { get; } = new();
 
         /// <summary>
         ///     Gets or sets the undefined parameters.

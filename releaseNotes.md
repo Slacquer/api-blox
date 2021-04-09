@@ -1,3 +1,13 @@
+_April 9th, 2020_  **v5.0.0**
+- NetCore 5 update.
+
+Thanks,  
+_Slacquer_  
+
+<br>
+<br>
+
+
 _October 27th, 2020_  **v3.0.16**
 - Nuget packages updated.
 

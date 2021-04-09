@@ -19,7 +19,7 @@ namespace Examples.CmdQueryHandlers
             {
                 Result = new List<ChildResponse>
                 {
-                    new ChildResponse
+                    new()
                     {
                         Age = 5,
                         FirstName = "Sebastian",
@@ -27,7 +27,7 @@ namespace Examples.CmdQueryHandlers
                         LastName = "Booth",
                         Parents = new Collection<ParentResponse>
                         {
-                            new ParentResponse
+                            new()
                             {
                                 Age = 29,
                                 LastName = "Booth",

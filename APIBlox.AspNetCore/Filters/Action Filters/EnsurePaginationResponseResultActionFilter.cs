@@ -26,7 +26,7 @@ namespace APIBlox.AspNetCore.Filters
             : base(loggerFactory, getsOnly, ensureResponseCompliesWithAction)
         {
 
-            _onlyForThesePaths = onlyForThesePaths is null ? new List<string>() : onlyForThesePaths.ToList();
+            _onlyForThesePaths = onlyForThesePaths?.ToList() ?? new List<string>();
             _globalPaths = !_onlyForThesePaths.Any();
 
             _paginationBuilder = paginationBuilder;

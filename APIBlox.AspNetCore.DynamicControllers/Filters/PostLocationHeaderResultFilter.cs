@@ -60,7 +60,7 @@ namespace APIBlox.AspNetCore
             var res = context.HttpContext.Response;
 
             if (!req.Method.EqualsEx("post")
-                || !(context.Controller is ControllerBase controller)
+                || context.Controller is not ControllerBase controller
                 || res.StatusCode != StatusCodes.Status201Created &&
                 res.StatusCode != StatusCodes.Status200OK)
             {
@@ -72,7 +72,7 @@ namespace APIBlox.AspNetCore
                 return;
             }
 
-            if (!(context.Result is ObjectResult result))
+            if (context.Result is not ObjectResult result)
                 return;
 
             // ReSharper disable once Mvc.ActionNotResolved

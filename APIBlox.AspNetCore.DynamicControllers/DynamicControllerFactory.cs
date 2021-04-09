@@ -64,7 +64,7 @@ namespace APIBlox.AspNetCore
         ///     A collection of additional assemblies they may be required when compiling.
         /// </summary>
         /// <value>The additional assembly references.</value>
-        public List<Assembly> AdditionalAssemblyReferences { get; } = new List<Assembly>();
+        public List<Assembly> AdditionalAssemblyReferences { get; } = new();
 
         /// <summary>
         ///     Gets the compilation errors.
@@ -114,10 +114,10 @@ namespace APIBlox.AspNetCore
 
             var fi = EmitToFile(assemblyOutputPath, templates);
 
-            if (!(Errors is null))
+            if (Errors is not null)
                 return null;
 
-            return !(fi is null) && fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
+            return fi is not null && fi.Exists ? Assembly.LoadFile(fi.FullName) : null;
         }
 
         ///// <summary>
@@ -517,7 +517,7 @@ namespace APIBlox.AspNetCore
                 var fullPath = Path.Combine(outputFolder, srcPath);
                 var tree = CSharpSyntaxTree.ParseText(code, new CSharpParseOptions(), srcPath);
                 var syntaxRootNode = tree.GetRoot() as CSharpSyntaxNode;
-                var encoded = CSharpSyntaxTree.Create(syntaxRootNode, null, srcPath, defEncoding);
+                var encoded = CSharpSyntaxTree.Create(syntaxRootNode ?? throw new InvalidOperationException(), null, srcPath, defEncoding);
 
                 if (_release)
                     return encoded;
@@ -563,26 +563,22 @@ namespace APIBlox.AspNetCore
         private static string WriteMethod(CodeTypeMember method)
         {
             // https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/how-to-create-a-class-using-codedom
-            using (var provider = CodeDomProvider.CreateProvider("CSharp"))
-            {
-                using (var stream = new MemoryStream())
-                {
-                    using (var writer = new StreamWriter(stream))
-                    {
-                        using (var reader = new StreamReader(stream))
-                        {
-                            var options = new CodeGeneratorOptions { BracingStyle = "C" };
+            using var provider = CodeDomProvider.CreateProvider("CSharp");
 
-                            provider.GenerateCodeFromMember(method, writer, options);
+            using var stream = new MemoryStream();
 
-                            writer.Flush();
-                            stream.Position = 0;
+            using var writer = new StreamWriter(stream);
 
-                            return reader.ReadToEnd();
-                        }
-                    }
-                }
-            }
+            using var reader = new StreamReader(stream);
+
+            var options = new CodeGeneratorOptions { BracingStyle = "C" };
+
+            provider.GenerateCodeFromMember(method, writer, options);
+
+            writer.Flush();
+            stream.Position = 0;
+
+            return reader.ReadToEnd();
         }
 
         private static IEnumerable<CodeAttributeArgument> GetConstructorCodeArguments(ICollection<string> namespaces, object obj)

@@ -14,8 +14,8 @@ namespace APIBlox.AspNetCore.Extensions
     /// </summary>
     public static class HttpContextExtensions
     {
-        private static readonly ActionDescriptor EmptyActionDescriptor = new ActionDescriptor();
-        private static readonly RouteData EmptyRouteData = new RouteData();
+        private static readonly ActionDescriptor EmptyActionDescriptor = new();
+        private static readonly RouteData EmptyRouteData = new();
 
         /// <summary>
         ///     Writes the result executor asynchronous.

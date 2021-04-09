@@ -11,7 +11,7 @@ namespace Examples.DomainModels
     /// </summary>
     public class DomainObject
     {
-        private readonly List<IDomainEvent> _domainEvents = new List<IDomainEvent>();
+        private readonly List<IDomainEvent> _domainEvents = new();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DomainObject" /> class.

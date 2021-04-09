@@ -18,7 +18,7 @@ namespace APIBlox.AspNetCore
 
         public Task OnExceptionAsync(ExceptionContext context)
         {
-            if (!(context.Exception is OperationCanceledException))
+            if (context.Exception is not OperationCanceledException)
             {
                 _log.LogInformation(() => $"Skipping execute, exception is of type {context.Exception.GetType()}");
 

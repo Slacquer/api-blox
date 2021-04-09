@@ -15,7 +15,7 @@ namespace APIBlox.NetCore.Extensions
     public static class TypeExtensions
     {
         // Cached results.
-        private static readonly List<MethodInfo> Extensions = new List<MethodInfo>();
+        private static readonly List<MethodInfo> Extensions = new();
 
         /// <summary>
         ///     Sets the value of a nullable type.
@@ -138,7 +138,7 @@ namespace APIBlox.NetCore.Extensions
 
             foreach (var pi in props)
             {
-                if (!(pi.GetCustomAttributes(typeof(JsonPropertyAttribute), false).FirstOrDefault() is JsonPropertyAttribute att))
+                if (pi.GetCustomAttributes(typeof(JsonPropertyAttribute), false).FirstOrDefault() is not JsonPropertyAttribute att)
                     continue;
 
                 lst.Add(pi, att.PropertyName);

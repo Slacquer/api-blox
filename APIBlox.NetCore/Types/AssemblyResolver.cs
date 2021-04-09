@@ -17,9 +17,9 @@ namespace APIBlox.NetCore.Types
     /// <seealso cref="T:System.IDisposable" />
     public sealed class AssemblyResolver : IDisposable
     {
-        private Dictionary<string, string> _assPathCache = new Dictionary<string, string>();
+        private Dictionary<string, string> _assPathCache = new();
         private bool _disposed;
-        private Dictionary<string, Assembly> _loadedAssemblyCache = new Dictionary<string, Assembly>();
+        private Dictionary<string, Assembly> _loadedAssemblyCache = new();
 
         /// <summary>
         ///     Gets the loaded referenced assemblies.

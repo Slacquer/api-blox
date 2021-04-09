@@ -25,7 +25,7 @@ namespace APIBlox.AspNetCore.Attributes
         /// </param>
         public FromQueryWithAlternateNamesAttribute(params string[] alternateNames)
         {
-            Name = !(alternateNames is null) && alternateNames.Length > 0
+            Name = alternateNames is not null && alternateNames.Length > 0
                 ? alternateNames[0]
                 : throw new ArgumentNullException(nameof(alternateNames),
                     "You must at least specify the default name!  However if you are not using " +
@@ -45,7 +45,7 @@ namespace APIBlox.AspNetCore.Attributes
         ///     Gets the alternate names.
         /// </summary>
         /// <value>The alternate names.</value>
-        public HashSet<string> AlternateNames { get; } = new HashSet<string>();
+        public HashSet<string> AlternateNames { get; } = new();
 
         /// <summary>
         ///     Gets the <see cref="P:Microsoft.AspNetCore.Mvc.ModelBinding.IBindingSourceMetadata.BindingSource" />.

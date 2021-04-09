@@ -51,7 +51,7 @@ namespace APIBlox.AspNetCore.Filters
             if (!req.Method.EqualsEx("get")
                 || res.StatusCode != StatusCodes.Status200OK
                 || req.Headers[HeaderNames.IfNoneMatch] == StringValues.Empty
-                || !(resultCtx.Result is ObjectResult result))
+                || resultCtx.Result is not ObjectResult result)
             {
                 _log.LogInformation(() =>
                     $"Skipping execute, Method: {req.Method}, StatusCode: {res.StatusCode}, " +
@@ -82,7 +82,7 @@ namespace APIBlox.AspNetCore.Filters
             resultCtx.Result = new StatusCodeResult(304);
         }
 
-        private static string GenerateEtag(ObjectResult result)
+        private static string GenerateEtag(IActionResult result)
         {
             var str = JsonConvert.SerializeObject(result);
             var arr = str.ToCharArray();
@@ -92,13 +92,12 @@ namespace APIBlox.AspNetCore.Filters
             Buffer.BlockCopy(keyBytes, 0, bytes, 0, keyBytes.Length);
             Buffer.BlockCopy(arr, 0, bytes, keyBytes.Length, arr.Length);
 
-            using (var md5 = MD5.Create())
-            {
-                var hash = md5.ComputeHash(bytes);
-                var hex = BitConverter.ToString(hash);
+            using var md5 = MD5.Create();
 
-                return hex.Replace("-", "");
-            }
+            var hash = md5.ComputeHash(bytes);
+            var hex = BitConverter.ToString(hash);
+
+            return hex.Replace("-", "");
         }
 
         private static bool ShouldNotCache(

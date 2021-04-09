@@ -33,10 +33,9 @@ namespace APIBlox.NetCore.Types
                     $"Resource Not found, Found: {string.Join(", ", names)}"
                 );
 
-            using (var reader = new StreamReader(resourceStream, Encoding.UTF8))
-            {
-                return reader.ReadToEnd();
-            }
+            using var reader = new StreamReader(resourceStream, Encoding.UTF8);
+
+            return reader.ReadToEnd();
         }
 
         /// <summary>
@@ -64,13 +63,12 @@ namespace APIBlox.NetCore.Types
             {
                 var rs = Ass.GetManifestResourceStream(name);
 
-                using (var reader = new StreamReader(rs, Encoding.UTF8))
-                {
-                    var str = name.Replace(".txt", "");
-                    var key = str.Substring(str.LastIndexOfEx(".") + 1);
+                using var reader = new StreamReader(rs ?? throw new InvalidOperationException(), Encoding.UTF8);
 
-                    ret.Add(key, reader.ReadToEnd());
-                }
+                var str = name.Replace(".txt", "");
+                var key = str.Substring(str.LastIndexOfEx(".") + 1);
+
+                ret.Add(key, reader.ReadToEnd());
             }
 
             return ret;
