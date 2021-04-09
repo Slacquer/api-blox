@@ -15,7 +15,7 @@
 ![:)][logo]   
 # API Blox
 
-_February 22nd, 2020_  **v3.0.2** _[release notes][rn]_ 
+_February 22nd, 2020_  **v5.0.2** _[release notes][rn]_ 
 
 _Built Using .Net Core 3_
 
