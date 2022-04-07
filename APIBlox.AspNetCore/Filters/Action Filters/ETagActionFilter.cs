@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -90,7 +91,7 @@ namespace APIBlox.AspNetCore.Filters
             var bytes = new byte[keyBytes.Length + arr.Length];
 
             Buffer.BlockCopy(keyBytes, 0, bytes, 0, keyBytes.Length);
-            Buffer.BlockCopy(arr, 0, bytes, keyBytes.Length, arr.Length);
+            Buffer.BlockCopy(arr, 0, bytes, keyBytes.Length, arr.ToList().Count);
 
             using var md5 = MD5.Create();
 
