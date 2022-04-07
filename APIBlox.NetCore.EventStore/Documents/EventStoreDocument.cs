@@ -61,17 +61,13 @@ namespace APIBlox.NetCore.Documents
 
         private static decimal GetOrderingFraction(DocumentType documentType)
         {
-            switch (documentType)
+            return documentType switch
             {
-                case DocumentType.Root:
-                    return 0.3M;
-                case DocumentType.Snapshot:
-                    return 0.2M;
-                case DocumentType.Event:
-                    return 0.1M;
-                default:
-                    throw new NotSupportedException($"Document type '{documentType}' is not supported.");
-            }
+                DocumentType.Root => 0.3M,
+                DocumentType.Snapshot => 0.2M,
+                DocumentType.Event => 0.1M,
+                _ => throw new NotSupportedException($"Document type '{documentType}' is not supported.")
+            };
         }
     }
 }

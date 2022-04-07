@@ -32,7 +32,7 @@ namespace APIBlox.NetCore
 
                 var dbCol = new DbCollection
                 {
-                    DatabaseId = options.DatabaseId ?? throw new ArgumentNullException(nameof(options.DatabaseId)),
+                    DatabaseId = options.DatabaseId ?? throw new ArgumentNullException(nameof(options)),
                     DatabaseThroughput = options.OfferThroughput
                 };
 
@@ -50,12 +50,12 @@ namespace APIBlox.NetCore
                 }
 
                 if (dbCol.ColProps is null)
-                    throw new ArgumentNullException(nameof(IOptions<CosmosDbOptions>),
+                    throw new ArgumentNullException(nameof(options),
                         $"CollectionProperty value for '{t.Name}' was not found!"
                     );
 
                 if (dbCol.CollectionId is null)
-                    throw new ArgumentNullException(nameof(dbCol.CollectionId));
+                    throw new ArgumentNullException(nameof(options));
 
                 dbCol.DocumentCollectionUri = UriFactory.CreateDocumentCollectionUri(dbCol.DatabaseId, dbCol.CollectionId);
 

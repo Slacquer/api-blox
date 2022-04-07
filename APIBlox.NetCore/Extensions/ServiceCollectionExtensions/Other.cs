@@ -302,7 +302,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             foreach (var p in paths)
             {
-                var path = including ? p : p.StartsWith("!") ? p.Substring(1) : p;
+                var path = including ? p : p.StartsWith("!") ? p[1..] : p;
 
                 try
                 {

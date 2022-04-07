@@ -46,13 +46,12 @@ namespace APIBlox.NetCore
         {
             IEnumerable<TResultDocument> ret;
 
-            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true}))
-            {
-                ret = await session.Query<EventStoreDocument>(null, _colName)
-                    .Where(predicate)
-                    .OfType<TResultDocument>()
-                    .ToListAsync(cancellationToken);
-            }
+            using var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true});
+
+            ret = await session.Query<EventStoreDocument>(null, _colName)
+                .Where(predicate)
+                .OfType<TResultDocument>()
+                .ToListAsync(cancellationToken);
 
             return ret;
         }
@@ -60,36 +59,34 @@ namespace APIBlox.NetCore
         public async Task UpdateAsync<TDocument>(TDocument document, CancellationToken cancellationToken = default)
             where TDocument : EventStoreDocument
         {
-            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true}))
-            {
-                var doc = await session.Query<TDocument>(collectionName: _colName)
-                    .SingleAsync(x => x.Id == document.Id, cancellationToken);
+            using var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true});
 
-                doc.Version = document.Version;
-                doc.TimeStamp = document.TimeStamp;
+            var doc = await session.Query<TDocument>(collectionName: _colName)
+                .SingleAsync(x => x.Id == document.Id, cancellationToken);
 
-                await session.SaveChangesAsync(cancellationToken);
-            }
+            doc.Version = document.Version;
+            doc.TimeStamp = document.TimeStamp;
+
+            await session.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<int> DeleteAsync(Expression<Func<EventStoreDocument, bool>> predicate, CancellationToken cancellationToken = default)
         {
             int ret;
 
-            using (var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true}))
-            {
-                var ids = await session.Query<EventStoreDocument>(null, _colName)
-                    .Where(predicate)
-                    .Select(x => x.Id)
-                    .ToListAsync(cancellationToken);
+            using var session = _context.Store(_colName).OpenAsyncSession(new SessionOptions {NoCaching = true});
 
-                ret = ids.Count;
+            var ids = await session.Query<EventStoreDocument>(null, _colName)
+                .Where(predicate)
+                .Select(x => x.Id)
+                .ToListAsync(cancellationToken);
 
-                foreach (var id in ids)
-                    session.Delete(id);
+            ret = ids.Count;
 
-                await session.SaveChangesAsync(cancellationToken);
-            }
+            foreach (var id in ids)
+                session.Delete(id);
+
+            await session.SaveChangesAsync(cancellationToken);
 
             return ret;
         }

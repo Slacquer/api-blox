@@ -96,14 +96,14 @@ namespace APIBlox.AspNetCore
                 if (iex.Message.Contains("No result executor"))
                     _log.LogCritical("It appears that you did not call services.AddServerFaults() during startup (ConfigureServices).");
                 else
-                    _log.LogCritical("Could not write response, Ex: {0}", iex.ToDynamicDataObject(true));
+                    _log.LogCritical("Could not write response, Ex: {message}", iex.ToDynamicDataObject(true));
 
                 if (!_env.IsProduction())
                     throw;
             }
             catch (Exception ex)
             {
-                _log.LogCritical("Could not write response, Ex: {0}", ex.ToDynamicDataObject(true));
+                _log.LogCritical("Could not write response, Ex: {message}", ex.ToDynamicDataObject(true));
 
                 if (!_env.IsProduction())
                     throw;

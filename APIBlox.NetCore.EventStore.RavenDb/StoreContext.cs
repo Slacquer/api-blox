@@ -19,11 +19,11 @@ namespace APIBlox.NetCore
         {
             var opt = options ?? throw new ArgumentNullException(nameof(options));
 
-            var database = opt.DatabaseId.IsEmptyNullOrWhiteSpace() ? throw new ArgumentNullException(nameof(opt.DatabaseId)) : opt.DatabaseId;
+            var database = opt.DatabaseId.IsEmptyNullOrWhiteSpace() ? throw new ArgumentNullException(nameof(options)) : opt.DatabaseId;
 
             _store = new DocumentStore
             {
-                Urls = opt.Urls ?? throw new ArgumentNullException(nameof(opt.Urls)),
+                Urls = opt.Urls ?? throw new ArgumentNullException(nameof(options)),
                 Database = database
             };
 

@@ -74,10 +74,10 @@ namespace APIBlox.NetCore
                 throw new ArgumentNullException(nameof(options));
 
             if (options.CnnString.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentNullException(nameof(options.CnnString));
+                throw new ArgumentNullException(nameof(options));
 
             if (options.DatabaseId.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentNullException(nameof(options.DatabaseId));
+                throw new ArgumentNullException(nameof(options));
 
             return options;
         }

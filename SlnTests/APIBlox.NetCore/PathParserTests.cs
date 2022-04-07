@@ -70,7 +70,7 @@ namespace SlnTests.APIBlox.NetCore
         public void ShouldHaveSinglePathAsNoAsterisksWereProvided()
         {
             // root folder will never be counted unless we say so, so we use -2
-            var parser = PathParser.FindAllSubDirectories(_paths[_paths.Count - 2]).ToList();
+            var parser = PathParser.FindAllSubDirectories(_paths[^2]).ToList();
 
             Assert.NotNull(parser);
             Assert.True(parser.Count == 1);

@@ -44,13 +44,12 @@ namespace Examples
                 // Instead of having to manually add to service collection.
                 .AddInjectableServices(Program.StartupLogger, _assemblyNames, _assemblyPaths)
                 .AddDomainEventsDispatcher()
-                .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                .AddMvc();
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
         }
 
-        public void Configure(IApplicationBuilder app)
+        public static void Configure(IApplicationBuilder app)
         {
             app.UseHsts();
 

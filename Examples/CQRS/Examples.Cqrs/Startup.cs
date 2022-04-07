@@ -56,13 +56,12 @@ namespace Examples
                 //
                 // Pagination
                 //.AddEnsurePaginationResultActionFilter(_loggerFactory, defaultPageSize: 100)
-                .AddEnsureResponseResultActionFilter(Program.StartupLogger)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                .AddEnsureResponseResultActionFilter(Program.StartupLogger);
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
         }
 
-        public void Configure(IApplicationBuilder app)
+        public static void Configure(IApplicationBuilder app)
         {
             //
             // Handle any and all server (500) errors with a defined structure.

@@ -85,7 +85,7 @@ namespace APIBlox.AspNetCore
 
             var endUri = url;
 
-            if (endUri.Contains("?"))
+            if (endUri.Contains('?'))
                 _log.LogWarning(() =>
                     "Something ain't jiving, perhaps you have missing some route " +
                     $"templates on your HttpMethodAttributes?  As url {endUri} " +

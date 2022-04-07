@@ -189,7 +189,7 @@ namespace APIBlox.NetCore.Extensions
             var assemblyFilename = assembly.Location;
             var doc = new XmlDocument();
             var name = assembly.GetName().Name;
-            var path = Path.ChangeExtension(assemblyFilename.Substring(prefix.Length), ".xml");
+            var path = Path.ChangeExtension(assemblyFilename[prefix.Length..], ".xml");
 
             try
             {

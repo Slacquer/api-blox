@@ -30,7 +30,7 @@ namespace APIBlox.NetCore.Types
         )
             where TDest : new()
         {
-            settings = settings ?? new JsonSerializerSettings
+            settings ??= new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
                 PreserveReferencesHandling = PreserveReferencesHandling.All

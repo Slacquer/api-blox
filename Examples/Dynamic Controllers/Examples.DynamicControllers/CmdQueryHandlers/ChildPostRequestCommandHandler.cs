@@ -12,12 +12,12 @@ namespace Examples.CmdQueryHandlers
     {
         public Task<HandlerResponse> HandleAsync(ChildPostRequest requestCommand, CancellationToken cancellationToken)
         {
-            var ret = new HandlerResponse();
-
-            // if we don't return something the controller will complain.  It will also complain if
-            // it can not find a property that ends with "id", as it can't create a CreatedAtRoute.
-
-            ret.Result = new {id = 1, Foo = "barrrr"};
+            var ret = new HandlerResponse
+            {
+                // it can not find a property that ends with "id", as it can't create a CreatedAtRoute.
+                // if we don't return something the controller will complain.  It will also complain if
+                Result = new {id = 1, Foo = "barrrr"}
+            };
 
             return Task.FromResult(ret);
         }

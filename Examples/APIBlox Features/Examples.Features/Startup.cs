@@ -99,7 +99,9 @@ namespace Examples
                 //
                 // Pagination
                 .AddEnsurePaginationResultActionFilter(Program.StartupLogger,
-                    onlyForThesePaths: new List<string> { "/DevApi/versions/1/resources/Examples" })
+                    onlyForThesePaths: new List<string> { "/DevApi/versions/1/resources/Examples" }
+                )
+
                 //.AddEnsurePaginationResultActionFilter(Program.StartupLogger,
                 //    onlyForThesePaths: new List<string> { "/DevApi/versions/1/resources/Examples" }, defineResponseFunc: d => d)
 
@@ -119,11 +121,9 @@ namespace Examples
 
                 //
                 // IQuery maps stuff (allowing alternate names to be used)
-                .AddFromQueryWithAlternateNamesBinder()
+                .AddFromQueryWithAlternateNamesBinder();
 
             #endif
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
 
             services.AddSwaggerExampleFeatures(SiteTitle, Version);
         }

@@ -49,7 +49,7 @@ namespace APIBlox.NetCore.Decorators.Queries
             var elapsed = sw.Elapsed;
 
             if (elapsed.Seconds > 2)
-                _log.LogCritical(() => $"!!!!!! VERY SLOW SPEED !!!!! Elapsed: {elapsed.ToString()}");
+                _log.LogCritical(() => $"!!!!!! VERY SLOW SPEED !!!!! Elapsed: {elapsed}");
 
             return ret;
         }
@@ -102,7 +102,7 @@ namespace APIBlox.NetCore.Decorators.Queries
             var elapsed = sw.Elapsed;
 
             if (elapsed.Seconds > 2)
-                _log.LogCritical(() => $"!!!!!! VERY SLOW SPEED !!!!! Elapsed: {elapsed.ToString()}");
+                _log.LogCritical(() => $"!!!!!! VERY SLOW SPEED !!!!! Elapsed: {elapsed}");
 
             return ret;
         }

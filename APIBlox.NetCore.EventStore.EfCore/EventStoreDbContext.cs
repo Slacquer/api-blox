@@ -67,7 +67,7 @@ namespace APIBlox.NetCore
         private TContext Create(EfCoreSqlOptions efCoreOptions)
         {
             if (efCoreOptions.CnnString.IsEmptyNullOrWhiteSpace())
-                throw new ArgumentException($"{nameof(efCoreOptions.CnnString)} is null or empty.", nameof(efCoreOptions.CnnString));
+                throw new ArgumentException($"{nameof(efCoreOptions.CnnString)} is null or empty.", nameof(efCoreOptions));
 
             var optionsBuilder = new DbContextOptionsBuilder<TContext>();
 

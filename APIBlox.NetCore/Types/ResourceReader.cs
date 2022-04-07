@@ -66,7 +66,7 @@ namespace APIBlox.NetCore.Types
                 using var reader = new StreamReader(rs ?? throw new InvalidOperationException(), Encoding.UTF8);
 
                 var str = name.Replace(".txt", "");
-                var key = str.Substring(str.LastIndexOfEx(".") + 1);
+                var key = str[(str.LastIndexOfEx(".") + 1)..];
 
                 ret.Add(key, reader.ReadToEnd());
             }

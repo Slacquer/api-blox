@@ -102,7 +102,9 @@ namespace APIBlox.NetCore
             try
             {
                 data = JObject.FromObject(document.Data, JsonSerializer)
-                    .ToObject(Type.GetType(document.DataType) ?? throw new ArgumentException(), JsonSerializer);
+                    .ToObject(Type.GetType(document.DataType) ?? throw new ArgumentException("Could not built object", nameof(document)),
+                        JsonSerializer
+                    );
             }
             catch (JsonSerializationException)
             {

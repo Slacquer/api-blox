@@ -66,7 +66,7 @@ namespace APIBlox.NetCore.Extensions
 
             var trimmed = value.Trim();
 
-            return trimmed.EndsWith(@"\") || trimmed.EndsWith(@"/") ? trimmed.Substring(0, trimmed.Length - 1) : trimmed;
+            return trimmed.EndsWith(@"\") || trimmed.EndsWith(@"/") ? trimmed[..^1] : trimmed;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace APIBlox.NetCore.Extensions
                 return null;
 
             var trimmed = value.Trim();
-            var slash = trimmed.Contains(@"\") ? @"\" : "/";
+            var slash = trimmed.Contains('\\') ? '\\' : '/';
 
             return trimmed.EndsWith(@"\") || trimmed.EndsWith(@"/") ? trimmed : $"{trimmed}{slash}";
         }
@@ -229,7 +229,7 @@ namespace APIBlox.NetCore.Extensions
 
             for (var i = 0; i < bits.Length; i++)
                 sb.Append(i == 0
-                    ? char.ToLowerInvariant(bits[i][0]) + bits[i].Substring(1)
+                    ? char.ToLowerInvariant(bits[i][0]) + bits[i][1..]
                     : ci.ToTitleCase(bits[i])
                 );
 
@@ -262,7 +262,7 @@ namespace APIBlox.NetCore.Extensions
 
             result = result.ToLower();
 
-            return $"{result.Substring(0, 1).ToUpper()}{result.Substring(1)}";
+            return $"{result[..1].ToUpper()}{result[1..]}";
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace APIBlox.NetCore.Extensions
 
             var tmp = str.ToCamelCase(cultureName);
 
-            return char.ToUpperInvariant(tmp[0]) + tmp.Substring(1);
+            return char.ToUpperInvariant(tmp[0]) + tmp[1..];
         }
     }
 }

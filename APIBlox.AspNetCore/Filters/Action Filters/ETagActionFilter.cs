@@ -121,10 +121,9 @@ namespace APIBlox.AspNetCore.Filters
             // fields that WOULD have been sent in a 200(OK) response to the same 
             // request: Cache-Control, Content-Location, Date, ETag, Expires, and Vary.
             // so we must set cache-control headers for 200s OR 304s...
-            cacheControlHeader.MaxAge = cacheControlHeader.MaxAge ?? TimeSpan.FromSeconds(_maxAgeSeconds);
+            cacheControlHeader.MaxAge ??= TimeSpan.FromSeconds(_maxAgeSeconds);
 
-            cacheControlHeader.SharedMaxAge = cacheControlHeader.SharedMaxAge
-                                              ?? TimeSpan.FromSeconds(_sharedMaxAgeSecond);
+            cacheControlHeader.SharedMaxAge ??= TimeSpan.FromSeconds(_sharedMaxAgeSecond);
 
             res.GetTypedHeaders().CacheControl = cacheControlHeader;
             res.Headers.Add(HeaderNames.ETag, eTag);

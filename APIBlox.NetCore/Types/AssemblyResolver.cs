@@ -56,7 +56,7 @@ namespace APIBlox.NetCore.Types
 
             var loaded = fileName;
 
-            if (_loadedAssemblyCache.Keys.Contains(loaded))
+            if (_loadedAssemblyCache.ContainsKey(loaded))
             {
                 alreadyLoaded = true;
 
@@ -111,7 +111,7 @@ namespace APIBlox.NetCore.Types
         {
             var loaded = fileName;
 
-            if (_loadedAssemblyCache.Keys.Contains(loaded))
+            if (_loadedAssemblyCache.ContainsKey(loaded))
                 return;
 
             _loadedAssemblyCache.Add(loaded, assembly);
@@ -125,7 +125,7 @@ namespace APIBlox.NetCore.Types
                 {
                     var lfn = $"{reference.Name}.dll";
 
-                    if (_loadedAssemblyCache.Keys.Contains(lfn))
+                    if (_loadedAssemblyCache.ContainsKey(lfn))
                         continue;
 
                     var path = Path.Combine(directory, lfn);

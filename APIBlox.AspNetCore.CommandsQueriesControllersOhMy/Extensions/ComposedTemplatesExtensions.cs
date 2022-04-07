@@ -53,7 +53,7 @@ namespace APIBlox.AspNetCore.Extensions
             var codes = (options.StatusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options));
 
             var (ac, cc) = GetComments(options, "Get a specific resource.");
 
@@ -101,7 +101,7 @@ namespace APIBlox.AspNetCore.Extensions
             var codes = (options.StatusCodes ?? new List<int> { 200, 204, 401, 403 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options));
 
             var (ac, cc) = GetComments(options, "Get all resources.");
 
@@ -143,7 +143,7 @@ namespace APIBlox.AspNetCore.Extensions
             var codes = (options.StatusCodes ?? new List<int> { 204, 401, 403, 404 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options));
 
             var (ac, cc) = GetComments(options, "Delete a specific resource.");
 
@@ -184,7 +184,7 @@ namespace APIBlox.AspNetCore.Extensions
             var codes = (options.StatusCodes ?? new List<int> { 204, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options));
 
             var (ac, cc) = GetComments(options, "Update a specific resource.");
 
@@ -225,7 +225,7 @@ namespace APIBlox.AspNetCore.Extensions
             var codes = (options.StatusCodes ?? new List<int> { 204, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options));
 
             var (ac, cc) = GetComments(options, "Update a specific resource.");
 
@@ -271,7 +271,7 @@ namespace APIBlox.AspNetCore.Extensions
             var codes = (options.StatusCodes ?? new List<int> { 201, 204, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options));
 
             var (ac, cc) = GetComments(options, "Create a new resource.");
 
@@ -314,7 +314,7 @@ namespace APIBlox.AspNetCore.Extensions
             var codes = (options.StatusCodes ?? new List<int> { 202, 400, 401, 403, 404, 409 }).ToList();
 
             if (!codes.Any())
-                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options.StatusCodes));
+                throw new ArgumentException("When providing status codes you must not use an empty list!", nameof(options));
 
             var (ac, cc) = GetComments(options, "Create a new resource.");
 

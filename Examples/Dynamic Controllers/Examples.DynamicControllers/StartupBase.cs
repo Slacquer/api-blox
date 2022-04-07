@@ -71,11 +71,11 @@ namespace Examples
                     },
                     Path.GetDirectoryName(startupAssembly.Location)
                 )
-#if DEBUG
+            #if DEBUG
                 .AddMvc()
-#else
+            #else
                 .AddMvcCore()
-#endif
+            #endif
                 .AddApplicationPart(_dynamicControllersAssembly)
 
                 //
@@ -97,8 +97,7 @@ namespace Examples
                 // Make sure all results are camel cased.
                 .AddCamelCaseResultsOptions()
 
-                .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()));
 
 #if DEBUG
             services.AddSwaggerExampleFeatures(SiteTitle, Version, _dynamicControllersXmlFile);

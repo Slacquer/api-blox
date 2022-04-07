@@ -1,4 +1,6 @@
-﻿namespace APIBlox.NetCore.Options
+﻿using System;
+
+namespace APIBlox.NetCore.Options
 {
     /// <summary>
     ///     Class RavenDbCollectionProperties.
@@ -9,6 +11,6 @@
         ///     Gets or sets the indexes.
         /// </summary>
         /// <value>The indexes.</value>
-        public string[] Indexes { get; set; } = new string[0];
+        public string[] Indexes { get; set; } = Array.Empty<string>();
     }
 }

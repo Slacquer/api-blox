@@ -244,7 +244,7 @@ namespace APIBlox.AspNetCore
             if (!obj.IsGenericType)
                 return (result.ToString(), null, namespaces.ToArray());
 
-            result.Append("<");
+            result.Append('<');
 
             var args = obj.GetGenericArguments();
 
@@ -260,7 +260,7 @@ namespace APIBlox.AspNetCore
                     namespaces.Add(tNs);
             }
 
-            result.Append(">");
+            result.Append('>');
 
             return (result.ToString(), args[0].Name, namespaces.ToArray());
         }
@@ -478,7 +478,7 @@ namespace APIBlox.AspNetCore
                         $"Controller {cg.Key} has more " +
                         "than one route or namespace specified. Name, Route and Namespace must " +
                         "be identical (if your intention is that this is ONE controller)",
-                        nameof(IComposedTemplate.Route)
+                        nameof(templates)
                     );
 
                 var first = cg.First();
@@ -682,7 +682,7 @@ namespace APIBlox.AspNetCore
         {
             var name = t.Name;
             var index = name.IndexOf('`');
-            return index == -1 ? name : name.Substring(0, index);
+            return index == -1 ? name : name[..index];
         }
 
         private static List<PropertyInfo> GetPublicReadWriteProperties(Type type)
