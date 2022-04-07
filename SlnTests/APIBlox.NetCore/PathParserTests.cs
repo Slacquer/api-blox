@@ -38,6 +38,7 @@ namespace SlnTests.APIBlox.NetCore
         public void Dispose()
         {
             Directory.Delete(_paths[0], true);
+            GC.SuppressFinalize(this);
         }
 
         [Fact]

@@ -103,6 +103,7 @@ namespace SlnTests.APIBlox.NetCore
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
         }
 
         public ILogger CreateLogger(string categoryName)
@@ -140,6 +141,7 @@ namespace SlnTests.APIBlox.NetCore
     {
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -54,9 +54,7 @@ namespace Examples
         /// <summary>
         ///     Initializes a new instance of the <see cref="Testme{TEntity, TId}"/> class.
         /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public Testme(ILoggerFactory loggerFactory)
-            : base(loggerFactory)
+        public Testme()
         {
 
         }
@@ -78,9 +76,7 @@ namespace Examples
         /// <summary>
         ///     Initializes a new instance of the <see cref="Testme{TEntity}"/> class.
         /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public Testme(ILoggerFactory loggerFactory)
-            : base(loggerFactory)
+        public Testme()
         {
 
         }
@@ -97,14 +93,14 @@ namespace Examples
     /// </summary>
     public abstract class TestMeBase<TEntity>
     {
-        private readonly ILoggerFactory _loggerFactory;
+        //private readonly ILoggerFactory _loggerFactory;
         /// <summary>
         ///     Initializes a new instance of the <see cref="TestMeBase{TEntity}"/> class.
         /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
-        protected TestMeBase(ILoggerFactory loggerFactory)
+        //// <param name="loggerFactory">The logger factory.</param>
+        protected TestMeBase()//ILoggerFactory loggerFactory)
         {
-            _loggerFactory = loggerFactory;
+           // _loggerFactory = loggerFactory;
         }
 
         /// <summary>

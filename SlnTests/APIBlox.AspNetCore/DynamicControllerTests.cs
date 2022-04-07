@@ -39,20 +39,20 @@ namespace SlnTests.APIBlox.AspNetCore
         //public IEnumerable<int?> BunchaNullableInts { get; set; }
     }
 
-    public class MyCoolAttribute : Attribute
-    {
-        public MyCoolAttribute(params int[] items)
-        {
-            Items = items;
-        }
+    //public class MyCoolAttribute : Attribute
+    //{
+    //    public MyCoolAttribute(params int[] items)
+    //    {
+    //        Items = items;
+    //    }
 
-        public int[] Items { get; }
-    }
+    //    public int[] Items { get; }
+    //}
 
-    public class AnotherAttribute : Attribute
-    {
-        public string[] Fubars { get; set; }
-    }
+    //public class AnotherAttribute : Attribute
+    //{
+    //    public string[] Fubars { get; set; }
+    //}
 
     namespace SlnTests.APIBlox.AspNetCore.RequestObjects
     {

@@ -9,7 +9,7 @@ namespace SlnTests.APIBlox.AspNetCore.OpenApi
         [Fact]
         public void DocumentShouldNotBeEmpty()
         {
-            var col = new ServiceCollection();
+            //var col = new ServiceCollection();
 
             //col.AddOpenApiBits();
         }

@@ -58,14 +58,15 @@ namespace Examples.Controllers
 
             var res = new HandlerResponse
             {
-                Result = new 
+                Result = new
                 {
-                    Foo = new 
+                    Foo = new
                     {
-                        Bar = new 
+                        Bar = new
                         {
-                           Dummy = "Hello",
-                            ExampleResults = examples.Skip(query.Skip ?? 0).Take(query.Top ?? 10).ToList()
+                            Dummy = "Hello",
+                            ExampleResults = examples.Skip(query.Skip ?? 0).Take(query.Top ?? 10).ToList(),
+                            WaitValue = wait ?? ""
                         }
                     },
                     SomeMetadata = "Some extra bits."
@@ -140,7 +141,7 @@ namespace Examples.Controllers
         [HttpGet("serverFault")]
         public ActionResult ThrowExceptionForServerFaultExample(string exceptionMessage)
         {
-            throw new Exception("Be sure to try this out in RELEASE mode"
+            throw new Exception($"Be sure to try this out in RELEASE mode, {exceptionMessage}"
 
             //,
             //new IndexOutOfRangeException("As most if not all of this",
@@ -164,6 +165,8 @@ namespace Examples.Controllers
         public ActionResult Post(ExampleRequestObject requestResource)
 #endif
         {
+            Console.WriteLine(requestResource);
+
             //
             //  SIDE NOTE:
             // we should be returning a route with id, but
@@ -204,6 +207,8 @@ namespace Examples.Controllers
         {
             await Task.Delay(30000, cancellationToken);
 
+            Console.WriteLine($"{id}, {value}");
+
             return NoContent();
         }
 
@@ -211,9 +216,10 @@ namespace Examples.Controllers
         ///     Deletes the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public void Delete(int id)
         {
+            Console.WriteLine(id);
         }
     }
 
