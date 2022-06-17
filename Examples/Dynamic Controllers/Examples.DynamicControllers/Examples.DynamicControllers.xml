@@ -360,11 +360,10 @@
             Implements the <see cref="T:Examples.ITestme`2" />
             </summary>
         </member>
-        <member name="M:Examples.Testme`2.#ctor(Microsoft.Extensions.Logging.ILoggerFactory)">
+        <member name="M:Examples.Testme`2.#ctor">
             <summary>
                 Initializes a new instance of the <see cref="T:Examples.Testme`2"/> class.
             </summary>
-            <param name="loggerFactory">The logger factory.</param>
         </member>
         <member name="P:Examples.Testme`2.Id">
             <summary>
@@ -378,11 +377,10 @@
             Implements the <see cref="T:Examples.ITestme`1" />
             </summary>
         </member>
-        <member name="M:Examples.Testme`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory)">
+        <member name="M:Examples.Testme`1.#ctor">
             <summary>
                 Initializes a new instance of the <see cref="T:Examples.Testme`1"/> class.
             </summary>
-            <param name="loggerFactory">The logger factory.</param>
         </member>
         <member name="P:Examples.Testme`1.Id">
             <summary>
@@ -394,11 +392,10 @@
                 Class TestMeBase.
             </summary>
         </member>
-        <member name="M:Examples.TestMeBase`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory)">
+        <member name="M:Examples.TestMeBase`1.#ctor">
             <summary>
                 Initializes a new instance of the <see cref="T:Examples.TestMeBase`1"/> class.
             </summary>
-            <param name="loggerFactory">The logger factory.</param>
         </member>
         <member name="P:Examples.TestMeBase`1.Entity">
             <summary>
