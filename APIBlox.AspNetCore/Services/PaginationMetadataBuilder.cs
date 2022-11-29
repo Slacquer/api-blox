@@ -43,8 +43,8 @@ namespace APIBlox.AspNetCore
             var requestQuery = new FilteredPaginationQuery();
             requestQuery.SetAliasesAndValues(_queryParams);
 
-            var maxPageSize = (requestQuery.Top.IsNullOrZero()
-                ? requestQuery.Skip.IsNullOrZero()
+            var maxPageSize = (requestQuery.Top.IsNullOrDefault()
+                ? requestQuery.Skip.IsNullOrDefault()
                     ? resultCount
                     : requestQuery.Skip
                 : requestQuery.Top) ?? resultCount;
@@ -64,7 +64,7 @@ namespace APIBlox.AspNetCore
             FilteredPaginationQuery previousQuery = null;
             FilteredPaginationQuery nextQuery = null;
 
-            if (requestQuery.Skip.IsNullOrZero() && requestQuery.Top.IsNullOrZero())
+            if (requestQuery.Skip.IsNullOrDefault() && requestQuery.Top.IsNullOrDefault())
             {
                 // No inputs, create new ones, no need to new up previousQuery.
                 // Set the top (take) to be the max and the skip to be what was just returned, resultCount.
@@ -75,7 +75,7 @@ namespace APIBlox.AspNetCore
                 nextQuery.Top = top;
                 nextQuery.RunningCount = requestQuery.RunningCount;
             }
-            else if (!requestQuery.Top.IsNullOrZero() && requestQuery.Skip.IsNullOrZero())
+            else if (!requestQuery.Top.IsNullOrDefault() && requestQuery.Skip.IsNullOrDefault())
             {
                 // Only top specified, se we use it.
                 var top = GetTop(requestQuery, maxPageSize);
@@ -136,7 +136,7 @@ namespace APIBlox.AspNetCore
 
         private FilteredPaginationQuery Clone(FilteredPaginationQuery org)
         {
-            var ret = JsonConvert.DeserializeObject<FilteredPaginationQuery>(JsonConvert.SerializeObject(org));
+            var ret = JsonConvert.DeserializeObject<FilteredPaginationQuery>(JsonConvert.SerializeObject(org))!;
 
             ret.SetAliasesAndValues(_queryParams);
 
@@ -145,7 +145,7 @@ namespace APIBlox.AspNetCore
 
         private static void SetRunningCount(IPaginationQuery requestQuery, int resultCount)
         {
-            if (!requestQuery.RunningCount.HasValue || requestQuery.Skip.IsNullOrZero() || requestQuery.Top.IsNullOrZero())
+            if (!requestQuery.RunningCount.HasValue || requestQuery.Skip.IsNullOrDefault() || requestQuery.Top.IsNullOrDefault())
                 requestQuery.RunningCount = 0;
 
             requestQuery.RunningCount += resultCount;
@@ -153,7 +153,7 @@ namespace APIBlox.AspNetCore
 
         private static int? GetTop(IPaginationQuery requestQuery, int defaultPageSize)
         {
-            if (requestQuery.Top.IsNullOrZero())
+            if (requestQuery.Top.IsNullOrDefault())
                 return defaultPageSize;
 
             return requestQuery.Top > defaultPageSize ? defaultPageSize : requestQuery.Top;
@@ -161,7 +161,7 @@ namespace APIBlox.AspNetCore
 
         private static int? GetNextSkip(IPaginationQuery query, int defaultPageSize)
         {
-            var top = query.Top.IsNullOrZero() || query.Top > defaultPageSize ? defaultPageSize : query.Top;
+            var top = query.Top.IsNullOrDefault() || query.Top > defaultPageSize ? defaultPageSize : query.Top;
             var skip = query.Skip ?? query.RunningCount;
 
             return skip + top;
@@ -169,7 +169,7 @@ namespace APIBlox.AspNetCore
 
         private static int? GetPreviousSkip(IPaginationQuery query, int defaultPageSize)
         {
-            if (query.Skip.IsNullOrZero())
+            if (query.Skip.IsNullOrDefault())
                 return null;
 
             // ReSharper disable once PossibleInvalidOperationException

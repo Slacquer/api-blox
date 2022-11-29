@@ -10,14 +10,9 @@ namespace APIBlox.NetCore
     {
         private readonly IDomainEventHandler<TDomainEvent> _handler;
 
-        public DomainEventHandlerWrapper(IDomainEventHandler<TDomainEvent> handler)
-        {
-            _handler = handler;
-        }
+        public DomainEventHandlerWrapper(IDomainEventHandler<TDomainEvent> handler) => _handler = handler;
 
-        public override Task HandleEventAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default)
-        {
-            return _handler.HandleEventAsync((TDomainEvent) domainEvent, cancellationToken);
-        }
+        public override Task HandleEventAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default) => 
+            _handler.HandleEventAsync((TDomainEvent) domainEvent, cancellationToken);
     }
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using APIBlox.AspNetCore.Contracts;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -44,6 +44,8 @@ namespace Examples
             services
                 .AddServerFaults()
 
+                .AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters()
+
                 //
                 // Instead of having to manually add to service collection.
                 .AddReferencedInjectableServices(Program.StartupLogger)
@@ -69,13 +71,13 @@ namespace Examples
                         if (factory.Errors != null)
                             throw new Exception("arg");
                     },
-                    Path.GetDirectoryName(startupAssembly.Location)
+                    Path.GetDirectoryName(startupAssembly?.Location)
                 )
-            #if DEBUG
+#if DEBUG
                 .AddMvc()
-            #else
+#else
                 .AddMvcCore()
-            #endif
+#endif
                 .AddApplicationPart(_dynamicControllersAssembly)
 
                 //
@@ -95,9 +97,12 @@ namespace Examples
 
                 //
                 // Make sure all results are camel cased.
-                .AddCamelCaseResultsOptions()
+                .AddCamelCaseResultsOptions();
 
-                .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()));
+                //services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+
+                services.AddValidatorsFromAssembly(GetType().Assembly);
+                //.AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining(GetType()));
 
 #if DEBUG
             services.AddSwaggerExampleFeatures(SiteTitle, Version, _dynamicControllersXmlFile);

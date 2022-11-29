@@ -70,7 +70,7 @@ namespace APIBlox.AspNetCore.Filters
 
             //////result.Value = dynamicResult;
 
-            var value = result.Value;
+            var value = result.Value ?? new object();
             var type = value.GetType();
             var props = type.GetProperties();
             var dynamicResult = new DynamicDataObject();
@@ -79,7 +79,7 @@ namespace APIBlox.AspNetCore.Filters
             {
                 var propValue = pi.GetValue(value);
 
-                dynamicResult.AddProperty(pi.Name, propValue); 
+                dynamicResult.AddProperty(pi.Name, propValue);
             }
 
             dynamicResult.AddProperty(

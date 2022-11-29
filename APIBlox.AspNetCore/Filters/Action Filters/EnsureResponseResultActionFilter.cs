@@ -50,14 +50,13 @@ namespace APIBlox.AspNetCore.Filters
 
             if (result?.Value is null
                 || _getsOnly && !action.HttpContext.Request.Method.EqualsEx("get")
-                || result.StatusCode >= 300
-                || result.StatusCode < 200)
+                || result.StatusCode is >= 300 or < 200)
             {
                 var sc = result != null
                     ? result.StatusCode
                     : action.HttpContext.Response.StatusCode;
 
-                if (sc >= 300 || sc < 200)
+                if (sc is >= 300 or < 200)
                     _log.LogInformation(() => $"Skipping execute as StatusCode is: {sc}");
 
                 return;
